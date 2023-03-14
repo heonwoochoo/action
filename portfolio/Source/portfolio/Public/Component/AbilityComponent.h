@@ -20,12 +20,16 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent);
 
 private:	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<UCharacterDataAsset> CharacterDataAssetClass;
+	UCharacterDataAsset* CharacterDataAsset;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	FCharacterData CharacterData;
+
+public:
+	UFUNCTION(BlueprintCallable)
+	const FCharacterData GetCharacterData();
+
 };

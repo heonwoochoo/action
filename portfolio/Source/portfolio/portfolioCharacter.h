@@ -73,5 +73,8 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability, meta = (AllowPrivateAccess = "true"))
 	UAbilityComponent* AbilityComponent;
+
+public:
+	UAbilityComponent* GetAbilityComponent() const;
 };
 

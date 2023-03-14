@@ -5,6 +5,8 @@
 #include "portfolio/portfolioCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Component/AbilityComponent.h"
+
 
 void UAnimInstanceBase::NativeInitializeAnimation()
 {
@@ -53,4 +55,32 @@ FVector UAnimInstanceBase::GetVelocity() const
 AportfolioCharacter* UAnimInstanceBase::GetCharacter() const
 {
 	return Character;
+}
+
+ECharacterClass UAnimInstanceBase::GetCharacterClass() const
+{
+	if (Character)
+	{
+		UAbilityComponent* CharacterAbilityComponent = Character->GetAbilityComponent();
+		if (CharacterAbilityComponent)
+		{
+			return CharacterAbilityComponent->GetCharacterData().Class;
+		}
+	}
+
+	return ECharacterClass::ECC_None;
+}
+
+ECharacterEquipState UAnimInstanceBase::GetCharacterEquipState() const
+{
+	if (Character)
+	{
+		UAbilityComponent* CharacterAbilityComponent = Character->GetAbilityComponent();
+		if (CharacterAbilityComponent)
+		{
+			return CharacterAbilityComponent->GetCharacterData().EquipState;
+		}
+	}
+
+	return ECharacterEquipState::ECES_Unquipped;
 }

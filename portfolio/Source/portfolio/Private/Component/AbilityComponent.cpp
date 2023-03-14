@@ -10,7 +10,7 @@ UAbilityComponent::UAbilityComponent()
 
 	PrimaryComponentTick.bCanEverTick = false;
 
-	
+
 }
 
 
@@ -19,21 +19,15 @@ void UAbilityComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (CharacterDataAssetClass)
+	if (CharacterDataAsset)
 	{
-		
+		CharacterData = CharacterDataAsset->CharacterData;
 	}
-	
 }
 
-void UAbilityComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+const FCharacterData UAbilityComponent::GetCharacterData()
 {
-	Super::PostEditChangeProperty(PropertyChangedEvent);
-
-	if (CharacterDataAssetClass)
-	{
-		CharacterData = Cast<UCharacterDataAsset>(CharacterDataAssetClass->GetDefaultObject())->CharacterData;
-	}
+	return CharacterData;
 }
 
 

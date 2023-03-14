@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "CharacterTypes.h"
 #include "AnimInstanceBase.generated.h"
 
 class AportfolioCharacter;
@@ -45,4 +46,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
 	AportfolioCharacter* GetCharacter() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
+	ECharacterClass GetCharacterClass() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
+	ECharacterEquipState GetCharacterEquipState() const;
 };

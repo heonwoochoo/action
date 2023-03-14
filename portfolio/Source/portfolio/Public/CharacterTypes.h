@@ -9,13 +9,17 @@ UENUM(BlueprintType)
 enum class ECharacterEquipState : uint8
 {
 	ECES_Equipped UMETA(DisplayName = "Equipped"),
-	ECES_Unquipped UMETA(DisplayName = "Unequipped")
+	ECES_Unquipped UMETA(DisplayName = "Unequipped"),
+
+	ECES_None UMETA(DisplayName = "None")
 };
 
 UENUM(BlueprintType)
 enum class ECharacterClass : uint8
 {
-	ECC_Assassin UMETA(DisplayName = "Assasin")
+	ECC_Assassin UMETA(DisplayName = "Assasin"),
+
+	ECC_None UMETA(DisplayName = "None")
 };
 
 USTRUCT(BlueprintType)

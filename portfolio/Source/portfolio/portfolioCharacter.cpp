@@ -124,6 +124,11 @@ void AportfolioCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+UAbilityComponent* AportfolioCharacter::GetAbilityComponent() const
+{
+	return AbilityComponent;
+}
+
 
 
 
