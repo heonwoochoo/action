@@ -21,9 +21,7 @@ protected:
 	virtual void BeginPlay() override;
 
 
-private:	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UCharacterDataAsset* CharacterDataAsset;
+private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	FCharacterData CharacterData;

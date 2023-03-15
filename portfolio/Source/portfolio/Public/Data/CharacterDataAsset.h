@@ -18,4 +18,7 @@ class PORTFOLIO_API UCharacterDataAsset : public UDataAsset
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FCharacterData CharacterData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<ECharacterClass, FCharacterDefaultAnimation> DefaultAnimations;
 };

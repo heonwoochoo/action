@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "CharacterTypes.h"
+#include "Data/CharacterDataAsset.h"
 #include "AnimInstanceBase.generated.h"
 
 class AportfolioCharacter;
@@ -19,7 +19,17 @@ protected:
 
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UAnimMontage* DefaultAttackMontage = nullptr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UBlendSpace* DefaultWalkRunBlendSpace = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UAnimSequence* DefaultEquippedIdle = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UAnimSequence* DefaultUnequippedIdle = nullptr;
 
 private:
 	UPROPERTY(VisibleAnywhere, category = "Character|Movement")
@@ -33,6 +43,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, category = "Character")
 	AportfolioCharacter* Character = nullptr;
+
+	
+	
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
@@ -52,4 +65,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
 	ECharacterEquipState GetCharacterEquipState() const;
+
+
 };

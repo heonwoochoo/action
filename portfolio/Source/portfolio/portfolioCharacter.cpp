@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Component/AbilityComponent.h"
+#include "Animation/AnimInstanceBase.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AportfolioCharacter
@@ -84,6 +85,8 @@ void AportfolioCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AportfolioCharacter::Look);
 
+		// DefaultAttack
+		EnhancedInputComponent->BindAction(DefaultAttackAction, ETriggerEvent::Triggered, this, &AportfolioCharacter::DefaultAttack);
 	}
 
 }
@@ -124,9 +127,28 @@ void AportfolioCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+void AportfolioCharacter::DefaultAttack(const FInputActionValue& Value)
+{
+	if (bCanAttack)
+	{
+		bCanAttack = false;
+
+		UAnimInstanceBase* AnimInstance =  Cast<UAnimInstanceBase>(GetMesh()->GetAnimInstance());
+		if (AnimInstance)
+		{
+			
+		}
+	}
+}
+
 UAbilityComponent* AportfolioCharacter::GetAbilityComponent() const
 {
 	return AbilityComponent;
+}
+
+UCharacterDataAsset* AportfolioCharacter::GetCharacterDataAsset() const
+{
+	return CharacterDataAsset;
 }
 
 

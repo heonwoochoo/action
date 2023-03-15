@@ -6,7 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Component/AbilityComponent.h"
-
+#include "CharacterTypes.h"
 
 void UAnimInstanceBase::NativeInitializeAnimation()
 {
@@ -14,6 +14,21 @@ void UAnimInstanceBase::NativeInitializeAnimation()
 
 	Character = Cast<AportfolioCharacter>(GetOwningActor());
 
+	// 게임 시작시 직업에 따른 애니메이션 기본 값 포인터 설정
+	if (Character)
+	{
+		if (UAbilityComponent* AbilityComponent = Character->GetAbilityComponent())
+		{
+			ECharacterClass CharacterClass = AbilityComponent->GetCharacterData().Class;
+			if (UCharacterDataAsset* CharacterDataAsset = Character->GetCharacterDataAsset())
+			{
+				DefaultAttackMontage = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->DefaultAttack;
+				DefaultWalkRunBlendSpace = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->WalkRunBlendSpace;
+				DefaultEquippedIdle = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->EquippedIdle;
+				DefaultUnequippedIdle = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->UnequippedIdle;
+			}
+		}
+	}
 }
 
 void UAnimInstanceBase::NativeUpdateAnimation(float DeltaSeconds)

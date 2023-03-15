@@ -3,6 +3,8 @@
 
 #include "Component/AbilityComponent.h"
 #include "Data/CharacterDataAsset.h"
+#include "Kismet/GameplayStatics.h"
+#include "portfolio/portfolioCharacter.h"
 
 // Sets default values for this component's properties
 UAbilityComponent::UAbilityComponent()
@@ -10,7 +12,10 @@ UAbilityComponent::UAbilityComponent()
 
 	PrimaryComponentTick.bCanEverTick = false;
 
-
+	if (AportfolioCharacter* Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0)))
+	{
+		CharacterData = Character->GetCharacterDataAsset()->CharacterData;
+	}
 }
 
 
@@ -18,11 +23,6 @@ UAbilityComponent::UAbilityComponent()
 void UAbilityComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (CharacterDataAsset)
-	{
-		CharacterData = CharacterDataAsset->CharacterData;
-	}
 }
 
 const FCharacterData UAbilityComponent::GetCharacterData()

@@ -12,6 +12,7 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 class UAbilityComponent;
+class UCharacterDataAsset;
 
 UCLASS(config=Game)
 class AportfolioCharacter : public ACharacter
@@ -39,11 +40,17 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	/** Left mouse click */
+	void DefaultAttack(const FInputActionValue& Value);
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+
+	
 
 private:
 	/** Camera boom positioning the camera behind the character */
@@ -70,11 +77,22 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* DefaultAttackAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability, meta = (AllowPrivateAccess = "true"))
 	UAbilityComponent* AbilityComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UCharacterDataAsset* CharacterDataAsset;
+
+
+
+	bool bCanAttack = true;
+
 public:
 	UAbilityComponent* GetAbilityComponent() const;
+
+	UCharacterDataAsset* GetCharacterDataAsset() const;
 };
 

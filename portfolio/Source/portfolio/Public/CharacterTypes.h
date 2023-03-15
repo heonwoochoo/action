@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "CharacterTypes.generated.h"
 
+class UAnimMontage;
+class UBlendSpace;
+
 UENUM(BlueprintType)
 enum class ECharacterEquipState : uint8
 {
@@ -32,4 +35,22 @@ struct FCharacterData
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	ECharacterClass Class;
+};
+
+USTRUCT(BlueprintType)
+struct FCharacterDefaultAnimation
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* DefaultAttack;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UBlendSpace* WalkRunBlendSpace;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimSequence* EquippedIdle;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimSequence* UnequippedIdle;
 };
