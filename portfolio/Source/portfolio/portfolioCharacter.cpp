@@ -77,7 +77,7 @@ void AportfolioCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
 		//Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AportfolioCharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		//Moving
@@ -128,6 +128,18 @@ void AportfolioCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+void AportfolioCharacter::Jump()
+{
+	if (!bCanDoubleJump)
+	{
+		Super::Jump();
+	}
+	else
+	{
+		DoubleJump();
+	}
+}
+
 void AportfolioCharacter::DefaultAttack(const FInputActionValue& Value)
 {
 	if (bCanAttack)
@@ -165,6 +177,28 @@ void AportfolioCharacter::DefaultAttack(const FInputActionValue& Value)
 	}
 }
 
+void AportfolioCharacter::DoubleJump()
+{
+	bCanDoubleJump = false;
+
+	const FVector ForwardDir = GetActorForwardVector();
+	
+	const FVector AddForce = ForwardDir * DubleJumpForwardVelocity + FVector(0, 0, 1) * GetCharacterMovement()->JumpZVelocity;
+	LaunchCharacter(AddForce, false, true);
+	if (GetCharacterMovement()->IsFalling())
+	{
+		UAnimInstanceBase* AnimInstance = Cast<UAnimInstanceBase>(GetMesh()->GetAnimInstance());
+		if (AnimInstance)
+		{
+			UAnimMontage* DoubleJumpMontage = AnimInstance->GetDefaultDoubleJumpMontage();
+			if (DoubleJumpMontage)
+			{
+				AnimInstance->Montage_Play(DoubleJumpMontage);
+			}
+		}
+	}
+}
+
 UAbilityComponent* AportfolioCharacter::GetAbilityComponent() const
 {
 	return AbilityComponent;
@@ -189,13 +223,23 @@ void AportfolioCharacter::AttackChainEnd()
 
 void AportfolioCharacter::OnDamage()
 {
-	FVector DamageOverlapLocation = GetActorLocation() + GetActorForwardVector() * 100.f;
+	const FVector DamageOverlapLocation = GetActorLocation() + GetActorForwardVector() * 100.f;
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = { UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn)};
 	TArray<AActor*> ActorsToIgnore = { this };
 	TArray<AActor*> OutActors;
 
 	UKismetSystemLibrary::SphereOverlapActors(this, DamageOverlapLocation, 75.f, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
 	DrawDebugSphere(GetWorld(), DamageOverlapLocation, 75.f, 16, FColor::Red, false, 1.f);
+}
+
+void AportfolioCharacter::EnableDoubleJump()
+{
+	bCanDoubleJump = true;
+}
+
+void AportfolioCharacter::DisableDoubleJump()
+{
+	bCanDoubleJump = false;
 }
 
 

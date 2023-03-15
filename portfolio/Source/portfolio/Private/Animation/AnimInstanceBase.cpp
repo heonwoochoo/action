@@ -14,7 +14,8 @@ void UAnimInstanceBase::NativeInitializeAnimation()
 
 	Character = Cast<AportfolioCharacter>(GetOwningActor());
 
-	// 게임 시작시 직업에 따른 애니메이션 기본 값 포인터 설정
+	// 직업 별 애니메이션 기본 값 포인터 설정
+	// 타입 추가 후 데이터 에셋 파일에도 참조 애니메이션 반드시 설정해줄 것 !
 	if (Character)
 	{
 		if (UAbilityComponent* AbilityComponent = Character->GetAbilityComponent())
@@ -23,6 +24,8 @@ void UAnimInstanceBase::NativeInitializeAnimation()
 			if (UCharacterDataAsset* CharacterDataAsset = Character->GetCharacterDataAsset())
 			{
 				DefaultAttackMontage = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->DefaultAttack;
+				DefaultJump = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->DefaultJump;
+				DefaultDoubleJumpMontage = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->DefaultDoubleJump;
 				DefaultWalkRunBlendSpace = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->WalkRunBlendSpace;
 				DefaultEquippedIdle = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->EquippedIdle;
 				DefaultUnequippedIdle = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->UnequippedIdle;
@@ -103,4 +106,9 @@ ECharacterEquipState UAnimInstanceBase::GetCharacterEquipState() const
 UAnimMontage* UAnimInstanceBase::GetDefaultAttackMontage() const
 {
 	return DefaultAttackMontage;
+}
+
+UAnimMontage* UAnimInstanceBase::GetDefaultDoubleJumpMontage() const
+{
+	return DefaultDoubleJumpMontage;
 }

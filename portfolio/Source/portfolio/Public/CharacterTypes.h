@@ -46,6 +46,12 @@ struct FCharacterDefaultAnimation
 	UAnimMontage* DefaultAttack;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* DefaultDoubleJump;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimSequence* DefaultJump;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UBlendSpace* WalkRunBlendSpace;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

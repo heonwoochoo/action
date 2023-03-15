@@ -19,16 +19,22 @@ protected:
 
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = DefaultAnimation)
 	UAnimMontage* DefaultAttackMontage = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = DefaultAnimation)
+	UAnimSequence* DefaultJump = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = DefaultAnimation)
+	UAnimMontage* DefaultDoubleJumpMontage = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = DefaultAnimation)
 	UBlendSpace* DefaultWalkRunBlendSpace = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = DefaultAnimation)
 	UAnimSequence* DefaultEquippedIdle = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = DefaultAnimation)
 	UAnimSequence* DefaultUnequippedIdle = nullptr;
 
 private:
@@ -67,4 +73,6 @@ public:
 	ECharacterEquipState GetCharacterEquipState() const;
 
 	UAnimMontage* GetDefaultAttackMontage() const;
+
+	UAnimMontage* GetDefaultDoubleJumpMontage() const;
 };

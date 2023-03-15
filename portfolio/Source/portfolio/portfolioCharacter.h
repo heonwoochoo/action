@@ -40,6 +40,9 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	/** Handle double jump */
+	virtual void Jump() override;
+
 	/** Left mouse click */
 	void DefaultAttack(const FInputActionValue& Value);
 
@@ -90,6 +93,14 @@ private:
 
 	uint8 AttackCount = 0;
 
+	bool bCanDoubleJump = false;
+
+	float DubleJumpForwardVelocity = 200.f;
+
+	void DoubleJump();
+
+	
+
 public:
 	UAbilityComponent* GetAbilityComponent() const;
 
@@ -103,5 +114,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void OnDamage();
+
+	UFUNCTION(BlueprintCallable)
+	void EnableDoubleJump();
+
+	UFUNCTION(BlueprintCallable)
+	void DisableDoubleJump();
 };
 
