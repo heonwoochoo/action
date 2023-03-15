@@ -12,6 +12,7 @@
 #include "Component/AbilityComponent.h"
 #include "Animation/AnimInstanceBase.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AportfolioCharacter
@@ -34,7 +35,7 @@ AportfolioCharacter::AportfolioCharacter()
 	// instead of recompiling to adjust them
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkSpeed;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
@@ -88,6 +89,10 @@ void AportfolioCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 
 		// DefaultAttack
 		EnhancedInputComponent->BindAction(DefaultAttackAction, ETriggerEvent::Triggered, this, &AportfolioCharacter::DefaultAttack);
+	
+		// Sprint
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AportfolioCharacter::OnSprint);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AportfolioCharacter::OffSprint);
 	}
 
 }
@@ -175,6 +180,21 @@ void AportfolioCharacter::DefaultAttack(const FInputActionValue& Value)
 			}
 		}
 	}
+}
+
+void AportfolioCharacter::OnSprint()
+{
+	float CurrentSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = UKismetMathLibrary::FInterpTo(CurrentSpeed, SprintMaxSpeed, GetWorld()->GetDeltaSeconds(), 30.f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	bUseControllerRotationYaw = false;
+}
+
+void AportfolioCharacter::OffSprint()
+{
+	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkSpeed;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+	bUseControllerRotationYaw = true;
 }
 
 void AportfolioCharacter::DoubleJump()

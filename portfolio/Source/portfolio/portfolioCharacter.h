@@ -46,6 +46,11 @@ protected:
 	/** Left mouse click */
 	void DefaultAttack(const FInputActionValue& Value);
 
+	/** Called Sprint Action */
+	void OnSprint();
+
+	void OffSprint();
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -83,6 +88,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* DefaultAttackAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SprintAction;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability, meta = (AllowPrivateAccess = "true"))
 	UAbilityComponent* AbilityComponent;
 
@@ -96,6 +104,10 @@ private:
 	bool bCanDoubleJump = false;
 
 	float DubleJumpForwardVelocity = 200.f;
+
+	float DefaultMaxWalkSpeed = 500.f;
+
+	float SprintMaxSpeed = 800.f;
 
 	void DoubleJump();
 
