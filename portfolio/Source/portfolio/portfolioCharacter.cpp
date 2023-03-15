@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Component/AbilityComponent.h"
 #include "Animation/AnimInstanceBase.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AportfolioCharacter
@@ -184,6 +185,17 @@ void AportfolioCharacter::AttackChainEnd()
 {
 	AttackCount = 0;
 	bCanAttack = true;
+}
+
+void AportfolioCharacter::OnDamage()
+{
+	FVector DamageOverlapLocation = GetActorLocation() + GetActorForwardVector() * 100.f;
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = { UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn)};
+	TArray<AActor*> ActorsToIgnore = { this };
+	TArray<AActor*> OutActors;
+
+	UKismetSystemLibrary::SphereOverlapActors(this, DamageOverlapLocation, 75.f, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
+	DrawDebugSphere(GetWorld(), DamageOverlapLocation, 75.f, 16, FColor::Red, false, 1.f);
 }
 
 

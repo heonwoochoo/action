@@ -100,5 +100,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AttackChainEnd();
+
+	UFUNCTION(BlueprintCallable)
+	void OnDamage();
 };
 
