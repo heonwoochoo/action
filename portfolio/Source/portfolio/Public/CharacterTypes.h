@@ -59,4 +59,31 @@ struct FCharacterDefaultAnimation
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UAnimSequence* UnequippedIdle;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* Evade;
+};
+
+UENUM(BlueprintType)
+enum class ECharacterDirection : uint8
+{
+	ECD_Forward UMETA(DisplayName = "Forward"),
+	ECD_Back UMETA(DisplayName = "Back"),
+	ECD_Left UMETA(DisplayName = "Left"),
+	ECD_Right UMETA(DisplayName = "Right")
+};
+
+UENUM(BlueprintType)
+enum class ECharacterActionState : uint8
+{
+	ECAS_Unoccupied UMETA(DisplayName = "Unoccupied"),
+	ECAS_MoveForward UMETA(DisplayName = "MoveForward"),
+	ECAS_MoveBack UMETA(DisplayName = "MoveBack"),
+	ECAS_MoveLeft UMETA(DisplayName = "MoveLeft"),
+	ECAS_MoveRight UMETA(DisplayName = "MoveRight"),
+	ECAS_Jump UMETA(DisplayName = "Jump"),
+	ECAS_Evade UMETA(DisplayName = "Evade"),
+	ECAS_Sprint UMETA(DisplayName = "Sprint"),
+	ECAS_Attack UMETA(DisplayName = "Attack"),
+	ECAS_AttackCombo UMETA(DisplayName = "AttackCombo"),
 };

@@ -83,6 +83,7 @@ void AportfolioCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 
 		//Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AportfolioCharacter::Move);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &AportfolioCharacter::MoveEnd);
 
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AportfolioCharacter::Look);
@@ -93,6 +94,9 @@ void AportfolioCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 		// Sprint
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AportfolioCharacter::OnSprint);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AportfolioCharacter::OffSprint);
+		
+		// Evade
+		EnhancedInputComponent->BindAction(EvadeAction, ETriggerEvent::Triggered, this, &AportfolioCharacter::OnEvade);
 	}
 
 }
@@ -117,6 +121,19 @@ void AportfolioCharacter::Move(const FInputActionValue& Value)
 		// add movement 
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
+
+		if (GetVelocity().Size() > 0.f)
+		{
+			CharacterActionState = ECharacterActionState::ECAS_MoveForward;
+		}
+	}
+}
+
+void AportfolioCharacter::MoveEnd()
+{
+	if (CharacterActionState == ECharacterActionState::ECAS_MoveForward)
+	{
+		CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 	}
 }
 
@@ -135,9 +152,10 @@ void AportfolioCharacter::Look(const FInputActionValue& Value)
 
 void AportfolioCharacter::Jump()
 {
+	CharacterActionState = ECharacterActionState::ECAS_Jump;
 	if (!bCanDoubleJump)
 	{
-		Super::Jump();
+		Super::Jump();				
 	}
 	else
 	{
@@ -147,9 +165,10 @@ void AportfolioCharacter::Jump()
 
 void AportfolioCharacter::DefaultAttack(const FInputActionValue& Value)
 {
-	if (bCanAttack)
+	if (CharacterActionState == ECharacterActionState::ECAS_Unoccupied
+		|| CharacterActionState == ECharacterActionState::ECAS_AttackCombo)
 	{
-		bCanAttack = false;
+		CharacterActionState = ECharacterActionState::ECAS_Attack;
 
 		UAnimInstanceBase* AnimInstance =  Cast<UAnimInstanceBase>(GetMesh()->GetAnimInstance());
 		if (AnimInstance)
@@ -197,6 +216,51 @@ void AportfolioCharacter::OffSprint()
 	bUseControllerRotationYaw = true;
 }
 
+void AportfolioCharacter::OnEvade()
+{
+	UAnimInstanceBase* AnimInstance = Cast<UAnimInstanceBase>(GetMesh()->GetAnimInstance());
+	if (AnimInstance && GetVelocity().Size() && !GetCharacterMovement()->IsFalling())
+	{
+		UAnimMontage* DefaultEvadeMontage = AnimInstance->GetDefaultDefaultEvadeMontage();
+		if (DefaultEvadeMontage)
+		{
+			ECharacterDirection CharacterDir;
+			
+			float SideSpeed = AnimInstance->GetSideSpeed();
+			float ForwardSpeed = AnimInstance->GetForwardSpeed();
+			
+			if (FMath::Abs(SideSpeed) > FMath::Abs(ForwardSpeed))
+			{
+				CharacterDir = SideSpeed > 0.f ? ECharacterDirection::ECD_Right : ECharacterDirection::ECD_Left;
+			}
+			else
+			{
+				CharacterDir = ForwardSpeed > 0.f ? ECharacterDirection::ECD_Forward : ECharacterDirection::ECD_Back;
+			}
+
+			AnimInstance->Montage_Play(DefaultEvadeMontage);
+
+			FName SectionName;
+			switch (CharacterDir)
+			{
+				case ECharacterDirection::ECD_Forward:
+					SectionName = "Forward";
+					break;
+				case ECharacterDirection::ECD_Back:
+					SectionName = "Back";
+					break;
+				case ECharacterDirection::ECD_Right:
+					SectionName = "Right";
+					break;
+				case ECharacterDirection::ECD_Left:
+					SectionName = "Left";
+					break;
+			}
+			AnimInstance->Montage_JumpToSection(SectionName);
+		}
+	}
+}
+
 void AportfolioCharacter::DoubleJump()
 {
 	bCanDoubleJump = false;
@@ -231,14 +295,14 @@ UCharacterDataAsset* AportfolioCharacter::GetCharacterDataAsset() const
 
 void AportfolioCharacter::AttackChainStart()
 {
+	CharacterActionState = ECharacterActionState::ECAS_AttackCombo;
 	AttackCount++;
-	bCanAttack = true;
 }
 
 void AportfolioCharacter::AttackChainEnd()
 {
+	CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 	AttackCount = 0;
-	bCanAttack = true;
 }
 
 void AportfolioCharacter::OnDamage()
@@ -260,6 +324,16 @@ void AportfolioCharacter::EnableDoubleJump()
 void AportfolioCharacter::DisableDoubleJump()
 {
 	bCanDoubleJump = false;
+}
+
+ECharacterActionState AportfolioCharacter::GetCharacterActionState() const
+{
+	return CharacterActionState;
+}
+
+void AportfolioCharacter::SetCharacterActionState(ECharacterActionState ActionState)
+{
+	CharacterActionState = ActionState;
 }
 
 

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "CharacterTypes.h"
 #include "portfolioCharacter.generated.h"
 
 class USpringArmComponent;
@@ -36,6 +37,7 @@ protected:
 
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
+	void MoveEnd();
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
@@ -48,8 +50,10 @@ protected:
 
 	/** Called Sprint Action */
 	void OnSprint();
-
 	void OffSprint();
+
+	/** Called Evade Action */
+	void OnEvade();
 
 public:
 	/** Returns CameraBoom subobject **/
@@ -91,6 +95,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* SprintAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* EvadeAction;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability, meta = (AllowPrivateAccess = "true"))
 	UAbilityComponent* AbilityComponent;
 
@@ -105,9 +113,13 @@ private:
 
 	float DubleJumpForwardVelocity = 200.f;
 
-	float DefaultMaxWalkSpeed = 500.f;
+	float DefaultMaxWalkSpeed = 400.f;
 
 	float SprintMaxSpeed = 800.f;
+
+	// 캐릭터의 동작 상태
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	ECharacterActionState CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 
 	void DoubleJump();
 
@@ -132,5 +144,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void DisableDoubleJump();
+
+	UFUNCTION(BlueprintCallable)
+	ECharacterActionState GetCharacterActionState() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SetCharacterActionState(ECharacterActionState ActionState);
 };
 

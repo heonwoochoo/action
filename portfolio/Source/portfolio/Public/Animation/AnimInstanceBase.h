@@ -37,6 +37,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = DefaultAnimation)
 	UAnimSequence* DefaultUnequippedIdle = nullptr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = DefaultAnimation)
+	UAnimMontage* DefaultEvadeMontage = nullptr;
+
 private:
 	UPROPERTY(VisibleAnywhere, category = "Character|Movement")
 	float ForwardSpeed = 0.f;
@@ -75,4 +78,6 @@ public:
 	UAnimMontage* GetDefaultAttackMontage() const;
 
 	UAnimMontage* GetDefaultDoubleJumpMontage() const;
+
+	UAnimMontage* GetDefaultDefaultEvadeMontage() const;
 };

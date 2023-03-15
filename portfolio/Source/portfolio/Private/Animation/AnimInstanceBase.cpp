@@ -29,6 +29,7 @@ void UAnimInstanceBase::NativeInitializeAnimation()
 				DefaultWalkRunBlendSpace = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->WalkRunBlendSpace;
 				DefaultEquippedIdle = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->EquippedIdle;
 				DefaultUnequippedIdle = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->UnequippedIdle;
+				DefaultEvadeMontage = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->Evade;
 			}
 		}
 	}
@@ -111,4 +112,9 @@ UAnimMontage* UAnimInstanceBase::GetDefaultAttackMontage() const
 UAnimMontage* UAnimInstanceBase::GetDefaultDoubleJumpMontage() const
 {
 	return DefaultDoubleJumpMontage;
+}
+
+UAnimMontage* UAnimInstanceBase::GetDefaultDefaultEvadeMontage() const
+{
+	return DefaultEvadeMontage;
 }
