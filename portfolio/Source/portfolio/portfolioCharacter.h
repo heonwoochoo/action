@@ -86,13 +86,19 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UCharacterDataAsset* CharacterDataAsset;
 
-
-
 	bool bCanAttack = true;
+
+	uint8 AttackCount = 0;
 
 public:
 	UAbilityComponent* GetAbilityComponent() const;
 
 	UCharacterDataAsset* GetCharacterDataAsset() const;
+
+	UFUNCTION(BlueprintCallable)
+	void AttackChainStart();
+
+	UFUNCTION(BlueprintCallable)
+	void AttackChainEnd();
 };
 

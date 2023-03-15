@@ -136,7 +136,30 @@ void AportfolioCharacter::DefaultAttack(const FInputActionValue& Value)
 		UAnimInstanceBase* AnimInstance =  Cast<UAnimInstanceBase>(GetMesh()->GetAnimInstance());
 		if (AnimInstance)
 		{
-			
+			UAnimMontage* AttackMontage = AnimInstance->GetDefaultAttackMontage();
+			if (AttackMontage)
+			{
+				AnimInstance->Montage_Play(AttackMontage);
+
+				FName SectionName;
+				switch (AttackCount)
+				{
+				case 0:
+					SectionName = "Attack1";
+					break;
+				case 1:
+					SectionName = "Attack2";
+					break;
+				case 2:
+					SectionName = "Attack3";
+					break;
+				case 3:
+					SectionName = "Attack4";
+					AttackCount = 0;
+					break;
+				}
+				AnimInstance->Montage_JumpToSection(SectionName);
+			}
 		}
 	}
 }
@@ -149,6 +172,18 @@ UAbilityComponent* AportfolioCharacter::GetAbilityComponent() const
 UCharacterDataAsset* AportfolioCharacter::GetCharacterDataAsset() const
 {
 	return CharacterDataAsset;
+}
+
+void AportfolioCharacter::AttackChainStart()
+{
+	AttackCount++;
+	bCanAttack = true;
+}
+
+void AportfolioCharacter::AttackChainEnd()
+{
+	AttackCount = 0;
+	bCanAttack = true;
 }
 
 

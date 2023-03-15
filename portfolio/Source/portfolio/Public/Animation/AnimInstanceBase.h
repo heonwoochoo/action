@@ -66,5 +66,5 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
 	ECharacterEquipState GetCharacterEquipState() const;
 
-
+	UAnimMontage* GetDefaultAttackMontage() const;
 };

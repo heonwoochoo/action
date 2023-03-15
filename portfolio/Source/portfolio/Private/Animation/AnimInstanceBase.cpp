@@ -99,3 +99,8 @@ ECharacterEquipState UAnimInstanceBase::GetCharacterEquipState() const
 
 	return ECharacterEquipState::ECES_Unquipped;
 }
+
+UAnimMontage* UAnimInstanceBase::GetDefaultAttackMontage() const
+{
+	return DefaultAttackMontage;
+}
