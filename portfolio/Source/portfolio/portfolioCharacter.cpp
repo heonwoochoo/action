@@ -67,6 +67,11 @@ void AportfolioCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+	AnimInstance = Cast<UAnimInstanceBase>(GetMesh()->GetAnimInstance());
+	if (AnimInstance)
+	{
+		AnimInstance->OnMontageEnded.AddDynamic(this, &AportfolioCharacter::OnAnimationEnded);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -97,6 +102,7 @@ void AportfolioCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 		
 		// Evade
 		EnhancedInputComponent->BindAction(EvadeAction, ETriggerEvent::Triggered, this, &AportfolioCharacter::OnEvade);
+		
 	}
 
 }
@@ -122,19 +128,25 @@ void AportfolioCharacter::Move(const FInputActionValue& Value)
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
 
-		if (GetVelocity().Size() > 0.f)
+		if (GetVelocity().Size() > 0.f 
+			&& CharacterActionState != ECharacterActionState::ECAS_Evade
+			&& CharacterActionState != ECharacterActionState::ECAS_Jump)
 		{
-			CharacterActionState = ECharacterActionState::ECAS_MoveForward;
+			if (MovementVector.Y)
+			{
+				CharacterActionState = MovementVector.Y > 0 ? ECharacterActionState::ECAS_MoveForward : ECharacterActionState::ECAS_MoveBack;
+			}
+			else
+			{
+				CharacterActionState = MovementVector.X > 0 ? ECharacterActionState::ECAS_MoveRight : ECharacterActionState::ECAS_MoveLeft;
+			}
 		}
 	}
 }
 
 void AportfolioCharacter::MoveEnd()
 {
-	if (CharacterActionState == ECharacterActionState::ECAS_MoveForward)
-	{
-		CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
-	}
+	CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 }
 
 void AportfolioCharacter::Look(const FInputActionValue& Value)
@@ -166,11 +178,14 @@ void AportfolioCharacter::Jump()
 void AportfolioCharacter::DefaultAttack(const FInputActionValue& Value)
 {
 	if (CharacterActionState == ECharacterActionState::ECAS_Unoccupied
-		|| CharacterActionState == ECharacterActionState::ECAS_AttackCombo)
+		|| CharacterActionState == ECharacterActionState::ECAS_AttackCombo
+		|| CharacterActionState == ECharacterActionState::ECAS_MoveForward
+		|| CharacterActionState == ECharacterActionState::ECAS_MoveBack
+		|| CharacterActionState == ECharacterActionState::ECAS_MoveLeft
+		|| CharacterActionState == ECharacterActionState::ECAS_MoveRight)
 	{
 		CharacterActionState = ECharacterActionState::ECAS_Attack;
-
-		UAnimInstanceBase* AnimInstance =  Cast<UAnimInstanceBase>(GetMesh()->GetAnimInstance());
+		
 		if (AnimInstance)
 		{
 			UAnimMontage* AttackMontage = AnimInstance->GetDefaultAttackMontage();
@@ -203,14 +218,25 @@ void AportfolioCharacter::DefaultAttack(const FInputActionValue& Value)
 
 void AportfolioCharacter::OnSprint()
 {
-	float CurrentSpeed = GetCharacterMovement()->MaxWalkSpeed;
-	GetCharacterMovement()->MaxWalkSpeed = UKismetMathLibrary::FInterpTo(CurrentSpeed, SprintMaxSpeed, GetWorld()->GetDeltaSeconds(), 30.f);
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	bUseControllerRotationYaw = false;
+	if (GetVelocity().Size() > 0.f)
+	{
+		if (CharacterActionState != ECharacterActionState::ECAS_Jump)
+		{
+			CharacterActionState = ECharacterActionState::ECAS_Sprint;
+		}
+		float CurrentSpeed = GetCharacterMovement()->MaxWalkSpeed;
+		GetCharacterMovement()->MaxWalkSpeed = UKismetMathLibrary::FInterpTo(CurrentSpeed, SprintMaxSpeed, GetWorld()->GetDeltaSeconds(), 30.f);
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		bUseControllerRotationYaw = false;
+	}
 }
 
 void AportfolioCharacter::OffSprint()
 {
+	if (CharacterActionState != ECharacterActionState::ECAS_Jump)
+	{
+		CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
+	}
 	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkSpeed;
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	bUseControllerRotationYaw = true;
@@ -218,45 +244,35 @@ void AportfolioCharacter::OffSprint()
 
 void AportfolioCharacter::OnEvade()
 {
-	UAnimInstanceBase* AnimInstance = Cast<UAnimInstanceBase>(GetMesh()->GetAnimInstance());
-	if (AnimInstance && GetVelocity().Size() && !GetCharacterMovement()->IsFalling())
+	
+	if (AnimInstance && GetVelocity().Size() 
+		&& !GetCharacterMovement()->IsFalling()
+		&& CharacterActionState != ECharacterActionState::ECAS_Evade )
 	{
+		
 		UAnimMontage* DefaultEvadeMontage = AnimInstance->GetDefaultDefaultEvadeMontage();
 		if (DefaultEvadeMontage)
 		{
-			ECharacterDirection CharacterDir;
-			
-			float SideSpeed = AnimInstance->GetSideSpeed();
-			float ForwardSpeed = AnimInstance->GetForwardSpeed();
-			
-			if (FMath::Abs(SideSpeed) > FMath::Abs(ForwardSpeed))
-			{
-				CharacterDir = SideSpeed > 0.f ? ECharacterDirection::ECD_Right : ECharacterDirection::ECD_Left;
-			}
-			else
-			{
-				CharacterDir = ForwardSpeed > 0.f ? ECharacterDirection::ECD_Forward : ECharacterDirection::ECD_Back;
-			}
-
 			AnimInstance->Montage_Play(DefaultEvadeMontage);
 
 			FName SectionName;
-			switch (CharacterDir)
+			switch (CharacterActionState)
 			{
-				case ECharacterDirection::ECD_Forward:
+				case ECharacterActionState::ECAS_MoveForward:
 					SectionName = "Forward";
 					break;
-				case ECharacterDirection::ECD_Back:
+				case ECharacterActionState::ECAS_MoveBack:
 					SectionName = "Back";
 					break;
-				case ECharacterDirection::ECD_Right:
+				case ECharacterActionState::ECAS_MoveRight:
 					SectionName = "Right";
 					break;
-				case ECharacterDirection::ECD_Left:
+				case ECharacterActionState::ECAS_MoveLeft:
 					SectionName = "Left";
 					break;
 			}
 			AnimInstance->Montage_JumpToSection(SectionName);
+			CharacterActionState = ECharacterActionState::ECAS_Evade;
 		}
 	}
 }
@@ -271,7 +287,6 @@ void AportfolioCharacter::DoubleJump()
 	LaunchCharacter(AddForce, false, true);
 	if (GetCharacterMovement()->IsFalling())
 	{
-		UAnimInstanceBase* AnimInstance = Cast<UAnimInstanceBase>(GetMesh()->GetAnimInstance());
 		if (AnimInstance)
 		{
 			UAnimMontage* DoubleJumpMontage = AnimInstance->GetDefaultDoubleJumpMontage();
@@ -281,6 +296,11 @@ void AportfolioCharacter::DoubleJump()
 			}
 		}
 	}
+}
+
+void AportfolioCharacter::FinishEvade()
+{
+	CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 }
 
 UAbilityComponent* AportfolioCharacter::GetAbilityComponent() const
@@ -336,6 +356,13 @@ void AportfolioCharacter::SetCharacterActionState(ECharacterActionState ActionSt
 	CharacterActionState = ActionState;
 }
 
-
-
-
+void AportfolioCharacter::OnAnimationEnded(UAnimMontage* AnimClass, bool bInterrupted)
+{
+	if (AnimInstance)
+	{
+		if (AnimClass == AnimInstance->GetDefaultDefaultEvadeMontage())
+		{
+			FinishEvade();
+		}
+	}
+}

@@ -14,6 +14,7 @@ class UInputMappingContext;
 class UInputAction;
 class UAbilityComponent;
 class UCharacterDataAsset;
+class UAnimInstanceBase;
 
 UCLASS(config=Game)
 class AportfolioCharacter : public ACharacter
@@ -105,6 +106,8 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UCharacterDataAsset* CharacterDataAsset;
 
+	UAnimInstanceBase* AnimInstance;
+
 	bool bCanAttack = true;
 
 	uint8 AttackCount = 0;
@@ -123,7 +126,7 @@ private:
 
 	void DoubleJump();
 
-	
+	void FinishEvade();
 
 public:
 	UAbilityComponent* GetAbilityComponent() const;
@@ -150,5 +153,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetCharacterActionState(ECharacterActionState ActionState);
+	
+	UFUNCTION()
+	void OnAnimationEnded(UAnimMontage* AnimClass, bool bInterrupted);
+
 };
 
