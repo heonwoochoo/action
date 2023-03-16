@@ -7,6 +7,7 @@
 
 class UAnimMontage;
 class UBlendSpace;
+class UTexture2D;
 
 UENUM(BlueprintType)
 enum class ECharacterEquipState : uint8
@@ -86,4 +87,41 @@ enum class ECharacterActionState : uint8
 	ECAS_Sprint UMETA(DisplayName = "Sprint"),
 	ECAS_Attack UMETA(DisplayName = "Attack"),
 	ECAS_AttackCombo UMETA(DisplayName = "AttackCombo"),
+};
+
+UENUM(BlueprintType)
+enum class ESkillType : uint8
+{
+	EST_Attack UMETA(DisplayName = "Attack"),
+	EST_Buff UMETA(DisplayName = "Buff"),
+};
+
+USTRUCT(BlueprintType)
+struct FCharacterSkill
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName Name;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName Description;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float CoolDown;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Damage;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Stamina;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	ESkillType Type;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UTexture2D* Image;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* Animation;
 };

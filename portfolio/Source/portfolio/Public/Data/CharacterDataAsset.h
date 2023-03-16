@@ -22,3 +22,4 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<ECharacterClass, FCharacterDefaultAnimation> DefaultAnimations;
 };
+

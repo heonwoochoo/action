@@ -6,6 +6,7 @@
 #include "AbilityComponent.generated.h"
 
 class UCharacterDataAsset;
+class AportfolioCharacter;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PORTFOLIO_API UAbilityComponent : public UActorComponent
@@ -26,8 +27,10 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	FCharacterData CharacterData;
 
+
 public:
 	UFUNCTION(BlueprintCallable)
 	const FCharacterData GetCharacterData();
+
 
 };

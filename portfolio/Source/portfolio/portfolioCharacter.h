@@ -26,7 +26,7 @@ class AportfolioCharacter : public ACharacter
 public:
 	AportfolioCharacter();
 
-
+	virtual void Tick(float DeltaTime) override;
 			
 
 protected:
@@ -35,6 +35,8 @@ protected:
 	
 	// To add mapping context
 	virtual void BeginPlay();
+
+	
 
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -55,6 +57,13 @@ protected:
 
 	/** Called Evade Action */
 	void OnEvade();
+
+	/** Skill Event Handler */
+	void SkillManager1();
+	void SkillManager2();
+	void SkillManager3();
+	void SkillManager4();
+
 
 public:
 	/** Returns CameraBoom subobject **/
@@ -99,6 +108,17 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* EvadeAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Skill1Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Skill2Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Skill3Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Skill4Action;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability, meta = (AllowPrivateAccess = "true"))
 	UAbilityComponent* AbilityComponent;
@@ -107,7 +127,7 @@ private:
 	UCharacterDataAsset* CharacterDataAsset;
 
 	UAnimInstanceBase* AnimInstance;
-
+	
 	bool bCanAttack = true;
 
 	uint8 AttackCount = 0;
@@ -120,6 +140,10 @@ private:
 
 	float SprintMaxSpeed = 800.f;
 
+	float CapsuleDefaultHalfHeight = 96.f;
+
+	float InitialRelativeLocationZ;
+
 	// 캐릭터의 동작 상태
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	ECharacterActionState CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
@@ -127,6 +151,10 @@ private:
 	void DoubleJump();
 
 	void FinishEvade();
+
+	void DownSizeCapsule(float DeltaTime);
+
+	void UpSizeCapsule(float DeltaTime);
 
 public:
 	UAbilityComponent* GetAbilityComponent() const;

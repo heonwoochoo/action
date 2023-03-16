@@ -9,10 +9,10 @@
 // Sets default values for this component's properties
 UAbilityComponent::UAbilityComponent()
 {
-
 	PrimaryComponentTick.bCanEverTick = false;
 
-	if (AportfolioCharacter* Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0)))
+	AportfolioCharacter* Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (Character)
 	{
 		CharacterData = Character->GetCharacterDataAsset()->CharacterData;
 	}
@@ -23,6 +23,7 @@ UAbilityComponent::UAbilityComponent()
 void UAbilityComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
 }
 
 const FCharacterData UAbilityComponent::GetCharacterData()
@@ -31,11 +32,11 @@ const FCharacterData UAbilityComponent::GetCharacterData()
 }
 
 
+
 // Called every frame
 void UAbilityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
+	
 }
 

@@ -19,8 +19,9 @@
 
 AportfolioCharacter::AportfolioCharacter()
 {
+	PrimaryActorTick.bCanEverTick = false;
 	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	GetCapsuleComponent()->InitCapsuleSize(42.f, CapsuleDefaultHalfHeight);
 		
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -52,6 +53,20 @@ AportfolioCharacter::AportfolioCharacter()
 
 	// Create AbilityComponent
 	AbilityComponent = CreateDefaultSubobject<UAbilityComponent>(TEXT("AbilityComponent"));
+
+	InitialRelativeLocationZ = 0.f;
+}
+
+void AportfolioCharacter::Tick(float DeltaTime)
+{
+	//if (CharacterActionState == ECharacterActionState::ECAS_Jump && GetCharacterMovement()->IsFalling())
+	//{
+	//	DownSizeCapsule(DeltaTime);
+	//}
+	//else
+	//{
+	//	UpSizeCapsule(DeltaTime);
+	//}
 }
 
 void AportfolioCharacter::BeginPlay()
@@ -103,8 +118,12 @@ void AportfolioCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 		// Evade
 		EnhancedInputComponent->BindAction(EvadeAction, ETriggerEvent::Triggered, this, &AportfolioCharacter::OnEvade);
 		
+		// Skill
+		EnhancedInputComponent->BindAction(Skill1Action, ETriggerEvent::Triggered, this, &AportfolioCharacter::SkillManager1);
+		EnhancedInputComponent->BindAction(Skill2Action, ETriggerEvent::Triggered, this, &AportfolioCharacter::SkillManager2);
+		EnhancedInputComponent->BindAction(Skill3Action, ETriggerEvent::Triggered, this, &AportfolioCharacter::SkillManager3);
+		EnhancedInputComponent->BindAction(Skill4Action, ETriggerEvent::Triggered, this, &AportfolioCharacter::SkillManager4);
 	}
-
 }
 
 void AportfolioCharacter::Move(const FInputActionValue& Value)
@@ -247,7 +266,8 @@ void AportfolioCharacter::OnEvade()
 	
 	if (AnimInstance && GetVelocity().Size() 
 		&& !GetCharacterMovement()->IsFalling()
-		&& CharacterActionState != ECharacterActionState::ECAS_Evade )
+		&& CharacterActionState != ECharacterActionState::ECAS_Evade
+		&& CharacterActionState != ECharacterActionState::ECAS_Sprint)
 	{
 		
 		UAnimMontage* DefaultEvadeMontage = AnimInstance->GetDefaultDefaultEvadeMontage();
@@ -275,6 +295,26 @@ void AportfolioCharacter::OnEvade()
 			CharacterActionState = ECharacterActionState::ECAS_Evade;
 		}
 	}
+}
+
+void AportfolioCharacter::SkillManager1()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Skill1"));
+}
+
+void AportfolioCharacter::SkillManager2()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Skill2"));
+}
+
+void AportfolioCharacter::SkillManager3()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Skill3"));
+}
+
+void AportfolioCharacter::SkillManager4()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Skill4"));
 }
 
 void AportfolioCharacter::DoubleJump()
@@ -364,5 +404,22 @@ void AportfolioCharacter::OnAnimationEnded(UAnimMontage* AnimClass, bool bInterr
 		{
 			FinishEvade();
 		}
+	}
+}
+void AportfolioCharacter::DownSizeCapsule(float DeltaTime)
+{
+	if (GetCapsuleComponent() && GetMesh())
+	{
+		GetCapsuleComponent()->SetCapsuleHalfHeight(FMath::FInterpTo(GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), CapsuleDefaultHalfHeight / 2.f, DeltaTime, 30.f));
+
+	}
+}
+
+void AportfolioCharacter::UpSizeCapsule(float DeltaTime)
+{
+	if (GetCapsuleComponent() && GetMesh())
+	{
+		GetCapsuleComponent()->SetCapsuleHalfHeight(FMath::FInterpTo(GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), CapsuleDefaultHalfHeight, DeltaTime, 30.f));
+		UE_LOG(LogTemp, Warning, TEXT("Hello"));
 	}
 }
