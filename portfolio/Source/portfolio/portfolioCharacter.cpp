@@ -59,14 +59,7 @@ AportfolioCharacter::AportfolioCharacter()
 
 void AportfolioCharacter::Tick(float DeltaTime)
 {
-	//if (CharacterActionState == ECharacterActionState::ECAS_Jump && GetCharacterMovement()->IsFalling())
-	//{
-	//	DownSizeCapsule(DeltaTime);
-	//}
-	//else
-	//{
-	//	UpSizeCapsule(DeltaTime);
-	//}
+
 }
 
 void AportfolioCharacter::BeginPlay()
@@ -119,10 +112,10 @@ void AportfolioCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 		EnhancedInputComponent->BindAction(EvadeAction, ETriggerEvent::Triggered, this, &AportfolioCharacter::OnEvade);
 		
 		// Skill
-		EnhancedInputComponent->BindAction(Skill1Action, ETriggerEvent::Triggered, this, &AportfolioCharacter::SkillManager1);
-		EnhancedInputComponent->BindAction(Skill2Action, ETriggerEvent::Triggered, this, &AportfolioCharacter::SkillManager2);
-		EnhancedInputComponent->BindAction(Skill3Action, ETriggerEvent::Triggered, this, &AportfolioCharacter::SkillManager3);
-		EnhancedInputComponent->BindAction(Skill4Action, ETriggerEvent::Triggered, this, &AportfolioCharacter::SkillManager4);
+		EnhancedInputComponent->BindAction(Skill1Action, ETriggerEvent::Triggered, this, &AportfolioCharacter::SkillManagerOne);
+		EnhancedInputComponent->BindAction(Skill2Action, ETriggerEvent::Triggered, this, &AportfolioCharacter::SkillManagerTwo);
+		EnhancedInputComponent->BindAction(Skill3Action, ETriggerEvent::Triggered, this, &AportfolioCharacter::SkillManagerThree);
+		EnhancedInputComponent->BindAction(Skill4Action, ETriggerEvent::Triggered, this, &AportfolioCharacter::SkillManagerFour);
 	}
 }
 
@@ -297,24 +290,36 @@ void AportfolioCharacter::OnEvade()
 	}
 }
 
-void AportfolioCharacter::SkillManager1()
+void AportfolioCharacter::SkillManagerOne()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Skill1"));
+	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
+	{
+		AbilityComponent->HandleSkillOne();
+	}
 }
 
-void AportfolioCharacter::SkillManager2()
+void AportfolioCharacter::SkillManagerTwo()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Skill2"));
+	if (AbilityComponent)
+	{
+		AbilityComponent->HandleSkillTwo();
+	}
 }
 
-void AportfolioCharacter::SkillManager3()
+void AportfolioCharacter::SkillManagerThree()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Skill3"));
+	if (AbilityComponent)
+	{
+		AbilityComponent->HandleSkillThree();
+	}
 }
 
-void AportfolioCharacter::SkillManager4()
+void AportfolioCharacter::SkillManagerFour()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Skill4"));
+	if (AbilityComponent)
+	{
+		AbilityComponent->HandleSkillFour();
+	}
 }
 
 void AportfolioCharacter::DoubleJump()
@@ -404,6 +409,8 @@ void AportfolioCharacter::OnAnimationEnded(UAnimMontage* AnimClass, bool bInterr
 		{
 			FinishEvade();
 		}
+
+		CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 	}
 }
 void AportfolioCharacter::DownSizeCapsule(float DeltaTime)

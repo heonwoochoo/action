@@ -16,6 +16,7 @@ class UAbilityComponent;
 class UCharacterDataAsset;
 class UAnimInstanceBase;
 
+
 UCLASS(config=Game)
 class AportfolioCharacter : public ACharacter
 {
@@ -59,10 +60,10 @@ protected:
 	void OnEvade();
 
 	/** Skill Event Handler */
-	void SkillManager1();
-	void SkillManager2();
-	void SkillManager3();
-	void SkillManager4();
+	void SkillManagerOne();
+	void SkillManagerTwo();
+	void SkillManagerThree();
+	void SkillManagerFour();
 
 
 public:

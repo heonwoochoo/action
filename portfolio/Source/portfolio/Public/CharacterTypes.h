@@ -87,6 +87,7 @@ enum class ECharacterActionState : uint8
 	ECAS_Sprint UMETA(DisplayName = "Sprint"),
 	ECAS_Attack UMETA(DisplayName = "Attack"),
 	ECAS_AttackCombo UMETA(DisplayName = "AttackCombo"),
+	ECAS_SkillCasting UMETA(DisplayName = "ECAS_SkillCasting"),
 };
 
 UENUM(BlueprintType)
@@ -94,6 +95,15 @@ enum class ESkillType : uint8
 {
 	EST_Attack UMETA(DisplayName = "Attack"),
 	EST_Buff UMETA(DisplayName = "Buff"),
+};
+
+UENUM(BlueprintType)
+enum class ESkillNumber : uint8
+{
+	ESN_One UMETA(DisplayName = "One"),
+	ESN_Two UMETA(DisplayName = "Two"),
+	ESN_Three UMETA(DisplayName = "Three"),
+	ESN_Four UMETA(DisplayName = "Four")
 };
 
 USTRUCT(BlueprintType)
