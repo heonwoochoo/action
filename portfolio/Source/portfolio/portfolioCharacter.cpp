@@ -13,6 +13,7 @@
 #include "Animation/AnimInstanceBase.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Component/CharacterMotionWarpingComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AportfolioCharacter
@@ -25,11 +26,11 @@ AportfolioCharacter::AportfolioCharacter()
 		
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = true;
+	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
 	// Configure character movement
-	GetCharacterMovement()->bOrientRotationToMovement = false; // Character moves in the direction of input...	
+	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
 
 	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
@@ -53,6 +54,9 @@ AportfolioCharacter::AportfolioCharacter()
 
 	// Create AbilityComponent
 	AbilityComponent = CreateDefaultSubobject<UAbilityComponent>(TEXT("AbilityComponent"));
+
+	// Create MotionWarpingComponent;
+	CharacterMWComponent = CreateDefaultSubobject<UCharacterMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 
 	InitialRelativeLocationZ = 0.f;
 }
@@ -250,8 +254,8 @@ void AportfolioCharacter::OffSprint()
 		CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 	}
 	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkSpeed;
-	GetCharacterMovement()->bOrientRotationToMovement = false;
-	bUseControllerRotationYaw = true;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	bUseControllerRotationYaw = false;
 }
 
 void AportfolioCharacter::OnEvade()
@@ -409,9 +413,11 @@ void AportfolioCharacter::OnAnimationEnded(UAnimMontage* AnimClass, bool bInterr
 		{
 			FinishEvade();
 		}
-
-		CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 	}
+}
+UCharacterMotionWarpingComponent* AportfolioCharacter::GetMotionWarpingComponent() const
+{
+	return CharacterMWComponent;
 }
 void AportfolioCharacter::DownSizeCapsule(float DeltaTime)
 {

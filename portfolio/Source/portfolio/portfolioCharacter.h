@@ -15,7 +15,7 @@ class UInputAction;
 class UAbilityComponent;
 class UCharacterDataAsset;
 class UAnimInstanceBase;
-
+class UCharacterMotionWarpingComponent;
 
 UCLASS(config=Game)
 class AportfolioCharacter : public ACharacter
@@ -124,6 +124,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability, meta = (AllowPrivateAccess = "true"))
 	UAbilityComponent* AbilityComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability, meta = (AllowPrivateAccess = "true"))
+	UCharacterMotionWarpingComponent* CharacterMWComponent;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UCharacterDataAsset* CharacterDataAsset;
 
@@ -183,9 +186,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetCharacterActionState(ECharacterActionState ActionState);
-	
+
 	UFUNCTION()
 	void OnAnimationEnded(UAnimMontage* AnimClass, bool bInterrupted);
 
+	UCharacterMotionWarpingComponent* GetMotionWarpingComponent() const;
 };
 

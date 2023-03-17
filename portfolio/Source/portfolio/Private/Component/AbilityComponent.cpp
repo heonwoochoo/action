@@ -10,11 +10,12 @@
 #include "Items/KnifeProjectile.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "DrawDebugHelpers.h"
+#include "Component/CharacterMotionWarpingComponent.h"
 
 // Sets default values for this component's properties
 UAbilityComponent::UAbilityComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false; // Tick 사용시 true로 설정
+	PrimaryComponentTick.bCanEverTick = true; // Tick 사용시 true로 설정
 	bWantsInitializeComponent = true;
 	UE_LOG(LogTemp, Warning, TEXT("Constructor"));
 	Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
@@ -26,7 +27,7 @@ void UAbilityComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PrimaryComponentTick.SetTickFunctionEnable(false);	// Tick 사용시 true로 설정
+	PrimaryComponentTick.SetTickFunctionEnable(true);	// Tick 사용시 true로 설정
 	PrimaryComponentTick.RegisterTickFunction(GetComponentLevel());
 	Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	if (Character)
@@ -94,10 +95,14 @@ void UAbilityComponent::HandleAssassinSkillOne()
 		AnimInstance->Montage_JumpToSection(SectionName);
 
 		// Target 설정
-		AActor* TargetEnemy = FindEnemy();
+		TargetEnemy = FindEnemy();
 		if (TargetEnemy)
 		{
 			DrawDebugSphere(GetWorld(), TargetEnemy->GetActorLocation(), 30.f, 16, FColor::Magenta, false, 5.f, 0U, 2.f);
+			GEngine->AddOnScreenDebugMessage(4, 3, FColor::Cyan, FString::Printf(TEXT("Target Rotate Yaw: %f"), TargetEnemy->GetActorRotation().Yaw));
+			GEngine->AddOnScreenDebugMessage(5, 3, FColor::Cyan, FString::Printf(TEXT("Character Rotate Yaw: %f"), Character->GetActorRotation().Yaw));
+			GEngine->AddOnScreenDebugMessage(5, 3, FColor::Cyan, FString::Printf(TEXT("Oriented Rotator Yaw: %f"),(TargetEnemy->GetActorLocation() - Character->GetActorLocation()).ToOrientationRotator().Yaw));
+			GEngine->AddOnScreenDebugMessage(5, 3, FColor::Cyan, FString::Printf(TEXT("Oriented quat z: %f"), (TargetEnemy->GetActorLocation() - Character->GetActorLocation()).ToOrientationQuat().Rotator().Yaw));
 		}
 	}
 }
@@ -128,6 +133,18 @@ void UAbilityComponent::ThrowKnife()
 	}
 }
 
+void UAbilityComponent::RotateCharacterBodyToTarget(AActor* Target)
+{
+	//MotionWarping
+	if (Character)
+	{
+		const FName WarpName = "RotateToTarget";
+		const FRotator TargetRotation = (Target->GetActorLocation() - Character->GetActorLocation()).ToOrientationQuat().Rotator();
+		Character->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocationAndRotation(WarpName, Target->GetActorLocation(), TargetRotation);
+		
+	}
+}
+
 void UAbilityComponent::HandleAssassinSkillTwo()
 {
 }
@@ -146,6 +163,10 @@ void UAbilityComponent::HandleAssassinSkillFour()
 void UAbilityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	UE_LOG(LogTemp, Warning, TEXT("Tick Ability Comp"));
+	if (Character && Character->GetMotionWarpingComponent() && TargetEnemy)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Tick Ability Comp"));
+		RotateCharacterBodyToTarget(TargetEnemy);
+	}
 }
 

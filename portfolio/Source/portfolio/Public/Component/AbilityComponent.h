@@ -50,7 +50,11 @@ private:
 	void HandleAssassinSkillOne();
 	
 	AActor* FindEnemy();
+	AActor* TargetEnemy;
 	float TraceDistance = 2000.f;
+	
+
+	void RotateCharacterBodyToTarget(AActor* Target);
 
 	void HandleAssassinSkillTwo();
 	void HandleAssassinSkillThree();
