@@ -135,3 +135,12 @@ struct FCharacterSkill
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UAnimMontage* Animation;
 };
+
+USTRUCT(BlueprintType)
+struct FCharacterSkillMap
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TMap<ESkillNumber, FCharacterSkill> CharacterSkill;
+};

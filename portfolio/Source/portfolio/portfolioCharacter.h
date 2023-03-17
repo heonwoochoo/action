@@ -158,6 +158,7 @@ private:
 	void UpSizeCapsule(float DeltaTime);
 
 public:
+	UFUNCTION(BlueprintCallable)
 	UAbilityComponent* GetAbilityComponent() const;
 
 	UCharacterDataAsset* GetCharacterDataAsset() const;

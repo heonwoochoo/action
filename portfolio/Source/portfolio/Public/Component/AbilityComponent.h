@@ -48,10 +48,14 @@ private:
 
 	/** Assassin skill */
 	void HandleAssassinSkillOne();
+	
+	AActor* FindEnemy();
+	float TraceDistance = 2000.f;
+
 	void HandleAssassinSkillTwo();
 	void HandleAssassinSkillThree();
 	void HandleAssassinSkillFour();
-
+	/** ====================================*/
 public:
 	UFUNCTION(BlueprintCallable)
 	const FCharacterData GetCharacterData();
@@ -61,4 +65,7 @@ public:
 	void HandleSkillThree();
 	void HandleSkillFour();
 
+	/** Assassin skill */
+	UFUNCTION(BlueprintCallable)
+	void ThrowKnife();
 };

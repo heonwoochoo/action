@@ -8,18 +8,16 @@
 #include "Data/CharacterSkillAsset.h"
 #include "Animation/AnimInstanceBase.h"
 #include "Items/KnifeProjectile.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values for this component's properties
 UAbilityComponent::UAbilityComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = false; // Tick 사용시 true로 설정
 	bWantsInitializeComponent = true;
-
+	UE_LOG(LogTemp, Warning, TEXT("Constructor"));
 	Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	if (Character)
-	{
-		CharacterData = Character->GetCharacterDataAsset()->CharacterData;
-	}
 }
 
 
@@ -28,26 +26,34 @@ void UAbilityComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PrimaryComponentTick.SetTickFunctionEnable(false);
+	PrimaryComponentTick.SetTickFunctionEnable(false);	// Tick 사용시 true로 설정
 	PrimaryComponentTick.RegisterTickFunction(GetComponentLevel());
+	Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (Character)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Begine play"));
+		CharacterData = Character->GetCharacterDataAsset()->CharacterData;
+	}
 
+	// 데이터 에셋을 참조하여 스킬 애니메이션 포인터 초기화
+	if (CharacterSkillAsset)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SKill asset reference"));
+		SkillOneAnimation = CharacterSkillAsset->GetAnimation(CharacterData.Class, ESkillNumber::ESN_One);
+	}
 
+	if (Character && Character->GetMesh())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AnimInstance reference"));
+		AnimInstance = Cast<UAnimInstanceBase>(Character->GetMesh()->GetAnimInstance());
+	}
 }
 
 void UAbilityComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
+	UE_LOG(LogTemp, Warning, TEXT("InitializeComponent"));
 
-	// 데이터 에셋을 참조하여 스킬 애니메이션 포인터 초기화
-	if (CharacterSkillAsset)
-	{
-		SkillOneAnimation = CharacterSkillAsset->CharacterSkillOne.Find(CharacterData.Class)->Animation;
-	}
-	
-	if (Character && Character->GetMesh())
-	{
-		AnimInstance = Cast<UAnimInstanceBase>(Character->GetMesh()->GetAnimInstance());
-	}
 }
 
 const FCharacterData UAbilityComponent::GetCharacterData()
@@ -80,16 +86,45 @@ void UAbilityComponent::HandleSkillFour()
 void UAbilityComponent::HandleAssassinSkillOne()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Assassin skill1 called"));
-	if (AnimInstance)
+	if (AnimInstance && SkillOneAnimation)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Assassin skill1 called inside"));
 		AnimInstance->Montage_Play(SkillOneAnimation);
 		FName SectionName = "Assassin_Skill1_First";
 		AnimInstance->Montage_JumpToSection(SectionName);
-		if (KinfeProjectileClass)
+
+		// Target 설정
+		AActor* TargetEnemy = FindEnemy();
+		if (TargetEnemy)
 		{
-			const FTransform Transform = Character->GetActorTransform();
-			GetWorld()->SpawnActor<AKnifeProjectile>(KinfeProjectileClass, Transform);
+			DrawDebugSphere(GetWorld(), TargetEnemy->GetActorLocation(), 30.f, 16, FColor::Magenta, false, 5.f, 0U, 2.f);
 		}
+	}
+}
+
+AActor* UAbilityComponent::FindEnemy()
+{
+	const FVector StartLocation = Character->GetActorLocation() + Character->GetActorForwardVector() * 150.f;
+	const FVector EndLocation = StartLocation + Character->GetActorForwardVector() * TraceDistance;
+	const TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes{ UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn)};
+	const TArray<AActor*> ActorsToIgnore{ Character };
+	FHitResult OutHit;
+	UKismetSystemLibrary::SphereTraceSingleForObjects(this, StartLocation, EndLocation, 300.f, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true);
+
+	if (OutHit.bBlockingHit)
+	{
+		return OutHit.GetActor();
+	}
+
+	return nullptr;
+}
+
+void UAbilityComponent::ThrowKnife()
+{
+	if (KinfeProjectileClass)
+	{
+		const FTransform Transform = Character->GetActorTransform();
+		KinfeProjectile = GetWorld()->SpawnActor<AKnifeProjectile>(KinfeProjectileClass, Transform);
 	}
 }
 

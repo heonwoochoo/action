@@ -3,3 +3,7 @@
 
 #include "Data/CharacterSkillAsset.h"
 
+UAnimMontage* UCharacterSkillAsset::GetAnimation(ECharacterClass Class, ESkillNumber SkillNumber)
+{
+    return CharacterSkills.Find(Class)->CharacterSkill.Find(SkillNumber)->Animation;
+}

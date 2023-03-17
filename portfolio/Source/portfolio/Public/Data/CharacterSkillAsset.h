@@ -7,24 +7,18 @@
 #include "CharacterTypes.h"
 #include "CharacterSkillAsset.generated.h"
 
-/**
- * 
- */
+class UAnimMontage;
+
 UCLASS()
 class PORTFOLIO_API UCharacterSkillAsset : public UDataAsset
 {
 	GENERATED_BODY()
-	
+
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TMap<ECharacterClass, FCharacterSkillMap> CharacterSkills;
+
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TMap<ECharacterClass, FCharacterSkill> CharacterSkillOne;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TMap<ECharacterClass, FCharacterSkill> CharacterSkillTwo;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TMap<ECharacterClass, FCharacterSkill> CharacterSkillThree;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TMap<ECharacterClass, FCharacterSkill> CharacterSkillFour;
+	UFUNCTION()
+	UAnimMontage* GetAnimation(ECharacterClass Class, ESkillNumber SkillNumber);
 };
