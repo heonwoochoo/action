@@ -32,6 +32,7 @@ AKnifeProjectile::AKnifeProjectile()
 		ProjectileMovementComponent->ProjectileGravityScale = 0.01f;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;
 	}
+	
 }
 
 // Called when the game starts or when spawned

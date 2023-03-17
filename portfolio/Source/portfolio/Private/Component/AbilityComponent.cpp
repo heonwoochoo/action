@@ -99,10 +99,6 @@ void UAbilityComponent::HandleAssassinSkillOne()
 		if (TargetEnemy)
 		{
 			DrawDebugSphere(GetWorld(), TargetEnemy->GetActorLocation(), 30.f, 16, FColor::Magenta, false, 5.f, 0U, 2.f);
-			GEngine->AddOnScreenDebugMessage(4, 3, FColor::Cyan, FString::Printf(TEXT("Target Rotate Yaw: %f"), TargetEnemy->GetActorRotation().Yaw));
-			GEngine->AddOnScreenDebugMessage(5, 3, FColor::Cyan, FString::Printf(TEXT("Character Rotate Yaw: %f"), Character->GetActorRotation().Yaw));
-			GEngine->AddOnScreenDebugMessage(5, 3, FColor::Cyan, FString::Printf(TEXT("Oriented Rotator Yaw: %f"),(TargetEnemy->GetActorLocation() - Character->GetActorLocation()).ToOrientationRotator().Yaw));
-			GEngine->AddOnScreenDebugMessage(5, 3, FColor::Cyan, FString::Printf(TEXT("Oriented quat z: %f"), (TargetEnemy->GetActorLocation() - Character->GetActorLocation()).ToOrientationQuat().Rotator().Yaw));
 		}
 	}
 }
@@ -165,8 +161,8 @@ void UAbilityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	if (Character && Character->GetMotionWarpingComponent() && TargetEnemy)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Tick Ability Comp"));
 		RotateCharacterBodyToTarget(TargetEnemy);
+		
 	}
 }
 

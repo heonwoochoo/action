@@ -279,13 +279,13 @@ void AportfolioCharacter::OnEvade()
 					SectionName = "Forward";
 					break;
 				case ECharacterActionState::ECAS_MoveBack:
-					SectionName = "Back";
+					SectionName = "Forward";
 					break;
 				case ECharacterActionState::ECAS_MoveRight:
-					SectionName = "Right";
+					SectionName = "Forward";
 					break;
 				case ECharacterActionState::ECAS_MoveLeft:
-					SectionName = "Left";
+					SectionName = "Forward";
 					break;
 			}
 			AnimInstance->Montage_JumpToSection(SectionName);
