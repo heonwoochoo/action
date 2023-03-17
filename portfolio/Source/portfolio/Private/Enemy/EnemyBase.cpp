@@ -24,7 +24,7 @@ AEnemyBase::AEnemyBase()
 		TargetWidgetComponent->SetVisibility(true);
 	}
 
-	Tags.Add(FName("Enemy"));
+	
 }
 
 void AEnemyBase::BeginPlay()

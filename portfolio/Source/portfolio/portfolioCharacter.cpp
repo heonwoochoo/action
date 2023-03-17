@@ -14,13 +14,16 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Component/CharacterMotionWarpingComponent.h"
-
+#include "Components/ArrowComponent.h"
 //////////////////////////////////////////////////////////////////////////
 // AportfolioCharacter
 
 AportfolioCharacter::AportfolioCharacter()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
+
+
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, CapsuleDefaultHalfHeight);
 		
@@ -63,7 +66,7 @@ AportfolioCharacter::AportfolioCharacter()
 
 void AportfolioCharacter::Tick(float DeltaTime)
 {
-
+	Super::Tick(DeltaTime);
 }
 
 void AportfolioCharacter::BeginPlay()

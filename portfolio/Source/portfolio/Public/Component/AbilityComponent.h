@@ -50,7 +50,11 @@ private:
 	void HandleAssassinSkillOne();
 	
 	AActor* FindEnemy();
-	AActor* TargetEnemy;
+
+	AActor* TargetEnemy = nullptr;
+
+
+
 	float TraceDistance = 2000.f;
 	
 
@@ -69,7 +73,12 @@ public:
 	void HandleSkillThree();
 	void HandleSkillFour();
 
+	UAnimMontage* GetSkillOneAnimation() const;
+
 	/** Assassin skill */
 	UFUNCTION(BlueprintCallable)
 	void ThrowKnife();
+	UFUNCTION(BlueprintCallable)
+	void ResetTarget();
+
 };

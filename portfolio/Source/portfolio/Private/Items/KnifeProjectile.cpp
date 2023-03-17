@@ -39,7 +39,7 @@ AKnifeProjectile::AKnifeProjectile()
 void AKnifeProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	SetLifeSpan(1.5f);
 }
 
 // Called every frame
@@ -47,5 +47,13 @@ void AKnifeProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AKnifeProjectile::SetMovementDirection(const FVector Direction)
+{
+	if (ProjectileMovementComponent)
+	{
+		ProjectileMovementComponent->Velocity = Direction * ProjectileMovementComponent->InitialSpeed;
+	}
 }
 

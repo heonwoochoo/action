@@ -11,6 +11,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "DrawDebugHelpers.h"
 #include "Component/CharacterMotionWarpingComponent.h"
+#include "Enemy/EnemyBase.h"
+#include "GameFramework/SpringArmComponent.h"
 
 // Sets default values for this component's properties
 UAbilityComponent::UAbilityComponent()
@@ -84,6 +86,11 @@ void UAbilityComponent::HandleSkillFour()
 {
 }
 
+UAnimMontage* UAbilityComponent::GetSkillOneAnimation() const
+{
+	return SkillOneAnimation;
+}
+
 void UAbilityComponent::HandleAssassinSkillOne()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Assassin skill1 called"));
@@ -114,18 +121,36 @@ AActor* UAbilityComponent::FindEnemy()
 
 	if (OutHit.bBlockingHit)
 	{
-		return OutHit.GetActor();
+		 AEnemyBase* Enemy = Cast<AEnemyBase>(OutHit.GetActor());
+		 if (Enemy)
+		 {
+			 if (Enemy->ActorHasTag(FName("Enemy"))) return OutHit.GetActor();
+		 }
 	}
-
 	return nullptr;
+}
+
+void UAbilityComponent::ResetTarget()
+{
+	if (TargetEnemy)
+	{
+		TargetEnemy = nullptr;
+	}
 }
 
 void UAbilityComponent::ThrowKnife()
 {
-	if (KinfeProjectileClass)
+	if (KinfeProjectileClass && Character)
 	{
 		const FTransform Transform = Character->GetActorTransform();
 		KinfeProjectile = GetWorld()->SpawnActor<AKnifeProjectile>(KinfeProjectileClass, Transform);
+		// 여기서부터 다시 할 것 !!!!!
+		KinfeProjectile->SetMovementDirection(Character->GetCameraBoom()->GetForwardVector());
+		if (TargetEnemy)
+		{
+			const FVector Direction = TargetEnemy->GetActorLocation() - Character->GetActorLocation();
+			KinfeProjectile->SetMovementDirection(Direction.GetSafeNormal());
+		}
 	}
 }
 
@@ -135,9 +160,9 @@ void UAbilityComponent::RotateCharacterBodyToTarget(AActor* Target)
 	if (Character)
 	{
 		const FName WarpName = "RotateToTarget";
-		const FRotator TargetRotation = (Target->GetActorLocation() - Character->GetActorLocation()).ToOrientationQuat().Rotator();
-		Character->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocationAndRotation(WarpName, Target->GetActorLocation(), TargetRotation);
-		
+		const float TargetRotationYaw = (Target->GetActorLocation() - Character->GetActorLocation()).ToOrientationQuat().Rotator().Yaw;
+		Character->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocationAndRotation(WarpName, Target->GetActorLocation(), FRotator{0.f,TargetRotationYaw,0.f});
+
 	}
 }
 
@@ -162,7 +187,6 @@ void UAbilityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	if (Character && Character->GetMotionWarpingComponent() && TargetEnemy)
 	{
 		RotateCharacterBodyToTarget(TargetEnemy);
-		
 	}
 }
 

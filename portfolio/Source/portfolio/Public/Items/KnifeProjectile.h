@@ -34,6 +34,5 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
-
-
+	void SetMovementDirection(const FVector Direction);
 };
