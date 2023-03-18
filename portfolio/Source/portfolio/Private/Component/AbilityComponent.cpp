@@ -96,20 +96,17 @@ void UAbilityComponent::HandleAssassinSkillOne()
 	if (AnimInstance && SkillOneAnimation)
 	{
 		FName SectionName;
-		switch (SkillOneStack)
+
+		if (DashTarget)
 		{
-		case 0:
-			HandleAssassinSkillOneFirst();
-			SectionName = "Assassin_Skill1_First";
-			break;
-		case 1:
 			HandleAssassinSkillOneSecond();
 			SectionName = "Assassin_Skill1_Second";
-			break;
-		case 2:
-			HandleAssassinSkillOneFinal();
-			SectionName = "Assassin_Skill1_Final";
-			break;
+			DashTarget = nullptr;
+		}
+		else
+		{
+			HandleAssassinSkillOneFirst();
+			SectionName = "Assassin_Skill1_First";
 		}
 		AnimInstance->Montage_Play(SkillOneAnimation);
 		AnimInstance->Montage_JumpToSection(SectionName);
@@ -131,17 +128,23 @@ void UAbilityComponent::HandleAssassinSkillOneFirst()
 	}
 	else
 	{
-		Character->GetMotionWarpingComponent()->RemoveWarpTarget(FName("RotateToTarget"));
+		Character->GetMotionWarpingComponent()->RemoveWarpTarget(FName("Assassin_SkillOne_First"));
 	}
 }
 
 void UAbilityComponent::HandleAssassinSkillOneSecond()
 {
+	//MotionWarping
+	if (Character && DashTarget->ActorHasTag(FName("Enemy")))
+	{
+		const FName WarpName = "Assassin_SkillOne_Second";
+		const FVector Location = DashTarget->GetActorLocation();
+		const FRotator Rotation = (DashTarget->GetActorLocation() - Character->GetActorLocation()).ToOrientationQuat().Rotator();
+		Character->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocationAndRotation(WarpName, Location, Rotation);
+	}
 }
 
-void UAbilityComponent::HandleAssassinSkillOneFinal()
-{
-}
+
 
 AActor* UAbilityComponent::FindEnemy()
 {
@@ -200,7 +203,7 @@ void UAbilityComponent::RotateCharacterBodyToTarget(AActor* Target)
 	//MotionWarping
 	if (Character && Target->ActorHasTag(FName("Enemy")))
 	{
-		const FName WarpName = "RotateToTarget";
+		const FName WarpName = "Assassin_SkillOne_First";
 		const float TargetRotationYaw = (Target->GetActorLocation() - Character->GetActorLocation()).ToOrientationQuat().Rotator().Yaw;
 		Character->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocationAndRotation(WarpName, Target->GetActorLocation(), FRotator{0.f,TargetRotationYaw,0.f});
 	}
@@ -217,8 +220,6 @@ void UAbilityComponent::HandleAssassinSkillThree()
 void UAbilityComponent::HandleAssassinSkillFour()
 {
 }
-
-
 
 // Called every frame
 void UAbilityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

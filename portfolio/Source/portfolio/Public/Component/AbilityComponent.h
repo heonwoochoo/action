@@ -52,12 +52,13 @@ private:
 	void HandleAssassinSkillOne();
 	void HandleAssassinSkillOneFirst();
 	void HandleAssassinSkillOneSecond();
-	void HandleAssassinSkillOneFinal();
 
-
+	// 트레이스로 enemy를 찾아 수리검을 날릴 방향 설정
 	AActor* FindEnemy();
 	AActor* TargetEnemy = nullptr;
+	// 수리검에 맞은 적을 연계 스킬 타겟으로 설정 (enemy에 표식이 종료되면 함께 해제됨)
 	AActor* DashTarget = nullptr;
+
 	float TraceDistance = 2000.f;
 	void RotateCharacterBodyToTarget(AActor* Target);
 	
@@ -74,7 +75,6 @@ public:
 	const FCharacterData GetCharacterData();
 
 	void HandleSkillOne();
-	uint8 SkillOneStack = 0;
 
 	void HandleSkillTwo();
 	void HandleSkillThree();

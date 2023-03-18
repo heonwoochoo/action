@@ -5,6 +5,9 @@
 #include "Data/EnemyDataAsset.h"
 #include "HUD/TargetWidgetComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "portfolio/portfolioCharacter.h"
+#include "Component/AbilityComponent.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -19,9 +22,8 @@ AEnemyBase::AEnemyBase()
 	TargetWidgetComponent = CreateDefaultSubobject<UTargetWidgetComponent>(TEXT("TargetImgComponent"));
 	if (TargetWidgetComponent)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("TargetWidget"));
 		TargetWidgetComponent->SetupAttachment(GetCapsuleComponent());
-		TargetWidgetComponent->SetVisibility(true);
+		TargetWidgetComponent->SetVisibility(false);
 	}
 
 	
@@ -32,6 +34,23 @@ void AEnemyBase::BeginPlay()
 	Super::BeginPlay();
 	
 	GetMesh()->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBase::OnBeginOverlapped);
+}
+
+void AEnemyBase::TargetTimerEnd()
+{
+	SetTargetImgVisibie(false);
+
+	if (State == EEnemyState::EES_Targeted) State = EEnemyState::EES_Unoccupied;
+
+	AportfolioCharacter* Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (Character) Character->GetAbilityComponent()->SetDashTarget(nullptr);
+}
+
+void AEnemyBase::DisplayTargetWidget()
+{
+	SetTargetImgVisibie(true);
+	State = EEnemyState::EES_Targeted;
+	GetWorldTimerManager().SetTimer(TargetTimerHandle, this, &AEnemyBase::TargetTimerEnd, TargetDurationTime, false);
 }
 
 EEnemyState AEnemyBase::GetState() const
@@ -54,9 +73,9 @@ void AEnemyBase::SetTargetImgVisibie(bool NewState)
 
 void AEnemyBase::OnBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(FName("KnifePorjectile")))
+	if (OtherActor->ActorHasTag(FName("KnifeProjectile")))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("enemy Overlapped"));
+		DisplayTargetWidget();
 	}
 }
 

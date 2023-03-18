@@ -26,7 +26,7 @@ protected:
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	EEnemyState State;
+	EEnemyState State = EEnemyState::EES_Unoccupied;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UEnemyDataAsset* DataAsset;
@@ -37,7 +37,11 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	FEnemyData EnemyData;
 
+	float TargetDurationTime = 5.0f;
+	FTimerHandle TargetTimerHandle;
+	void TargetTimerEnd();
 
+	void DisplayTargetWidget();
 
 public:
 
