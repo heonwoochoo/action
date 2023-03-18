@@ -9,6 +9,7 @@
 
 class UEnemyDataAsset;
 class UTargetWidgetComponent;
+class UEnemyHPBarWidgetComponent;
 
 UCLASS()
 class PORTFOLIO_API AEnemyBase : public ACharacter
@@ -23,6 +24,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTargetWidgetComponent* TargetWidgetComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UEnemyHPBarWidgetComponent* HPBarWidgetComponent;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

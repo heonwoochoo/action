@@ -8,10 +8,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "portfolio/portfolioCharacter.h"
 #include "Component/AbilityComponent.h"
+#include "Camera/CameraComponent.h"
+#include "Items/KnifeProjectile.h"
+#include "HUD/EnemyHPBarWidgetComponent.h"
 
 AEnemyBase::AEnemyBase()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	if (DataAsset)
 	{
@@ -26,6 +29,12 @@ AEnemyBase::AEnemyBase()
 		TargetWidgetComponent->SetVisibility(false);
 	}
 
+	HPBarWidgetComponent = CreateDefaultSubobject<UEnemyHPBarWidgetComponent>(TEXT("HPBarComponent"));
+	if (HPBarWidgetComponent)
+	{
+		HPBarWidgetComponent->SetupAttachment(GetCapsuleComponent());
+		HPBarWidgetComponent->SetVisibility(true);
+	}
 	
 }
 
@@ -39,7 +48,7 @@ void AEnemyBase::BeginPlay()
 void AEnemyBase::TargetTimerEnd()
 {
 	SetTargetImgVisibie(false);
-
+	UE_LOG(LogTemp, Warning, TEXT("TargetTimerEnd"));
 	if (State == EEnemyState::EES_Targeted) State = EEnemyState::EES_Unoccupied;
 
 	AportfolioCharacter* Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
@@ -75,13 +84,20 @@ void AEnemyBase::OnBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AAc
 {
 	if (OtherActor->ActorHasTag(FName("KnifeProjectile")))
 	{
+
 		DisplayTargetWidget();
+		AKnifeProjectile* KnifeProjectile = Cast<AKnifeProjectile>(OtherActor);
+		if (KnifeProjectile) KnifeProjectile->OnKnifeEffect(this);
 	}
 }
 
 void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (TargetWidgetComponent && State == EEnemyState::EES_Targeted)
+	{
+		AportfolioCharacter* Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+		const FRotator Rotation = (Character->GetFollowCamera()->GetComponentLocation() - GetActorLocation()).ToOrientationQuat().Rotator();
+		TargetWidgetComponent->SetWorldRotation(Rotation);
+	}
 }
-

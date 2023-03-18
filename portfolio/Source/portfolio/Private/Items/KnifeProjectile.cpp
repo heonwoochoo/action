@@ -64,21 +64,22 @@ void AKnifeProjectile::SetMovementDirection(const FVector& Direction)
 	}
 }
 
+void AKnifeProjectile::OnKnifeEffect(AActor* HitActor)
+{
+	if (Caster)
+	{
+		Caster->GetAbilityComponent()->SetDashTarget(HitActor);
+
+		// 파티클 생성
+
+		// 사운드 플레이
+
+		// 인스턴스 제거
+		Destroy();
+	}
+}
+
 void AKnifeProjectile::OnBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// enenmy가 수리검에 맞으면 캐스터의 Dash 타겟을 설정합니다.
-	if (OtherActor->ActorHasTag(FName("Enemy")))
-	{
-		if (Caster)
-		{
-			Caster->GetAbilityComponent()->SetDashTarget(OtherActor);
-			
-			// 파티클 생성
-			
-			// 사운드 플레이
-
-			// 인스턴스 제거
-			Destroy();
-		}
-	}
+	// 장애물에 맞으면 제거됨
 }
