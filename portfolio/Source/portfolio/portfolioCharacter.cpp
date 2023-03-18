@@ -15,7 +15,10 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Component/CharacterMotionWarpingComponent.h"
 #include "Components/ArrowComponent.h"
-//////////////////////////////////////////////////////////////////////////
+#include "Kismet/GameplayStatics.h"
+#include "Controller/CharacterController.h"
+#include "Enemy/EnemyBase.h"
+
 // AportfolioCharacter
 
 AportfolioCharacter::AportfolioCharacter()
@@ -386,6 +389,18 @@ void AportfolioCharacter::OnDamage()
 
 	UKismetSystemLibrary::SphereOverlapActors(this, DamageOverlapLocation, 75.f, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
 	DrawDebugSphere(GetWorld(), DamageOverlapLocation, 75.f, 16, FColor::Red, false, 1.f);
+
+	for (AActor* Actor : OutActors)
+	{
+		AEnemyBase* Enemy = Cast<AEnemyBase>(Actor);
+		if (Enemy && Enemy->ActorHasTag(FName("Enemy")))
+		{
+			const float Damage = 10.f; // ÀÓ½Ã°ª
+			TSubclassOf<UDamageType> DamageType;
+			ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+			UGameplayStatics::ApplyDamage(Enemy, Damage, CharacterController, this, DamageType);
+		}
+	}
 }
 
 void AportfolioCharacter::EnableDoubleJump()

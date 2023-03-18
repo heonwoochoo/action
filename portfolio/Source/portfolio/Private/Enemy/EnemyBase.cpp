@@ -45,6 +45,7 @@ void AEnemyBase::BeginPlay()
 	GetMesh()->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBase::OnBeginOverlapped);
 }
 
+
 void AEnemyBase::TargetTimerEnd()
 {
 	SetTargetImgVisibie(false);
@@ -61,6 +62,13 @@ void AEnemyBase::DisplayTargetWidget()
 	State = EEnemyState::EES_Targeted;
 	GetWorldTimerManager().SetTimer(TargetTimerHandle, this, &AEnemyBase::TargetTimerEnd, TargetDurationTime, false);
 }
+
+void AEnemyBase::OnTakeDamage(float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+{
+	UE_LOG(LogTemp, Warning, TEXT("HEllo"));
+}
+
+
 
 EEnemyState AEnemyBase::GetState() const
 {
@@ -84,7 +92,6 @@ void AEnemyBase::OnBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AAc
 {
 	if (OtherActor->ActorHasTag(FName("KnifeProjectile")))
 	{
-
 		DisplayTargetWidget();
 		AKnifeProjectile* KnifeProjectile = Cast<AKnifeProjectile>(OtherActor);
 		if (KnifeProjectile) KnifeProjectile->OnKnifeEffect(this);

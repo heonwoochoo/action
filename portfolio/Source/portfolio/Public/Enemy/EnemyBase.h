@@ -28,6 +28,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UEnemyHPBarWidgetComponent* HPBarWidgetComponent;
 
+	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EEnemyState State = EEnemyState::EES_Unoccupied;
@@ -46,6 +47,9 @@ private:
 	void TargetTimerEnd();
 
 	void DisplayTargetWidget();
+
+	UFUNCTION(BlueprintCallable)
+	void OnTakeDamage(float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 public:
 
