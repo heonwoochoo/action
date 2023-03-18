@@ -17,7 +17,7 @@
 // Sets default values for this component's properties
 UAbilityComponent::UAbilityComponent()
 {
-	PrimaryComponentTick.bCanEverTick = true; // Tick 사용시 true로 설정
+	PrimaryComponentTick.bCanEverTick = false; // Tick 사용시 true로 설정
 	bWantsInitializeComponent = true;
 	UE_LOG(LogTemp, Warning, TEXT("Constructor"));
 	Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
@@ -29,7 +29,7 @@ void UAbilityComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PrimaryComponentTick.SetTickFunctionEnable(true);	// Tick 사용시 true로 설정
+	PrimaryComponentTick.SetTickFunctionEnable(false);	// Tick 사용시 true로 설정
 	PrimaryComponentTick.RegisterTickFunction(GetComponentLevel());
 	Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	if (Character)
@@ -93,21 +93,54 @@ UAnimMontage* UAbilityComponent::GetSkillOneAnimation() const
 
 void UAbilityComponent::HandleAssassinSkillOne()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Assassin skill1 called"));
 	if (AnimInstance && SkillOneAnimation)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Assassin skill1 called inside"));
-		AnimInstance->Montage_Play(SkillOneAnimation);
-		FName SectionName = "Assassin_Skill1_First";
-		AnimInstance->Montage_JumpToSection(SectionName);
-
-		// Target 설정
-		TargetEnemy = FindEnemy();
-		if (TargetEnemy)
+		FName SectionName;
+		switch (SkillOneStack)
 		{
-			DrawDebugSphere(GetWorld(), TargetEnemy->GetActorLocation(), 30.f, 16, FColor::Magenta, false, 5.f, 0U, 2.f);
+		case 0:
+			HandleAssassinSkillOneFirst();
+			SectionName = "Assassin_Skill1_First";
+			break;
+		case 1:
+			HandleAssassinSkillOneSecond();
+			SectionName = "Assassin_Skill1_Second";
+			break;
+		case 2:
+			HandleAssassinSkillOneFinal();
+			SectionName = "Assassin_Skill1_Final";
+			break;
 		}
+		AnimInstance->Montage_Play(SkillOneAnimation);
+		AnimInstance->Montage_JumpToSection(SectionName);
 	}
+}
+
+void UAbilityComponent::HandleAssassinSkillOneFirst()
+{
+	/**
+	* 수리검을 던질 때 타겟이 있는지 확인합니다.
+	* 타겟이 있다면, 캐릭터의 로테이션(Z Axis)을 해당 타겟으로 워핑합니다.
+	* 수리검 방향은 타겟을, 없으면 캐릭터의 Forward를 향합니다.
+	*/
+	TargetEnemy = FindEnemy();
+	if (TargetEnemy)
+	{
+		RotateCharacterBodyToTarget(TargetEnemy);
+		DrawDebugSphere(GetWorld(), TargetEnemy->GetActorLocation(), 30.f, 16, FColor::Magenta, false, 5.f, 0U, 2.f);
+	}
+	else
+	{
+		Character->GetMotionWarpingComponent()->RemoveWarpTarget(FName("RotateToTarget"));
+	}
+}
+
+void UAbilityComponent::HandleAssassinSkillOneSecond()
+{
+}
+
+void UAbilityComponent::HandleAssassinSkillOneFinal()
+{
 }
 
 AActor* UAbilityComponent::FindEnemy()
@@ -134,8 +167,12 @@ void UAbilityComponent::ResetTarget()
 {
 	if (TargetEnemy)
 	{
-		TargetEnemy = nullptr;
 	}
+}
+
+void UAbilityComponent::SetDashTarget(AActor* Target)
+{
+	DashTarget = Target;
 }
 
 void UAbilityComponent::ThrowKnife()
@@ -144,12 +181,16 @@ void UAbilityComponent::ThrowKnife()
 	{
 		const FTransform Transform = Character->GetActorTransform();
 		KinfeProjectile = GetWorld()->SpawnActor<AKnifeProjectile>(KinfeProjectileClass, Transform);
-		// 여기서부터 다시 할 것 !!!!!
-		KinfeProjectile->SetMovementDirection(Character->GetCameraBoom()->GetForwardVector());
+		KinfeProjectile->Caster = Character;
 		if (TargetEnemy)
 		{
 			const FVector Direction = TargetEnemy->GetActorLocation() - Character->GetActorLocation();
 			KinfeProjectile->SetMovementDirection(Direction.GetSafeNormal());
+		}
+		else
+		{
+			const FVector Direction = Character->GetActorForwardVector();
+			KinfeProjectile->SetMovementDirection(Direction);
 		}
 	}
 }
@@ -157,12 +198,11 @@ void UAbilityComponent::ThrowKnife()
 void UAbilityComponent::RotateCharacterBodyToTarget(AActor* Target)
 {
 	//MotionWarping
-	if (Character)
+	if (Character && Target->ActorHasTag(FName("Enemy")))
 	{
 		const FName WarpName = "RotateToTarget";
 		const float TargetRotationYaw = (Target->GetActorLocation() - Character->GetActorLocation()).ToOrientationQuat().Rotator().Yaw;
 		Character->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocationAndRotation(WarpName, Target->GetActorLocation(), FRotator{0.f,TargetRotationYaw,0.f});
-
 	}
 }
 
@@ -184,9 +224,5 @@ void UAbilityComponent::HandleAssassinSkillFour()
 void UAbilityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if (Character && Character->GetMotionWarpingComponent() && TargetEnemy)
-	{
-		RotateCharacterBodyToTarget(TargetEnemy);
-	}
 }
 

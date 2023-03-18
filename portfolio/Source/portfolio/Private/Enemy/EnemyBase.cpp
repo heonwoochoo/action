@@ -31,7 +31,7 @@ void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
-
+	GetMesh()->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBase::OnBeginOverlapped);
 }
 
 EEnemyState AEnemyBase::GetState() const
@@ -49,6 +49,14 @@ void AEnemyBase::SetTargetImgVisibie(bool NewState)
 	if (TargetWidgetComponent)
 	{
 		NewState ? TargetWidgetComponent->SetVisibility(true) : TargetWidgetComponent->SetVisibility(false);
+	}
+}
+
+void AEnemyBase::OnBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->ActorHasTag(FName("KnifePorjectile")))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("enemy Overlapped"));
 	}
 }
 

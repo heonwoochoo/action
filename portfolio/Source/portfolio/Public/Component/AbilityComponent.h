@@ -46,19 +46,24 @@ private:
 
 	AKnifeProjectile* KinfeProjectile;
 
+	
+
 	/** Assassin skill */
 	void HandleAssassinSkillOne();
-	
+	void HandleAssassinSkillOneFirst();
+	void HandleAssassinSkillOneSecond();
+	void HandleAssassinSkillOneFinal();
+
+
 	AActor* FindEnemy();
-
 	AActor* TargetEnemy = nullptr;
-
-
-
+	AActor* DashTarget = nullptr;
 	float TraceDistance = 2000.f;
+	void RotateCharacterBodyToTarget(AActor* Target);
 	
 
-	void RotateCharacterBodyToTarget(AActor* Target);
+
+
 
 	void HandleAssassinSkillTwo();
 	void HandleAssassinSkillThree();
@@ -69,6 +74,8 @@ public:
 	const FCharacterData GetCharacterData();
 
 	void HandleSkillOne();
+	uint8 SkillOneStack = 0;
+
 	void HandleSkillTwo();
 	void HandleSkillThree();
 	void HandleSkillFour();
@@ -80,5 +87,5 @@ public:
 	void ThrowKnife();
 	UFUNCTION(BlueprintCallable)
 	void ResetTarget();
-
+	void SetDashTarget(AActor* Target);
 };

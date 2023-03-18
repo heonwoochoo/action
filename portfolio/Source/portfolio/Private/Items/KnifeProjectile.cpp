@@ -40,6 +40,10 @@ void AKnifeProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	SetLifeSpan(1.5f);
+	if (CollisionComponent)
+	{
+		CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AKnifeProjectile::OnBeginOverlapped);
+	}
 }
 
 // Called every frame
@@ -49,7 +53,7 @@ void AKnifeProjectile::Tick(float DeltaTime)
 
 }
 
-void AKnifeProjectile::SetMovementDirection(const FVector Direction)
+void AKnifeProjectile::SetMovementDirection(const FVector& Direction)
 {
 	if (ProjectileMovementComponent)
 	{
@@ -57,3 +61,7 @@ void AKnifeProjectile::SetMovementDirection(const FVector Direction)
 	}
 }
 
+void AKnifeProjectile::OnBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	UE_LOG(LogTemp, Warning, TEXT("KnifeProjectile"));
+}
