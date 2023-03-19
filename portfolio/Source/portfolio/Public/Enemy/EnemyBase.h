@@ -10,7 +10,7 @@
 class UEnemyDataAsset;
 class UTargetWidgetComponent;
 class UEnemyHPBarWidgetComponent;
-
+class UMotionWarpingComponent;
 
 UCLASS()
 class PORTFOLIO_API AEnemyBase : public ACharacter
@@ -29,6 +29,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UEnemyHPBarWidgetComponent* HPBarWidgetComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UMotionWarpingComponent* MotionWarpingComponent;
+
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 private:
@@ -44,10 +47,11 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	FEnemyData EnemyData;
 
+
+
 	float TargetDurationTime = 5.0f;
 	FTimerHandle TargetTimerHandle;
 	void TargetTimerEnd();
-
 	void DisplayTargetWidget();
 
 	

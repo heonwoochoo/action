@@ -13,6 +13,7 @@
 #include "HUD/EnemyHPBarWidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Animation/EnemyAnimInstance.h"
+#include "MotionWarpingComponent.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -38,6 +39,7 @@ AEnemyBase::AEnemyBase()
 		HPBarWidgetComponent->SetVisibility(true);
 	}
 	
+	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 }
 
 void AEnemyBase::BeginPlay()
@@ -59,6 +61,9 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 			if (!GetCharacterMovement()->IsFalling())
 			{
 				AnimInstance->PlayHitReactOnGround();
+				const FVector TargetLocation = GetActorLocation() - GetActorForwardVector() * 5.f;
+				MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("HitReactRotation"), DamageCauser->GetActorLocation());
+				MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("HitReactLocation"), GetActorLocation() - GetActorForwardVector() * 100.f);
 			}
 		}
 	}
