@@ -13,7 +13,8 @@ class PORTFOLIO_API UEnemyHPBarWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
+	virtual void NativeConstruct() override;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UProgressBar* HPBar;
 };

@@ -2,4 +2,14 @@
 
 
 #include "HUD/EnemyHPBarWidget.h"
+#include "Components/ProgressBar.h"
 
+void UEnemyHPBarWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	if (HPBar)
+	{
+		HPBar->SetPercent(1.0f);
+	}
+}

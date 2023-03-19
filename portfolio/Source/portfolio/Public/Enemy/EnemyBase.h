@@ -20,6 +20,7 @@ class PORTFOLIO_API AEnemyBase : public ACharacter
 public:
 	AEnemyBase();
 	virtual void Tick(float DeltaTime) override;
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 protected:
 	virtual void BeginPlay() override;
 
@@ -61,6 +62,8 @@ private:
 	
 
 public:
+	FORCEINLINE FEnemyData GetEnemyData() const { return EnemyData; }
+	FORCEINLINE UEnemyHPBarWidgetComponent* GetHPBarWidgetComponent() const { return HPBarWidgetComponent;}
 
 	EEnemyState GetState() const;
 	void SetState(EEnemyState NewState);
@@ -74,4 +77,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HitRotationEnd();
+
+	void UpdateHPBar();
 };

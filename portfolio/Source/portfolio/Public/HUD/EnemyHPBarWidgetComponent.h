@@ -13,9 +13,14 @@ class PORTFOLIO_API UEnemyHPBarWidgetComponent : public UWidgetComponent
 {
 	GENERATED_BODY()
 	
-public:
+protected:
 	UEnemyHPBarWidget* HPBarWidget;
 
+public:
 
 	virtual void BeginPlay() override;
+
+
+	void SetHPBar(float Percent);
+	float GetHPBar() const;
 };

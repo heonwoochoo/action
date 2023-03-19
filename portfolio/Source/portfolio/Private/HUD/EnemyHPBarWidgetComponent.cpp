@@ -8,7 +8,22 @@
 void UEnemyHPBarWidgetComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
 	HPBarWidget = Cast<UEnemyHPBarWidget>(GetUserWidgetObject());
-	HPBarWidget->HPBar->Percent = 0.5f;
+}
+
+void UEnemyHPBarWidgetComponent::SetHPBar(float Percent)
+{
+	if (HPBarWidget)
+	{
+		HPBarWidget->HPBar->SetPercent(Percent);
+	}
+}
+
+float UEnemyHPBarWidgetComponent::GetHPBar() const
+{
+	if (HPBarWidget)
+	{
+		 return HPBarWidget->HPBar->GetPercent();
+	}
+	return 0.0f;
 }

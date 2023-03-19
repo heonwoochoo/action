@@ -396,7 +396,7 @@ void AportfolioCharacter::OnDamage()
 	for (AActor* Actor : OutActors)
 	{
 		AEnemyBase* Enemy = Cast<AEnemyBase>(Actor);
-		if (Enemy && Enemy->ActorHasTag(FName("Enemy")))
+		if (Enemy && Enemy->ActorHasTag(FName("Enemy")) && Enemy->GetState() != EEnemyState::EES_Dead)
 		{
 			const float Damage = 10.f; // ÀÓ½Ã°ª
 			TSubclassOf<UDamageType> DamageType;

@@ -14,15 +14,14 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Animation/EnemyAnimInstance.h"
 #include "MotionWarpingComponent.h"
+#include "HUD/HUDBase.h"
+#include "Controller/CharacterController.h"
 
 AEnemyBase::AEnemyBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	
 
-	if (DataAsset)
-	{
-		EnemyData = DataAsset->EnemyDatas[Name];
-	}
 
 	SetRootComponent(GetCapsuleComponent());
 	TargetWidgetComponent = CreateDefaultSubobject<UTargetWidgetComponent>(TEXT("TargetImgComponent"));
@@ -47,24 +46,29 @@ void AEnemyBase::BeginPlay()
 	Super::BeginPlay();
 	
 	GetMesh()->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBase::OnBeginOverlapped);
+	if (DataAsset)
+	{
+		EnemyData = DataAsset->EnemyDatas[Name];
+		UE_LOG(LogTemp, Warning, TEXT("HP: %f"), EnemyData.Hp);
+	}
 }
 
 float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	
-	if (State != EEnemyState::EES_Dead)
+
+	EnemyData.Hp -= DamageAmount;
+	UpdateHPBar();
+	UEnemyAnimInstance* AnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance && State != EEnemyState::EES_Dead)
 	{
-		UEnemyAnimInstance* AnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
-		if (AnimInstance)
+		if (!GetCharacterMovement()->IsFalling())
 		{
-			if (!GetCharacterMovement()->IsFalling())
-			{
-				AnimInstance->PlayHitReactOnGround();
-				MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("HitReactRotation"), DamageCauser->GetActorLocation());
-			}
+			AnimInstance->PlayHitReactOnGround();
+			MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("HitReactRotation"), DamageCauser->GetActorLocation());
 		}
 	}
+	
 	return DamageAmount;
 }
 
@@ -120,6 +124,28 @@ void AEnemyBase::HitRotationEnd()
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("HitReactLocation"), GetActorLocation() - GetActorForwardVector() * KnockBackDistance);
 }
 
+void AEnemyBase::UpdateHPBar()
+{
+	if (DataAsset && EnemyData.Hp <= 0.f)
+	{
+		State = EEnemyState::EES_Dead;
+		HPBarWidgetComponent->SetVisibility(false);
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	else
+	{
+		ACharacterController* PlayerController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+		if (PlayerController)
+		{
+			AHUDBase* HUDBase = Cast<AHUDBase>(PlayerController->GetHUD());
+			if (HUDBase)
+			{
+				HUDBase->SetEnemyHpBar(this);
+			}
+		}
+	}
+}
+
 void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -128,5 +154,16 @@ void AEnemyBase::Tick(float DeltaTime)
 		AportfolioCharacter* Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 		const FRotator Rotation = (Character->GetFollowCamera()->GetComponentLocation() - GetActorLocation()).ToOrientationQuat().Rotator();
 		TargetWidgetComponent->SetWorldRotation(Rotation);
+	}
+
+
+}
+
+void AEnemyBase::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+	if (DataAsset)
+	{
+		EnemyData = DataAsset->EnemyDatas[Name];
 	}
 }
