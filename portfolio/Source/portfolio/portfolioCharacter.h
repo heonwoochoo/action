@@ -68,6 +68,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackForwardDistance = 50.f;
 
+	float MeleeAttackDistance = 100.f;
+
+	UPROPERTY(VisibleAnywhere, BLueprintReadOnly)
+	float MeleeAttackRadius = 75.f;
+
+	UFUNCTION(BlueprintCallable)
+	FVector GetMeleeAttackLocation();
 
 public:
 	/** Returns CameraBoom subobject **/
@@ -151,6 +158,9 @@ private:
 
 	float InitialRelativeLocationZ;
 
+
+	
+
 	// 캐릭터의 동작 상태
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	ECharacterActionState CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
@@ -176,7 +186,7 @@ public:
 	void AttackChainEnd();
 
 	UFUNCTION(BlueprintCallable)
-	void OnDamage();
+	void CheckEnemyInRange(const FVector Location, const float Radius, const float Damage);
 
 	UFUNCTION(BlueprintCallable)
 	void EnableDoubleJump();

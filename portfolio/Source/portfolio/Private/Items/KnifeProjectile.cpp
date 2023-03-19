@@ -70,11 +70,14 @@ void AKnifeProjectile::OnKnifeEffect(AActor* HitActor)
 	{
 		Caster->GetAbilityComponent()->SetDashTarget(HitActor);
 
-		// 파티클 생성
+		// Damage event call
+		Caster->CheckEnemyInRange(GetActorLocation(), 50.f, 20.f);
 
-		// 사운드 플레이
+		// Spawn particle
 
-		// 인스턴스 제거
+		// Play sound
+
+		// Destroy instance
 		Destroy();
 	}
 }

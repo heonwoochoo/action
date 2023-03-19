@@ -335,6 +335,11 @@ void AportfolioCharacter::SkillManagerFour()
 	}
 }
 
+FVector AportfolioCharacter::GetMeleeAttackLocation()
+{
+	return GetActorLocation() + GetActorForwardVector() * MeleeAttackDistance;
+}
+
 void AportfolioCharacter::DoubleJump()
 {
 	bCanDoubleJump = false;
@@ -383,23 +388,22 @@ void AportfolioCharacter::AttackChainEnd()
 	AttackCount = 0;
 }
 
-void AportfolioCharacter::OnDamage()
+void AportfolioCharacter::CheckEnemyInRange(const FVector Location, const float Radius, const float Damage)
 {
-	const FVector DamageOverlapLocation = GetActorLocation() + GetActorForwardVector() * 100.f;
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = { UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn)};
 	TArray<AActor*> ActorsToIgnore = { this };
 	TArray<AActor*> OutActors;
 
-	UKismetSystemLibrary::SphereOverlapActors(this, DamageOverlapLocation, 75.f, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
-	DrawDebugSphere(GetWorld(), DamageOverlapLocation, 75.f, 16, FColor::Red, false, 1.f);
+	UKismetSystemLibrary::SphereOverlapActors(this, Location, Radius, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
+	DrawDebugSphere(GetWorld(), Location, Radius, 16, FColor::Red, false, 1.f);
 
 	for (AActor* Actor : OutActors)
 	{
 		AEnemyBase* Enemy = Cast<AEnemyBase>(Actor);
 		if (Enemy && Enemy->ActorHasTag(FName("Enemy")) && Enemy->GetState() != EEnemyState::EES_Dead)
 		{
-			const float Damage = 10.f; // ÀÓ½Ã°ª
 			TSubclassOf<UDamageType> DamageType;
+			float Damage = 10.f;
 			ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 			UGameplayStatics::ApplyDamage(Enemy, Damage, CharacterController, this, DamageType);
 		}

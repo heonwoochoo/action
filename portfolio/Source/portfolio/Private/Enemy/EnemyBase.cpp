@@ -131,6 +131,7 @@ void AEnemyBase::UpdateHPBar()
 		State = EEnemyState::EES_Dead;
 		HPBarWidgetComponent->SetVisibility(false);
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		SetLifeSpan(3.f);
 	}
 	else
 	{
