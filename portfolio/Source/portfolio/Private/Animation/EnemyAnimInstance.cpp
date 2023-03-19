@@ -2,16 +2,50 @@
 
 
 #include "Animation/EnemyAnimInstance.h"
+#include "Data/EnemyAnimDataAsset.h"
+#include "Enemy/EnemyBase.h"
 
-UAnimMontage* UEnemyAnimInstance::GetHitReactMontage() const
+void UEnemyAnimInstance::NativeInitializeAnimation()
 {
-	return nullptr;
+	Super::NativeInitializeAnimation();
+	if (AnimDataAsset)
+	{
+		AEnemyBase* Enemy = Cast<AEnemyBase>(GetOwningActor());
+		if (Enemy)
+		{
+			const EEnemyName Name = Enemy->GetName();
+			HitReactOnGround = AnimDataAsset->EnemyAnimDatas.Find(Name)->HitReactOnGround;
+			IdleWalkRun = AnimDataAsset->EnemyAnimDatas.Find(Name)->IdleWalkRun;
+			Dead = AnimDataAsset->EnemyAnimDatas.Find(Name)->Dead;
+			
+		}
+	}
 }
 
-void UEnemyAnimInstance::PlayHitReactMontage()
+void UEnemyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
-	if (HitReactMontage)
+	Super::NativeUpdateAnimation(DeltaSeconds);
+
+	AEnemyBase* Enemy = Cast<AEnemyBase>(GetOwningActor());
+	if (Enemy)
 	{
-		Montage_Play(HitReactMontage);
+		Speed = Enemy->GetVelocity().Length();
+		State = Enemy->GetState();
+	}
+}
+
+void UEnemyAnimInstance::PlayHitReactOnGround()
+{
+	if (HitReactOnGround)
+	{
+		Montage_Play(HitReactOnGround);
+	}
+}
+
+void UEnemyAnimInstance::PlayDead()
+{
+	if (Dead)
+	{
+		Montage_Play(Dead);
 	}
 }

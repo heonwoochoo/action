@@ -11,6 +11,8 @@
 #include "Camera/CameraComponent.h"
 #include "Items/KnifeProjectile.h"
 #include "HUD/EnemyHPBarWidgetComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Animation/EnemyAnimInstance.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -45,11 +47,28 @@ void AEnemyBase::BeginPlay()
 	GetMesh()->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBase::OnBeginOverlapped);
 }
 
+float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	
+	if (State != EEnemyState::EES_Dead)
+	{
+		UEnemyAnimInstance* AnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
+		if (AnimInstance)
+		{
+			if (!GetCharacterMovement()->IsFalling())
+			{
+				AnimInstance->PlayHitReactOnGround();
+			}
+		}
+	}
+	return DamageAmount;
+}
+
 
 void AEnemyBase::TargetTimerEnd()
 {
 	SetTargetImgVisibie(false);
-	UE_LOG(LogTemp, Warning, TEXT("TargetTimerEnd"));
 	if (State == EEnemyState::EES_Targeted) State = EEnemyState::EES_Unoccupied;
 
 	AportfolioCharacter* Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
@@ -61,11 +80,6 @@ void AEnemyBase::DisplayTargetWidget()
 	SetTargetImgVisibie(true);
 	State = EEnemyState::EES_Targeted;
 	GetWorldTimerManager().SetTimer(TargetTimerHandle, this, &AEnemyBase::TargetTimerEnd, TargetDurationTime, false);
-}
-
-void AEnemyBase::OnTakeDamage(float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
-{
-	UE_LOG(LogTemp, Warning, TEXT("HEllo"));
 }
 
 

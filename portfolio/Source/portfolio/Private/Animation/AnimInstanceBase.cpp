@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Component/AbilityComponent.h"
+#include "Data/CharacterSkillAsset.h"
 #include "CharacterTypes.h"
 
 void UAnimInstanceBase::NativeInitializeAnimation()
@@ -18,7 +19,8 @@ void UAnimInstanceBase::NativeInitializeAnimation()
 	// 타입 추가 후 데이터 에셋 파일에도 참조 애니메이션 반드시 설정해줄 것 !
 	if (Character)
 	{
-		if (UAbilityComponent* AbilityComponent = Character->GetAbilityComponent())
+		UAbilityComponent* AbilityComponent = Character->GetAbilityComponent();
+		if (AbilityComponent && AbilityComponent->GetCharacterSkillAsset())
 		{
 			ECharacterClass CharacterClass = AbilityComponent->GetCharacterData().Class;
 			if (UCharacterDataAsset* CharacterDataAsset = Character->GetCharacterDataAsset())
@@ -30,6 +32,7 @@ void UAnimInstanceBase::NativeInitializeAnimation()
 				DefaultEquippedIdle = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->EquippedIdle;
 				DefaultUnequippedIdle = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->UnequippedIdle;
 				DefaultEvadeMontage = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->Evade;
+				SkillOne = AbilityComponent->GetCharacterSkillAsset()->GetAnimation(CharacterClass, ESkillNumber::ESN_One);
 			}
 		}
 	}
@@ -117,4 +120,9 @@ UAnimMontage* UAnimInstanceBase::GetDefaultDoubleJumpMontage() const
 UAnimMontage* UAnimInstanceBase::GetDefaultDefaultEvadeMontage() const
 {
 	return DefaultEvadeMontage;
+}
+
+UAnimMontage* UAnimInstanceBase::GetSkillOne() const
+{
+	return SkillOne;
 }

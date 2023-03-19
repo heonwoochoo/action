@@ -11,6 +11,7 @@ class UEnemyDataAsset;
 class UTargetWidgetComponent;
 class UEnemyHPBarWidgetComponent;
 
+
 UCLASS()
 class PORTFOLIO_API AEnemyBase : public ACharacter
 {
@@ -28,7 +29,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UEnemyHPBarWidgetComponent* HPBarWidgetComponent;
 
-	
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EEnemyState State = EEnemyState::EES_Unoccupied;
@@ -48,8 +50,7 @@ private:
 
 	void DisplayTargetWidget();
 
-	UFUNCTION(BlueprintCallable)
-	void OnTakeDamage(float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	
 
 public:
 
@@ -60,4 +61,6 @@ public:
 
 	UFUNCTION()
 	void OnBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	FORCEINLINE EEnemyName GetName() const { return Name; }
 };

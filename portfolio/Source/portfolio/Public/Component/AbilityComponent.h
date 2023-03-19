@@ -38,7 +38,6 @@ private:
 
 	UAnimInstanceBase* AnimInstance;
 
-	UAnimMontage* SkillOneAnimation;
 
 	// Assassin project weapon
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -60,7 +59,7 @@ private:
 	AActor* DashTarget = nullptr;
 
 	float TraceDistance = 2000.f;
-	void RotateCharacterBodyToTarget(AActor* Target);
+	void RotateToTarget(AActor* Target);
 
 	void HandleAssassinSkillTwo();
 	void HandleAssassinSkillThree();
@@ -70,13 +69,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	const FCharacterData GetCharacterData();
 
+	FORCEINLINE UCharacterSkillAsset* GetCharacterSkillAsset() const { return CharacterSkillAsset; }
+
 	void HandleSkillOne();
 
 	void HandleSkillTwo();
 	void HandleSkillThree();
 	void HandleSkillFour();
 
-	UAnimMontage* GetSkillOneAnimation() const;
 
 	/** Assassin skill */
 	UFUNCTION(BlueprintCallable)

@@ -38,13 +38,6 @@ void UAbilityComponent::BeginPlay()
 		CharacterData = Character->GetCharacterDataAsset()->CharacterData;
 	}
 
-	// 데이터 에셋을 참조하여 스킬 애니메이션 포인터 초기화
-	if (CharacterSkillAsset)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("SKill asset reference"));
-		SkillOneAnimation = CharacterSkillAsset->GetAnimation(CharacterData.Class, ESkillNumber::ESN_One);
-	}
-
 	if (Character && Character->GetMesh())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AnimInstance reference"));
@@ -86,14 +79,10 @@ void UAbilityComponent::HandleSkillFour()
 {
 }
 
-UAnimMontage* UAbilityComponent::GetSkillOneAnimation() const
-{
-	return SkillOneAnimation;
-}
 
 void UAbilityComponent::HandleAssassinSkillOne()
 {
-	if (AnimInstance && SkillOneAnimation)
+	if (AnimInstance && AnimInstance->GetSkillOne())
 	{
 		FName SectionName;
 
@@ -108,7 +97,7 @@ void UAbilityComponent::HandleAssassinSkillOne()
 			HandleAssassinSkillOneFirst();
 			SectionName = "Assassin_Skill1_First";
 		}
-		AnimInstance->Montage_Play(SkillOneAnimation);
+		AnimInstance->Montage_Play(AnimInstance->GetSkillOne());
 		AnimInstance->Montage_JumpToSection(SectionName);
 	}
 }
@@ -123,7 +112,7 @@ void UAbilityComponent::HandleAssassinSkillOneFirst()
 	TargetEnemy = FindEnemy();
 	if (TargetEnemy)
 	{
-		RotateCharacterBodyToTarget(TargetEnemy);
+		RotateToTarget(TargetEnemy);
 		DrawDebugSphere(GetWorld(), TargetEnemy->GetActorLocation(), 30.f, 16, FColor::Magenta, false, 5.f, 0U, 2.f);
 	}
 	else
@@ -198,7 +187,7 @@ void UAbilityComponent::ThrowKnife()
 	}
 }
 
-void UAbilityComponent::RotateCharacterBodyToTarget(AActor* Target)
+void UAbilityComponent::RotateToTarget(AActor* Target)
 {
 	//MotionWarping
 	if (Character && Target->ActorHasTag(FName("Enemy")))

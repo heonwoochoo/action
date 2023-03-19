@@ -19,26 +19,29 @@ protected:
 
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = DefaultAnimation)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
 	UAnimMontage* DefaultAttackMontage = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = DefaultAnimation)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
 	UAnimSequence* DefaultJump = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = DefaultAnimation)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
 	UAnimMontage* DefaultDoubleJumpMontage = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = DefaultAnimation)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
 	UBlendSpace* DefaultWalkRunBlendSpace = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = DefaultAnimation)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
 	UAnimSequence* DefaultEquippedIdle = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = DefaultAnimation)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
 	UAnimSequence* DefaultUnequippedIdle = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = DefaultAnimation)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
 	UAnimMontage* DefaultEvadeMontage = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Skill")
+	UAnimMontage* SkillOne;
 
 private:
 	UPROPERTY(VisibleAnywhere, category = "Character|Movement")
@@ -80,4 +83,6 @@ public:
 	UAnimMontage* GetDefaultDoubleJumpMontage() const;
 
 	UAnimMontage* GetDefaultDefaultEvadeMontage() const;
+
+	UAnimMontage* GetSkillOne() const;
 };
