@@ -64,6 +64,7 @@ AportfolioCharacter::AportfolioCharacter()
 	// Create MotionWarpingComponent;
 	CharacterMWComponent = CreateDefaultSubobject<UCharacterMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 
+
 	InitialRelativeLocationZ = 0.f;
 }
 
@@ -211,8 +212,10 @@ void AportfolioCharacter::DefaultAttack(const FInputActionValue& Value)
 		if (AnimInstance)
 		{
 			UAnimMontage* AttackMontage = AnimInstance->GetDefaultAttackMontage();
-			if (AttackMontage)
+			if (AttackMontage && CharacterMWComponent)
 			{
+				CharacterMWComponent->AddOrUpdateWarpTargetFromLocation(FName("MoveForward"), GetActorLocation() + GetActorForwardVector() * AttackForwardDistance);
+				
 				AnimInstance->Montage_Play(AttackMontage);
 
 				FName SectionName;

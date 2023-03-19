@@ -65,6 +65,9 @@ protected:
 	void SkillManagerThree();
 	void SkillManagerFour();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AttackForwardDistance = 50.f;
+
 
 public:
 	/** Returns CameraBoom subobject **/

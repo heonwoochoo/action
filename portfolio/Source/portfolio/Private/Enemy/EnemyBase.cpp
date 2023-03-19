@@ -61,9 +61,7 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 			if (!GetCharacterMovement()->IsFalling())
 			{
 				AnimInstance->PlayHitReactOnGround();
-				const FVector TargetLocation = GetActorLocation() - GetActorForwardVector() * 5.f;
 				MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("HitReactRotation"), DamageCauser->GetActorLocation());
-				MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("HitReactLocation"), GetActorLocation() - GetActorForwardVector() * 100.f);
 			}
 		}
 	}
@@ -115,6 +113,11 @@ void AEnemyBase::OnBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AAc
 		AKnifeProjectile* KnifeProjectile = Cast<AKnifeProjectile>(OtherActor);
 		if (KnifeProjectile) KnifeProjectile->OnKnifeEffect(this);
 	}
+}
+
+void AEnemyBase::HitRotationEnd()
+{
+	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("HitReactLocation"), GetActorLocation() - GetActorForwardVector() * KnockBackDistance);
 }
 
 void AEnemyBase::Tick(float DeltaTime)
