@@ -23,23 +23,14 @@ void ADamageText::Initialize(const float Damage)
 	}
 }
 
-
 void ADamageText::BeginPlay()
 {
 	Super::BeginPlay();
-	if (DamageWidgetComponent)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("BeginPlay in"));
-	}
 	SetLifeSpan(LifeSpanTime);
 }
-
-
 
 void ADamageText::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
-
-

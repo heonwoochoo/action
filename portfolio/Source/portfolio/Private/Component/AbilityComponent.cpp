@@ -88,6 +88,12 @@ void UAbilityComponent::HandleAssassinSkillOne()
 
 		if (DashTarget)
 		{
+			AEnemyBase* Enemy = Cast<AEnemyBase>(DashTarget);
+			if (Enemy)
+			{
+				Enemy->RemoveMark();
+				UE_LOG(LogTemp, Warning, TEXT("Enemy Cast OK"));
+			}
 			HandleAssassinSkillOneSecond();
 			SectionName = "Assassin_Skill1_Second";
 			DashTarget = nullptr;

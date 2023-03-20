@@ -30,7 +30,7 @@ AKnifeProjectile::AKnifeProjectile()
 	if (ProjectileMovementComponent)
 	{
 		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
-		ProjectileMovementComponent->InitialSpeed = 1000.0f;
+		ProjectileMovementComponent->InitialSpeed = 2000.0f;
 		ProjectileMovementComponent->MaxSpeed = 1000.0f;
 		ProjectileMovementComponent->ProjectileGravityScale = 0.01f;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;

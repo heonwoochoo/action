@@ -17,13 +17,11 @@
 #include "HUD/HUDBase.h"
 #include "Controller/CharacterController.h"
 #include "HUD/DamageText.h"
+#include "HUD/TargetMark.h"
 
 AEnemyBase::AEnemyBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	
-
-
 	SetRootComponent(GetCapsuleComponent());
 	TargetWidgetComponent = CreateDefaultSubobject<UTargetWidgetComponent>(TEXT("TargetImgComponent"));
 
@@ -46,11 +44,6 @@ void AEnemyBase::BeginPlay()
 	{
 		EnemyData = DataAsset->EnemyDatas[Name];
 	}
-
-	if (TargetWidgetComponent)
-	{
-		TargetWidgetComponent->SetTargetVisible(false);
-	}
 }
 
 float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -59,9 +52,14 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 
 	EnemyData.Hp -= DamageAmount;
 
-	DisplayDamageText(DamageAmount);
-
-	UpdateHPBar();
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+		if (HUDBase) HUDBase->ShowDamageOnScreen(this, DamageAmount);
+	}
+	
+	EnemyData.Hp <= 0.f ? Die() : UpdateHPBar();
 
 	UEnemyAnimInstance* AnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
 	if (AnimInstance && State != EEnemyState::EES_Dead)
@@ -76,23 +74,12 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 	return DamageAmount;
 }
 
-
-void AEnemyBase::TargetTimerEnd()
+void AEnemyBase::Die()
 {
-	TargetWidgetComponent->SetTargetVisible(false);
-	//SetTargetImgVisibie(false);
-	if (State == EEnemyState::EES_Targeted) State = EEnemyState::EES_Unoccupied;
-
-	AportfolioCharacter* Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	if (Character) Character->GetAbilityComponent()->SetDashTarget(nullptr);
-}
-
-void AEnemyBase::DisplayTargetWidget()
-{
-	TargetWidgetComponent->SetTargetVisible(true);
-	//SetTargetImgVisibie(true);
-	State = EEnemyState::EES_Targeted;
-	GetWorldTimerManager().SetTimer(TargetTimerHandle, this, &AEnemyBase::TargetTimerEnd, TargetDurationTime, false);
+	State = EEnemyState::EES_Dead;
+	HPBarWidgetComponent->SetVisibility(false);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetLifeSpan(3.f);
 }
 
 
@@ -119,9 +106,17 @@ void AEnemyBase::OnBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AAc
 {
 	if (OtherActor->ActorHasTag(FName("KnifeProjectile")))
 	{
-		DisplayTargetWidget();
 		AKnifeProjectile* KnifeProjectile = Cast<AKnifeProjectile>(OtherActor);
-		if (KnifeProjectile) KnifeProjectile->OnKnifeEffect(this);
+		if (KnifeProjectile)
+		{
+			KnifeProjectile->OnKnifeEffect(this);
+			ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+			if (CharacterController)
+			{
+				AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+				if (HUDBase) HUDBase->ShowTargetMark(this, KnifeProjectile->Caster);
+			}
+		}
 	}
 }
 
@@ -132,42 +127,26 @@ void AEnemyBase::HitRotationEnd()
 
 void AEnemyBase::UpdateHPBar()
 {
-	if (DataAsset && EnemyData.Hp <= 0.f)
-	{
-		State = EEnemyState::EES_Dead;
-		HPBarWidgetComponent->SetVisibility(false);
-		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		SetLifeSpan(3.f);
-	}
-	else
-	{
-		const float CurrentHP = GetEnemyData().Hp;
-		const float MaxHP = GetEnemyData().MaxHp;
-		HPBarWidgetComponent->SetHPBar(CurrentHP / MaxHP);
-	}
+	const float CurrentHP = GetEnemyData().Hp;
+	const float MaxHP = GetEnemyData().MaxHp;
+	HPBarWidgetComponent->SetHPBar(CurrentHP / MaxHP);
 }
 
-void AEnemyBase::DisplayDamageText(const float Damage)
+void AEnemyBase::SetHeadUpMark(AActor* NewMark)
 {
-	FVector Location = GetActorLocation();
-	FRotator Rotation = GetActorRotation();
-	FActorSpawnParameters SpawnInfo;
-	ADamageText* DamageText = GetWorld()->SpawnActor<ADamageText>(DamageTextActor,Location, Rotation, SpawnInfo);
-	//ADamageText* DamageText = GetWorld()->SpawnActor<ADamageText>(Location, Rotation, SpawnInfo);
-	DamageText->Initialize(Damage);
+	UE_LOG(LogTemp, Warning, TEXT("SetHeadUpMark"));
+	HeadUpMark = NewMark;
+}
+
+void AEnemyBase::RemoveMark()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Remove mark out"));
+	if (HeadUpMark) HeadUpMark->Destroy();
 }
 
 void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (TargetWidgetComponent && State == EEnemyState::EES_Targeted)
-	{
-		AportfolioCharacter* Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-		const FRotator Rotation = (Character->GetFollowCamera()->GetComponentLocation() - GetActorLocation()).ToOrientationQuat().Rotator();
-		TargetWidgetComponent->SetWorldRotation(Rotation);
-	}
-
-
 }
 
 void AEnemyBase::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)

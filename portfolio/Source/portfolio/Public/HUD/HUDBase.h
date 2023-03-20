@@ -6,7 +6,9 @@
 #include "GameFramework/HUD.h"
 #include "HUDBase.generated.h"
 
-class AEnemyBase;
+class ADamageText;
+class ACharacter;
+class ATargetMark;
 
 UCLASS()
 class PORTFOLIO_API AHUDBase : public AHUD
@@ -19,5 +21,15 @@ public:
 protected:
 	virtual void Tick(float DeltaSeconds) override;
 
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Combat", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<ADamageText> DamageTextClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Combat", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<ATargetMark> TargetMarkClass;
+
 public:
+	void ShowDamageOnScreen(ACharacter* Actor, float Damage);
+	void ShowTargetMark(ACharacter* Enemy, ACharacter* Caster);
+	
 };

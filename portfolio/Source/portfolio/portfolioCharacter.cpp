@@ -395,7 +395,7 @@ void AportfolioCharacter::AttackChainEnd()
 	AttackCount = 0;
 }
 
-void AportfolioCharacter::CheckEnemyInRange(const FVector Location, const float Radius, const float Damage)
+void AportfolioCharacter::CheckEnemyInRange(const FVector Location, const float Radius, float Damage)
 {
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = { UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn)};
 	TArray<AActor*> ActorsToIgnore = { this };
@@ -410,7 +410,6 @@ void AportfolioCharacter::CheckEnemyInRange(const FVector Location, const float 
 		if (Enemy && Enemy->ActorHasTag(FName("Enemy")) && Enemy->GetState() != EEnemyState::EES_Dead)
 		{
 			TSubclassOf<UDamageType> DamageType;
-			float Damage = 10.f;
 			ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 			UGameplayStatics::ApplyDamage(Enemy, Damage, CharacterController, this, DamageType);
 		}

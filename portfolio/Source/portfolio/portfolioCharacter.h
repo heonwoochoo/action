@@ -189,7 +189,7 @@ public:
 	void AttackChainEnd();
 
 	UFUNCTION(BlueprintCallable)
-	void CheckEnemyInRange(const FVector Location, const float Radius, const float Damage);
+	void CheckEnemyInRange(const FVector Location, const float Radius, float Damage);
 
 	UFUNCTION(BlueprintCallable)
 	void EnableDoubleJump();

@@ -53,14 +53,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	FEnemyData EnemyData;
 
+	AActor* HeadUpMark;
 
-	float TargetDurationTime = 5.0f;
-	FTimerHandle TargetTimerHandle;
-	void TargetTimerEnd();
-	void DisplayTargetWidget();
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<ADamageText> DamageTextActor;
+	void Die();
 
 public:
 	FORCEINLINE FEnemyData GetEnemyData() const { return EnemyData; }
@@ -81,5 +76,6 @@ public:
 
 	void UpdateHPBar();
 
-	void DisplayDamageText(const float Damage);
+	void SetHeadUpMark(AActor* NewMark);
+	void RemoveMark();
 };

@@ -20,6 +20,7 @@ void UDamageWidgetComponent::SetDamageText(float Damage)
 {
 	if (DamageTextWidget)
 	{
-		DamageTextWidget->DamageText->SetText(FText::FromString(FString::SanitizeFloat(Damage)));
+		DamageTextWidget->DamageText->SetText(FText::FromString(FString::FromInt((int)Damage)));
+		UE_LOG(LogTemp, Warning, TEXT("Damage : %f"), Damage);
 	}
 }

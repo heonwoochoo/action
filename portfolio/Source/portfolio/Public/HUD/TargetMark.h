@@ -4,31 +4,31 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "DamageText.generated.h"
+#include "TargetMark.generated.h"
 
-class UDamageWidgetComponent;
+class UTargetWidgetComponent;
 
 UCLASS()
-class PORTFOLIO_API ADamageText : public AActor
+class PORTFOLIO_API ATargetMark : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
-	ADamageText();
 
-	UFUNCTION()
-	void Initialize(const float Damage);
+	ATargetMark();
 
 protected:
+	
 	virtual void BeginPlay() override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UTargetWidgetComponent* TargetWidgetComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UDamageWidgetComponent* DamageWidgetComponent;
+	float Duration = 5.0f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "properties")
-	float LifeSpanTime = 1.5f;
-
-public:	
+public:
 	virtual void Tick(float DeltaTime) override;
+
+	void SetDurtation(float Time);
 };
