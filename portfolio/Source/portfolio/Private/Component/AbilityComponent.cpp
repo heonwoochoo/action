@@ -13,6 +13,7 @@
 #include "Component/CharacterMotionWarpingComponent.h"
 #include "Enemy/EnemyBase.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Skill/Assassin_SkillOne.h"
 
 // Sets default values for this component's properties
 UAbilityComponent::UAbilityComponent()
@@ -21,6 +22,11 @@ UAbilityComponent::UAbilityComponent()
 	bWantsInitializeComponent = true;
 	UE_LOG(LogTemp, Warning, TEXT("Constructor"));
 	Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (SkillOneClass)
+	{
+		SkillOne = GetWorld()->SpawnActor<AAssassin_SkillOne>(SkillOneClass);
+	}
+	
 }
 
 
@@ -50,6 +56,7 @@ void UAbilityComponent::InitializeComponent()
 	Super::InitializeComponent();
 	UE_LOG(LogTemp, Warning, TEXT("InitializeComponent"));
 
+
 }
 
 const FCharacterData UAbilityComponent::GetCharacterData()
@@ -62,7 +69,8 @@ void UAbilityComponent::HandleSkillOne()
 	switch (CharacterData.Class)
 	{
 	case ECharacterClass::ECC_Assassin:
-		HandleAssassinSkillOne();
+		SkillOne->PlayAction();
+		//HandleAssassinSkillOne();
 		break;
 	}
 }
@@ -171,6 +179,11 @@ void UAbilityComponent::ResetTarget()
 void UAbilityComponent::SetDashTarget(AActor* Target)
 {
 	DashTarget = Target;
+}
+
+AAssassin_SkillOne* UAbilityComponent::GetSkillOne() const
+{
+	return SkillOne;
 }
 
 void UAbilityComponent::ThrowKnife()

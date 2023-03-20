@@ -11,6 +11,7 @@ class UAnimMontage;
 class UCharacterSkillAsset;
 class UAnimInstanceBase;
 class AKnifeProjectile;
+class AAssassin_SkillOne;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PORTFOLIO_API UAbilityComponent : public UActorComponent
@@ -39,15 +40,21 @@ private:
 	UAnimInstanceBase* AnimInstance;
 
 
+
 	// Assassin project weapon
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AKnifeProjectile> KinfeProjectileClass;
 
 	AKnifeProjectile* KinfeProjectile;
 
-	
-
 	/** Assassin skill */
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<AAssassin_SkillOne> SkillOneClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	AAssassin_SkillOne* SkillOne;
+
 	void HandleAssassinSkillOne();
 	void HandleAssassinSkillOneFirst();
 	void HandleAssassinSkillOneSecond();
@@ -72,7 +79,6 @@ public:
 	FORCEINLINE UCharacterSkillAsset* GetCharacterSkillAsset() const { return CharacterSkillAsset; }
 
 	void HandleSkillOne();
-
 	void HandleSkillTwo();
 	void HandleSkillThree();
 	void HandleSkillFour();
@@ -84,4 +90,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ResetTarget();
 	void SetDashTarget(AActor* Target);
+
+	UFUNCTION(BlueprintCallable)
+	AAssassin_SkillOne* GetSkillOne() const;
 };

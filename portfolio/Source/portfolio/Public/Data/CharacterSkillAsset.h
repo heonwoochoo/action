@@ -18,7 +18,13 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TMap<ECharacterClass, FCharacterSkillMap> CharacterSkills;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TMap<ECharacterClass, FSkillReference> CharacterSkillRef;
+
 public:
 	UFUNCTION()
 	UAnimMontage* GetAnimation(ECharacterClass Class, ESkillNumber SkillNumber);
+
+	UFUNCTION()
+	TMap<ECharacterClass, FCharacterSkillMap> GetCharacterSkills() const;
 };

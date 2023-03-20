@@ -144,3 +144,12 @@ struct FCharacterSkillMap
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TMap<ESkillNumber, FCharacterSkill> CharacterSkill;
 };
+
+USTRUCT(BlueprintType)
+struct FSkillReference
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TMap<ESkillNumber, AActor*> Skills;
+};

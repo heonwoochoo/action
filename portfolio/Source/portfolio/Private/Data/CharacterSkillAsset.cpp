@@ -7,3 +7,8 @@ UAnimMontage* UCharacterSkillAsset::GetAnimation(ECharacterClass Class, ESkillNu
 {
     return CharacterSkills.Find(Class)->CharacterSkill.Find(SkillNumber)->Animation;
 }
+
+TMap<ECharacterClass, FCharacterSkillMap> UCharacterSkillAsset::GetCharacterSkills() const
+{
+    return CharacterSkills;
+}
