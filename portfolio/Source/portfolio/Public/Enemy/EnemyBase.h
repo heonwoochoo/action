@@ -11,6 +11,7 @@ class UEnemyDataAsset;
 class UTargetWidgetComponent;
 class UEnemyHPBarWidgetComponent;
 class UMotionWarpingComponent;
+class ADamageText;
 
 UCLASS()
 class PORTFOLIO_API AEnemyBase : public ACharacter
@@ -53,13 +54,13 @@ private:
 	FEnemyData EnemyData;
 
 
-
 	float TargetDurationTime = 5.0f;
 	FTimerHandle TargetTimerHandle;
 	void TargetTimerEnd();
 	void DisplayTargetWidget();
 
-	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<ADamageText> DamageTextActor;
 
 public:
 	FORCEINLINE FEnemyData GetEnemyData() const { return EnemyData; }
@@ -79,4 +80,6 @@ public:
 	void HitRotationEnd();
 
 	void UpdateHPBar();
+
+	void DisplayDamageText(const float Damage);
 };

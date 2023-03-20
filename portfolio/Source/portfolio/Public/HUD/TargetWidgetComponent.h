@@ -17,4 +17,6 @@ public:
 	UTargetWidget* TargetWidget;
 	
 	virtual void BeginPlay() override;
+
+	void SetTargetVisible(bool visible);
 };

@@ -15,19 +15,3 @@ void AHUDBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 }
-
-void AHUDBase::SetEnemyHpBar(AEnemyBase* Enemy)
-{
-
-	if (Enemy->GetState() != EEnemyState::EES_Dead)
-	{
-
-		UEnemyHPBarWidgetComponent* HPWidgetComponent = Enemy->GetHPBarWidgetComponent();
-		if (HPWidgetComponent)
-		{
-			const float CurrentHP = Enemy->GetEnemyData().Hp;
-			const float MaxHP = Enemy->GetEnemyData().MaxHp;
-			HPWidgetComponent->SetHPBar(CurrentHP / MaxHP);
-		}
-	}
-}

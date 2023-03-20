@@ -214,8 +214,7 @@ void AportfolioCharacter::DefaultAttack(const FInputActionValue& Value)
 			UAnimMontage* AttackMontage = AnimInstance->GetDefaultAttackMontage();
 			if (AttackMontage && CharacterMWComponent)
 			{
-				CharacterMWComponent->AddOrUpdateWarpTargetFromLocation(FName("MoveForward"), GetActorLocation() + GetActorForwardVector() * AttackForwardDistance);
-				
+				UpdateWarpForwardLocation("MoveForward", AttackForwardDistance);
 				AnimInstance->Montage_Play(AttackMontage);
 
 				FName SectionName;
@@ -338,6 +337,14 @@ void AportfolioCharacter::SkillManagerFour()
 FVector AportfolioCharacter::GetMeleeAttackLocation()
 {
 	return GetActorLocation() + GetActorForwardVector() * MeleeAttackDistance;
+}
+
+void AportfolioCharacter::UpdateWarpForwardLocation(const FName WarpName, const float Distance)
+{
+	if (CharacterMWComponent)
+	{
+		CharacterMWComponent->AddOrUpdateWarpTargetFromLocation(WarpName, GetActorLocation() + GetActorForwardVector() * Distance);
+	}
 }
 
 void AportfolioCharacter::DoubleJump()

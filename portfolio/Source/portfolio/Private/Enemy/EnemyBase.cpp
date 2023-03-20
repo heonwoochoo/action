@@ -16,6 +16,7 @@
 #include "MotionWarpingComponent.h"
 #include "HUD/HUDBase.h"
 #include "Controller/CharacterController.h"
+#include "HUD/DamageText.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -25,11 +26,6 @@ AEnemyBase::AEnemyBase()
 
 	SetRootComponent(GetCapsuleComponent());
 	TargetWidgetComponent = CreateDefaultSubobject<UTargetWidgetComponent>(TEXT("TargetImgComponent"));
-	if (TargetWidgetComponent)
-	{
-		TargetWidgetComponent->SetupAttachment(GetCapsuleComponent());
-		TargetWidgetComponent->SetVisibility(false);
-	}
 
 	HPBarWidgetComponent = CreateDefaultSubobject<UEnemyHPBarWidgetComponent>(TEXT("HPBarComponent"));
 	if (HPBarWidgetComponent)
@@ -49,7 +45,11 @@ void AEnemyBase::BeginPlay()
 	if (DataAsset)
 	{
 		EnemyData = DataAsset->EnemyDatas[Name];
-		UE_LOG(LogTemp, Warning, TEXT("HP: %f"), EnemyData.Hp);
+	}
+
+	if (TargetWidgetComponent)
+	{
+		TargetWidgetComponent->SetTargetVisible(false);
 	}
 }
 
@@ -58,7 +58,11 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	EnemyData.Hp -= DamageAmount;
+
+	DisplayDamageText(DamageAmount);
+
 	UpdateHPBar();
+
 	UEnemyAnimInstance* AnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
 	if (AnimInstance && State != EEnemyState::EES_Dead)
 	{
@@ -75,7 +79,8 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 
 void AEnemyBase::TargetTimerEnd()
 {
-	SetTargetImgVisibie(false);
+	TargetWidgetComponent->SetTargetVisible(false);
+	//SetTargetImgVisibie(false);
 	if (State == EEnemyState::EES_Targeted) State = EEnemyState::EES_Unoccupied;
 
 	AportfolioCharacter* Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
@@ -84,7 +89,8 @@ void AEnemyBase::TargetTimerEnd()
 
 void AEnemyBase::DisplayTargetWidget()
 {
-	SetTargetImgVisibie(true);
+	TargetWidgetComponent->SetTargetVisible(true);
+	//SetTargetImgVisibie(true);
 	State = EEnemyState::EES_Targeted;
 	GetWorldTimerManager().SetTimer(TargetTimerHandle, this, &AEnemyBase::TargetTimerEnd, TargetDurationTime, false);
 }
@@ -135,16 +141,20 @@ void AEnemyBase::UpdateHPBar()
 	}
 	else
 	{
-		ACharacterController* PlayerController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-		if (PlayerController)
-		{
-			AHUDBase* HUDBase = Cast<AHUDBase>(PlayerController->GetHUD());
-			if (HUDBase)
-			{
-				HUDBase->SetEnemyHpBar(this);
-			}
-		}
+		const float CurrentHP = GetEnemyData().Hp;
+		const float MaxHP = GetEnemyData().MaxHp;
+		HPBarWidgetComponent->SetHPBar(CurrentHP / MaxHP);
 	}
+}
+
+void AEnemyBase::DisplayDamageText(const float Damage)
+{
+	FVector Location = GetActorLocation();
+	FRotator Rotation = GetActorRotation();
+	FActorSpawnParameters SpawnInfo;
+	ADamageText* DamageText = GetWorld()->SpawnActor<ADamageText>(DamageTextActor,Location, Rotation, SpawnInfo);
+	//ADamageText* DamageText = GetWorld()->SpawnActor<ADamageText>(Location, Rotation, SpawnInfo);
+	DamageText->Initialize(Damage);
 }
 
 void AEnemyBase::Tick(float DeltaTime)

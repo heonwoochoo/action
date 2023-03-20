@@ -14,3 +14,11 @@ void UTargetWidgetComponent::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("TargetWidget"));
 	}
 }
+
+void UTargetWidgetComponent::SetTargetVisible(bool visible)
+{
+	if (TargetWidget)
+	{
+		visible ? TargetWidget->SetVisibility(ESlateVisibility::Visible) : TargetWidget->SetVisibility(ESlateVisibility::Hidden);
+	}	
+}

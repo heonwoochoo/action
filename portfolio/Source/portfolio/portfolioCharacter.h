@@ -76,6 +76,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	FVector GetMeleeAttackLocation();
 
+	UFUNCTION(BlueprintCallable)
+	void UpdateWarpForwardLocation(const FName WarpName, const float Distance);
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

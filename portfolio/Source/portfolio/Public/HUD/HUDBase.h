@@ -20,5 +20,4 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 public:
-	void SetEnemyHpBar(AEnemyBase* Enemy);
 };
