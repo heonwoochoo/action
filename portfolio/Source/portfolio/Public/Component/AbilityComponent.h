@@ -37,41 +37,16 @@ private:
 
 	AportfolioCharacter* Character;
 
-	UAnimInstanceBase* AnimInstance;
-
-
-
-	// Assassin project weapon
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<AKnifeProjectile> KinfeProjectileClass;
-
-	AKnifeProjectile* KinfeProjectile;
 
 	/** Assassin skill */
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AAssassin_SkillOne> SkillOneClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	AAssassin_SkillOne* SkillOne;
 
-	void HandleAssassinSkillOne();
-	void HandleAssassinSkillOneFirst();
-	void HandleAssassinSkillOneSecond();
 
-	// 트레이스로 enemy를 찾아 수리검을 날릴 방향 설정
-	AActor* FindEnemy();
-	AActor* TargetEnemy = nullptr;
-	// 수리검에 맞은 적을 연계 스킬 타겟으로 설정 (enemy에 표식이 종료되면 함께 해제됨)
-	AActor* DashTarget = nullptr;
 
-	float TraceDistance = 2000.f;
-	void RotateToTarget(AActor* Target);
-
-	void HandleAssassinSkillTwo();
-	void HandleAssassinSkillThree();
-	void HandleAssassinSkillFour();
-	/** ====================================*/
 public:
 	UFUNCTION(BlueprintCallable)
 	const FCharacterData GetCharacterData();
@@ -83,13 +58,6 @@ public:
 	void HandleSkillThree();
 	void HandleSkillFour();
 
-
-	/** Assassin skill */
-	UFUNCTION(BlueprintCallable)
-	void ThrowKnife();
-	UFUNCTION(BlueprintCallable)
-	void ResetTarget();
-	void SetDashTarget(AActor* Target);
 
 	UFUNCTION(BlueprintCallable)
 	AAssassin_SkillOne* GetSkillOne() const;

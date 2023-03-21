@@ -13,23 +13,25 @@ AAssassin_SkillOne::AAssassin_SkillOne()
 {
  	PrimaryActorTick.bCanEverTick = false;
 
+}
+
+void AAssassin_SkillOne::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+	if (SkillAsset)
+	{
+		SkillData = SkillAsset->GetCharacterSkills().Find(ECharacterClass::ECC_Assassin)->CharacterSkill[ESkillNumber::ESN_One];
+	}
+}
+
+void AAssassin_SkillOne::BeginPlay()
+{
 	Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (Character)
 	{
 		AnimInstance = Cast<UAnimInstanceBase>(Character->GetMesh()->GetAnimInstance());
 	}
 
-	if (SkillAsset)
-	{
-		SkillData = SkillAsset->GetCharacterSkills().Find(ECharacterClass::ECC_Assassin)->CharacterSkill[ESkillNumber::ESN_One];
-	}
-
-
-}
-
-void AAssassin_SkillOne::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
-{
-	Super::PostEditChangeProperty(PropertyChangedEvent);
 	if (SkillAsset)
 	{
 		SkillData = SkillAsset->GetCharacterSkills().Find(ECharacterClass::ECC_Assassin)->CharacterSkill[ESkillNumber::ESN_One];
@@ -56,6 +58,11 @@ void AAssassin_SkillOne::ThrowKnife()
 	}
 }
 
+void AAssassin_SkillOne::SetDashTarget(AActor* Target)
+{
+	DashTarget = Target;
+}
+
 void AAssassin_SkillOne::PlayAction()
 {
 	if (AnimInstance && SkillData.Animation)
@@ -68,7 +75,6 @@ void AAssassin_SkillOne::PlayAction()
 			if (Enemy)
 			{
 				Enemy->RemoveMark();
-				UE_LOG(LogTemp, Warning, TEXT("Enemy Cast OK"));
 			}
 			SecondAction();
 			SectionName = "Assassin_Skill1_Second";

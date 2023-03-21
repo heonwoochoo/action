@@ -22,6 +22,8 @@ public:
 
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
+	virtual void BeginPlay() override;
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
@@ -55,6 +57,7 @@ private:
 
 	AActor* TargetEnemy;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "ture"))
 	AActor* DashTarget;
 
 	AActor* FindEnemy();
@@ -66,9 +69,10 @@ private:
 	void RotateToTarget(AActor* Target);
 
 public:
+	void PlayAction();
 
 	UFUNCTION(BlueprintCallable)
 	void ThrowKnife();
 
-	void PlayAction();
+	void SetDashTarget(AActor* Target);
 };
