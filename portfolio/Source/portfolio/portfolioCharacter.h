@@ -160,8 +160,6 @@ private:
 	float CapsuleDefaultHalfHeight = 96.f;
 
 	float InitialRelativeLocationZ;
-
-
 	
 
 	// 캐릭터의 동작 상태
