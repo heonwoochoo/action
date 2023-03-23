@@ -19,6 +19,8 @@ protected:
 
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
+	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
 	UAnimMontage* DefaultAttackMontage = nullptr;
 
@@ -56,10 +58,10 @@ private:
 	UPROPERTY(VisibleAnywhere, category = "Character")
 	AportfolioCharacter* Character = nullptr;
 
-	
-	
-
 public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UDataTable* DefaultAnimationDataTable;
+
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
 	float GetForwardSpeed() const;
 
@@ -74,10 +76,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
 	ECharacterClass GetCharacterClass() const;
-
-	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
-	ECharacterEquipState GetCharacterEquipState() const;
-
+	
 	UAnimMontage* GetDefaultAttackMontage() const;
 
 	UAnimMontage* GetDefaultDoubleJumpMontage() const;

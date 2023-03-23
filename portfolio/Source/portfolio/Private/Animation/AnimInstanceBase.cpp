@@ -16,24 +16,18 @@ void UAnimInstanceBase::NativeInitializeAnimation()
 	Character = Cast<AportfolioCharacter>(GetOwningActor());
 
 	// 직업 별 애니메이션 기본 값 포인터 설정
-	// 타입 추가 후 데이터 에셋 파일에도 참조 애니메이션 반드시 설정해줄 것 !
 	if (Character)
 	{
-		UAbilityComponent* AbilityComponent = Character->GetAbilityComponent();
-		if (AbilityComponent && AbilityComponent->GetCharacterSkillAsset())
+		ECharacterClass CharacterClass = Character->GetCharacterClass();
+		if (UCharacterDataAsset* CharacterDataAsset = Character->GetCharacterDataAsset())
 		{
-			ECharacterClass CharacterClass = AbilityComponent->GetCharacterData().Class;
-			if (UCharacterDataAsset* CharacterDataAsset = Character->GetCharacterDataAsset())
-			{
-				DefaultAttackMontage = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->DefaultAttack;
-				DefaultJump = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->DefaultJump;
-				DefaultDoubleJumpMontage = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->DefaultDoubleJump;
-				DefaultWalkRunBlendSpace = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->WalkRunBlendSpace;
-				DefaultEquippedIdle = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->EquippedIdle;
-				DefaultUnequippedIdle = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->UnequippedIdle;
-				DefaultEvadeMontage = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->Evade;
-				SkillOne = AbilityComponent->GetCharacterSkillAsset()->GetAnimation(CharacterClass, ESkillNumber::ESN_One);
-			}
+			DefaultAttackMontage = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->DefaultAttack;
+			DefaultJump = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->DefaultJump;
+			DefaultDoubleJumpMontage = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->DefaultDoubleJump;
+			DefaultWalkRunBlendSpace = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->WalkRunBlendSpace;
+			DefaultEquippedIdle = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->EquippedIdle;
+			DefaultUnequippedIdle = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->UnequippedIdle;
+			DefaultEvadeMontage = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->Evade;
 		}
 	}
 }
@@ -86,25 +80,11 @@ ECharacterClass UAnimInstanceBase::GetCharacterClass() const
 		UAbilityComponent* CharacterAbilityComponent = Character->GetAbilityComponent();
 		if (CharacterAbilityComponent)
 		{
-			return CharacterAbilityComponent->GetCharacterData().Class;
+			return Character->GetCharacterClass();
 		}
 	}
 
 	return ECharacterClass::ECC_None;
-}
-
-ECharacterEquipState UAnimInstanceBase::GetCharacterEquipState() const
-{
-	if (Character)
-	{
-		UAbilityComponent* CharacterAbilityComponent = Character->GetAbilityComponent();
-		if (CharacterAbilityComponent)
-		{
-			return CharacterAbilityComponent->GetCharacterData().EquipState;
-		}
-	}
-
-	return ECharacterEquipState::ECES_Unquipped;
 }
 
 UAnimMontage* UAnimInstanceBase::GetDefaultAttackMontage() const

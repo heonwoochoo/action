@@ -16,6 +16,7 @@ class UAbilityComponent;
 class UCharacterDataAsset;
 class UAnimInstanceBase;
 class UCharacterMotionWarpingComponent;
+class UDataTable;
 
 UCLASS(config=Game)
 class AportfolioCharacter : public ACharacter
@@ -36,8 +37,6 @@ protected:
 	
 	// To add mapping context
 	virtual void BeginPlay();
-
-	
 
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -78,6 +77,8 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateWarpForwardLocation(const FName WarpName, const float Distance);
+
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
 public:
 	/** Returns CameraBoom subobject **/
@@ -174,7 +175,20 @@ private:
 
 	void UpSizeCapsule(float DeltaTime);
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
+	FCharacterStats DefaultStats;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
+	ECharacterClass DefaultClass;
+
+
 public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UDataTable* StatsDataTable;
+
+
+
+
 	UFUNCTION(BlueprintCallable)
 	UAbilityComponent* GetAbilityComponent() const;
 
@@ -205,5 +219,8 @@ public:
 	void OnAnimationEnded(UAnimMontage* AnimClass, bool bInterrupted);
 
 	UCharacterMotionWarpingComponent* GetMotionWarpingComponent() const;
+	
+	UFUNCTION()
+	ECharacterClass GetCharacterClass();
 };
 

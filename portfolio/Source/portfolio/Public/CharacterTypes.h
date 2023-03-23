@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/DataTable.h"
 #include "CharacterTypes.generated.h"
 
 class UAnimMontage;
@@ -26,6 +27,21 @@ enum class ECharacterClass : uint8
 	ECC_None UMETA(DisplayName = "None")
 };
 
+UENUM(BlueprintType)
+enum class ECharacterLevel : uint8
+{
+	ECL_Level1 UMETA(DisplayName = "Level1"),
+	ECL_Level2 UMETA(DisplayName = "Level2"),
+	ECL_Level3 UMETA(DisplayName = "Level3"),
+	ECL_Level4 UMETA(DisplayName = "Level4"),
+	ECL_Level5 UMETA(DisplayName = "Level5"),
+	ECL_Level6 UMETA(DisplayName = "Level6"),
+	ECL_Level7 UMETA(DisplayName = "Level7"),
+	ECL_Level8 UMETA(DisplayName = "Level8"),
+	ECL_Level9 UMETA(DisplayName = "Level9"),
+	ECL_Level10 UMETA(DisplayName = "Level10")
+};
+
 USTRUCT(BlueprintType)
 struct FCharacterData
 {
@@ -36,6 +52,46 @@ struct FCharacterData
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	ECharacterClass Class;
+
+};
+
+USTRUCT(BlueprintType)
+struct FCharacterStats : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float AttackDamage;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float AttackDamageDefense;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float AttackSpeed;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Critical;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float AbilityPoint;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float AbilityPointDefense;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float CoolDown;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float MovementSpeed;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float HPMax;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float StaminaMax;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float ExpMax;
 };
 
 USTRUCT(BlueprintType)
@@ -107,9 +163,12 @@ enum class ESkillNumber : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FCharacterSkill
+struct FCharacterSkill : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	ESkillNumber Number;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FName Name;
@@ -152,4 +211,22 @@ struct FSkillReference
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TMap<ESkillNumber, AActor*> Skills;
+};
+
+USTRUCT(BlueprintType)
+struct FCharacterSkills : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TMap<ECharacterClass, FCharacterSkill> CharacterSkill;
+};
+
+USTRUCT(BlueprintType)
+struct FCharacterDefaultAnimations : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FCharacterDefaultAnimation DefaultAnimations;
 };

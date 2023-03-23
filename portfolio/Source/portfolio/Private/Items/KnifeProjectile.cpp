@@ -8,6 +8,7 @@
 #include "portfolio/portfolioCharacter.h"
 #include "Component/AbilityComponent.h"
 #include "Skill/Assassin_SkillOne.h"
+#include "Component/AssassinComponent.h"
 
 
 // Sets default values
@@ -70,7 +71,13 @@ void AKnifeProjectile::OnKnifeEffect(AActor* HitActor)
 	if (Caster)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Caster is OK"));
-		Caster->GetAbilityComponent()->GetSkillOne()->SetDashTarget(HitActor);
+
+		UAssassinComponent* AssassinComponent = Cast<UAssassinComponent>(Caster->GetAbilityComponent());
+		if (AssassinComponent)
+		{
+			AssassinComponent->SetDashTarget(HitActor);
+		}
+		
 
 		// Damage event call
 		Caster->CheckEnemyInRange(GetActorLocation(), 50.f, 20.f);

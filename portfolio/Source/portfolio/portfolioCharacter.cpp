@@ -66,6 +66,8 @@ AportfolioCharacter::AportfolioCharacter()
 
 
 	InitialRelativeLocationZ = 0.f;
+
+	DefaultClass = ECharacterClass::ECC_Assassin;
 }
 
 void AportfolioCharacter::Tick(float DeltaTime)
@@ -312,26 +314,17 @@ void AportfolioCharacter::SkillManagerOne()
 
 void AportfolioCharacter::SkillManagerTwo()
 {
-	if (AbilityComponent)
-	{
-		AbilityComponent->HandleSkillTwo();
-	}
+
 }
 
 void AportfolioCharacter::SkillManagerThree()
 {
-	if (AbilityComponent)
-	{
-		AbilityComponent->HandleSkillThree();
-	}
+
 }
 
 void AportfolioCharacter::SkillManagerFour()
 {
-	if (AbilityComponent)
-	{
-		AbilityComponent->HandleSkillFour();
-	}
+
 }
 
 FVector AportfolioCharacter::GetMeleeAttackLocation()
@@ -344,6 +337,16 @@ void AportfolioCharacter::UpdateWarpForwardLocation(const FName WarpName, const 
 	if (CharacterMWComponent)
 	{
 		CharacterMWComponent->AddOrUpdateWarpTargetFromLocation(WarpName, GetActorLocation() + GetActorForwardVector() * Distance);
+	}
+}
+
+void AportfolioCharacter::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	if (StatsDataTable)
+	{
+		DefaultStats = *StatsDataTable->FindRow<FCharacterStats>(FName("Default"), "");
 	}
 }
 
@@ -449,6 +452,11 @@ void AportfolioCharacter::OnAnimationEnded(UAnimMontage* AnimClass, bool bInterr
 UCharacterMotionWarpingComponent* AportfolioCharacter::GetMotionWarpingComponent() const
 {
 	return CharacterMWComponent;
+}
+
+ECharacterClass AportfolioCharacter::GetCharacterClass()
+{
+	return DefaultClass;
 }
 void AportfolioCharacter::DownSizeCapsule(float DeltaTime)
 {
