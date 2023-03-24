@@ -37,8 +37,23 @@ void UAbilityComponent::InitializeComponent()
 	}
 }
 
+void UAbilityComponent::EndSkillOneTimer()
+{
+	UE_LOG(LogTemp, Warning, TEXT("End Skill Timer"));
+	bCanSkillOne = true;
+}
+
+void UAbilityComponent::SetSkillOneTimer()
+{
+	GetWorld()->GetTimerManager().SetTimer(SkillOneHandle, this, &UAbilityComponent::EndSkillOneTimer, SkillOne.CoolDown, false);
+}
+
 void UAbilityComponent::HandleSkillOne()
 {
+	if (bCanSkillOne)
+	{
+		SetSkillOneTimer();
+	}
 }
 
 

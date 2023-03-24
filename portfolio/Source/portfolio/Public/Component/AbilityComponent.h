@@ -36,6 +36,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	FCharacterSkill SkillOne;
 
+	bool bCanSkillOne = true;
+
+	FTimerHandle SkillOneHandle;
+	void EndSkillOneTimer();
+	void SetSkillOneTimer();
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

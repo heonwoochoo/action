@@ -46,7 +46,6 @@ protected:
 	
 
 private:
-
 	AActor* TargetEnemy;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "ture"))

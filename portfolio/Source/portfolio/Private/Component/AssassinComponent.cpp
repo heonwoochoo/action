@@ -126,10 +126,14 @@ void UAssassinComponent::HandleSkillOne()
 			SkillOne_Second();
 			SectionName = SectionName_Second;
 			DashTarget = nullptr;
+			SetSkillOneTimer();
 		}
 		else
 		{
+			if (!bCanSkillOne) return;
+			bCanSkillOne = false;
 			SkillOne_First();
+
 			SectionName = SectionName_First;
 		}
 		AnimInstance->Montage_Play(SkillOne.Animation);
