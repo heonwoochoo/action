@@ -61,5 +61,6 @@ void UAbilityComponent::HandleSkillOne()
 void UAbilityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
 }
 

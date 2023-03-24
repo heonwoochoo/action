@@ -10,6 +10,7 @@
 class UTextBlock;
 class UProgressBar;
 class AportfolioCharacter;
+class UAbilityComponent;
 
 UCLASS()
 class PORTFOLIO_API UInfoContainer : public UUserWidget
@@ -18,8 +19,11 @@ class PORTFOLIO_API UInfoContainer : public UUserWidget
 	
 public:
 	virtual void NativeConstruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	AportfolioCharacter* Character;
+
+	UAbilityComponent* AbilityComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* ADText;
@@ -68,6 +72,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* GoldText;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* SkillOneCoolDownText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UProgressBar* SkillOneCoolDownProgressBar;
+
+
 	void Init();
 
 	void UpdateADText();
@@ -85,4 +96,6 @@ public:
 
 	void UpdateLevel();
 	void UpdateGold();
+
+	void UpdateSkillOne();
 };

@@ -7,14 +7,27 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/ProgressBar.h"
 #include "CharacterTypes.h"
+#include "Component/AbilityComponent.h"
 
 void UInfoContainer::NativeConstruct()
 {
+	Super::NativeConstruct();
 	 Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	 if (Character)
 	 { 
-		 Init();
+		 AbilityComponent = Character->GetAbilityComponent();
+		 if (AbilityComponent)
+		 {
+			 Init();
+		 }
 	 }
+}
+
+void UInfoContainer::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+	
+	UpdateSkillOne();
 }
 
 void UInfoContainer::Init()
@@ -32,6 +45,7 @@ void UInfoContainer::Init()
 	UpdateExp();
 	UpdateLevel();
 	UpdateGold();
+	UpdateSkillOne();
 }
 
 void UInfoContainer::UpdateADText()
@@ -101,4 +115,21 @@ void UInfoContainer::UpdateLevel()
 void UInfoContainer::UpdateGold()
 {
 	GoldText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().GetGold())));
+}
+
+void UInfoContainer::UpdateSkillOne()
+{
+	if (AbilityComponent && !AbilityComponent->GetCanSkillOne())
+	{
+		float RemainingTime = GetWorld()->GetTimerManager().GetTimerRemaining(AbilityComponent->GetSkillOneHandle());
+		if (RemainingTime != -1)
+		{
+			SkillOneCoolDownText->SetText(FText::FromString(FString::FromInt((FMath::RoundToInt(RemainingTime)))));
+			SkillOneCoolDownProgressBar->SetPercent(RemainingTime / AbilityComponent->GetSkillOne().CoolDown);
+		}
+	}
+	else
+	{
+		SkillOneCoolDownText->SetText(FText::GetEmpty());
+	}
 }

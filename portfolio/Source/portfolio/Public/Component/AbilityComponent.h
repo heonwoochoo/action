@@ -33,22 +33,35 @@ protected:
 
 	UAnimInstanceBase* AnimInstance;
 
+	/** One */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	FCharacterSkill SkillOne;
 
 	bool bCanSkillOne = true;
 
 	FTimerHandle SkillOneHandle;
+	
 	void EndSkillOneTimer();
+	
 	void SetSkillOneTimer();
+
+	/** Two */
+	/** Three */
+	/** Four */
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UDataTable* SkillDataTable;
 
+	/** One */
 	UFUNCTION(BlueprintCallable)
-
 	virtual void HandleSkillOne();
 
-	FORCEINLINE FCharacterSkill& GetSkillOne() { return SkillOne; };
+	FORCEINLINE FCharacterSkill& GetSkillOne() { return SkillOne; }
+	FORCEINLINE bool GetCanSkillOne() const { return bCanSkillOne; }
+	FORCEINLINE FTimerHandle GetSkillOneHandle() const { return SkillOneHandle; }
+
+	/** Two */
+	/** Three */
+	/** Four */
 };
