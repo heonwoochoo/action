@@ -16,18 +16,18 @@ void UAnimInstanceBase::NativeInitializeAnimation()
 	Character = Cast<AportfolioCharacter>(GetOwningActor());
 
 	// 직업 별 애니메이션 기본 값 포인터 설정
-	if (Character)
+	if (Character && DefaultAnimationDataTable)
 	{
 		ECharacterClass CharacterClass = Character->GetCharacterClass();
-		if (UCharacterDataAsset* CharacterDataAsset = Character->GetCharacterDataAsset())
+		if (CharacterClass == ECharacterClass::ECC_Assassin)
 		{
-			DefaultAttackMontage = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->DefaultAttack;
-			DefaultJump = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->DefaultJump;
-			DefaultDoubleJumpMontage = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->DefaultDoubleJump;
-			DefaultWalkRunBlendSpace = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->WalkRunBlendSpace;
-			DefaultEquippedIdle = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->EquippedIdle;
-			DefaultUnequippedIdle = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->UnequippedIdle;
-			DefaultEvadeMontage = CharacterDataAsset->DefaultAnimations.Find(CharacterClass)->Evade;
+			DefaultAttackMontage = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimations>(FName("Assassin"), "")->DefaultAnimations.DefaultAttack;
+			DefaultJump = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimations>(FName("Assassin"), "")->DefaultAnimations.DefaultJump;
+			DefaultDoubleJumpMontage = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimations>(FName("Assassin"), "")->DefaultAnimations.DefaultDoubleJump;
+			DefaultWalkRunBlendSpace = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimations>(FName("Assassin"), "")->DefaultAnimations.WalkRunBlendSpace;
+			DefaultEquippedIdle = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimations>(FName("Assassin"), "")->DefaultAnimations.EquippedIdle;
+			DefaultUnequippedIdle = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimations>(FName("Assassin"), "")->DefaultAnimations.UnequippedIdle;
+			DefaultEvadeMontage = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimations>(FName("Assassin"), "")->DefaultAnimations.Evade;
 		}
 	}
 }
