@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "Data/CharacterDataAsset.h"
 #include "AnimInstanceBase.generated.h"
 
 class AportfolioCharacter;
+class UDataTable;
 
 UCLASS()
 class PORTFOLIO_API UAnimInstanceBase : public UAnimInstance

@@ -2,7 +2,6 @@
 
 
 #include "Enemy/EnemyBase.h"
-#include "Data/EnemyDataAsset.h"
 #include "HUD/TargetWidgetComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -17,6 +16,7 @@
 #include "Controller/CharacterController.h"
 #include "HUD/DamageText.h"
 #include "HUD/TargetMark.h"
+#include "EnemyTypes.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -39,9 +39,12 @@ void AEnemyBase::BeginPlay()
 	Super::BeginPlay();
 	
 	GetMesh()->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBase::OnBeginOverlapped);
-	if (DataAsset)
+	if (EnemyStatsDataTable)
 	{
-		EnemyData = DataAsset->EnemyDatas[Name];
+		if (Name == EEnemyName::EEN_Man)
+		{
+			Stats = *EnemyStatsDataTable->FindRow<FEnemyStats>(FName("Man"), "");
+		}
 	}
 }
 
@@ -49,7 +52,7 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	EnemyData.Hp -= DamageAmount;
+	Stats.Hp -= DamageAmount;
 
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 	if (CharacterController)
@@ -58,7 +61,7 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 		if (HUDBase) HUDBase->ShowDamageOnScreen(this, DamageAmount);
 	}
 	
-	EnemyData.Hp <= 0.f ? Die() : UpdateHPBar();
+	Stats.Hp <= 0.f ? Die() : UpdateHPBar();
 
 	UEnemyAnimInstance* AnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
 	if (AnimInstance && State != EEnemyState::EES_Dead)
@@ -80,7 +83,6 @@ void AEnemyBase::Die()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SetLifeSpan(3.f);
 }
-
 
 
 EEnemyState AEnemyBase::GetState() const
@@ -126,8 +128,8 @@ void AEnemyBase::HitRotationEnd()
 
 void AEnemyBase::UpdateHPBar()
 {
-	const float CurrentHP = GetEnemyData().Hp;
-	const float MaxHP = GetEnemyData().MaxHp;
+	const float CurrentHP = GetEnemyStats().Hp;
+	const float MaxHP = GetEnemyStats().MaxHp;
 	HPBarWidgetComponent->SetHPBar(CurrentHP / MaxHP);
 }
 
@@ -151,8 +153,12 @@ void AEnemyBase::Tick(float DeltaTime)
 void AEnemyBase::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
-	if (DataAsset)
+
+	if (EnemyStatsDataTable)
 	{
-		EnemyData = DataAsset->EnemyDatas[Name];
+		if (Name == EEnemyName::EEN_Man)
+		{
+			Stats = *EnemyStatsDataTable->FindRow<FEnemyStats>(FName("Man"), "");
+		}
 	}
 }

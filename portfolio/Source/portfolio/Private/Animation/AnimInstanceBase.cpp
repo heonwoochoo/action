@@ -6,7 +6,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Component/AbilityComponent.h"
-#include "Data/CharacterSkillAsset.h"
 #include "CharacterTypes.h"
 
 void UAnimInstanceBase::NativeInitializeAnimation()
@@ -21,13 +20,13 @@ void UAnimInstanceBase::NativeInitializeAnimation()
 		ECharacterClass CharacterClass = Character->GetCharacterClass();
 		if (CharacterClass == ECharacterClass::ECC_Assassin)
 		{
-			DefaultAttackMontage = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimations>(FName("Assassin"), "")->DefaultAnimations.DefaultAttack;
-			DefaultJump = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimations>(FName("Assassin"), "")->DefaultAnimations.DefaultJump;
-			DefaultDoubleJumpMontage = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimations>(FName("Assassin"), "")->DefaultAnimations.DefaultDoubleJump;
-			DefaultWalkRunBlendSpace = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimations>(FName("Assassin"), "")->DefaultAnimations.WalkRunBlendSpace;
-			DefaultEquippedIdle = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimations>(FName("Assassin"), "")->DefaultAnimations.EquippedIdle;
-			DefaultUnequippedIdle = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimations>(FName("Assassin"), "")->DefaultAnimations.UnequippedIdle;
-			DefaultEvadeMontage = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimations>(FName("Assassin"), "")->DefaultAnimations.Evade;
+			DefaultAttackMontage = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->DefaultAttack;
+			DefaultJump = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->DefaultJump;
+			DefaultDoubleJumpMontage = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->DefaultDoubleJump;
+			DefaultWalkRunBlendSpace = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->WalkRunBlendSpace;
+			DefaultEquippedIdle = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->EquippedIdle;
+			DefaultUnequippedIdle = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->UnequippedIdle;
+			DefaultEvadeMontage = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->Evade;
 		}
 	}
 }

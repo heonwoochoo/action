@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/DataTable.h"
 #include "EnemyTypes.generated.h"
 
 class UAnimMontage;
@@ -39,10 +40,48 @@ struct FEnemyData
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float RespawnTime;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Exp;
 };
 
 USTRUCT(BlueprintType)
 struct FEnemyAnimData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* HitReactOnGround;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UBlendSpace1D* IdleWalkRun;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* Dead;
+};
+
+USTRUCT(BlueprintType)
+struct FEnemyStats : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Damage;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float MaxHp;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Hp;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float RespawnTime;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Exp;
+};
+
+USTRUCT(BlueprintType)
+struct FEnemyDefaultAnimation : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 

@@ -381,11 +381,6 @@ UAbilityComponent* AportfolioCharacter::GetAbilityComponent() const
 	return AbilityComponent;
 }
 
-UCharacterDataAsset* AportfolioCharacter::GetCharacterDataAsset() const
-{
-	return CharacterDataAsset;
-}
-
 void AportfolioCharacter::AttackChainStart()
 {
 	CharacterActionState = ECharacterActionState::ECAS_AttackCombo;

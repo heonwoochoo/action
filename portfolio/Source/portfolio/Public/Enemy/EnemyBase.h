@@ -41,24 +41,24 @@ protected:
 	float KnockBackDistance = 30.f;
 
 private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
+	UDataTable* EnemyStatsDataTable;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
+	FEnemyStats Stats;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EEnemyState State = EEnemyState::EES_Unoccupied;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UEnemyDataAsset* DataAsset;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EEnemyName Name;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FEnemyData EnemyData;
 
 	AActor* HeadUpMark;
 
 	void Die();
 
 public:
-	FORCEINLINE FEnemyData GetEnemyData() const { return EnemyData; }
+	FORCEINLINE FEnemyStats GetEnemyStats() const { return Stats; }
 	FORCEINLINE UEnemyHPBarWidgetComponent* GetHPBarWidgetComponent() const { return HPBarWidgetComponent;}
 
 	EEnemyState GetState() const;

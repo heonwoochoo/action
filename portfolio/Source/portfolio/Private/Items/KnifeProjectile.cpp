@@ -7,7 +7,6 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "portfolio/portfolioCharacter.h"
 #include "Component/AbilityComponent.h"
-#include "Skill/Assassin_SkillOne.h"
 #include "Component/AssassinComponent.h"
 
 

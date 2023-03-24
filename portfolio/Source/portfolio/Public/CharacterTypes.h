@@ -95,7 +95,7 @@ struct FCharacterStats : public FTableRowBase
 };
 
 USTRUCT(BlueprintType)
-struct FCharacterDefaultAnimation
+struct FCharacterDefaultAnimation : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -220,13 +220,4 @@ struct FCharacterSkills : public FTableRowBase
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TMap<ECharacterClass, FCharacterSkill> CharacterSkill;
-};
-
-USTRUCT(BlueprintType)
-struct FCharacterDefaultAnimations : public FTableRowBase
-{
-	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FCharacterDefaultAnimation DefaultAnimations;
 };

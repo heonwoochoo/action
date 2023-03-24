@@ -13,7 +13,6 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 class UAbilityComponent;
-class UCharacterDataAsset;
 class UAnimInstanceBase;
 class UCharacterMotionWarpingComponent;
 class UDataTable;
@@ -141,9 +140,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability, meta = (AllowPrivateAccess = "true"))
 	UCharacterMotionWarpingComponent* CharacterMWComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UCharacterDataAsset* CharacterDataAsset;
-
 	UAnimInstanceBase* AnimInstance;
 	
 	bool bCanAttack = true;
@@ -186,13 +182,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UDataTable* StatsDataTable;
 
-
-
-
 	UFUNCTION(BlueprintCallable)
 	UAbilityComponent* GetAbilityComponent() const;
-
-	UCharacterDataAsset* GetCharacterDataAsset() const;
 
 	UFUNCTION(BlueprintCallable)
 	void AttackChainStart();

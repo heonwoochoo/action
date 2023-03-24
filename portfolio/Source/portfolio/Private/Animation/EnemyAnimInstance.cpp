@@ -2,23 +2,19 @@
 
 
 #include "Animation/EnemyAnimInstance.h"
-#include "Data/EnemyAnimDataAsset.h"
 #include "Enemy/EnemyBase.h"
+#include "EnemyTypes.h"
 
 void UEnemyAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-	if (AnimDataAsset)
+
+	AEnemyBase* Enemy = Cast<AEnemyBase>(GetOwningActor());
+	if (Enemy && EnemyDefaultAnimationsDataTable)
 	{
-		AEnemyBase* Enemy = Cast<AEnemyBase>(GetOwningActor());
-		if (Enemy)
-		{
-			const EEnemyName Name = Enemy->GetName();
-			HitReactOnGround = AnimDataAsset->EnemyAnimDatas.Find(Name)->HitReactOnGround;
-			IdleWalkRun = AnimDataAsset->EnemyAnimDatas.Find(Name)->IdleWalkRun;
-			Dead = AnimDataAsset->EnemyAnimDatas.Find(Name)->Dead;
-			
-		}
+		HitReactOnGround = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(FName("Man"), "")->HitReactOnGround;
+		IdleWalkRun = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(FName("Man"), "")->IdleWalkRun;
+		Dead = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(FName("Man"), "")->Dead;
 	}
 }
 

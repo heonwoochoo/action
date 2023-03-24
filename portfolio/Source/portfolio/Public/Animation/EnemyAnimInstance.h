@@ -37,9 +37,9 @@ protected:
 	EEnemyState State;
 
 private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UEnemyAnimDataAsset* AnimDataAsset;
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
+	UDataTable* EnemyDefaultAnimationsDataTable;
+	
 
 public:
 	void PlayHitReactOnGround();
