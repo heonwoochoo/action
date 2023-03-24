@@ -12,6 +12,8 @@ class UTargetWidgetComponent;
 class UEnemyHPBarWidgetComponent;
 class UMotionWarpingComponent;
 class ADamageText;
+class UPawnSensingComponent;
+class AAIController;
 
 UCLASS()
 class PORTFOLIO_API AEnemyBase : public ACharacter
@@ -24,6 +26,26 @@ public:
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 protected:
 	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere)
+	UPawnSensingComponent* PawnSensing;
+
+	/*
+	* Navigation
+	*/
+	UPROPERTY()
+	AAIController* EnemyController;
+
+	// Current patrol target
+	UPROPERTY(EditInstanceOnly, Category = "AI Navigation");
+	AActor* PatrolTarget;
+
+	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
+	TArray<AActor*> PatrolTargets;
+
+	void PawnSeen(APawn* Pawn);
+
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTargetWidgetComponent* TargetWidgetComponent;

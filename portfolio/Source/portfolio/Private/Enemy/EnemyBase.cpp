@@ -17,6 +17,8 @@
 #include "HUD/DamageText.h"
 #include "HUD/TargetMark.h"
 #include "EnemyTypes.h"
+#include "Perception/PawnSensingComponent.h"
+#include "AIController.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -32,6 +34,17 @@ AEnemyBase::AEnemyBase()
 	}
 	
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
+
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+
+	PawnSensing = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensing"));
+	PawnSensing->SetPeripheralVisionAngle(45.f);
+	PawnSensing->SightRadius = 2000.f;
+
+	
 }
 
 void AEnemyBase::BeginPlay()
@@ -46,6 +59,16 @@ void AEnemyBase::BeginPlay()
 			Stats = *EnemyStatsDataTable->FindRow<FEnemyStats>(FName("Man"), "");
 		}
 	}
+
+	if (PawnSensing) PawnSensing->OnSeePawn.AddDynamic(this, &AEnemyBase::PawnSeen);
+	EnemyController = Cast<AAIController>(GetController());
+}
+
+void AEnemyBase::PawnSeen(APawn* Pawn)
+{
+	
+	UE_LOG(LogTemp, Warning, TEXT("Hello Pawn"));
+	
 }
 
 float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
