@@ -18,6 +18,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Controller/CharacterController.h"
 #include "Enemy/EnemyBase.h"
+#include "HelperFunction.h"
 
 // AportfolioCharacter
 
@@ -43,7 +44,7 @@ AportfolioCharacter::AportfolioCharacter()
 	// instead of recompiling to adjust them
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkSpeed;
+	
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
@@ -64,6 +65,7 @@ AportfolioCharacter::AportfolioCharacter()
 	// Create MotionWarpingComponent;
 	CharacterMWComponent = CreateDefaultSubobject<UCharacterMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 
+	
 
 	InitialRelativeLocationZ = 0.f;
 
@@ -88,10 +90,17 @@ void AportfolioCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
 	AnimInstance = Cast<UAnimInstanceBase>(GetMesh()->GetAnimInstance());
 	if (AnimInstance)
 	{
 		AnimInstance->OnMontageEnded.AddDynamic(this, &AportfolioCharacter::OnAnimationEnded);
+	}
+
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = DefaultStats.GetMovementSpeed();
+		SprintMaxSpeed = DefaultStats.GetMovementSpeed() * 2.f;
 	}
 }
 
@@ -106,7 +115,7 @@ void AportfolioCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 		//Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AportfolioCharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-
+		
 		//Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AportfolioCharacter::Move);
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &AportfolioCharacter::MoveEnd);
@@ -155,7 +164,10 @@ void AportfolioCharacter::Move(const FInputActionValue& Value)
 
 		if (GetVelocity().Size() > 0.f 
 			&& CharacterActionState != ECharacterActionState::ECAS_Evade
-			&& CharacterActionState != ECharacterActionState::ECAS_Jump)
+			&& CharacterActionState != ECharacterActionState::ECAS_Jump
+			&& CharacterActionState != ECharacterActionState::ECAS_Attack
+			&& CharacterActionState != ECharacterActionState::ECAS_AttackCombo
+			&& CharacterActionState != ECharacterActionState::ECAS_Sprint)
 		{
 			if (MovementVector.Y)
 			{
@@ -409,7 +421,7 @@ void AportfolioCharacter::CheckEnemyInRange(const FVector Location, const float 
 		{
 			TSubclassOf<UDamageType> DamageType;
 			ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-			UGameplayStatics::ApplyDamage(Enemy, Damage, CharacterController, this, DamageType);
+			UGameplayStatics::ApplyDamage(Enemy, UHelperFunction::GetRandomDamage(Damage, DefaultStats.GetCritical()), CharacterController, this, DamageType);
 		}
 	}
 }

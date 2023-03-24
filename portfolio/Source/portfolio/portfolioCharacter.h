@@ -152,7 +152,7 @@ private:
 
 	float DefaultMaxWalkSpeed = 400.f;
 
-	float SprintMaxSpeed = 800.f;
+	float SprintMaxSpeed;
 
 	float CapsuleDefaultHalfHeight = 96.f;
 
@@ -213,5 +213,7 @@ public:
 	
 	UFUNCTION()
 	ECharacterClass GetCharacterClass();
+
+	FORCEINLINE FCharacterStats GetCharacterStats() const { return DefaultStats; }
 };
 

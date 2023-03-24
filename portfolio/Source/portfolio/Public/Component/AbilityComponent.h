@@ -44,4 +44,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 
 	virtual void HandleSkillOne();
+
+	FORCEINLINE FCharacterSkill& GetSkillOne() { return SkillOne; };
 };

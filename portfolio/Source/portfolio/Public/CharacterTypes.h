@@ -27,21 +27,6 @@ enum class ECharacterClass : uint8
 	ECC_None UMETA(DisplayName = "None")
 };
 
-UENUM(BlueprintType)
-enum class ECharacterLevel : uint8
-{
-	ECL_Level1 UMETA(DisplayName = "Level1"),
-	ECL_Level2 UMETA(DisplayName = "Level2"),
-	ECL_Level3 UMETA(DisplayName = "Level3"),
-	ECL_Level4 UMETA(DisplayName = "Level4"),
-	ECL_Level5 UMETA(DisplayName = "Level5"),
-	ECL_Level6 UMETA(DisplayName = "Level6"),
-	ECL_Level7 UMETA(DisplayName = "Level7"),
-	ECL_Level8 UMETA(DisplayName = "Level8"),
-	ECL_Level9 UMETA(DisplayName = "Level9"),
-	ECL_Level10 UMETA(DisplayName = "Level10")
-};
-
 USTRUCT(BlueprintType)
 struct FCharacterData
 {
@@ -73,10 +58,10 @@ struct FCharacterStats : public FTableRowBase
 	float Critical;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float AbilityPoint;
+	float AbilityPower;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float AbilityPointDefense;
+	float AbilityPowerDefense;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float CoolDown;
@@ -88,10 +73,105 @@ struct FCharacterStats : public FTableRowBase
 	float HPMax;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float HP;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float StaminaMax;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Stamina;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float ExpMax;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Exp;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int32 Gold;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int32 Level;
+
+	float GetAttackDamage()
+	{
+		return AttackDamage;
+	}
+
+	float GetAttackDamageDefense()
+	{
+		return AttackDamageDefense;
+	}
+
+	float GetAttackSpeed()
+	{
+		return AttackSpeed;
+	}
+
+	float GetCritical()
+	{
+		return Critical;
+	}
+
+	float GetAbilityPower()
+	{
+		return AbilityPower;
+	}
+
+	float GetAbilityPowerDefense()
+	{
+		return AbilityPowerDefense;
+	}
+
+	float GetCoolDown()
+	{
+		return CoolDown;
+	}
+
+	float GetMovementSpeed()
+	{
+		return MovementSpeed;
+	}
+
+	float GetHPMax()
+	{
+		return HPMax;
+	}
+	
+	float GetHP()
+	{
+		return HP;
+	}
+
+	float GetStaminaMax()
+	{
+		return StaminaMax;
+	}
+
+	float GetStamina()
+	{
+		return Stamina;
+	}
+
+	float GetExpMax()
+	{
+		return ExpMax;
+	}
+
+	float GetExp()
+	{
+		return Exp;
+	}
+	
+	int32 GetGold()
+	{
+		return Gold;
+	}
+
+	int32 GetLevel()
+	{
+		return Level;
+	}
 };
 
 USTRUCT(BlueprintType)

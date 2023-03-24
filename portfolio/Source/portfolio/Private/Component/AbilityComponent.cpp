@@ -33,7 +33,6 @@ void UAbilityComponent::InitializeComponent()
 
 	if (SkillDataTable)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Hello world"));
 		SkillOne = *SkillDataTable->FindRow<FCharacterSkills>(FName("AssassinSkillOne"), "")->CharacterSkill.Find(ECharacterClass::ECC_Assassin);
 	}
 }
