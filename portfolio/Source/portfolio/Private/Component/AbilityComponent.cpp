@@ -10,7 +10,7 @@
 // Sets default values for this component's properties
 UAbilityComponent::UAbilityComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
 }
 
@@ -18,7 +18,7 @@ UAbilityComponent::UAbilityComponent()
 void UAbilityComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	PrimaryComponentTick.SetTickFunctionEnable(false);
+	PrimaryComponentTick.SetTickFunctionEnable(true);
 	PrimaryComponentTick.RegisterTickFunction(GetComponentLevel());
 	Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	if (Character)

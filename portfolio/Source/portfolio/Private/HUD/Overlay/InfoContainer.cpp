@@ -154,7 +154,6 @@ void UInfoContainer::UpdateSkillTwo()
 		{
 			SkillTwoCoolDownText->SetText(FText::FromString(FString::FromInt((FMath::RoundToInt(RemainingTime)))));
 			SkillTwoCoolDownProgressBar->SetPercent(RemainingTime / AbilityComponent->GetSkillTwo().CoolDown);
-
 		}
 	}
 	else

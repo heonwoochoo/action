@@ -16,11 +16,16 @@ class PORTFOLIO_API UAssassinComponent : public UAbilityComponent
 	
 
 public:
+	UAssassinComponent();
+
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
 	virtual void BeginPlay() override;
 
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 protected:
+	/** Skill One */
 	// 날아가는 투사체의 클래스
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	TSubclassOf<AKnifeProjectile> KnifeClass;
@@ -43,9 +48,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Montage")
 	FName SectionName_Second = "Assassin_Skill1_Second";
 
-	
+	/** Skill Two */
+	float SkillTwoDashDistance = 1000.f;
+
+	UFUNCTION(BlueprintCallable)
+	void SetCheckSkillTwoDashOverlap(bool CanOverlap);
 
 private:
+	/** Skill One */
 	AActor* TargetEnemy;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "ture"))
@@ -58,6 +68,10 @@ private:
 	void SkillOne_Second();
 
 	void RotateToTarget(AActor* Target);
+
+	/** Skill Two */
+	void SkillTwoDashOverlap();
+	bool bCheckSkillTwoDashOverlap = false;
 
 public:
 

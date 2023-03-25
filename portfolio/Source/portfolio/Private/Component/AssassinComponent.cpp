@@ -9,6 +9,11 @@
 #include "Component/CharacterMotionWarpingComponent.h"
 #include "Items/KnifeProjectile.h"
 
+UAssassinComponent::UAssassinComponent()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+}
+
 void UAssassinComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
@@ -18,7 +23,26 @@ void UAssassinComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyC
 void UAssassinComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	PrimaryComponentTick.SetTickFunctionEnable(true);
+	PrimaryComponentTick.RegisterTickFunction(GetComponentLevel());
 
+}
+
+void UAssassinComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+
+	if (bCheckSkillTwoDashOverlap)
+	{
+		SkillTwoDashOverlap();
+	}
+
+}
+
+void UAssassinComponent::SetCheckSkillTwoDashOverlap(bool CanOverlap)
+{
+	bCheckSkillTwoDashOverlap = CanOverlap;
 }
 
 AActor* UAssassinComponent::FindEnemy()
@@ -81,6 +105,15 @@ void UAssassinComponent::RotateToTarget(AActor* Target)
 		const float TargetRotationYaw = (Target->GetActorLocation() - Character->GetActorLocation()).ToOrientationQuat().Rotator().Yaw;
 		Character->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocationAndRotation(WarpName, Target->GetActorLocation(), FRotator{ 0.f,TargetRotationYaw,0.f });
 	}
+}
+
+void UAssassinComponent::SkillTwoDashOverlap()
+{
+	const TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes{ UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn) };
+	const TArray<AActor*> ActorsToIgnore{ Character };
+	TArray<AActor*> OutActors;
+	UKismetSystemLibrary::SphereOverlapActors(this, Character->GetActorLocation(), 200.f, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
+	DrawDebugSphere(GetWorld(), Character->GetActorLocation(), 200.f, 16, FColor::Orange, false, 0.5f);
 }
 
 void UAssassinComponent::ThrowKnife()
@@ -150,5 +183,9 @@ void UAssassinComponent::HandleSkillTwo()
 		if (!bCanSkillTwo) return;
 		bCanSkillTwo = false;
 		AnimInstance->Montage_Play(SkillTwo.Animation);
+
+		const FName WarpName = "AssassinSkillTwo";
+		const FVector Location = Character->GetActorLocation() + Character->GetActorForwardVector() * SkillTwoDashDistance;
+		Character->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocation(WarpName, Location);
 	}
 }
