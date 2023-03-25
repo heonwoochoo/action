@@ -11,6 +11,7 @@ class UTextBlock;
 class UProgressBar;
 class AportfolioCharacter;
 class UAbilityComponent;
+class UImage;
 
 UCLASS()
 class PORTFOLIO_API UInfoContainer : public UUserWidget
@@ -76,8 +77,19 @@ public:
 	UTextBlock* SkillOneCoolDownText;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* SkillOneImage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UProgressBar* SkillOneCoolDownProgressBar;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* SkillTwoCoolDownText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* SkillTwoImage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UProgressBar* SkillTwoCoolDownProgressBar;
 
 	void Init();
 
@@ -98,4 +110,8 @@ public:
 	void UpdateGold();
 
 	void UpdateSkillOne();
+	void UpdateSkillOneImage();
+
+	void UpdateSkillTwo();
+	void UpdateSkillTwoImage();
 };

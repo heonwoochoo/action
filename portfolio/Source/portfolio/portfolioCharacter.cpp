@@ -329,7 +329,11 @@ void AportfolioCharacter::SkillManagerOne()
 
 void AportfolioCharacter::SkillManagerTwo()
 {
-
+	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
+	{
+		AbilityComponent->HandleSkillTwo();
+		UE_LOG(LogTemp, Warning, TEXT("Skill Two"));
+	}
 }
 
 void AportfolioCharacter::SkillManagerThree()

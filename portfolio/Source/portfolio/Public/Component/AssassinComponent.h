@@ -67,4 +67,5 @@ public:
 	void SetDashTarget(AActor* Target);
 
 	virtual void HandleSkillOne() override;
+	virtual void HandleSkillTwo() override;
 };

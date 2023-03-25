@@ -34,12 +34,13 @@ void UAbilityComponent::InitializeComponent()
 	if (SkillDataTable)
 	{
 		SkillOne = *SkillDataTable->FindRow<FCharacterSkills>(FName("AssassinSkillOne"), "")->CharacterSkill.Find(ECharacterClass::ECC_Assassin);
+		SkillTwo = *SkillDataTable->FindRow<FCharacterSkills>(FName("AssassinSkillTwo"), "")->CharacterSkill.Find(ECharacterClass::ECC_Assassin);
 	}
 }
 
 void UAbilityComponent::EndSkillOneTimer()
 {
-	UE_LOG(LogTemp, Warning, TEXT("End Skill Timer"));
+	UE_LOG(LogTemp, Warning, TEXT("End Skill One Timer"));
 	bCanSkillOne = true;
 }
 
@@ -48,11 +49,30 @@ void UAbilityComponent::SetSkillOneTimer()
 	GetWorld()->GetTimerManager().SetTimer(SkillOneHandle, this, &UAbilityComponent::EndSkillOneTimer, SkillOne.CoolDown, false);
 }
 
+void UAbilityComponent::EndSkillTwoTimer()
+{
+	UE_LOG(LogTemp, Warning, TEXT("End Skill Two Timer"));
+	bCanSkillTwo = true;
+}
+
+void UAbilityComponent::SetSkillTwoTimer()
+{
+	GetWorld()->GetTimerManager().SetTimer(SkillTwoHandle, this, &UAbilityComponent::EndSkillTwoTimer, SkillTwo.CoolDown, false);
+}
+
 void UAbilityComponent::HandleSkillOne()
 {
 	if (bCanSkillOne)
 	{
 		SetSkillOneTimer();
+	}
+}
+
+void UAbilityComponent::HandleSkillTwo()
+{
+	if (bCanSkillTwo)
+	{
+		SetSkillTwoTimer();
 	}
 }
 

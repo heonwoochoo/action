@@ -8,6 +8,7 @@
 #include "Components/ProgressBar.h"
 #include "CharacterTypes.h"
 #include "Component/AbilityComponent.h"
+#include "Components/Image.h"
 
 void UInfoContainer::NativeConstruct()
 {
@@ -28,6 +29,7 @@ void UInfoContainer::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	Super::NativeTick(MyGeometry, InDeltaTime);
 	
 	UpdateSkillOne();
+	UpdateSkillTwo();
 }
 
 void UInfoContainer::Init()
@@ -46,6 +48,9 @@ void UInfoContainer::Init()
 	UpdateLevel();
 	UpdateGold();
 	UpdateSkillOne();
+	UpdateSkillOneImage();
+	UpdateSkillTwo();
+	UpdateSkillTwoImage();
 }
 
 void UInfoContainer::UpdateADText()
@@ -126,10 +131,39 @@ void UInfoContainer::UpdateSkillOne()
 		{
 			SkillOneCoolDownText->SetText(FText::FromString(FString::FromInt((FMath::RoundToInt(RemainingTime)))));
 			SkillOneCoolDownProgressBar->SetPercent(RemainingTime / AbilityComponent->GetSkillOne().CoolDown);
+			
 		}
 	}
 	else
 	{
 		SkillOneCoolDownText->SetText(FText::GetEmpty());
 	}
+}
+
+void UInfoContainer::UpdateSkillOneImage()
+{
+	SkillOneImage->SetBrushFromTexture(AbilityComponent->GetSkillOne().Image);
+}
+
+void UInfoContainer::UpdateSkillTwo()
+{
+	if (AbilityComponent && !AbilityComponent->GetCanSkillTwo())
+	{
+		float RemainingTime = GetWorld()->GetTimerManager().GetTimerRemaining(AbilityComponent->GetSkillTwoHandle());
+		if (RemainingTime != -1)
+		{
+			SkillTwoCoolDownText->SetText(FText::FromString(FString::FromInt((FMath::RoundToInt(RemainingTime)))));
+			SkillTwoCoolDownProgressBar->SetPercent(RemainingTime / AbilityComponent->GetSkillTwo().CoolDown);
+
+		}
+	}
+	else
+	{
+		SkillTwoCoolDownText->SetText(FText::GetEmpty());
+	}
+}
+
+void UInfoContainer::UpdateSkillTwoImage()
+{
+	SkillTwoImage->SetBrushFromTexture(AbilityComponent->GetSkillTwo().Image);
 }

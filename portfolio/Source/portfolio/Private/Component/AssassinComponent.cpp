@@ -140,3 +140,15 @@ void UAssassinComponent::HandleSkillOne()
 		AnimInstance->Montage_JumpToSection(SectionName);
 	}
 }
+
+void UAssassinComponent::HandleSkillTwo()
+{
+	Super::HandleSkillTwo();
+
+	if (AnimInstance && SkillTwo.Animation)
+	{
+		if (!bCanSkillTwo) return;
+		bCanSkillTwo = false;
+		AnimInstance->Montage_Play(SkillTwo.Animation);
+	}
+}

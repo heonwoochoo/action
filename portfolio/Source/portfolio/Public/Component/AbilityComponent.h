@@ -36,16 +36,19 @@ protected:
 	/** One */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	FCharacterSkill SkillOne;
-
+	FTimerHandle SkillOneHandle;
+	void EndSkillOneTimer();
+	void SetSkillOneTimer();
 	bool bCanSkillOne = true;
 
-	FTimerHandle SkillOneHandle;
-	
-	void EndSkillOneTimer();
-	
-	void SetSkillOneTimer();
-
 	/** Two */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
+	FCharacterSkill SkillTwo;
+	FTimerHandle SkillTwoHandle;
+	void EndSkillTwoTimer();
+	void SetSkillTwoTimer();
+	bool bCanSkillTwo = true;
+
 	/** Three */
 	/** Four */
 
@@ -56,12 +59,17 @@ public:
 	/** One */
 	UFUNCTION(BlueprintCallable)
 	virtual void HandleSkillOne();
-
 	FORCEINLINE FCharacterSkill& GetSkillOne() { return SkillOne; }
 	FORCEINLINE bool GetCanSkillOne() const { return bCanSkillOne; }
 	FORCEINLINE FTimerHandle GetSkillOneHandle() const { return SkillOneHandle; }
 
 	/** Two */
+	UFUNCTION(BlueprintCallable)
+	virtual void HandleSkillTwo();
+	FORCEINLINE FCharacterSkill& GetSkillTwo() { return SkillTwo; }
+	FORCEINLINE bool GetCanSkillTwo() const { return bCanSkillTwo; }
+	FORCEINLINE FTimerHandle GetSkillTwoHandle() const { return SkillTwoHandle; }
+
 	/** Three */
 	/** Four */
 };
