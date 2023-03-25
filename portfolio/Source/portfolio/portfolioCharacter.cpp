@@ -19,6 +19,7 @@
 #include "Controller/CharacterController.h"
 #include "Enemy/EnemyBase.h"
 #include "HelperFunction.h"
+#include "Sound/SoundCue.h"
 
 // AportfolioCharacter
 
@@ -51,7 +52,7 @@ AportfolioCharacter::AportfolioCharacter()
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
+	CameraBoom->TargetArmLength = 800.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 
 	// Create a follow camera
@@ -102,6 +103,8 @@ void AportfolioCharacter::BeginPlay()
 		GetCharacterMovement()->MaxWalkSpeed = DefaultStats.GetMovementSpeed();
 		SprintMaxSpeed = DefaultStats.GetMovementSpeed() * 2.f;
 	}
+
+	Tags.Add(FName("Player"));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -388,6 +391,14 @@ void AportfolioCharacter::FinishEvade()
 	CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 }
 
+void AportfolioCharacter::PlaySound(USoundCue* Sound)
+{
+	if (Sound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, Sound, GetActorLocation());
+	}
+}
+
 UAbilityComponent* AportfolioCharacter::GetAbilityComponent() const
 {
 	return AbilityComponent;
@@ -405,7 +416,7 @@ void AportfolioCharacter::AttackChainEnd()
 	AttackCount = 0;
 }
 
-void AportfolioCharacter::CheckEnemyInRange(const FVector Location, const float Radius, float Damage)
+void AportfolioCharacter::CheckEnemyInRange(const FVector Location, const float Radius, float Damage, USoundCue* HitSound)
 {
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = { UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn)};
 	TArray<AActor*> ActorsToIgnore = { this };
@@ -422,6 +433,7 @@ void AportfolioCharacter::CheckEnemyInRange(const FVector Location, const float 
 			TSubclassOf<UDamageType> DamageType;
 			ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 			UGameplayStatics::ApplyDamage(Enemy, UHelperFunction::GetRandomDamage(Damage, DefaultStats.GetCritical()), CharacterController, this, DamageType);
+			PlaySound(HitSound);
 		}
 	}
 }

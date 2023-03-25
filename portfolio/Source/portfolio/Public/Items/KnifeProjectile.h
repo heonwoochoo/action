@@ -10,6 +10,8 @@ class USphereComponent;
 class UProjectileMovementComponent;
 class USkeletalMeshComponent;
 class AportfolioCharacter;
+class USoundCue;
+
 UCLASS()
 class PORTFOLIO_API AKnifeProjectile : public AActor
 {
@@ -42,4 +44,7 @@ public:
 
 	UFUNCTION()
 	void OnBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* KnifeHitSound;
 };

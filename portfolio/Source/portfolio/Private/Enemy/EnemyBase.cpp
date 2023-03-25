@@ -61,14 +61,196 @@ void AEnemyBase::BeginPlay()
 	}
 
 	if (PawnSensing) PawnSensing->OnSeePawn.AddDynamic(this, &AEnemyBase::PawnSeen);
+
 	EnemyController = Cast<AAIController>(GetController());
+	MoveToTarget(PatrolTarget);
+	HideHealthBar();
+	Tags.Add(FName("Enemy"));
 }
 
-void AEnemyBase::PawnSeen(APawn* Pawn)
+void AEnemyBase::Tick(float DeltaTime)
 {
-	
-	UE_LOG(LogTemp, Warning, TEXT("Hello Pawn"));
-	
+	Super::Tick(DeltaTime);
+
+
+	if (State == EEnemyState::EES_Dead) return;
+	if (State > EEnemyState::EES_Patrolling)
+	{
+		CheckCombatTarget();
+	}
+	else
+	{
+		CheckPatrolTarget();
+	}
+}
+
+void AEnemyBase::PawnSeen(APawn* SeenPawn)
+{
+	const bool bShouldChaseTarget =
+		State != EEnemyState::EES_Dead &&
+		State != EEnemyState::EES_Chasing &&
+		State < EEnemyState::EES_Attacking &&
+		SeenPawn->ActorHasTag(FName("Player"));
+
+	if (bShouldChaseTarget)
+	{
+		CombatTarget = SeenPawn;
+
+		ChaseTarget();
+	}
+}
+
+void AEnemyBase::ChaseTarget()
+{
+	State = EEnemyState::EES_Chasing;
+	GetCharacterMovement()->MaxWalkSpeed = ChasingWalkSpeed;
+	MoveToTarget(CombatTarget);
+}
+
+bool AEnemyBase::CanAttack()
+{
+	bool bCanAttack =
+		InTargetRange(CombatTarget, AttackRadius) &&
+		State != EEnemyState::EES_Attacking &&
+		State != EEnemyState::EES_Engaged &&
+		State != EEnemyState::EES_Dead;
+	return bCanAttack;
+}
+
+void AEnemyBase::PatrolTimerFinished()
+{
+	MoveToTarget(PatrolTarget);
+}
+
+void AEnemyBase::Attack()
+{
+	if (CombatTarget && CombatTarget->ActorHasTag(FName("Dead")))
+	{
+		CombatTarget = nullptr;
+	}
+	if (CombatTarget == nullptr) return;
+
+	State = EEnemyState::EES_Engaged;
+	PlayAttackMontage();
+}
+
+void AEnemyBase::AttackEnd()
+{
+	State = EEnemyState::EES_NoState;
+	CheckCombatTarget();
+}
+
+void AEnemyBase::StartAttackTimer()
+{
+	State = EEnemyState::EES_Attacking;
+	const float AttackTime = FMath::RandRange(AttackMin, AttackMax);
+	GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemyBase::Attack, AttackTime);
+}
+
+void AEnemyBase::PlayAttackMontage()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Attack!"));
+}
+
+// AIController가 target으로 이동
+void AEnemyBase::MoveToTarget(AActor* Target)
+{
+	if (EnemyController == nullptr || Target == nullptr) return;
+	FAIMoveRequest MoveRequest;
+	MoveRequest.SetGoalActor(Target);
+	MoveRequest.SetAcceptanceRadius(AcceptanceRadius);
+	EnemyController->MoveTo(MoveRequest);
+}
+
+void AEnemyBase::CheckCombatTarget()
+{
+	if (!InTargetRange(CombatTarget, CombatRadius))
+	{
+		ClearAttackTimer();
+		LoseInterest();
+		if (State != EEnemyState::EES_Engaged) StartPatrolling();
+	}
+	else if (!InTargetRange(CombatTarget, AttackRadius) && State != EEnemyState::EES_Chasing)
+	{
+		ClearAttackTimer();
+		if (State != EEnemyState::EES_Engaged) ChaseTarget();
+	}
+	else if (CanAttack())
+	{
+		StartAttackTimer();
+	}
+}
+
+void AEnemyBase::CheckPatrolTarget()
+{
+	if (InTargetRange(PatrolTarget, PatrolRadius))
+	{
+		PatrolTarget = ChoosePatrolTarget();
+		const float WaitTime = FMath::FRandRange(PatrolWaitMin, PatrolWaitMax);
+		GetWorldTimerManager().SetTimer(PatrolTimer, this, &AEnemyBase::PatrolTimerFinished, WaitTime);
+	}
+}
+
+// Enemy와 타겟의 거리가 Radius 이하면 TRUE를 반환
+bool AEnemyBase::InTargetRange(AActor* Target, double Radius)
+{
+	if (Target == nullptr) return false;
+	const double DistanceToTarget = (Target->GetActorLocation() - GetActorLocation()).Size();
+	return DistanceToTarget <= Radius;
+}
+
+void AEnemyBase::ClearAttackTimer()
+{
+	GetWorldTimerManager().ClearTimer(AttackTimer);
+}
+
+void AEnemyBase::LoseInterest()
+{
+	CombatTarget = nullptr;
+	HideHealthBar();
+}
+
+void AEnemyBase::HideHealthBar()
+{
+	if (HPBarWidgetComponent)
+	{
+		HPBarWidgetComponent->SetVisibility(false);
+	}
+}
+
+void AEnemyBase::ShowHealthBar()
+{
+	if (HPBarWidgetComponent)
+	{
+		HPBarWidgetComponent->SetVisibility(true);
+	}
+}
+
+void AEnemyBase::StartPatrolling()
+{
+	State = EEnemyState::EES_Patrolling;
+	GetCharacterMovement()->MaxWalkSpeed = PatrolWalkSpeed;
+	MoveToTarget(PatrolTarget);
+}
+
+AActor* AEnemyBase::ChoosePatrolTarget()
+{
+	TArray<AActor*> ValidTargets;
+	for (AActor* Target : PatrolTargets)
+	{
+		if (Target != PatrolTarget)
+		{
+			ValidTargets.AddUnique(Target);
+		}
+	}
+
+	const int32 NumPatrolTargets = ValidTargets.Num();
+	if (NumPatrolTargets > 0)
+	{
+		const int32 TargetSelection = FMath::FRandRange(0, NumPatrolTargets - 1);
+		return ValidTargets[TargetSelection];
+	}
+	return nullptr;
 }
 
 float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -91,6 +273,7 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 	{
 		if (!GetCharacterMovement()->IsFalling())
 		{
+			ShowHealthBar();
 			AnimInstance->PlayHitReactOnGround();
 			MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("HitReactRotation"), DamageCauser->GetActorLocation());
 		}
@@ -168,10 +351,7 @@ void AEnemyBase::RemoveMark()
 	if (HeadUpMark) HeadUpMark->Destroy();
 }
 
-void AEnemyBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
+
 
 void AEnemyBase::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {

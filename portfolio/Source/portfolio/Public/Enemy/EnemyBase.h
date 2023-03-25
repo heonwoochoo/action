@@ -43,9 +43,80 @@ protected:
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
 	TArray<AActor*> PatrolTargets;
 
-	void PawnSeen(APawn* Pawn);
+	UPROPERTY(BlueprintReadOnly, Category = Combat)
+	AActor* CombatTarget;
+
+	UFUNCTION()
+	void PawnSeen(APawn* SeenPawn);
+
+	void ChaseTarget();
+
+	bool CanAttack();
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float ChasingWalkSpeed = 300.f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float PatrolWalkSpeed = 150.f;
+
+	UPROPERTY(EditAnywhere)
+	double PatrolRadius = 200.f;
+
+	FTimerHandle PatrolTimer;
+
+	void PatrolTimerFinished();
+
+	UPROPERTY(EditAnywhere, Category = "AI Navigation")
+	float PatrolWaitMin = 5.f;
+	UPROPERTY(EditAnywhere, Category = "AI Navigation")
+	float PatrolWaitMax = 10.f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	double AcceptanceRadius = 50.f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	double CombatRadius = 1000.f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	double AttackRadius = 150.f;
+
+	FTimerHandle AttackTimer;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float AttackMin = 0.5f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float AttackMax = 1.f;
 
 
+
+	void Attack();
+
+	void AttackEnd();
+
+	void StartAttackTimer();
+
+	void PlayAttackMontage();
+
+	void MoveToTarget(AActor* Target);
+
+	void CheckCombatTarget();
+
+	void CheckPatrolTarget();
+
+	bool InTargetRange(AActor* Target, double Radius);
+
+	void ClearAttackTimer();
+
+	void LoseInterest();
+
+	void HideHealthBar();
+
+	void ShowHealthBar();
+
+	void StartPatrolling();
+
+	AActor* ChoosePatrolTarget();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTargetWidgetComponent* TargetWidgetComponent;
@@ -70,7 +141,7 @@ private:
 	FEnemyStats Stats;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	EEnemyState State = EEnemyState::EES_Unoccupied;
+	EEnemyState State = EEnemyState::EES_NoState;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EEnemyName Name;

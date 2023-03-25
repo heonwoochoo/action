@@ -16,6 +16,7 @@ class UAbilityComponent;
 class UAnimInstanceBase;
 class UCharacterMotionWarpingComponent;
 class UDataTable;
+class USoundCue;
 
 UCLASS(config=Game)
 class AportfolioCharacter : public ACharacter
@@ -177,13 +178,14 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
 	ECharacterClass DefaultClass;
 
-
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UDataTable* StatsDataTable;
 
 	UFUNCTION(BlueprintCallable)
 	UAbilityComponent* GetAbilityComponent() const;
+
+	void PlaySound(USoundCue* Sound);
 
 	UFUNCTION(BlueprintCallable)
 	void AttackChainStart();
@@ -192,7 +194,7 @@ public:
 	void AttackChainEnd();
 
 	UFUNCTION(BlueprintCallable)
-	void CheckEnemyInRange(const FVector Location, const float Radius, float Damage);
+	void CheckEnemyInRange(const FVector Location, const float Radius, float Damage, USoundCue* HitSound);
 
 	UFUNCTION(BlueprintCallable)
 	void EnableDoubleJump();

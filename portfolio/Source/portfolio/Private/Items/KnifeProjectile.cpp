@@ -80,7 +80,7 @@ void AKnifeProjectile::OnKnifeEffect(AActor* HitActor)
 		float Damage = Caster->GetCharacterStats().GetAbilityPower() + AssassinComponent->GetSkillOne().Damage;
 
 		// Damage event call
-		Caster->CheckEnemyInRange(GetActorLocation(), 50.f, Damage);
+		Caster->CheckEnemyInRange(GetActorLocation(), 50.f, Damage, KnifeHitSound);
 
 		// Spawn particle
 
