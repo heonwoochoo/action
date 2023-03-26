@@ -35,12 +35,13 @@ void UAbilityComponent::InitializeComponent()
 	{
 		SkillOne = *SkillDataTable->FindRow<FCharacterSkills>(FName("AssassinSkillOne"), "")->CharacterSkill.Find(ECharacterClass::ECC_Assassin);
 		SkillTwo = *SkillDataTable->FindRow<FCharacterSkills>(FName("AssassinSkillTwo"), "")->CharacterSkill.Find(ECharacterClass::ECC_Assassin);
+		SkillThree = *SkillDataTable->FindRow<FCharacterSkills>(FName("AssassinSkillThree"), "")->CharacterSkill.Find(ECharacterClass::ECC_Assassin);
+		SkillFour = *SkillDataTable->FindRow<FCharacterSkills>(FName("AssassinSkillFour"), "")->CharacterSkill.Find(ECharacterClass::ECC_Assassin);
 	}
 }
 
 void UAbilityComponent::EndSkillOneTimer()
 {
-	UE_LOG(LogTemp, Warning, TEXT("End Skill One Timer"));
 	bCanSkillOne = true;
 }
 
@@ -51,13 +52,32 @@ void UAbilityComponent::SetSkillOneTimer()
 
 void UAbilityComponent::EndSkillTwoTimer()
 {
-	UE_LOG(LogTemp, Warning, TEXT("End Skill Two Timer"));
 	bCanSkillTwo = true;
 }
 
 void UAbilityComponent::SetSkillTwoTimer()
 {
 	GetWorld()->GetTimerManager().SetTimer(SkillTwoHandle, this, &UAbilityComponent::EndSkillTwoTimer, SkillTwo.CoolDown, false);
+}
+
+void UAbilityComponent::EndSkillThreeTimer()
+{
+	bCanSkillThree = true;
+}
+
+void UAbilityComponent::SetSkillThreeTimer()
+{
+	GetWorld()->GetTimerManager().SetTimer(SkillThreeHandle, this, &UAbilityComponent::EndSkillThreeTimer, SkillThree.CoolDown, false);
+}
+
+void UAbilityComponent::EndSkillFourTimer()
+{
+	bCanSkillFour = true;
+}
+
+void UAbilityComponent::SetSkillFourTimer()
+{
+	GetWorld()->GetTimerManager().SetTimer(SkillFourHandle, this, &UAbilityComponent::EndSkillFourTimer, SkillFour.CoolDown, false);
 }
 
 void UAbilityComponent::HandleSkillOne()
@@ -73,6 +93,22 @@ void UAbilityComponent::HandleSkillTwo()
 	if (bCanSkillTwo)
 	{
 		SetSkillTwoTimer();
+	}
+}
+
+void UAbilityComponent::HandleSkillThree()
+{
+	if (bCanSkillThree)
+	{
+		SetSkillThreeTimer();
+	}
+}
+
+void UAbilityComponent::HandleSkillFour()
+{
+	if (bCanSkillFour)
+	{
+		SetSkillFourTimer();
 	}
 }
 

@@ -332,18 +332,23 @@ void AportfolioCharacter::SkillManagerTwo()
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillTwo();
-		UE_LOG(LogTemp, Warning, TEXT("Skill Two"));
 	}
 }
 
 void AportfolioCharacter::SkillManagerThree()
 {
-
+	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
+	{
+		AbilityComponent->HandleSkillThree();
+	}
 }
 
 void AportfolioCharacter::SkillManagerFour()
 {
-
+	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
+	{
+		AbilityComponent->HandleSkillFour();
+	}
 }
 
 FVector AportfolioCharacter::GetMeleeAttackLocation()

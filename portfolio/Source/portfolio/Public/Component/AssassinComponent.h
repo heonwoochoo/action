@@ -94,4 +94,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SkillTwoEndEffect();
+
+	/** Skill Three */
+	virtual void HandleSkillThree() override;
+
+	/** Skill Four */
+	virtual void HandleSkillFour() override;
 };

@@ -118,6 +118,18 @@ void UAssassinComponent::SkillTwoDashOverlap()
 	TArray<AActor*> OutActors;
 	UKismetSystemLibrary::SphereOverlapActors(this, Character->GetActorLocation(), 200.f, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
 	DrawDebugSphere(GetWorld(), Character->GetActorLocation(), 200.f, 16, FColor::Orange, false, 0.5f);
+	for (auto Actor : OutActors)
+	{
+		if (Actor->ActorHasTag(FName("Enemy")))
+		{
+			AEnemyBase* Enemy = Cast<AEnemyBase>(Actor);
+			if (Enemy)
+			{
+				Enemy->LaunchCharacter(FVector(0.f, 0.f, 10.f), false, true);
+				ApplySkillTwoDamage(Enemy);
+			}
+		}
+	}
 }
 
 void UAssassinComponent::ApplySkillTwoDamage(AEnemyBase* Enemy)
@@ -150,6 +162,30 @@ void UAssassinComponent::SkillTwoEndEffect()
 				ApplySkillTwoDamage(Enemy);
 			}
 		}
+	}
+}
+
+void UAssassinComponent::HandleSkillThree()
+{
+	Super::HandleSkillThree();
+
+	if (AnimInstance && SkillThree.Animation)
+	{
+		if (!bCanSkillThree) return;
+		bCanSkillThree = false;
+		AnimInstance->Montage_Play(SkillThree.Animation);
+	}
+}
+
+void UAssassinComponent::HandleSkillFour()
+{
+	Super::HandleSkillFour();
+
+	if (AnimInstance && SkillFour.Animation)
+	{
+		if (!bCanSkillFour) return;
+		bCanSkillFour = false;
+		AnimInstance->Montage_Play(SkillFour.Animation);
 	}
 }
 

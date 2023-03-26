@@ -73,6 +73,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* GoldText;
 
+	/** Skill One */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* SkillOneCoolDownText;
 
@@ -82,6 +83,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UProgressBar* SkillOneCoolDownProgressBar;
 
+	/** Skill Two */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* SkillTwoCoolDownText;
 
@@ -90,6 +92,26 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UProgressBar* SkillTwoCoolDownProgressBar;
+
+	/** Skill Three */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* SkillThreeCoolDownText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* SkillThreeImage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UProgressBar* SkillThreeCoolDownProgressBar;
+
+	/** Skill Four */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* SkillFourCoolDownText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* SkillFourImage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UProgressBar* SkillFourCoolDownProgressBar;
 
 	void Init();
 
@@ -114,4 +136,10 @@ public:
 
 	void UpdateSkillTwo();
 	void UpdateSkillTwoImage();
+
+	void UpdateSkillThree();
+	void UpdateSkillThreeImage();
+
+	void UpdateSkillFour();
+	void UpdateSkillFourImage();
 };

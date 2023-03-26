@@ -30,6 +30,8 @@ void UInfoContainer::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	
 	UpdateSkillOne();
 	UpdateSkillTwo();
+	UpdateSkillThree();
+	UpdateSkillFour();
 }
 
 void UInfoContainer::Init()
@@ -51,6 +53,10 @@ void UInfoContainer::Init()
 	UpdateSkillOneImage();
 	UpdateSkillTwo();
 	UpdateSkillTwoImage();
+	UpdateSkillThree();
+	UpdateSkillThreeImage();
+	UpdateSkillFour();
+	UpdateSkillFourImage();
 }
 
 void UInfoContainer::UpdateADText()
@@ -165,4 +171,48 @@ void UInfoContainer::UpdateSkillTwo()
 void UInfoContainer::UpdateSkillTwoImage()
 {
 	SkillTwoImage->SetBrushFromTexture(AbilityComponent->GetSkillTwo().Image);
+}
+
+void UInfoContainer::UpdateSkillThree()
+{
+	if (AbilityComponent && !AbilityComponent->GetCanSkillThree())
+	{
+		float RemainingTime = GetWorld()->GetTimerManager().GetTimerRemaining(AbilityComponent->GetSkillThreeHandle());
+		if (RemainingTime != -1)
+		{
+			SkillThreeCoolDownText->SetText(FText::FromString(FString::FromInt((FMath::RoundToInt(RemainingTime)))));
+			SkillThreeCoolDownProgressBar->SetPercent(RemainingTime / AbilityComponent->GetSkillThree().CoolDown);
+		}
+	}
+	else
+	{
+		SkillThreeCoolDownText->SetText(FText::GetEmpty());
+	}
+}
+
+void UInfoContainer::UpdateSkillThreeImage()
+{
+	SkillThreeImage->SetBrushFromTexture(AbilityComponent->GetSkillThree().Image);
+}
+
+void UInfoContainer::UpdateSkillFour()
+{
+	if (AbilityComponent && !AbilityComponent->GetCanSkillFour())
+	{
+		float RemainingTime = GetWorld()->GetTimerManager().GetTimerRemaining(AbilityComponent->GetSkillFourHandle());
+		if (RemainingTime != -1)
+		{
+			SkillFourCoolDownText->SetText(FText::FromString(FString::FromInt((FMath::RoundToInt(RemainingTime)))));
+			SkillFourCoolDownProgressBar->SetPercent(RemainingTime / AbilityComponent->GetSkillFour().CoolDown);
+		}
+	}
+	else
+	{
+		SkillFourCoolDownText->SetText(FText::GetEmpty());
+	}
+}
+
+void UInfoContainer::UpdateSkillFourImage()
+{
+	SkillFourImage->SetBrushFromTexture(AbilityComponent->GetSkillFour().Image);
 }

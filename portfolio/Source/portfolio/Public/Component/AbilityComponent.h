@@ -50,7 +50,20 @@ protected:
 	bool bCanSkillTwo = true;
 
 	/** Three */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
+	FCharacterSkill SkillThree;
+	FTimerHandle SkillThreeHandle;
+	void EndSkillThreeTimer();
+	void SetSkillThreeTimer();
+	bool bCanSkillThree = true;
+
 	/** Four */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
+	FCharacterSkill SkillFour;
+	FTimerHandle SkillFourHandle;
+	void EndSkillFourTimer();
+	void SetSkillFourTimer();
+	bool bCanSkillFour = true;
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -71,5 +84,16 @@ public:
 	FORCEINLINE FTimerHandle GetSkillTwoHandle() const { return SkillTwoHandle; }
 
 	/** Three */
+	UFUNCTION(BlueprintCallable)
+	virtual void HandleSkillThree();
+	FORCEINLINE FCharacterSkill& GetSkillThree() { return SkillThree; }
+	FORCEINLINE bool GetCanSkillThree() const { return bCanSkillThree; }
+	FORCEINLINE FTimerHandle GetSkillThreeHandle() const { return SkillThreeHandle; }
+
 	/** Four */
+	UFUNCTION(BlueprintCallable)
+	virtual void HandleSkillFour();
+	FORCEINLINE FCharacterSkill& GetSkillFour() { return SkillFour; }
+	FORCEINLINE bool GetCanSkillFour() const { return bCanSkillFour; }
+	FORCEINLINE FTimerHandle GetSkillFourHandle() const { return SkillFourHandle; }
 };
