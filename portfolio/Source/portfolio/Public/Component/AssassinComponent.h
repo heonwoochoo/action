@@ -6,9 +6,9 @@
 #include "Component/AbilityComponent.h"
 #include "AssassinComponent.generated.h"
 
-/**
- * 
- */
+class UCameraShakeBase;
+class AEnemyBase;
+
 UCLASS()
 class PORTFOLIO_API UAssassinComponent : public UAbilityComponent
 {
@@ -54,6 +54,10 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void SetCheckSkillTwoDashOverlap(bool CanOverlap);
 
+	// 내려찍을 때 카메라 효과
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+	TSubclassOf<UCameraShakeBase> CameraShakeExplosion;
+
 private:
 	/** Skill One */
 	AActor* TargetEnemy;
@@ -73,13 +77,21 @@ private:
 	void SkillTwoDashOverlap();
 	bool bCheckSkillTwoDashOverlap = false;
 
+	void ApplySkillTwoDamage(AEnemyBase* Enemy);
+
+
 public:
+	/** Skill One */
+	virtual void HandleSkillOne() override;
 
 	UFUNCTION(BlueprintCallable)
 	void ThrowKnife();
 
 	void SetDashTarget(AActor* Target);
-
-	virtual void HandleSkillOne() override;
+		
+	/** Skill Two */
 	virtual void HandleSkillTwo() override;
+
+	UFUNCTION(BlueprintCallable)
+	void SkillTwoEndEffect();
 };

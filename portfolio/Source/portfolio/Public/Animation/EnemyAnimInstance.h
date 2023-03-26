@@ -25,6 +25,9 @@ protected:
 	UAnimMontage* HitReactOnGround;
 
 	UPROPERTY(BlueprintReadOnly)
+	UAnimMontage* HitReactOnAir;
+
+	UPROPERTY(BlueprintReadOnly)
 	UBlendSpace1D* IdleWalkRun;
 
 	UPROPERTY(BlueprintReadOnly)
@@ -43,6 +46,7 @@ private:
 
 public:
 	void PlayHitReactOnGround();
+	void PlayHitReactOnAir();
 	void PlayDead();
 
 };

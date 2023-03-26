@@ -92,6 +92,9 @@ struct FEnemyDefaultAnimation : public FTableRowBase
 	UAnimMontage* HitReactOnGround;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* HitReactOnAir;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UBlendSpace1D* IdleWalkRun;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

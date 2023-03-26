@@ -256,7 +256,7 @@ AActor* AEnemyBase::ChoosePatrolTarget()
 float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
+	DamageCauserActor = DamageCauser;
 	Stats.Hp -= DamageAmount;
 
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
@@ -268,17 +268,7 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 	
 	Stats.Hp <= 0.f ? Die() : UpdateHPBar();
 
-	UEnemyAnimInstance* AnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
-	if (AnimInstance && State != EEnemyState::EES_Dead)
-	{
-		if (!GetCharacterMovement()->IsFalling())
-		{
-			ShowHealthBar();
-			AnimInstance->PlayHitReactOnGround();
-			MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("HitReactRotation"), DamageCauser->GetActorLocation());
-		}
-	}
-	
+	PlayHitAnimNextTick();
 	return DamageAmount;
 }
 
@@ -288,6 +278,31 @@ void AEnemyBase::Die()
 	HPBarWidgetComponent->SetVisibility(false);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SetLifeSpan(3.f);
+}
+
+void AEnemyBase::PlayHitAnimNextTick()
+{
+	GetWorld()->GetTimerManager().SetTimer(TakeDamageHandle, this, &AEnemyBase::PlayHitAnim, 0.01f);
+}
+
+void AEnemyBase::PlayHitAnim()
+{
+	UEnemyAnimInstance* AnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance && State != EEnemyState::EES_Dead)
+	{
+		if (!GetCharacterMovement()->IsFalling())
+		{
+			ShowHealthBar();
+			AnimInstance->PlayHitReactOnGround();
+			MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("HitReactRotation"), DamageCauserActor->GetActorLocation());
+
+		}
+		else
+		{
+			ShowHealthBar();
+			AnimInstance->PlayHitReactOnAir();
+		}
+	}
 }
 
 

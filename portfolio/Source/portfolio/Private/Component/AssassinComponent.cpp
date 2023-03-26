@@ -8,6 +8,10 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Component/CharacterMotionWarpingComponent.h"
 #include "Items/KnifeProjectile.h"
+#include "Kismet/GameplayStatics.h"
+#include "Camera/CameraComponent.h"
+#include "Controller/CharacterController.h"
+#include "HelperFunction.h"
 
 UAssassinComponent::UAssassinComponent()
 {
@@ -114,6 +118,39 @@ void UAssassinComponent::SkillTwoDashOverlap()
 	TArray<AActor*> OutActors;
 	UKismetSystemLibrary::SphereOverlapActors(this, Character->GetActorLocation(), 200.f, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
 	DrawDebugSphere(GetWorld(), Character->GetActorLocation(), 200.f, 16, FColor::Orange, false, 0.5f);
+}
+
+void UAssassinComponent::ApplySkillTwoDamage(AEnemyBase* Enemy)
+{
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	TSubclassOf<UDamageType> DamageType;
+	UGameplayStatics::ApplyDamage(Enemy, UHelperFunction::GetRandomDamage(GetSkillTwo().Damage, Character->GetCharacterStats().Critical), CharacterController, Character, DamageType);
+}
+
+void UAssassinComponent::SkillTwoEndEffect()
+{
+	if (CameraShakeExplosion)
+	{
+		UGameplayStatics::PlayWorldCameraShake(this, CameraShakeExplosion, Character->GetFollowCamera()->GetComponentLocation(), 0.f, 500.f);
+	}
+
+	const TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes{ UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn) };
+	const TArray<AActor*> ActorsToIgnore{ Character };
+	TArray<AActor*> OutActors;
+	UKismetSystemLibrary::SphereOverlapActors(this, Character->GetActorLocation(), 400.f, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
+	DrawDebugSphere(GetWorld(), Character->GetActorLocation(), 400.f, 16, FColor::Blue, false, 1.f);
+	for (auto Actor : OutActors)
+	{
+		if (Actor->ActorHasTag(FName("Enemy")))
+		{
+			AEnemyBase* Enemy = Cast<AEnemyBase>(Actor);
+			if (Enemy)
+			{
+				Enemy->LaunchCharacter(FVector(0.f, 0.f, 500.f), false, true);
+				ApplySkillTwoDamage(Enemy);
+			}
+		}
+	}
 }
 
 void UAssassinComponent::ThrowKnife()

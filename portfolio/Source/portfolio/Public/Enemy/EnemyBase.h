@@ -150,6 +150,13 @@ private:
 
 	void Die();
 
+	FTimerHandle TakeDamageHandle;
+
+	AActor* DamageCauserActor;
+
+	void PlayHitAnimNextTick();
+	void PlayHitAnim();
+
 public:
 	FORCEINLINE FEnemyStats GetEnemyStats() const { return Stats; }
 	FORCEINLINE UEnemyHPBarWidgetComponent* GetHPBarWidgetComponent() const { return HPBarWidgetComponent;}
