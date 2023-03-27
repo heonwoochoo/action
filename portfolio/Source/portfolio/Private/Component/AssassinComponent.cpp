@@ -12,6 +12,8 @@
 #include "Camera/CameraComponent.h"
 #include "Controller/CharacterController.h"
 #include "HelperFunction.h"
+#include "NiagaraSystem.h"
+#include "NiagaraFunctionLibrary.h"
 
 UAssassinComponent::UAssassinComponent()
 {
@@ -40,6 +42,12 @@ void UAssassinComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	if (bCheckSkillTwoDashOverlap)
 	{
 		SkillTwoDashOverlap();
+	}
+
+	if (bAttackSKillThree)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Skill Three Attack!"));
+		PullEnemyToCenter();
 	}
 
 }
@@ -177,6 +185,17 @@ void UAssassinComponent::HandleSkillThree()
 	}
 }
 
+void UAssassinComponent::SpawnSkillThreeEffect()
+{
+	if (Character)
+	{
+		SkillThreeSpawnLocation = Character->GetActorLocation();
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, SkillThreeBloodAOE, SkillThreeSpawnLocation, Character->GetActorRotation(), FVector(1));
+		bAttackSKillThree = true;
+		GetWorld()->GetTimerManager().SetTimer(SkillThreeSpawnTimer, this, &UAssassinComponent::SetFalseSkillThreeAttack, 2.5f, false);
+	}
+}
+
 void UAssassinComponent::HandleSkillFour()
 {
 	Super::HandleSkillFour();
@@ -212,6 +231,32 @@ void UAssassinComponent::ThrowKnife()
 void UAssassinComponent::SetDashTarget(AActor* Target)
 {
 	DashTarget = Target;
+}
+
+
+
+void UAssassinComponent::SetFalseSkillThreeAttack()
+{
+	bAttackSKillThree = false;
+}
+
+void UAssassinComponent::PullEnemyToCenter()
+{
+	const TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes{ UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn) };
+	const TArray<AActor*> ActorsToIgnore{ Character };
+	TArray<AActor*> OutActors;
+	UKismetSystemLibrary::SphereOverlapActors(this, Character->GetActorLocation(), 400.f, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
+	
+	for (AActor* Actor : OutActors)
+	{
+		AEnemyBase* Enemy = Cast<AEnemyBase>(Actor);
+		if (Enemy)
+		{
+			FVector Dir = (SkillThreeSpawnLocation - Enemy->GetActorLocation()).GetSafeNormal();
+			Enemy->LaunchCharacter(Dir * 5.f, false, true);
+		}
+	}
+
 }
 
 void UAssassinComponent::HandleSkillOne()

@@ -8,7 +8,7 @@
 
 class UCameraShakeBase;
 class AEnemyBase;
-
+class UNiagaraSystem;
 UCLASS()
 class PORTFOLIO_API UAssassinComponent : public UAbilityComponent
 {
@@ -79,6 +79,19 @@ private:
 
 	void ApplySkillTwoDamage(AEnemyBase* Enemy);
 
+	/** Skill Three */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillEffect", meta = (AllowPrivateAccess = "ture"))
+	UNiagaraSystem* SkillThreeBloodAOE;
+
+	FTimerHandle SkillThreeSpawnTimer;
+
+	void SetFalseSkillThreeAttack();
+
+	bool bAttackSKillThree = false;
+
+	FVector SkillThreeSpawnLocation;
+
+	void PullEnemyToCenter();
 
 public:
 	/** Skill One */
@@ -97,6 +110,9 @@ public:
 
 	/** Skill Three */
 	virtual void HandleSkillThree() override;
+	UFUNCTION(BlueprintCallable)
+	void SpawnSkillThreeEffect();
+
 
 	/** Skill Four */
 	virtual void HandleSkillFour() override;
