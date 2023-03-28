@@ -134,17 +134,10 @@ void UAssassinComponent::SkillTwoDashOverlap()
 			if (Enemy)
 			{
 				Enemy->LaunchCharacter(FVector(0.f, 0.f, 10.f), false, true);
-				ApplySkillTwoDamage(Enemy);
+				Character->DamageToEnemy(Enemy, SkillTwo.Damage);
 			}
 		}
 	}
-}
-
-void UAssassinComponent::ApplySkillTwoDamage(AEnemyBase* Enemy)
-{
-	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-	TSubclassOf<UDamageType> DamageType;
-	UGameplayStatics::ApplyDamage(Enemy, UHelperFunction::GetRandomDamage(GetSkillTwo().Damage, Character->GetCharacterStats().Critical), CharacterController, Character, DamageType);
 }
 
 void UAssassinComponent::SkillTwoEndEffect()
@@ -167,7 +160,7 @@ void UAssassinComponent::SkillTwoEndEffect()
 			if (Enemy)
 			{
 				Enemy->LaunchCharacter(FVector(0.f, 0.f, 500.f), false, true);
-				ApplySkillTwoDamage(Enemy);
+				Character->DamageToEnemy(Enemy, SkillTwo.Damage);
 			}
 		}
 	}
@@ -192,7 +185,7 @@ void UAssassinComponent::SpawnSkillThreeEffect()
 		SkillThreeSpawnLocation = Character->GetActorLocation();
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, SkillThreeBloodAOE, SkillThreeSpawnLocation, Character->GetActorRotation(), FVector(1));
 		bAttackSKillThree = true;
-		GetWorld()->GetTimerManager().SetTimer(SkillThreeSpawnTimer, this, &UAssassinComponent::SetFalseSkillThreeAttack, 2.5f, false);
+		GetWorld()->GetTimerManager().SetTimer(SkillThreeSpawnTimer, this, &UAssassinComponent::SetFalseSkillThreeAttack, SkillThreeHitDuration, false);
 	}
 }
 
@@ -240,6 +233,11 @@ void UAssassinComponent::SetFalseSkillThreeAttack()
 	bAttackSKillThree = false;
 }
 
+void UAssassinComponent::SkillThreeHitTimerEnd()
+{
+	bMultiHit = true;
+}
+
 void UAssassinComponent::PullEnemyToCenter()
 {
 	const TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes{ UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn) };
@@ -254,9 +252,20 @@ void UAssassinComponent::PullEnemyToCenter()
 		{
 			FVector Dir = (SkillThreeSpawnLocation - Enemy->GetActorLocation()).GetSafeNormal();
 			Enemy->LaunchCharacter(Dir * 5.f, false, true);
+
+			AttackMultiHit(Enemy);
 		}
 	}
+}
 
+void UAssassinComponent::AttackMultiHit(AEnemyBase* Enemy)
+{
+	if (bMultiHit)
+	{
+		Character->DamageToEnemy(Enemy, SkillThree.Damage);
+		GetWorld()->GetTimerManager().SetTimer(SkillThreeHitTimer, this, &UAssassinComponent::SkillThreeHitTimerEnd, MultiHitDeltaTime, false);
+		bMultiHit = false;
+	}
 }
 
 void UAssassinComponent::HandleSkillOne()

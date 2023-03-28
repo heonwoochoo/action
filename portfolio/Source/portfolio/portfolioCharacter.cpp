@@ -439,9 +439,7 @@ void AportfolioCharacter::CheckEnemyInRange(const FVector Location, const float 
 		AEnemyBase* Enemy = Cast<AEnemyBase>(Actor);
 		if (Enemy && Enemy->ActorHasTag(FName("Enemy")) && Enemy->GetState() != EEnemyState::EES_Dead)
 		{
-			TSubclassOf<UDamageType> DamageType;
-			ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-			UGameplayStatics::ApplyDamage(Enemy, UHelperFunction::GetRandomDamage(Damage, DefaultStats.GetCritical()), CharacterController, this, DamageType);
+			DamageToEnemy(Enemy, Damage);
 			PlaySound(HitSound);
 		}
 	}
@@ -480,6 +478,13 @@ void AportfolioCharacter::OnAnimationEnded(UAnimMontage* AnimClass, bool bInterr
 UCharacterMotionWarpingComponent* AportfolioCharacter::GetMotionWarpingComponent() const
 {
 	return CharacterMWComponent;
+}
+
+void AportfolioCharacter::DamageToEnemy(AEnemyBase* Enemy, float Damage)
+{
+	TSubclassOf<UDamageType> DamageType;
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	UGameplayStatics::ApplyDamage(Enemy, UHelperFunction::GetRandomDamage(Damage, DefaultStats.GetCritical()), CharacterController, this, DamageType);
 }
 
 ECharacterClass AportfolioCharacter::GetCharacterClass()

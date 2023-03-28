@@ -17,6 +17,7 @@ class UAnimInstanceBase;
 class UCharacterMotionWarpingComponent;
 class UDataTable;
 class USoundCue;
+class AEnemyBase;
 
 UCLASS(config=Game)
 class AportfolioCharacter : public ACharacter
@@ -217,5 +218,7 @@ public:
 	ECharacterClass GetCharacterClass();
 
 	FORCEINLINE FCharacterStats GetCharacterStats() const { return DefaultStats; }
+	
+	void DamageToEnemy(AEnemyBase* Enemy, float Damage);
 };
 

@@ -77,13 +77,17 @@ private:
 	void SkillTwoDashOverlap();
 	bool bCheckSkillTwoDashOverlap = false;
 
-	void ApplySkillTwoDamage(AEnemyBase* Enemy);
-
 	/** Skill Three */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillEffect", meta = (AllowPrivateAccess = "ture"))
 	UNiagaraSystem* SkillThreeBloodAOE;
 
 	FTimerHandle SkillThreeSpawnTimer;
+
+	FTimerHandle SkillThreeHitTimer;
+
+	void SkillThreeHitTimerEnd();
+
+	bool bMultiHit = true;
 
 	void SetFalseSkillThreeAttack();
 
@@ -92,6 +96,14 @@ private:
 	FVector SkillThreeSpawnLocation;
 
 	void PullEnemyToCenter();
+
+	void AttackMultiHit(AEnemyBase* Enemy);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Skill", meta = (AllowPrivateAccess = "ture"))
+	float SkillThreeHitDuration = 3.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Skill", meta = (AllowPrivateAccess = "ture"))
+	float MultiHitDeltaTime = 0.5f;
 
 public:
 	/** Skill One */

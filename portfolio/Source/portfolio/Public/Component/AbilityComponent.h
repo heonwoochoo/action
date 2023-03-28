@@ -12,6 +12,7 @@ class UCharacterSkillAsset;
 class UAnimInstanceBase;
 class AKnifeProjectile;
 class AAssassin_SkillOne;
+class AEnemyBase;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PORTFOLIO_API UAbilityComponent : public UActorComponent
