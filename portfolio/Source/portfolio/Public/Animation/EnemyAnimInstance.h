@@ -34,6 +34,9 @@ protected:
 	UAnimMontage* Dead;
 
 	UPROPERTY(BlueprintReadOnly)
+	UAnimMontage* Attack;
+
+	UPROPERTY(BlueprintReadOnly)
 	float Speed;
 
 	UPROPERTY(BlueprintReadOnly)
@@ -48,5 +51,5 @@ public:
 	void PlayHitReactOnGround();
 	void PlayHitReactOnAir();
 	void PlayDead();
-
+	void PlayAttack();
 };

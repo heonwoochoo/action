@@ -16,6 +16,7 @@ void UEnemyAnimInstance::NativeInitializeAnimation()
 		HitReactOnAir = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(FName("Man"), "")->HitReactOnAir;
 		IdleWalkRun = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(FName("Man"), "")->IdleWalkRun;
 		Dead = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(FName("Man"), "")->Dead;
+		Attack = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(FName("Man"), "")->Attack;
 	}
 }
 
@@ -52,5 +53,13 @@ void UEnemyAnimInstance::PlayDead()
 	if (Dead)
 	{
 		Montage_Play(Dead);
+	}
+}
+
+void UEnemyAnimInstance::PlayAttack()
+{
+	if (Attack)
+	{
+		Montage_Play(Attack);
 	}
 }

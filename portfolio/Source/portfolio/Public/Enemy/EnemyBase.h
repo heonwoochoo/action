@@ -88,15 +88,18 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Combat)
 	float AttackMax = 1.f;
 
+	
 
+	void PlayAttackAnim();
 
-	void Attack();
+	UFUNCTION(BlueprintCallable)
+	void AttackCharacter();
 
+	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
 
 	void StartAttackTimer();
 
-	void PlayAttackMontage();
 
 	void MoveToTarget(AActor* Target);
 
@@ -128,6 +131,10 @@ protected:
 	UMotionWarpingComponent* MotionWarpingComponent;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+	void HandleAttackTarget(AController* EventInstigator);
+
+	void HandleDamage(AActor* DamageCauser, float DamageAmount);
 
 	// Hit react
 	UPROPERTY(EditAnywhere, BlueprintReadWrite);

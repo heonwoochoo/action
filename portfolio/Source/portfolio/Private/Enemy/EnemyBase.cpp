@@ -82,6 +82,13 @@ void AEnemyBase::Tick(float DeltaTime)
 	{
 		CheckPatrolTarget();
 	}
+
+	if (State == EEnemyState::EES_Engaged && MotionWarpingComponent)
+	{
+		const FName WarpName = "RotateToTarget";
+		const FVector WarpLocation = CombatTarget->GetActorLocation();
+		MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(WarpName, WarpLocation);
+	}
 }
 
 void AEnemyBase::PawnSeen(APawn* SeenPawn)
@@ -122,7 +129,7 @@ void AEnemyBase::PatrolTimerFinished()
 	MoveToTarget(PatrolTarget);
 }
 
-void AEnemyBase::Attack()
+void AEnemyBase::PlayAttackAnim()
 {
 	if (CombatTarget && CombatTarget->ActorHasTag(FName("Dead")))
 	{
@@ -131,7 +138,29 @@ void AEnemyBase::Attack()
 	if (CombatTarget == nullptr) return;
 
 	State = EEnemyState::EES_Engaged;
-	PlayAttackMontage();
+	UEnemyAnimInstance* EnemyAnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
+	if (EnemyAnimInstance)
+	{
+		EnemyAnimInstance->PlayAttack();
+	}
+}
+
+void AEnemyBase::AttackCharacter()
+{
+	const FName SockeName = "FootRightAttack";
+	const FVector SocketLocation = GetMesh()->GetSocketLocation(SockeName);
+
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = { UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn) };
+	TArray<AActor*> ActorsToIgnore = { this };
+	TArray<AActor*> OutActors;
+
+	UKismetSystemLibrary::SphereOverlapActors(this, SocketLocation, 50.f, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
+	DrawDebugSphere(GetWorld(), SocketLocation, 50.f, 16, FColor::Red, false, 1.f);
+
+	for (AActor* Actor : OutActors)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("CombarTarget Attack!"));
+	}
 }
 
 void AEnemyBase::AttackEnd()
@@ -144,13 +173,10 @@ void AEnemyBase::StartAttackTimer()
 {
 	State = EEnemyState::EES_Attacking;
 	const float AttackTime = FMath::RandRange(AttackMin, AttackMax);
-	GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemyBase::Attack, AttackTime);
+	GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemyBase::PlayAttackAnim, AttackTime);
 }
 
-void AEnemyBase::PlayAttackMontage()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Attack!"));
-}
+
 
 // AIController가 target으로 이동
 void AEnemyBase::MoveToTarget(AActor* Target)
@@ -256,6 +282,29 @@ AActor* AEnemyBase::ChoosePatrolTarget()
 float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	HandleDamage(DamageCauser, DamageAmount);
+
+	HandleAttackTarget(EventInstigator);
+
+	return DamageAmount;
+}
+
+void AEnemyBase::HandleAttackTarget(AController* EventInstigator)
+{
+	CombatTarget = EventInstigator->GetPawn();
+	if (InTargetRange(CombatTarget, AttackRadius))
+	{
+		State = EEnemyState::EES_Attacking;
+	}
+	else if (!InTargetRange(CombatTarget, AttackRadius))
+	{
+		ChaseTarget();
+	}
+}
+
+void AEnemyBase::HandleDamage(AActor* DamageCauser, float DamageAmount)
+{
 	DamageCauserActor = DamageCauser;
 	Stats.Hp -= DamageAmount;
 
@@ -265,11 +314,10 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
 		if (HUDBase) HUDBase->ShowDamageOnScreen(this, DamageAmount);
 	}
-	
+
 	Stats.Hp <= 0.f ? Die() : UpdateHPBar();
 
 	PlayHitAnimNextTick();
-	return DamageAmount;
 }
 
 void AEnemyBase::Die()
