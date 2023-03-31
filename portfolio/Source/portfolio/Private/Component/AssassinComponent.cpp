@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Component/AssassinComponent.h"
 #include "CharacterTypes.h"
@@ -80,9 +80,9 @@ AActor* UAssassinComponent::FindEnemy()
 void UAssassinComponent::SkillOne_First()
 {
 	/**
-	* ¼ö¸®°ËÀ» ´øÁú ¶§ Å¸°ÙÀÌ ÀÖ´ÂÁö È®ÀÎÇÕ´Ï´Ù.
-	* Å¸°ÙÀÌ ÀÖ´Ù¸é, Ä³¸¯ÅÍÀÇ ·ÎÅ×ÀÌ¼Ç(Z Axis)À» ÇØ´ç Å¸°ÙÀ¸·Î ¿öÇÎÇÕ´Ï´Ù.
-	* ¼ö¸®°Ë ¹æÇâÀº Å¸°ÙÀ», ¾øÀ¸¸é Ä³¸¯ÅÍÀÇ Forward¸¦ ÇâÇÕ´Ï´Ù.
+	* ìˆ˜ë¦¬ê²€ì„ ë˜ì§ˆ ë•Œ íƒ€ê²Ÿì´ ìˆëŠ”ì§€ í™•ì¸í•©ë‹ˆë‹¤.
+	* íƒ€ê²Ÿì´ ìˆë‹¤ë©´, ìºë¦­í„°ì˜ ë¡œí…Œì´ì…˜(Z Axis)ì„ í•´ë‹¹ íƒ€ê²Ÿìœ¼ë¡œ ì›Œí•‘í•©ë‹ˆë‹¤.
+	* ìˆ˜ë¦¬ê²€ ë°©í–¥ì€ íƒ€ê²Ÿì„, ì—†ìœ¼ë©´ ìºë¦­í„°ì˜ Forwardë¥¼ í–¥í•©ë‹ˆë‹¤.
 	*/
 	TargetEnemy = FindEnemy();
 	if (TargetEnemy)
