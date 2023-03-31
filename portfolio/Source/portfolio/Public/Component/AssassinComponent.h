@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -26,19 +26,19 @@ public:
 
 protected:
 	/** Skill One */
-	// ³¯¾Æ°¡´Â Åõ»çÃ¼ÀÇ Å¬·¡½º
+	// ë‚ ì•„ê°€ëŠ” íˆ¬ì‚¬ì²´ì˜ í´ë˜ìŠ¤
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	TSubclassOf<AKnifeProjectile> KnifeClass;
 
-	// Åõ»çÃ¼¿¡¼­ »ı¼ºµÈ ÀÎ½ºÅÏ½º
+	// íˆ¬ì‚¬ì²´ì—ì„œ ìƒì„±ëœ ì¸ìŠ¤í„´ìŠ¤
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	AKnifeProjectile* Knife;
 
-	// Åõ»çÃ¼ÀÇ À¯µµ¸¦ °¨ÁöÇÏ´Â °Å¸®
+	// íˆ¬ì‚¬ì²´ì˜ ìœ ë„ë¥¼ ê°ì§€í•˜ëŠ” ê±°ë¦¬
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	float TraceDistance = 2000.f;
 
-	// Åõ»çÃ¼ÀÇ À¯µµ¸¦ °¨ÁöÇÏ´Â ¿ø ¹İ°æ
+	// íˆ¬ì‚¬ì²´ì˜ ìœ ë„ë¥¼ ê°ì§€í•˜ëŠ” ì› ë°˜ê²½
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	float AutoDirectionRange = 300.f;
 
@@ -54,7 +54,7 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void SetCheckSkillTwoDashOverlap(bool CanOverlap);
 
-	// ³»·ÁÂïÀ» ¶§ Ä«¸Ş¶ó È¿°ú
+	// ë‚´ë ¤ì°ì„ ë•Œ ì¹´ë©”ë¼ íš¨ê³¼
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	TSubclassOf<UCameraShakeBase> CameraShakeExplosion;
 

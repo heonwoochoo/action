@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -27,25 +27,44 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	 
+	// =================
+	// Pawnsensing, AI
+	// =================
+	
+	// 일정 범위 내로 들어온 타겟의 위치를 감지하기 위한 컴포넌트
 	UPROPERTY(VisibleAnywhere)
 	UPawnSensingComponent* PawnSensing;
 
-	/*
-	* Navigation
-	*/
+	// AI 설정을 위한 컨트롤러
 	UPROPERTY()
 	AAIController* EnemyController;
 
-	// Current patrol target
+	// 현재 선택된 Patrol Target (시작시 이쪽으로 우선 움직임)
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation");
 	AActor* PatrolTarget;
 
+	// 랜덤으로 정해지는 Patrol Target을 담는 배열
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
 	TArray<AActor*> PatrolTargets;
 
+	// 목표 타겟 (플레이어의 캐릭터)
 	UPROPERTY(BlueprintReadOnly, Category = Combat)
 	AActor* CombatTarget;
 
+	// 목표물을 향할 때 속도
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float ChasingWalkSpeed = 300.f;
+
+	// 패트롤 시 속도
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float PatrolWalkSpeed = 150.f;
+
+	// 패트롤 타겟을 재설정하기 위한 범위
+	UPROPERTY(EditAnywhere)
+	double PatrolRadius = 200.f;
+
+	// 센서가 타겟 감지시 해당 함수를 호출
 	UFUNCTION()
 	void PawnSeen(APawn* SeenPawn);
 
@@ -53,23 +72,20 @@ protected:
 
 	bool CanAttack();
 
-	UPROPERTY(EditAnywhere, Category = Combat)
-	float ChasingWalkSpeed = 300.f;
-
-	UPROPERTY(EditAnywhere, Category = Combat)
-	float PatrolWalkSpeed = 150.f;
-
-	UPROPERTY(EditAnywhere)
-	double PatrolRadius = 200.f;
-
+	// ==========================
+	// Patrol Timer
+	// ==========================
 	FTimerHandle PatrolTimer;
 
 	void PatrolTimerFinished();
 
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
 	float PatrolWaitMin = 5.f;
+
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
 	float PatrolWaitMax = 10.f;
+
+	
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	double AcceptanceRadius = 50.f;
@@ -163,6 +179,7 @@ private:
 
 	void PlayHitAnimNextTick();
 	void PlayHitAnim();
+	void PlayDeadAnim();
 
 public:
 	FORCEINLINE FEnemyStats GetEnemyStats() const { return Stats; }

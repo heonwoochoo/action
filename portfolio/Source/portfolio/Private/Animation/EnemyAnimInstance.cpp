@@ -52,6 +52,7 @@ void UEnemyAnimInstance::PlayDead()
 {
 	if (Dead)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("play Dead Animation"));
 		Montage_Play(Dead);
 	}
 }

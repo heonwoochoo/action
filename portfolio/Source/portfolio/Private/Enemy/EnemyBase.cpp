@@ -19,6 +19,7 @@
 #include "EnemyTypes.h"
 #include "Perception/PawnSensingComponent.h"
 #include "AIController.h"
+#include "Animation/EnemyAnimInstance.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -85,7 +86,6 @@ void AEnemyBase::Tick(float DeltaTime)
 
 	if (State == EEnemyState::EES_Engaged && MotionWarpingComponent && CombatTarget)
 	{
-		
 		const FName WarpName = "RotateToTarget";
 		const FVector WarpLocation = CombatTarget->GetActorLocation();
 		MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(WarpName, WarpLocation);
@@ -316,16 +316,27 @@ void AEnemyBase::HandleDamage(AActor* DamageCauser, float DamageAmount)
 		if (HUDBase) HUDBase->ShowDamageOnScreen(this, DamageAmount);
 	}
 
-	Stats.Hp <= 0.f ? Die() : UpdateHPBar();
-
-	PlayHitAnimNextTick();
+	if (Stats.Hp <= 0.f)
+	{
+		Die();
+	}
+	else
+	{
+		UpdateHPBar();
+		PlayHitAnimNextTick();
+	}
 }
 
 void AEnemyBase::Die()
 {
 	State = EEnemyState::EES_Dead;
+
 	HPBarWidgetComponent->SetVisibility(false);
+
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	PlayDeadAnim();
+
 	SetLifeSpan(3.f);
 }
 
@@ -351,6 +362,16 @@ void AEnemyBase::PlayHitAnim()
 			ShowHealthBar();
 			AnimInstance->PlayHitReactOnAir();
 		}
+	}
+}
+
+void AEnemyBase::PlayDeadAnim()
+{
+	UEnemyAnimInstance* AnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance)
+	{
+
+		AnimInstance->PlayDead();
 	}
 }
 
