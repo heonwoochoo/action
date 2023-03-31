@@ -9,7 +9,7 @@
 
 class UTextBlock;
 class UProgressBar;
-class AportfolioCharacter;
+class ADefaultCharacter;
 class UAbilityComponent;
 class UImage;
 
@@ -22,7 +22,7 @@ public:
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
-	AportfolioCharacter* Character;
+	ADefaultCharacter* Character;
 
 	UAbilityComponent* AbilityComponent;
 

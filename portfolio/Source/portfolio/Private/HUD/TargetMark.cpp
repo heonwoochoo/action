@@ -1,6 +1,6 @@
 #include "HUD/TargetMark.h"
 #include "HUD/TargetWidgetComponent.h"
-#include "portfolio/portfolioCharacter.h"
+#include "DefaultCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Enemy/EnemyBase.h"
 
@@ -29,7 +29,7 @@ void ATargetMark::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	AportfolioCharacter* Character = Cast<AportfolioCharacter>(GetInstigator());
+	ADefaultCharacter* Character = Cast<ADefaultCharacter>(GetInstigator());
 	const FRotator Rotation = (Character->GetFollowCamera()->GetComponentLocation() - GetActorLocation()).ToOrientationQuat().Rotator();
 	TargetWidgetComponent->SetWorldRotation(Rotation);
 }

@@ -2,7 +2,7 @@
 
 
 #include "Animation/AnimInstanceBase.h"
-#include "portfolio/portfolioCharacter.h"
+#include "DefaultCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Component/AbilityComponent.h"
@@ -12,7 +12,7 @@ void UAnimInstanceBase::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
-	Character = Cast<AportfolioCharacter>(GetOwningActor());
+	Character = Cast<ADefaultCharacter>(GetOwningActor());
 
 	// 직업 별 애니메이션 기본 값 포인터 설정
 	if (Character && DefaultAnimationDataTable)
@@ -67,7 +67,7 @@ FVector UAnimInstanceBase::GetVelocity() const
 	return Velocity;
 }
 
-AportfolioCharacter* UAnimInstanceBase::GetCharacter() const
+ADefaultCharacter* UAnimInstanceBase::GetCharacter() const
 {
 	return Character;
 }

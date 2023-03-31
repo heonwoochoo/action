@@ -6,7 +6,7 @@
 #include "Animation/AnimInstance.h"
 #include "AnimInstanceBase.generated.h"
 
-class AportfolioCharacter;
+class ADefaultCharacter;
 class UDataTable;
 
 UCLASS()
@@ -56,7 +56,7 @@ private:
 	FVector Velocity = FVector(0.f);
 
 	UPROPERTY(VisibleAnywhere, category = "Character")
-	AportfolioCharacter* Character = nullptr;
+	ADefaultCharacter* Character = nullptr;
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -72,7 +72,7 @@ public:
 	FVector GetVelocity() const;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
-	AportfolioCharacter* GetCharacter() const;
+	ADefaultCharacter* GetCharacter() const;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
 	ECharacterClass GetCharacterClass() const;

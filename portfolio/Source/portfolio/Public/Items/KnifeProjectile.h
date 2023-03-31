@@ -9,7 +9,7 @@
 class USphereComponent;
 class UProjectileMovementComponent;
 class USkeletalMeshComponent;
-class AportfolioCharacter;
+class ADefaultCharacter;
 class USoundCue;
 
 UCLASS()
@@ -36,7 +36,7 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
-	AportfolioCharacter* Caster;
+	ADefaultCharacter* Caster;
 
 	void SetMovementDirection(const FVector& Direction);
 

@@ -6,7 +6,7 @@
 #include "AbilityComponent.generated.h"
 
 class UCharacterDataAsset;
-class AportfolioCharacter;
+class ADefaultCharacter;
 class UAnimMontage;
 class UCharacterSkillAsset;
 class UAnimInstanceBase;
@@ -30,7 +30,7 @@ protected:
 
 	virtual void InitializeComponent() override;
 
-	AportfolioCharacter* Character;
+	ADefaultCharacter* Character;
 
 	UAnimInstanceBase* AnimInstance;
 

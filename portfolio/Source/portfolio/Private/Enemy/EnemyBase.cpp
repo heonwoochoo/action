@@ -5,7 +5,7 @@
 #include "HUD/TargetWidgetComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "portfolio/portfolioCharacter.h"
+#include "DefaultCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Items/KnifeProjectile.h"
 #include "HUD/EnemyHPBarWidgetComponent.h"
@@ -83,8 +83,9 @@ void AEnemyBase::Tick(float DeltaTime)
 		CheckPatrolTarget();
 	}
 
-	if (State == EEnemyState::EES_Engaged && MotionWarpingComponent)
+	if (State == EEnemyState::EES_Engaged && MotionWarpingComponent && CombatTarget)
 	{
+		
 		const FName WarpName = "RotateToTarget";
 		const FVector WarpLocation = CombatTarget->GetActorLocation();
 		MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(WarpName, WarpLocation);
@@ -273,7 +274,7 @@ AActor* AEnemyBase::ChoosePatrolTarget()
 	const int32 NumPatrolTargets = ValidTargets.Num();
 	if (NumPatrolTargets > 0)
 	{
-		const int32 TargetSelection = FMath::FRandRange(0, NumPatrolTargets - 1);
+		const int32 TargetSelection = FMath::FRandRange(0.f, NumPatrolTargets - 1);
 		return ValidTargets[TargetSelection];
 	}
 	return nullptr;

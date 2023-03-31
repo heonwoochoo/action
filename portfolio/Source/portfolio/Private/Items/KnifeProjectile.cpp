@@ -5,7 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "portfolio/portfolioCharacter.h"
+#include "DefaultCharacter.h"
 #include "Component/AbilityComponent.h"
 #include "Component/AssassinComponent.h"
 

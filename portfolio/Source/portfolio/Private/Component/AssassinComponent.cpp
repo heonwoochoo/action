@@ -4,7 +4,7 @@
 #include "CharacterTypes.h"
 #include "Enemy/EnemyBase.h"
 #include "Animation/AnimInstanceBase.h"
-#include "portfolio/portfolioCharacter.h"
+#include "DefaultCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Component/CharacterMotionWarpingComponent.h"
 #include "Items/KnifeProjectile.h"
@@ -271,7 +271,7 @@ void UAssassinComponent::AttackMultiHit(AEnemyBase* Enemy)
 void UAssassinComponent::HandleSkillOne()
 {
 	Super::HandleSkillOne();
-
+	
 	if (AnimInstance && SkillOne.Animation)
 	{
 		FName SectionName;

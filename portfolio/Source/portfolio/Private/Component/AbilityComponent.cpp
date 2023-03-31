@@ -3,7 +3,7 @@
 
 #include "Component/AbilityComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "portfolio/portfolioCharacter.h"
+#include "DefaultCharacter.h"
 #include "Animation/AnimInstanceBase.h"
 #include "CharacterTypes.h"
 
@@ -20,7 +20,7 @@ void UAbilityComponent::BeginPlay()
 	Super::BeginPlay();
 	PrimaryComponentTick.SetTickFunctionEnable(true);
 	PrimaryComponentTick.RegisterTickFunction(GetComponentLevel());
-	Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	Character = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	if (Character)
 	{
 		AnimInstance = Cast<UAnimInstanceBase>(Character->GetMesh()->GetAnimInstance());
@@ -84,6 +84,7 @@ void UAbilityComponent::SetSkillFourTimer()
 
 void UAbilityComponent::HandleSkillOne()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Handle skill one Ability"));
 	if (bCanSkillOne)
 	{
 		SetSkillOneTimer();

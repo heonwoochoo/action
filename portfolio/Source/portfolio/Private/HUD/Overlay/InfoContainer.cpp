@@ -3,7 +3,7 @@
 
 #include "HUD/Overlay/InfoContainer.h"
 #include "Components/TextBlock.h"
-#include "portfolio/portfolioCharacter.h"
+#include "DefaultCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/ProgressBar.h"
 #include "CharacterTypes.h"
@@ -13,7 +13,7 @@
 void UInfoContainer::NativeConstruct()
 {
 	Super::NativeConstruct();
-	 Character = Cast<AportfolioCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	 Character = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	 if (Character)
 	 { 
 		 AbilityComponent = Character->GetAbilityComponent();
