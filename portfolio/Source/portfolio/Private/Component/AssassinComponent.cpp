@@ -44,9 +44,9 @@ void UAssassinComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 		SkillTwoDashOverlap();
 	}
 
+
 	if (bAttackSKillThree)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Skill Three Attack!"));
 		PullEnemyToCenter();
 	}
 
