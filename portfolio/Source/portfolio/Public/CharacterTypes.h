@@ -202,6 +202,9 @@ struct FCharacterDefaultAnimation : public FTableRowBase
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UAnimMontage* HitReact;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimSequence* Dead;
 };
 
 UENUM(BlueprintType)

@@ -27,7 +27,8 @@ void UAnimInstanceBase::NativeInitializeAnimation()
 			DefaultEquippedIdle = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->EquippedIdle;
 			DefaultUnequippedIdle = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->UnequippedIdle;
 			DefaultEvadeMontage = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->Evade;
-			DefaultHitReactMontage = DefaultAnimationDataTable->FindRow< FCharacterDefaultAnimation>(FName("Assassin"), "")->HitReact;
+			DefaultHitReactMontage = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->HitReact;
+			DefaultDead = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->Dead;
 		}
 	}
 }

@@ -145,6 +145,7 @@ void ADefaultCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 
 void ADefaultCharacter::Move(const FInputActionValue& Value)
 {
+	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -185,6 +186,7 @@ void ADefaultCharacter::Move(const FInputActionValue& Value)
 
 void ADefaultCharacter::MoveEnd()
 {
+	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
 	CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 }
 
@@ -203,6 +205,7 @@ void ADefaultCharacter::Look(const FInputActionValue& Value)
 
 void ADefaultCharacter::Jump()
 {
+	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
 	CharacterActionState = ECharacterActionState::ECAS_Jump;
 	if (!bCanDoubleJump)
 	{
@@ -216,6 +219,7 @@ void ADefaultCharacter::Jump()
 
 void ADefaultCharacter::DefaultAttack(const FInputActionValue& Value)
 {
+	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
 	if (CharacterActionState == ECharacterActionState::ECAS_Unoccupied
 		|| CharacterActionState == ECharacterActionState::ECAS_AttackCombo
 		|| CharacterActionState == ECharacterActionState::ECAS_MoveForward
@@ -258,6 +262,7 @@ void ADefaultCharacter::DefaultAttack(const FInputActionValue& Value)
 
 void ADefaultCharacter::OnSprint()
 {
+	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
 	if (GetVelocity().Size() > 0.f)
 	{
 		if (CharacterActionState != ECharacterActionState::ECAS_Jump)
@@ -273,6 +278,7 @@ void ADefaultCharacter::OnSprint()
 
 void ADefaultCharacter::OffSprint()
 {
+	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
 	if (CharacterActionState != ECharacterActionState::ECAS_Jump)
 	{
 		CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
@@ -284,7 +290,7 @@ void ADefaultCharacter::OffSprint()
 
 void ADefaultCharacter::OnEvade()
 {
-	
+	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
 	if (AnimInstance && GetVelocity().Size() 
 		&& !GetCharacterMovement()->IsFalling()
 		&& CharacterActionState != ECharacterActionState::ECAS_Evade
@@ -320,6 +326,7 @@ void ADefaultCharacter::OnEvade()
 
 void ADefaultCharacter::SkillManagerOne()
 {
+	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		
@@ -329,6 +336,7 @@ void ADefaultCharacter::SkillManagerOne()
 
 void ADefaultCharacter::SkillManagerTwo()
 {
+	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillTwo();
@@ -337,6 +345,7 @@ void ADefaultCharacter::SkillManagerTwo()
 
 void ADefaultCharacter::SkillManagerThree()
 {
+	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillThree();
@@ -345,6 +354,7 @@ void ADefaultCharacter::SkillManagerThree()
 
 void ADefaultCharacter::SkillManagerFour()
 {
+	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillFour();
@@ -514,7 +524,6 @@ void ADefaultCharacter::Die()
 	DefaultStats.HP = 0;
 	CharacterActionState = ECharacterActionState::ECAS_Dead;
 	Tags.Add(FName("Dead"));
-	EnhancedInputComponent->ToggleActive();
 	UE_LOG(LogTemp, Warning, TEXT("Player dead"));
 }
 

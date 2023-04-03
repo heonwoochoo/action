@@ -45,7 +45,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
 	UAnimMontage* DefaultHitReactMontage = nullptr;
 
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
+	UAnimSequence* DefaultDead = nullptr;
 
 private:
 	UPROPERTY(VisibleAnywhere, category = "Character|Movement")
