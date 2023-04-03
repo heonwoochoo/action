@@ -4,10 +4,13 @@
 #include "Items/Potion.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "DefaultCharacter.h"
+#include "Curves/CurveFloat.h"
 
 APotion::APotion()
 {
- 	PrimaryActorTick.bCanEverTick = false;
+ 	PrimaryActorTick.bCanEverTick = true;
 
 	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	if (CollisionComponent)
@@ -32,6 +35,7 @@ void APotion::BeginPlay()
 	{
 		CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &APotion::BeginOverlap);
 	}
+
 }
 
 void APotion::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
@@ -60,13 +64,60 @@ void APotion::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent
 
 void APotion::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Begin overlap potion"));
+	if (OtherActor->ActorHasTag(FName("Player")))
+	{
+		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		if (PickupParticle)
+		{
+			const FTransform Transform{ GetTransform() };
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), PickupParticle, Transform);
+		}
+
+		Character = OtherActor;
+
+		GetWorld()->GetTimerManager().SetTimer(PickupTimerHandle, this, &APotion::EndPickupTimer, PickupScaleTime);
+	}	
 }
 
-// Called every frame
+void APotion::Destroyed()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Potion Destroyed!"));
+}
+
 void APotion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (PickupTimerHandle.IsValid())
+	{
+		if (PickupScaleCurve)
+		{
+			const float ElapsedTime = GetWorldTimerManager().GetTimerElapsed(PickupTimerHandle);
+			const float ScaleValue = PickupScaleCurve->GetFloatValue(ElapsedTime);
+			if (StaticMesh)
+			{
+				StaticMesh->SetWorldScale3D(FVector(ScaleValue));
+			}
+			if (ElapsedTime > 0.8f)
+			{
+				MoveToCharacter(DeltaTime);
+			}
+		}
+	}
+}
+
+void APotion::EndPickupTimer()
+{
+	Destroy();
+}
+
+void APotion::MoveToCharacter(float DeltaTime)
+{
+	const float X = FMath::FInterpTo(GetActorLocation().X, Character->GetActorLocation().X, DeltaTime, 50.f);
+	const float Y = FMath::FInterpTo(GetActorLocation().Y, Character->GetActorLocation().Y, DeltaTime, 50.f);
+	const float Z = FMath::FInterpTo(GetActorLocation().Z, Character->GetActorLocation().Z, DeltaTime, 50.f);
+	const FVector NewLocation{ X, Y, Z };
+	SetActorLocation(NewLocation);
 }
 
