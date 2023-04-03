@@ -73,6 +73,7 @@ protected:
 
 	bool CanAttack();
 
+	// 패트롤 타겟의 포인터를 저장 후 최초 타겟 설정
 	void InitPatrolTarget();
 
 	// ==========================

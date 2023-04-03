@@ -31,11 +31,11 @@ void ADefaultGameMode::RespawnEnemy()
 	{
 		const int32 RandTargetPointNum = FMath::RandRange(0, RespawnPoints.Num() - 1);
 		const FVector Location = RespawnPoints[RandTargetPointNum]->GetActorLocation();
-		const FRotator Rotaion = RespawnPoints[RandTargetPointNum]->GetActorRotation();
+		const FRotator Rotation = RespawnPoints[RandTargetPointNum]->GetActorRotation();
 
 		const int32 RandEnemyNum = FMath::RandRange(0, Enemies.Num() - 1);
 
-		GetWorld()->SpawnActor<AEnemyBase>(Enemies[RandEnemyNum], Location, Rotaion);
+		GetWorld()->SpawnActor<AEnemyBase>(Enemies[RandEnemyNum], Location, Rotation);
 	}
 	bRespawnFlag = true;
 }

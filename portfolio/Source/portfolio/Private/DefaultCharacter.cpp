@@ -21,6 +21,7 @@
 #include "Sound/SoundCue.h"
 #include "HUD/HUDBase.h"
 #include "HUD/Overlay/InfoContainer.h"
+#include "Component/InventoryComponent.h"
 
 ADefaultCharacter::ADefaultCharacter()
 {
@@ -63,7 +64,8 @@ ADefaultCharacter::ADefaultCharacter()
 	// Create MotionWarpingComponent;
 	CharacterMWComponent = CreateDefaultSubobject<UCharacterMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 
-	
+	// Create InventoryComponent
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 
 	InitialRelativeLocationZ = 0.f;
 

@@ -19,6 +19,7 @@ class UCharacterMotionWarpingComponent;
 class UDataTable;
 class USoundCue;
 class AEnemyBase;
+class UInventoryComponent;
 
 UCLASS(config=Game)
 class ADefaultCharacter : public ACharacter
@@ -143,6 +144,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability, meta = (AllowPrivateAccess = "true"))
 	UAbilityComponent* AbilityComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability, meta = (AllowPrivateAccess = "true"))
+	UInventoryComponent* InventoryComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability, meta = (AllowPrivateAccess = "true"))
 	UCharacterMotionWarpingComponent* CharacterMWComponent;
