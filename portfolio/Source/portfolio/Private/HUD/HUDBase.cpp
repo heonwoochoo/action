@@ -6,6 +6,7 @@
 #include "HUD/DamageText.h"
 #include "HUD/TargetMark.h"
 #include "Components/CapsuleComponent.h"
+#include "HUD/Overlay/InfoContainer.h"
 
 AHUDBase::AHUDBase()
 {
@@ -15,6 +16,20 @@ AHUDBase::AHUDBase()
 void AHUDBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+}
+
+void AHUDBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (InfoContainerClass)
+	{
+		InfoContainer = Cast<UInfoContainer>(CreateWidget(GetOwningPlayerController(), InfoContainerClass));
+		if (InfoContainer)
+		{
+			InfoContainer->AddToViewport();
+		}
+	}
 }
 
 void AHUDBase::ShowDamageOnScreen(ACharacter* Actor, float Damage)

@@ -10,6 +10,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class UEnhancedInputComponent;
 class UInputMappingContext;
 class UInputAction;
 class UAbilityComponent;
@@ -81,6 +82,8 @@ protected:
 
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -98,6 +101,8 @@ private:
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
+
+	UEnhancedInputComponent* EnhancedInputComponent;
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -220,5 +225,7 @@ public:
 	FORCEINLINE FCharacterStats GetCharacterStats() const { return DefaultStats; }
 	
 	void DamageToEnemy(AEnemyBase* Enemy, float Damage);
+
+	void Die();
 };
 

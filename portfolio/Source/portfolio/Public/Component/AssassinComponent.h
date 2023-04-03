@@ -51,7 +51,7 @@ private:
 	AActor* TargetEnemy;
 
 	// 투사체 적중시 설정된 Dash 타겟
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties|SkillOne", meta = (AllowPrivateAccess = "ture"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties|SkillOne", meta = (AllowPrivateAccess = "true"))
 	AActor* DashTarget;
 
 	// 1번 스킬의 첫 번째 동작 실행
@@ -84,15 +84,14 @@ private:
 	void SetCheckSkillTwoDashOverlap(bool CanOverlap);
 
 	// 내려찍을 때 카메라 효과를 설정하는 클래스
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "ture"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UCameraShakeBase> CameraShakeExplosion;
 
 \
 	//==============================
 	//			3번 스킬
 	//==============================
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillThree|SkillEffect", meta = (AllowPrivateAccess = "ture"))
-	UNiagaraSystem* SkillThreeBloodAOE;
+	
 	
 	// 기둥이 생성되어 적을 끌어당기는 시간을 조절하는 타이머 핸들
 	FTimerHandle SkillThreeSpawnTimer;
@@ -120,11 +119,11 @@ private:
 	FVector SkillThreeSpawnLocation;
 
 	// 기둥 생성 후 히트가 지속되는 시간
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Skill", meta = (AllowPrivateAccess = "ture"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillThree", meta = (AllowPrivateAccess = "true"))
 	float SkillThreeHitDuration = 3.0f;
 
 	// 다단히트 간격
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Skill", meta = (AllowPrivateAccess = "ture"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillThree", meta = (AllowPrivateAccess = "true"))
 	float MultiHitDeltaTime = 0.5f;
 
 public:
@@ -157,6 +156,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SpawnSkillThreeEffect();
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillThree|SkillEffect")
+	UNiagaraSystem* SkillThreeBloodAOE;
 
 	//==============================
 	//			4번 스킬

@@ -42,8 +42,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
 	UAnimMontage* DefaultEvadeMontage = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Skill")
-	UAnimMontage* SkillOne;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
+	UAnimMontage* DefaultHitReactMontage = nullptr;
+
+
 
 private:
 	UPROPERTY(VisibleAnywhere, category = "Character|Movement")
@@ -81,7 +83,9 @@ public:
 
 	UAnimMontage* GetDefaultDoubleJumpMontage() const;
 
-	UAnimMontage* GetDefaultDefaultEvadeMontage() const;
+	UAnimMontage* GetDefaultEvadeMontage() const;
 
-	UAnimMontage* GetSkillOne() const;
+	UAnimMontage* GetDefaultHitReactMontage() const;
+
+	void PlayHitReact();
 };

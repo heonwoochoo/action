@@ -20,6 +20,7 @@
 #include "Perception/PawnSensingComponent.h"
 #include "AIController.h"
 #include "Animation/EnemyAnimInstance.h"
+#include "Animation/AnimInstanceBase.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -160,7 +161,17 @@ void AEnemyBase::AttackCharacter()
 
 	for (AActor* Actor : OutActors)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CombarTarget Attack!"));
+		ADefaultCharacter* Character = Cast<ADefaultCharacter>(Actor);
+		if (Character)
+		{
+			UAnimInstanceBase* AnimInstance = Cast<UAnimInstanceBase>(Character->GetMesh()->GetAnimInstance());
+			if (AnimInstance)
+			{
+				AnimInstance->PlayHitReact();
+			}
+
+			DamageToPlayer(Character);
+		}
 	}
 }
 
@@ -175,6 +186,12 @@ void AEnemyBase::StartAttackTimer()
 	State = EEnemyState::EES_Attacking;
 	const float AttackTime = FMath::RandRange(AttackMin, AttackMax);
 	GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemyBase::PlayAttackAnim, AttackTime);
+}
+
+void AEnemyBase::DamageToPlayer(ADefaultCharacter* Character)
+{
+	TSubclassOf<UDamageType> DamageType;
+	UGameplayStatics::ApplyDamage(Character, Stats.Damage, EnemyController, this, DamageType);
 }
 
 
@@ -426,13 +443,11 @@ void AEnemyBase::UpdateHPBar()
 
 void AEnemyBase::SetHeadUpMark(AActor* NewMark)
 {
-	UE_LOG(LogTemp, Warning, TEXT("SetHeadUpMark"));
 	HeadUpMark = NewMark;
 }
 
 void AEnemyBase::RemoveMark()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Remove mark out"));
 	if (HeadUpMark) HeadUpMark->Destroy();
 }
 

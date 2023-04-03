@@ -1,4 +1,3 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "DefaultCharacter.h"
 #include "Camera/CameraComponent.h"
@@ -20,8 +19,8 @@
 #include "Enemy/EnemyBase.h"
 #include "HelperFunction.h"
 #include "Sound/SoundCue.h"
-
-// ADefaultCharacter
+#include "HUD/HUDBase.h"
+#include "HUD/Overlay/InfoContainer.h"
 
 ADefaultCharacter::ADefaultCharacter()
 {
@@ -111,7 +110,9 @@ void ADefaultCharacter::BeginPlay()
 void ADefaultCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
+	EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
+	if (EnhancedInputComponent) 
+	{
 		
 		//Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::Jump);
@@ -290,7 +291,7 @@ void ADefaultCharacter::OnEvade()
 		&& CharacterActionState != ECharacterActionState::ECAS_Sprint)
 	{
 		
-		UAnimMontage* DefaultEvadeMontage = AnimInstance->GetDefaultDefaultEvadeMontage();
+		UAnimMontage* DefaultEvadeMontage = AnimInstance->GetDefaultEvadeMontage();
 		if (DefaultEvadeMontage)
 		{
 			AnimInstance->Montage_Play(DefaultEvadeMontage);
@@ -371,6 +372,28 @@ void ADefaultCharacter::PostEditChangeProperty(FPropertyChangedEvent& PropertyCh
 	{
 		DefaultStats = *StatsDataTable->FindRow<FCharacterStats>(FName("Default"), "");
 	}
+}
+
+float ADefaultCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	DefaultStats.HP -= DamageAmount;
+
+	if (DefaultStats.HP <= 0)
+	{
+		Die();
+	}
+	ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
+	if (CharacterController)
+	{
+		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+		if (HUDBase)
+		{
+			HUDBase->GetInfoContainer()->UpdateHP();
+		}
+	}
+	return 0.0f;
 }
 
 void ADefaultCharacter::DoubleJump()
@@ -468,7 +491,7 @@ void ADefaultCharacter::OnAnimationEnded(UAnimMontage* AnimClass, bool bInterrup
 {
 	if (AnimInstance)
 	{
-		if (AnimClass == AnimInstance->GetDefaultDefaultEvadeMontage())
+		if (AnimClass == AnimInstance->GetDefaultEvadeMontage())
 		{
 			FinishEvade();
 		}
@@ -484,6 +507,15 @@ void ADefaultCharacter::DamageToEnemy(AEnemyBase* Enemy, float Damage)
 	TSubclassOf<UDamageType> DamageType;
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 	UGameplayStatics::ApplyDamage(Enemy, UHelperFunction::GetRandomDamage(Damage, DefaultStats.GetCritical()), CharacterController, this, DamageType);
+}
+
+void ADefaultCharacter::Die()
+{
+	DefaultStats.HP = 0;
+	CharacterActionState = ECharacterActionState::ECAS_Dead;
+	Tags.Add(FName("Dead"));
+	EnhancedInputComponent->ToggleActive();
+	UE_LOG(LogTemp, Warning, TEXT("Player dead"));
 }
 
 ECharacterClass ADefaultCharacter::GetCharacterClass()

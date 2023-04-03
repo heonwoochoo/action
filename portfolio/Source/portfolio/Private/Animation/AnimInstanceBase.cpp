@@ -27,6 +27,7 @@ void UAnimInstanceBase::NativeInitializeAnimation()
 			DefaultEquippedIdle = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->EquippedIdle;
 			DefaultUnequippedIdle = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->UnequippedIdle;
 			DefaultEvadeMontage = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->Evade;
+			DefaultHitReactMontage = DefaultAnimationDataTable->FindRow< FCharacterDefaultAnimation>(FName("Assassin"), "")->HitReact;
 		}
 	}
 }
@@ -96,12 +97,32 @@ UAnimMontage* UAnimInstanceBase::GetDefaultDoubleJumpMontage() const
 	return DefaultDoubleJumpMontage;
 }
 
-UAnimMontage* UAnimInstanceBase::GetDefaultDefaultEvadeMontage() const
+UAnimMontage* UAnimInstanceBase::GetDefaultEvadeMontage() const
 {
 	return DefaultEvadeMontage;
 }
 
-UAnimMontage* UAnimInstanceBase::GetSkillOne() const
+UAnimMontage* UAnimInstanceBase::GetDefaultHitReactMontage() const
 {
-	return SkillOne;
+	return DefaultHitReactMontage;
+}
+
+void UAnimInstanceBase::PlayHitReact()
+{
+	if (DefaultHitReactMontage)
+	{
+		Montage_Play(DefaultHitReactMontage);
+		FName SectionName;
+		const int32 RandNum = FMath::RandRange(0, 1);
+		switch (RandNum)
+		{
+		case 0:
+			SectionName = "HitReact1";
+			break;
+		case 1:
+			SectionName = "HitReact2";
+			break;
+		}
+		Montage_JumpToSection(SectionName);
+	}
 }

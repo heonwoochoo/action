@@ -14,6 +14,7 @@ class UMotionWarpingComponent;
 class ADamageText;
 class UPawnSensingComponent;
 class AAIController;
+class ADefaultCharacter;
 
 UCLASS()
 class PORTFOLIO_API AEnemyBase : public ACharacter
@@ -105,17 +106,20 @@ protected:
 	float AttackMax = 1.f;
 
 	
-
+	// 공격 애니메이션 재생
 	void PlayAttackAnim();
 
+	// 가격 타이밍에 Anim notify에서 호출되는 함수
 	UFUNCTION(BlueprintCallable)
 	void AttackCharacter();
 
+	// 공격 종료시 Anim notify에서 호출되는 함수
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
 
 	void StartAttackTimer();
 
+	void DamageToPlayer(ADefaultCharacter* Character);
 
 	void MoveToTarget(AActor* Target);
 

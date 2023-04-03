@@ -199,6 +199,9 @@ struct FCharacterDefaultAnimation : public FTableRowBase
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UAnimMontage* Evade;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* HitReact;
 };
 
 UENUM(BlueprintType)
@@ -213,6 +216,7 @@ enum class ECharacterDirection : uint8
 UENUM(BlueprintType)
 enum class ECharacterActionState : uint8
 {
+	ECAS_Dead UMETA(DisplayName = "Dead"),
 	ECAS_Unoccupied UMETA(DisplayName = "Unoccupied"),
 	ECAS_MoveForward UMETA(DisplayName = "MoveForward"),
 	ECAS_MoveBack UMETA(DisplayName = "MoveBack"),
