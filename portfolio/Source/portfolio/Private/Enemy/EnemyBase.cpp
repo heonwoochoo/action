@@ -65,9 +65,13 @@ void AEnemyBase::BeginPlay()
 	if (PawnSensing) PawnSensing->OnSeePawn.AddDynamic(this, &AEnemyBase::PawnSeen);
 
 	EnemyController = Cast<AAIController>(GetController());
-	MoveToTarget(PatrolTarget);
+	
 	HideHealthBar();
 	Tags.Add(FName("Enemy"));
+
+	InitPatrolTarget();
+
+	MoveToTarget(PatrolTarget);
 }
 
 void AEnemyBase::Tick(float DeltaTime)
@@ -124,6 +128,13 @@ bool AEnemyBase::CanAttack()
 		State != EEnemyState::EES_Engaged &&
 		State != EEnemyState::EES_Dead;
 	return bCanAttack;
+}
+
+void AEnemyBase::InitPatrolTarget()
+{
+	UGameplayStatics::GetAllActorsWithTag(this, FName("Patrol"), PatrolTargets);
+	const int32 RandIdx = FMath::RandRange(0, PatrolTargets.Num() - 1);
+	PatrolTarget = PatrolTargets[RandIdx];
 }
 
 void AEnemyBase::PatrolTimerFinished()

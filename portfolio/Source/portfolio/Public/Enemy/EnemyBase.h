@@ -73,6 +73,8 @@ protected:
 
 	bool CanAttack();
 
+	void InitPatrolTarget();
+
 	// ==========================
 	// Patrol Timer
 	// ==========================
