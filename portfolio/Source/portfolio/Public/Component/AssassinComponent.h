@@ -83,11 +83,11 @@ private:
 	UFUNCTION(BlueprintCallable)
 	void SetCheckSkillTwoDashOverlap(bool CanOverlap);
 
-	// 내려찍을 때 카메라 효과를 설정하는 클래스
+	// 내려찍을 때 카메라 효과
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UCameraShakeBase> CameraShakeExplosion;
 
-\
+
 	//==============================
 	//			3번 스킬
 	//==============================
@@ -126,6 +126,16 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillThree", meta = (AllowPrivateAccess = "true"))
 	float MultiHitDeltaTime = 0.5f;
 
+	//==============================
+	//			4번 스킬
+	//==============================
+	// 적을 공중에 띄움
+	void LaunchEnemy(float ZScale);
+
+	// 공격 범위
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillFour", meta = (AllowPrivateAccess = "true"))
+	float SkillFourRange = 300.f;
+
 public:
 	//==============================
 	//			1번 스킬
@@ -163,4 +173,11 @@ public:
 	//			4번 스킬
 	//==============================
 	virtual void HandleSkillFour() override;
+
+	UFUNCTION(BlueprintCallable)
+	void SkillFourEffect();
+
+	// 마무리 공격시 호출
+	UFUNCTION(BlueprintCallable)
+	void SkillFourEndEffect();
 };

@@ -201,6 +201,22 @@ void UAssassinComponent::HandleSkillFour()
 	}
 }
 
+void UAssassinComponent::SkillFourEffect()
+{
+	Character->LaunchCharacter(FVector(0.f, 0.f, 400.f), false, true);
+	LaunchEnemy(400.f);
+}
+
+void UAssassinComponent::SkillFourEndEffect()
+{
+	Character->LaunchCharacter(FVector(0.f, 0.f, -5000.f), false, true);
+	LaunchEnemy(-5000.f);
+	if (CameraShakeExplosion)
+	{
+		UGameplayStatics::PlayWorldCameraShake(this, CameraShakeExplosion, Character->GetFollowCamera()->GetComponentLocation(), 0.f, 500.f);
+	}
+}
+
 void UAssassinComponent::ThrowKnife()
 {
 	if (KnifeClass && Character)
@@ -265,6 +281,24 @@ void UAssassinComponent::AttackMultiHit(AEnemyBase* Enemy)
 		Character->DamageToEnemy(Enemy, SkillThree.Damage);
 		GetWorld()->GetTimerManager().SetTimer(SkillThreeHitTimer, this, &UAssassinComponent::SkillThreeHitTimerEnd, MultiHitDeltaTime, false);
 		bMultiHit = false;
+	}
+}
+
+void UAssassinComponent::LaunchEnemy(float ZScale)
+{
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = { UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn) };
+	TArray<AActor*> ActorsToIgnore = { Character };
+	TArray<AActor*> OutActors;
+	const FVector Location = Character->GetActorLocation();
+	UKismetSystemLibrary::SphereOverlapActors(this, Location, SkillFourRange, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
+
+	for (AActor* Actor : OutActors)
+	{
+		AEnemyBase* Enemy = Cast<AEnemyBase>(Actor);
+		if (Enemy && Enemy->ActorHasTag(FName("Enemy")) && Enemy->GetState() != EEnemyState::EES_Dead)
+		{
+			Enemy->LaunchCharacter(FVector(0.f, 0.f, ZScale), false, true);
+		}
 	}
 }
 
