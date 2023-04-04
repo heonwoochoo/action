@@ -447,6 +447,11 @@ UAbilityComponent* ADefaultCharacter::GetAbilityComponent() const
 	return AbilityComponent;
 }
 
+UInventoryComponent* ADefaultCharacter::GetInventoryComponent() const
+{
+	return InventoryComponent;
+}
+
 void ADefaultCharacter::AttackChainStart()
 {
 	CharacterActionState = ECharacterActionState::ECAS_AttackCombo;

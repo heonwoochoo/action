@@ -1,7 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Component/InventoryComponent.h"
+#include "HUD/HUDBase.h"
+#include "Kismet/GameplayStatics.h"
+#include "HUD/Overlay/InfoContainer.h"
 
 UInventoryComponent::UInventoryComponent()
 {
@@ -27,6 +30,11 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	
 }
 
+TMap<EItemName, uint8> UInventoryComponent::GetItemAmountMap() const
+{
+	return ItemsAmount;
+}
+
 uint8 UInventoryComponent::GetItemAmount(EItemName ItemName)
 {
 	if (ItemsAmount.Contains(ItemName))
@@ -36,8 +44,9 @@ uint8 UInventoryComponent::GetItemAmount(EItemName ItemName)
 	else return 0;
 }
 
-void UInventoryComponent::AddItem(EItemName ItemName)
+void UInventoryComponent::AddItemPotion(EItemName ItemName)
 {
+	if (!PotionDataTable) return;
 	if (ItemsAmount.Contains(ItemName))
 	{
 		FName RowName;
@@ -60,11 +69,16 @@ void UInventoryComponent::AddItem(EItemName ItemName)
 	}
 	else
 	{
-		ItemsAmount[ItemName] = 1;
+		// 최대로 가질 수 있는 아이템의 종류는 6가지입니다.
+		if (ItemsAmount.Num() == 6) return;
+
+		ItemsAmount.Add({ ItemName, 1 });
 	}
+
+	UpdatePotionUI();
 }
 
-void UInventoryComponent::UseItem(EItemName ItemName)
+void UInventoryComponent::UseItemPotion(EItemName ItemName)
 {
 	if (ItemsAmount.Contains(ItemName))
 	{
@@ -73,6 +87,27 @@ void UInventoryComponent::UseItem(EItemName ItemName)
 			ItemsAmount.Remove(ItemName);
 		}
 		else ItemsAmount[ItemName]--;
+
+		UpdatePotionUI();
+	}
+}
+
+UDataTable* UInventoryComponent::GetPotionDataTable() const
+{
+	return PotionDataTable;
+}
+
+void UInventoryComponent::UpdatePotionUI()
+{
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	if (PlayerController)
+	{
+		AHUDBase* HUD = Cast<AHUDBase>(PlayerController->GetHUD());
+		UInfoContainer* InfoContainer = HUD->GetInfoContainer();
+		if (InfoContainer)
+		{
+			InfoContainer->UpdatePotionInventory();
+		}
 	}
 }
 

@@ -195,6 +195,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UAbilityComponent* GetAbilityComponent() const;
 
+	UInventoryComponent* GetInventoryComponent() const;
+
 	void PlaySound(USoundCue* Sound);
 
 	UFUNCTION(BlueprintCallable)

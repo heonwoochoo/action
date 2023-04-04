@@ -9,6 +9,7 @@
 #include "CharacterTypes.h"
 #include "Component/AbilityComponent.h"
 #include "Components/Image.h"
+#include "Component/InventoryComponent.h"
 
 void UInfoContainer::NativeConstruct()
 {
@@ -21,7 +22,11 @@ void UInfoContainer::NativeConstruct()
 		 {
 			 Init();
 		 }
+
+		 InventoryComponent = Character->GetInventoryComponent();
 	 }
+
+	 InitItemPotions();
 }
 
 void UInfoContainer::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -57,6 +62,8 @@ void UInfoContainer::Init()
 	UpdateSkillThreeImage();
 	UpdateSkillFour();
 	UpdateSkillFourImage();
+
+	RemovePotionUI();
 }
 
 void UInfoContainer::UpdateADText()
@@ -217,4 +224,72 @@ void UInfoContainer::UpdateSkillFour()
 void UInfoContainer::UpdateSkillFourImage()
 {
 	SkillFourImage->SetBrushFromTexture(AbilityComponent->GetSkillFour().Image);
+}
+
+void UInfoContainer::UpdatePotionInventory()
+{
+	if (InventoryComponent)
+	{
+		UDataTable* PotionDataTable = InventoryComponent->GetPotionDataTable();
+		if (PotionDataTable)
+		{
+			TArray<FPotionInfo*> OutPotionRowArrays;
+			PotionDataTable->GetAllRows<FPotionInfo>("", OutPotionRowArrays);
+
+			TMap<EItemName, uint8> Inventory = InventoryComponent->GetItemAmountMap();
+
+			RemovePotionUI();
+			for (auto Item : Inventory)
+			{
+				if (CheckPotion(Item.Key))
+				{
+					for (auto Row : OutPotionRowArrays)
+					{
+						if (Row->Name == Item.Key)
+						{
+							UpdatePotionUI(Row->Image, Item.Value);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+void UInfoContainer::UpdatePotionUI(UTexture2D* Image, uint8 Amount)
+{
+	UE_LOG(LogTemp, Warning, TEXT("UpdatePotionUI"));
+	if (PotionIdx < 3)
+	{
+		ItemPotions[PotionIdx].Image->SetBrushFromTexture(Image);
+		ItemPotions[PotionIdx].Image->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f));
+		ItemPotions[PotionIdx].Amount->SetText(FText::FromString(FString::FromInt(Amount)));
+		PotionIdx++;
+	}
+}
+
+void UInfoContainer::RemovePotionUI()
+{
+	PotionIdx = 0;
+	for (auto Potion : ItemPotions)
+	{
+		Potion.Amount->SetText(FText());
+		Potion.Image->SetBrushFromTexture(nullptr);
+		Potion.Image->SetColorAndOpacity(FLinearColor(0.f, 0.f, 0.f));
+	}
+}
+
+bool UInfoContainer::CheckPotion(EItemName Name)
+{
+	bool result =
+		Name == EItemName::EIN_HealthPotion ||
+		Name == EItemName::EIN_StaminaPotion;
+	return result;
+}
+
+void UInfoContainer::InitItemPotions()
+{
+	ItemPotions.Add({ ItemImage1 ,Item1_Amount });
+	ItemPotions.Add({ ItemImage2 ,Item2_Amount });
+	ItemPotions.Add({ ItemImage3 ,Item3_Amount });
 }

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Items/Potion.h"
@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "DefaultCharacter.h"
 #include "Curves/CurveFloat.h"
+#include "Component/InventoryComponent.h"
 
 APotion::APotion()
 {
@@ -109,6 +110,16 @@ void APotion::Tick(float DeltaTime)
 
 void APotion::EndPickupTimer()
 {
+	// 아이템이 필드에서 사라지면서 캐릭터가 아이템을 획득
+	ADefaultCharacter* PlayerCharacter = Cast<ADefaultCharacter>(Character);
+	if (PlayerCharacter)
+	{
+		UInventoryComponent* InventoryComponent = PlayerCharacter->GetInventoryComponent();
+		if (InventoryComponent && PotionName != EItemName::EIN_None)
+		{
+			InventoryComponent->AddItemPotion(PotionName);
+		}
+	}
 	Destroy();
 }
 

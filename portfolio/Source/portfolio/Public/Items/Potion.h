@@ -34,9 +34,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	EItemName PotionName = EItemName::EIN_None;
 
+	// 아이템 획득 시 생성될 파티클 효과
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Particle")
 	UParticleSystem* PickupParticle;
 
+	// 획득 시 발생하는 애니메이션 효과를 위한 스케일 변화량
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	UCurveFloat* PickupScaleCurve;
 

@@ -4,14 +4,28 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-
+#include "ItemTypes.h"
 #include "InfoContainer.generated.h"
 
 class UTextBlock;
+class UTexture2D;
 class UProgressBar;
 class ADefaultCharacter;
 class UAbilityComponent;
 class UImage;
+class UInventoryComponent;
+
+USTRUCT(BlueprintType)
+struct FPotionUI
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY()
+	UImage* Image;
+
+	UPROPERTY()
+	UTextBlock* Amount;
+};
 
 UCLASS()
 class PORTFOLIO_API UInfoContainer : public UUserWidget
@@ -26,6 +40,11 @@ public:
 
 	UAbilityComponent* AbilityComponent;
 
+	UInventoryComponent* InventoryComponent;
+
+	//=======================
+	// 플레이어 스탯 정보
+	//=======================
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* ADText;
 
@@ -73,7 +92,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* GoldText;
 
-	/** Skill One */
+	//================
+	// 스킬
+	//================
+	/** One */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* SkillOneCoolDownText;
 
@@ -83,7 +105,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UProgressBar* SkillOneCoolDownProgressBar;
 
-	/** Skill Two */
+	/** Two */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* SkillTwoCoolDownText;
 
@@ -93,7 +115,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UProgressBar* SkillTwoCoolDownProgressBar;
 
-	/** Skill Three */
+	/** Three */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* SkillThreeCoolDownText;
 
@@ -103,7 +125,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UProgressBar* SkillThreeCoolDownProgressBar;
 
-	/** Skill Four */
+	/** Four */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* SkillFourCoolDownText;
 
@@ -112,6 +134,50 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UProgressBar* SkillFourCoolDownProgressBar;
+
+	//==============
+	// 아이템
+	// 1,2,3 : 소모품
+	// 4,5,6 : 장비
+	//==============
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* Item1_Amount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* ItemImage1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* Item2_Amount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* ItemImage2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* Item3_Amount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* ItemImage3;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* Item4_Amount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* ItemImage4;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* Item5_Amount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* ItemImage5;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* Item6_Amount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* ItemImage6;
+
 
 	void Init();
 
@@ -142,4 +208,19 @@ public:
 
 	void UpdateSkillFour();
 	void UpdateSkillFourImage();
+
+	void UpdatePotionInventory();
+	void UpdatePotionUI(UTexture2D* Image, uint8 Amount);
+	void RemovePotionUI();
+
+	bool CheckPotion(EItemName Name);
+
+	void InitItemPotions();
+
+private:
+	// 아이템의 첫 번째 칸부터 순차적으로 이미지를 적용하기 위한 Index
+	uint8 PotionIdx = 0;
+
+	// 업데이트가 필요한 소모품들의 포인터를 담는 배열
+	TArray<FPotionUI> ItemPotions;
 };
