@@ -168,13 +168,22 @@ void UAssassinComponent::SkillTwoEndEffect()
 
 void UAssassinComponent::HandleSkillThree()
 {
-	Super::HandleSkillThree();
+	if (!bCanSkillThree) return;
 
-	if (AnimInstance && SkillThree.Animation)
+	const float StaminaCost = SkillThree.Stamina;
+	const float PlayerStamina = Character->GetCharacterStats().GetStamina();
+
+	if (StaminaCost <= PlayerStamina)
 	{
-		if (!bCanSkillThree) return;
-		bCanSkillThree = false;
-		AnimInstance->Montage_Play(SkillThree.Animation);
+		Character->UpdateStatManager(EStatTarget::EST_Stamina, EStatUpdateType::ESUT_Minus, SkillThree.Stamina);
+		
+		Super::HandleSkillThree();
+
+		if (AnimInstance && SkillThree.Animation)
+		{
+			bCanSkillThree = false;
+			AnimInstance->Montage_Play(SkillThree.Animation);
+		}
 	}
 }
 
@@ -191,13 +200,22 @@ void UAssassinComponent::SpawnSkillThreeEffect()
 
 void UAssassinComponent::HandleSkillFour()
 {
-	Super::HandleSkillFour();
+	if (!bCanSkillFour) return;
 
-	if (AnimInstance && SkillFour.Animation)
+	const float StaminaCost = SkillFour.Stamina;
+	const float PlayerStamina = Character->GetCharacterStats().GetStamina();
+
+	if (StaminaCost <= PlayerStamina)
 	{
-		if (!bCanSkillFour) return;
-		bCanSkillFour = false;
-		AnimInstance->Montage_Play(SkillFour.Animation);
+		Character->UpdateStatManager(EStatTarget::EST_Stamina, EStatUpdateType::ESUT_Minus, SkillFour.Stamina);
+		
+		Super::HandleSkillFour();
+
+		if (AnimInstance && SkillFour.Animation)
+		{
+			bCanSkillFour = false;
+			AnimInstance->Montage_Play(SkillFour.Animation);
+		}
 	}
 }
 
@@ -304,49 +322,62 @@ void UAssassinComponent::LaunchEnemy(float ZScale)
 
 void UAssassinComponent::HandleSkillOne()
 {
-	Super::HandleSkillOne();
-	
-	if (AnimInstance && SkillOne.Animation)
+	const float StaminaCost = SkillOne.Stamina;
+	const float PlayerStamina = Character->GetCharacterStats().GetStamina();
+	if (StaminaCost <= PlayerStamina)
 	{
-		FName SectionName;
-
-		if (DashTarget)
+		Super::HandleSkillOne();
+		Character->UpdateStatManager(EStatTarget::EST_Stamina, EStatUpdateType::ESUT_Minus, SkillOne.Stamina);
+		
+		if (AnimInstance && SkillOne.Animation)
 		{
-			AEnemyBase* Enemy = Cast<AEnemyBase>(DashTarget);
-			if (Enemy)
+			FName SectionName;
+
+			if (DashTarget)
 			{
-				Enemy->RemoveMark();
+				AEnemyBase* Enemy = Cast<AEnemyBase>(DashTarget);
+				if (Enemy)
+				{
+					Enemy->RemoveMark();
+				}
+				SkillOne_Second();
+				SectionName = SectionName_Second;
+				DashTarget = nullptr;
+				SetSkillOneTimer();
 			}
-			SkillOne_Second();
-			SectionName = SectionName_Second;
-			DashTarget = nullptr;
-			SetSkillOneTimer();
-		}
-		else
-		{
-			if (!bCanSkillOne) return;
-			bCanSkillOne = false;
-			SkillOne_First();
+			else
+			{
+				if (!bCanSkillOne) return;
+				bCanSkillOne = false;
+				SkillOne_First();
 
-			SectionName = SectionName_First;
+				SectionName = SectionName_First;
+			}
+			AnimInstance->Montage_Play(SkillOne.Animation);
+			AnimInstance->Montage_JumpToSection(SectionName);
 		}
-		AnimInstance->Montage_Play(SkillOne.Animation);
-		AnimInstance->Montage_JumpToSection(SectionName);
 	}
 }
 
 void UAssassinComponent::HandleSkillTwo()
 {
-	Super::HandleSkillTwo();
-
-	if (AnimInstance && SkillTwo.Animation)
+	if (!bCanSkillTwo) return;
+	const float StaminaCost = SkillTwo.Stamina;
+	const float PlayerStamina = Character->GetCharacterStats().GetStamina();
+	if (StaminaCost <= PlayerStamina)
 	{
-		if (!bCanSkillTwo) return;
-		bCanSkillTwo = false;
-		AnimInstance->Montage_Play(SkillTwo.Animation);
+		Character->UpdateStatManager(EStatTarget::EST_Stamina, EStatUpdateType::ESUT_Minus, SkillTwo.Stamina);
+		
+		Super::HandleSkillTwo();
 
-		const FName WarpName = "AssassinSkillTwo";
-		const FVector Location = Character->GetActorLocation() + Character->GetActorForwardVector() * SkillTwoDashDistance;
-		Character->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocation(WarpName, Location);
+		if (AnimInstance && SkillTwo.Animation)
+		{
+			bCanSkillTwo = false;
+			AnimInstance->Montage_Play(SkillTwo.Animation);
+
+			const FName WarpName = "AssassinSkillTwo";
+			const FVector Location = Character->GetActorLocation() + Character->GetActorForwardVector() * SkillTwoDashDistance;
+			Character->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocation(WarpName, Location);
+		}
 	}
 }

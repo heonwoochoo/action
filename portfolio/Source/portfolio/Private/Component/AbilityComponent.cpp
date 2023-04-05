@@ -84,35 +84,30 @@ void UAbilityComponent::SetSkillFourTimer()
 
 void UAbilityComponent::HandleSkillOne()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Handle skill one Ability"));
-	if (bCanSkillOne)
-	{
+
 		SetSkillOneTimer();
-	}
+	
 }
 
 void UAbilityComponent::HandleSkillTwo()
 {
-	if (bCanSkillTwo)
-	{
+
 		SetSkillTwoTimer();
-	}
+	
 }
 
 void UAbilityComponent::HandleSkillThree()
 {
-	if (bCanSkillThree)
-	{
+
 		SetSkillThreeTimer();
-	}
+	
 }
 
 void UAbilityComponent::HandleSkillFour()
 {
-	if (bCanSkillFour)
-	{
+
 		SetSkillFourTimer();
-	}
+	
 }
 
 
