@@ -308,3 +308,17 @@ struct FCharacterSkills : public FTableRowBase
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TMap<ECharacterClass, FCharacterSkill> CharacterSkill;
 };
+
+UENUM(BlueprintType)
+enum class EStatUpdateType : uint8
+{
+	ESUT_Plus UMETA(DisplayName = "Plus"),
+	ESUT_Minus UMETA(DisplayName = "Minus"),
+};
+
+UENUM(BlueprintType)
+enum class EStatTarget : uint8
+{
+	EST_Health UMETA(DisplayName = "Health"),
+	EST_Stamina UMETA(DisplayName = "Stamina"),
+};

@@ -262,5 +262,10 @@ public:
 	void DamageToEnemy(AEnemyBase* Enemy, float Damage);
 
 	void Die();
+
+	// 캐릭터의 스탯을 업데이트 (체력, 기력, 공격력, ...)
+	void UpdateStatManager(EStatTarget Stat, EStatUpdateType UpdateType,float AbilityPoint);
+	void UpdateHealth(EStatUpdateType UpdateType, float AbilityPoint);
+	void UpdateStamina(EStatUpdateType UpdateType, float AbilityPoint);
 };
 

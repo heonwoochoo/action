@@ -108,8 +108,6 @@ void UInfoContainer::UpdateMovementSpeedText()
 
 void UInfoContainer::UpdateHP()
 {
-
-
 	HpCurrent->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().GetHP())));
 	HpMax->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().GetHPMax())));
 	HPProgressBar->SetPercent(Character->GetCharacterStats().HP / Character->GetCharacterStats().GetHPMax());	

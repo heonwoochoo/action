@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
+#include "CharacterTypes.h"
 #include "ItemTypes.generated.h"
 
 UENUM(BlueprintType)
@@ -12,13 +13,6 @@ enum class EItemName : uint8
 	EIN_None UMETA(DisplayName = "None"),
 	EIN_HealthPotion UMETA(DisplayName = "HealthPotion"),
 	EIN_StaminaPotion UMETA(DisplayName = "StaminaPotion"),
-};
-
-UENUM(BlueprintType)
-enum class EItemEffect : uint8
-{
-	EIE_Health UMETA(DisplayName = "Health"),
-	EIE_Stamina UMETA(DisplayName = "Stamina"),
 };
 
 USTRUCT(BlueprintType)
@@ -33,7 +27,7 @@ struct FPotionInfo : public FTableRowBase
 	FName Description;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	EItemEffect EffectType;
+	EStatTarget StatTarget;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float CoolDown;

@@ -5,6 +5,7 @@
 #include "HUD/HUDBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "HUD/Overlay/InfoContainer.h"
+#include "DefaultCharacter.h"
 
 UInventoryComponent::UInventoryComponent()
 {
@@ -29,18 +30,12 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	
 }
 
-void UInventoryComponent::EffectPotion(EItemEffect EffectType, float CoolDown, float AbilityPoint)
+void UInventoryComponent::EffectPotion(EStatTarget Target, float CoolDown, float AbilityPoint)
 {
-	switch (EffectType)
+	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (DefaultCharacter)
 	{
-	case EItemEffect::EIE_Health:
-		UE_LOG(LogTemp, Warning, TEXT("Health Effect"));
-		break;
-	case EItemEffect::EIE_Stamina:
-		UE_LOG(LogTemp, Warning, TEXT("Stamina Effect"));
-		break;
-	default:
-		break;
+		DefaultCharacter->UpdateStatManager(Target, EStatUpdateType::ESUT_Plus, AbilityPoint);
 	}
 }
 
@@ -96,8 +91,8 @@ void UInventoryComponent::UseItemPotion(EItemName ItemName)
 {
 	if (ItemName == EItemName::EIN_None) return;
 
-	// 실제 효과 적용
-	// 데이터테이블로부터 이펙트타입, 쿨타임, 포인트 받아오기
+	// 실제 데이터 적용
+	// 데이터테이블로부터 이펙트타겟, 쿨타임, 포인트 받아오기
 	if (!PotionDataTable) return;
 	FName RowName;
 	switch (ItemName)
@@ -112,12 +107,12 @@ void UInventoryComponent::UseItemPotion(EItemName ItemName)
 	FPotionInfo* PotionInfo = PotionDataTable->FindRow<FPotionInfo>(RowName, "");
 	if (!PotionInfo) return;
 
-	EItemEffect Type = PotionInfo->EffectType;
+	EStatTarget Target = PotionInfo->StatTarget;
 	float CoolDown = PotionInfo->CoolDown;
 	float AbilityPoint = PotionInfo->AbilityPoint;
 
 	// 캐릭터에 적용
-	EffectPotion(Type, CoolDown, AbilityPoint);
+	EffectPotion(Target, CoolDown, AbilityPoint);
 
 
 	// 멤버변수의 데이터를 업데이트

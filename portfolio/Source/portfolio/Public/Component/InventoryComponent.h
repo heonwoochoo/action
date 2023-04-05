@@ -39,7 +39,7 @@ private:
 	EItemName Item5;
 	EItemName Item6;
 
-	void EffectPotion(EItemEffect EffectType, float CoolDown, float AbilityPoint);
+	void EffectPotion(EStatTarget Target, float CoolDown, float AbilityPoint);
 
 public:
 	TMap<EItemName, uint8> GetItemAmountMap() const;

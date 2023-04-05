@@ -452,21 +452,8 @@ float ADefaultCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	DefaultStats.HP -= DamageAmount;
+	UpdateStatManager(EStatTarget::EST_Health, EStatUpdateType::ESUT_Minus, DamageAmount);
 
-	if (DefaultStats.HP <= 0)
-	{
-		Die();
-	}
-	ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
-	if (CharacterController)
-	{
-		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
-		if (HUDBase)
-		{
-			HUDBase->GetInfoContainer()->UpdateHP();
-		}
-	}
 	return 0.0f;
 }
 
@@ -600,6 +587,84 @@ void ADefaultCharacter::Die()
 	Tags.Add(FName("Dead"));
 	UE_LOG(LogTemp, Warning, TEXT("Player dead"));
 }
+
+void ADefaultCharacter::UpdateStatManager(EStatTarget Stat, EStatUpdateType UpdateType, float AbilityPoint)
+{
+	switch (Stat)
+	{
+	case EStatTarget::EST_Health:
+		UpdateHealth(UpdateType, AbilityPoint);
+		break;
+	case EStatTarget::EST_Stamina:
+		UpdateStamina(UpdateType, AbilityPoint);
+		break;
+	}
+}
+
+void ADefaultCharacter::UpdateHealth(EStatUpdateType UpdateType, float AbilityPoint)
+{
+	float NewHP;
+
+	// 증감 연산
+	switch (UpdateType)
+	{
+	case EStatUpdateType::ESUT_Plus:
+		NewHP = DefaultStats.HP + AbilityPoint;
+		break;
+	case EStatUpdateType::ESUT_Minus:
+		NewHP = DefaultStats.HP - AbilityPoint;
+		break;
+	}
+
+	DefaultStats.HP = FMath::Clamp(NewHP, 0.f, DefaultStats.HPMax);
+
+	// 사망 확인
+	if (DefaultStats.HP == 0.f)
+	{
+		Die();
+	}
+
+	// UI 업데이트
+	ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
+	if (CharacterController)
+	{
+		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+		if (HUDBase)
+		{
+			HUDBase->GetInfoContainer()->UpdateHP();
+		}
+	}
+}
+
+void ADefaultCharacter::UpdateStamina(EStatUpdateType UpdateType, float AbilityPoint)
+{
+	float NewStamina;
+
+	switch (UpdateType)
+	{
+	case EStatUpdateType::ESUT_Plus:
+		NewStamina = DefaultStats.Stamina + AbilityPoint;
+		break;
+	case EStatUpdateType::ESUT_Minus:
+		NewStamina = DefaultStats.Stamina - AbilityPoint;
+		break;
+	}
+
+	DefaultStats.Stamina = FMath::Clamp(NewStamina, 0.f, DefaultStats.StaminaMax);
+
+	// UI 업데이트
+	ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
+	if (CharacterController)
+	{
+		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+		if (HUDBase)
+		{
+			HUDBase->GetInfoContainer()->UpdateStamina();
+		}
+	}
+}
+
+
 
 ECharacterClass ADefaultCharacter::GetCharacterClass()
 {
