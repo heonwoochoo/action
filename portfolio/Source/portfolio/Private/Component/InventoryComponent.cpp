@@ -18,8 +18,7 @@ void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("Hello Inventory"));
-	
+	ResetItemPotionMapping();
 }
 
 
@@ -28,6 +27,21 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	
+}
+
+void UInventoryComponent::EffectPotion(EItemEffect EffectType, float CoolDown, float AbilityPoint)
+{
+	switch (EffectType)
+	{
+	case EItemEffect::EIE_Health:
+		UE_LOG(LogTemp, Warning, TEXT("Health Effect"));
+		break;
+	case EItemEffect::EIE_Stamina:
+		UE_LOG(LogTemp, Warning, TEXT("Stamina Effect"));
+		break;
+	default:
+		break;
+	}
 }
 
 TMap<EItemName, uint8> UInventoryComponent::GetItemAmountMap() const
@@ -80,6 +94,33 @@ void UInventoryComponent::AddItemPotion(EItemName ItemName)
 
 void UInventoryComponent::UseItemPotion(EItemName ItemName)
 {
+	if (ItemName == EItemName::EIN_None) return;
+
+	// 실제 효과 적용
+	// 데이터테이블로부터 이펙트타입, 쿨타임, 포인트 받아오기
+	if (!PotionDataTable) return;
+	FName RowName;
+	switch (ItemName)
+	{
+	case EItemName::EIN_HealthPotion:
+		RowName = "HealthPotion";
+		break;
+	case EItemName::EIN_StaminaPotion:
+		RowName = "StaminaPotion";
+		break;
+	}
+	FPotionInfo* PotionInfo = PotionDataTable->FindRow<FPotionInfo>(RowName, "");
+	if (!PotionInfo) return;
+
+	EItemEffect Type = PotionInfo->EffectType;
+	float CoolDown = PotionInfo->CoolDown;
+	float AbilityPoint = PotionInfo->AbilityPoint;
+
+	// 캐릭터에 적용
+	EffectPotion(Type, CoolDown, AbilityPoint);
+
+
+	// 멤버변수의 데이터를 업데이트
 	if (ItemsAmount.Contains(ItemName))
 	{
 		if (ItemsAmount[ItemName] == 1)
@@ -108,6 +149,59 @@ void UInventoryComponent::UpdatePotionUI()
 		{
 			InfoContainer->UpdatePotionInventory();
 		}
+	}
+}
+
+void UInventoryComponent::ItemHandle_1()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Handle 1"));
+	UseItemPotion(Item1);
+}
+
+void UInventoryComponent::ItemHandle_2()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Handle 2"));
+	UseItemPotion(Item2);
+}
+
+void UInventoryComponent::ItemHandle_3()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Handle 3"));
+	UseItemPotion(Item3);
+}
+
+void UInventoryComponent::ItemHandle_4()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Handle 4"));
+}
+
+void UInventoryComponent::ItemHandle_5()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Handle 5"));
+}
+
+void UInventoryComponent::ItemHandle_6()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Handle 6"));
+}
+
+void UInventoryComponent::ResetItemPotionMapping()
+{
+	Item1 = EItemName::EIN_None;
+	Item2 = EItemName::EIN_None;
+	Item3 = EItemName::EIN_None;
+}
+
+void UInventoryComponent::SetItemPotionMapping(EItemName Name, uint8 Idx)
+{
+	switch (Idx)
+	{
+	case 0:
+		Item1 = Name;
+	case 1:
+		Item2 = Name;
+	case 2:
+		Item3 = Name;
 	}
 }
 

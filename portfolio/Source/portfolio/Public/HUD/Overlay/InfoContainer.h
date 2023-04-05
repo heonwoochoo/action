@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -43,7 +43,7 @@ public:
 	UInventoryComponent* InventoryComponent;
 
 	//=======================
-	// ÇÃ·¹ÀÌ¾î ½ºÅÈ Á¤º¸
+	// í”Œë ˆì´ì–´ ìŠ¤íƒ¯ ì •ë³´
 	//=======================
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* ADText;
@@ -93,7 +93,7 @@ public:
 	UTextBlock* GoldText;
 
 	//================
-	// ½ºÅ³
+	// ìŠ¤í‚¬
 	//================
 	/** One */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
@@ -136,9 +136,9 @@ public:
 	UProgressBar* SkillFourCoolDownProgressBar;
 
 	//==============
-	// ¾ÆÀÌÅÛ
-	// 1,2,3 : ¼Ò¸ğÇ°
-	// 4,5,6 : Àåºñ
+	// ì•„ì´í…œ
+	// 1,2,3 : ì†Œëª¨í’ˆ
+	// 4,5,6 : ì¥ë¹„
 	//==============
 
 
@@ -210,17 +210,23 @@ public:
 	void UpdateSkillFourImage();
 
 	void UpdatePotionInventory();
-	void UpdatePotionUI(UTexture2D* Image, uint8 Amount);
-	void RemovePotionUI();
+	void UpdatePotionUI(EItemName Name, UTexture2D* Image, uint8 Amount);
+	
 
 	bool CheckPotion(EItemName Name);
 
 	void InitItemPotions();
 
 private:
-	// ¾ÆÀÌÅÛÀÇ Ã¹ ¹øÂ° Ä­ºÎÅÍ ¼øÂ÷ÀûÀ¸·Î ÀÌ¹ÌÁö¸¦ Àû¿ëÇÏ±â À§ÇÑ Index
+	// ì•„ì´í…œì˜ ì²« ë²ˆì§¸ ì¹¸ë¶€í„° ìˆœì°¨ì ìœ¼ë¡œ ì´ë¯¸ì§€ë¥¼ ì ìš©í•˜ê¸° ìœ„í•œ Index
 	uint8 PotionIdx = 0;
 
-	// ¾÷µ¥ÀÌÆ®°¡ ÇÊ¿äÇÑ ¼Ò¸ğÇ°µéÀÇ Æ÷ÀÎÅÍ¸¦ ´ã´Â ¹è¿­
+	// ì—…ë°ì´íŠ¸ê°€ í•„ìš”í•œ ì†Œëª¨í’ˆë“¤ì˜ í¬ì¸í„°ë¥¼ ë‹´ëŠ” ë°°ì—´
 	TArray<FPotionUI> ItemPotions;
+
+	// ì†Œëª¨í’ˆ UI ì´ˆê¸°í™”
+	void RemovePotionUI();
+
+	// ì¸ë²¤í† ë¦¬ ì»´í¬ë„ŒíŠ¸ì˜ í˜„ì¬ ì¸ë²¤í† ë¦¬ê°€ ê°€ì§€ê³  ìˆëŠ” í¬ì…˜ ê°œìˆ˜ë¥¼ í™•ì¸í•˜ì—¬ ì—…ë°ì´íŠ¸ ìˆ˜í–‰
+	void CheckItemPotionInInventory();
 };

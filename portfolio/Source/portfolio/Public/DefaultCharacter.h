@@ -67,6 +67,14 @@ protected:
 	void SkillManagerThree();
 	void SkillManagerFour();
 
+	/** 아이템 핸들러 */
+	void ItemManager_1();
+	void ItemManager_2();
+	void ItemManager_3();
+	void ItemManager_4();
+	void ItemManager_5();
+	void ItemManager_6();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackForwardDistance = 50.f;
 
@@ -142,6 +150,24 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* Skill4Action;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Item1Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Item2Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Item3Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Item4Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Item5Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* Item6Action;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability, meta = (AllowPrivateAccess = "true"))
 	UAbilityComponent* AbilityComponent;
 
@@ -187,6 +213,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
 	ECharacterClass DefaultClass;
+
+	// 캐릭터의 사망 상태 확인, 이벤트의 실행을 막음
+	bool IsPlayerDead();
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

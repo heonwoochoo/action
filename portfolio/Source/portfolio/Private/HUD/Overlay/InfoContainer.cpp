@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "HUD/Overlay/InfoContainer.h"
@@ -230,40 +230,27 @@ void UInfoContainer::UpdatePotionInventory()
 {
 	if (InventoryComponent)
 	{
-		UDataTable* PotionDataTable = InventoryComponent->GetPotionDataTable();
-		if (PotionDataTable)
-		{
-			TArray<FPotionInfo*> OutPotionRowArrays;
-			PotionDataTable->GetAllRows<FPotionInfo>("", OutPotionRowArrays);
+		RemovePotionUI();
+			
+		// 키보드 매핑 초기화
+		InventoryComponent->ResetItemPotionMapping();
 
-			TMap<EItemName, uint8> Inventory = InventoryComponent->GetItemAmountMap();
-
-			RemovePotionUI();
-			for (auto Item : Inventory)
-			{
-				if (CheckPotion(Item.Key))
-				{
-					for (auto Row : OutPotionRowArrays)
-					{
-						if (Row->Name == Item.Key)
-						{
-							UpdatePotionUI(Row->Image, Item.Value);
-						}
-					}
-				}
-			}
-		}
+		CheckItemPotionInInventory();
 	}
 }
 
-void UInfoContainer::UpdatePotionUI(UTexture2D* Image, uint8 Amount)
+void UInfoContainer::UpdatePotionUI(EItemName Name, UTexture2D* Image, uint8 Amount)
 {
-	UE_LOG(LogTemp, Warning, TEXT("UpdatePotionUI"));
 	if (PotionIdx < 3)
 	{
 		ItemPotions[PotionIdx].Image->SetBrushFromTexture(Image);
 		ItemPotions[PotionIdx].Image->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f));
 		ItemPotions[PotionIdx].Amount->SetText(FText::FromString(FString::FromInt(Amount)));
+		
+		// 키보드 매핑 재등록
+		InventoryComponent->SetItemPotionMapping(Name, PotionIdx);
+
+		// 다음 칸의 UI를 업데이트 하기 위해 인덱스 증가
 		PotionIdx++;
 	}
 }
@@ -292,4 +279,30 @@ void UInfoContainer::InitItemPotions()
 	ItemPotions.Add({ ItemImage1 ,Item1_Amount });
 	ItemPotions.Add({ ItemImage2 ,Item2_Amount });
 	ItemPotions.Add({ ItemImage3 ,Item3_Amount });
+}
+
+void UInfoContainer::CheckItemPotionInInventory()
+{
+	UDataTable* PotionDataTable = InventoryComponent->GetPotionDataTable();
+	if (PotionDataTable)
+	{
+		TArray<FPotionInfo*> OutPotionRowArrays;
+
+		PotionDataTable->GetAllRows<FPotionInfo>("", OutPotionRowArrays);
+
+		TMap<EItemName, uint8> Inventory = InventoryComponent->GetItemAmountMap();
+		for (auto Item : Inventory)
+		{
+			if (CheckPotion(Item.Key))
+			{
+				for (auto Row : OutPotionRowArrays)
+				{
+					if (Row->Name == Item.Key)
+					{
+						UpdatePotionUI(Row->Name, Row->Image, Item.Value);
+					}
+				}
+			}
+		}
+	}
 }

@@ -142,12 +142,20 @@ void ADefaultCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 		EnhancedInputComponent->BindAction(Skill2Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::SkillManagerTwo);
 		EnhancedInputComponent->BindAction(Skill3Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::SkillManagerThree);
 		EnhancedInputComponent->BindAction(Skill4Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::SkillManagerFour);
+		
+		// Item
+		EnhancedInputComponent->BindAction(Item1Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::ItemManager_1);
+		EnhancedInputComponent->BindAction(Item2Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::ItemManager_2);
+		EnhancedInputComponent->BindAction(Item3Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::ItemManager_3);
+		EnhancedInputComponent->BindAction(Item4Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::ItemManager_4);
+		EnhancedInputComponent->BindAction(Item5Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::ItemManager_5);
+		EnhancedInputComponent->BindAction(Item6Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::ItemManager_6);
 	}
 }
 
 void ADefaultCharacter::Move(const FInputActionValue& Value)
 {
-	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
+	if (IsPlayerDead()) return;
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -188,7 +196,7 @@ void ADefaultCharacter::Move(const FInputActionValue& Value)
 
 void ADefaultCharacter::MoveEnd()
 {
-	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
+	if (IsPlayerDead()) return;
 	CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 }
 
@@ -207,7 +215,7 @@ void ADefaultCharacter::Look(const FInputActionValue& Value)
 
 void ADefaultCharacter::Jump()
 {
-	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
+	if (IsPlayerDead()) return;
 	CharacterActionState = ECharacterActionState::ECAS_Jump;
 	if (!bCanDoubleJump)
 	{
@@ -221,7 +229,7 @@ void ADefaultCharacter::Jump()
 
 void ADefaultCharacter::DefaultAttack(const FInputActionValue& Value)
 {
-	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
+	if (IsPlayerDead()) return;
 	if (CharacterActionState == ECharacterActionState::ECAS_Unoccupied
 		|| CharacterActionState == ECharacterActionState::ECAS_AttackCombo
 		|| CharacterActionState == ECharacterActionState::ECAS_MoveForward
@@ -264,7 +272,7 @@ void ADefaultCharacter::DefaultAttack(const FInputActionValue& Value)
 
 void ADefaultCharacter::OnSprint()
 {
-	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
+	if (IsPlayerDead()) return;
 	if (GetVelocity().Size() > 0.f)
 	{
 		if (CharacterActionState != ECharacterActionState::ECAS_Jump)
@@ -280,7 +288,7 @@ void ADefaultCharacter::OnSprint()
 
 void ADefaultCharacter::OffSprint()
 {
-	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
+	if (IsPlayerDead()) return;
 	if (CharacterActionState != ECharacterActionState::ECAS_Jump)
 	{
 		CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
@@ -292,7 +300,7 @@ void ADefaultCharacter::OffSprint()
 
 void ADefaultCharacter::OnEvade()
 {
-	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
+	if (IsPlayerDead()) return;
 	if (AnimInstance && GetVelocity().Size() 
 		&& !GetCharacterMovement()->IsFalling()
 		&& CharacterActionState != ECharacterActionState::ECAS_Evade
@@ -328,7 +336,7 @@ void ADefaultCharacter::OnEvade()
 
 void ADefaultCharacter::SkillManagerOne()
 {
-	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
+	if (IsPlayerDead()) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		
@@ -338,7 +346,7 @@ void ADefaultCharacter::SkillManagerOne()
 
 void ADefaultCharacter::SkillManagerTwo()
 {
-	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
+	if (IsPlayerDead()) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillTwo();
@@ -347,7 +355,7 @@ void ADefaultCharacter::SkillManagerTwo()
 
 void ADefaultCharacter::SkillManagerThree()
 {
-	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
+	if (IsPlayerDead()) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillThree();
@@ -356,10 +364,64 @@ void ADefaultCharacter::SkillManagerThree()
 
 void ADefaultCharacter::SkillManagerFour()
 {
-	if (CharacterActionState == ECharacterActionState::ECAS_Dead) return;
+	if (IsPlayerDead()) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillFour();
+	}
+}
+
+void ADefaultCharacter::ItemManager_1()
+{
+	if (IsPlayerDead()) return;
+	if (InventoryComponent)
+	{
+		InventoryComponent->ItemHandle_1();
+	}
+}
+
+void ADefaultCharacter::ItemManager_2()
+{
+	if (IsPlayerDead()) return;
+	if (InventoryComponent)
+	{
+		InventoryComponent->ItemHandle_2();
+	}
+}
+
+void ADefaultCharacter::ItemManager_3()
+{
+	if (IsPlayerDead()) return;
+	if (InventoryComponent)
+	{
+		InventoryComponent->ItemHandle_3();
+	}
+}
+
+void ADefaultCharacter::ItemManager_4()
+{
+	if (IsPlayerDead()) return;
+	if (InventoryComponent)
+	{
+		InventoryComponent->ItemHandle_4();
+	}
+}
+
+void ADefaultCharacter::ItemManager_5()
+{
+	if (IsPlayerDead()) return;
+	if (InventoryComponent)
+	{
+		InventoryComponent->ItemHandle_5();
+	}
+}
+
+void ADefaultCharacter::ItemManager_6()
+{
+	if (IsPlayerDead()) return;
+	if (InventoryComponent)
+	{
+		InventoryComponent->ItemHandle_6();
 	}
 }
 
@@ -440,6 +502,11 @@ void ADefaultCharacter::PlaySound(USoundCue* Sound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, Sound, GetActorLocation());
 	}
+}
+
+bool ADefaultCharacter::IsPlayerDead()
+{
+	return CharacterActionState == ECharacterActionState::ECAS_Dead;
 }
 
 UAbilityComponent* ADefaultCharacter::GetAbilityComponent() const
