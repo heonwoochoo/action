@@ -115,6 +115,7 @@ void AEnemyBase::PawnSeen(APawn* SeenPawn)
 
 void AEnemyBase::ChaseTarget()
 {
+	if (State == EEnemyState::EES_Dead) return;
 	State = EEnemyState::EES_Chasing;
 	GetCharacterMovement()->MaxWalkSpeed = ChasingWalkSpeed;
 	MoveToTarget(CombatTarget);
@@ -139,6 +140,7 @@ void AEnemyBase::InitPatrolTarget()
 
 void AEnemyBase::PatrolTimerFinished()
 {
+	if (State == EEnemyState::EES_Dead) return;
 	MoveToTarget(PatrolTarget);
 }
 
@@ -149,6 +151,8 @@ void AEnemyBase::PlayAttackAnim()
 		CombatTarget = nullptr;
 	}
 	if (CombatTarget == nullptr) return;
+
+	if (State == EEnemyState::EES_Dead) return;
 
 	State = EEnemyState::EES_Engaged;
 	UEnemyAnimInstance* EnemyAnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
@@ -194,6 +198,7 @@ void AEnemyBase::AttackEnd()
 
 void AEnemyBase::StartAttackTimer()
 {
+	if (State == EEnemyState::EES_Dead) return;
 	State = EEnemyState::EES_Attacking;
 	const float AttackTime = FMath::RandRange(AttackMin, AttackMax);
 	GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemyBase::PlayAttackAnim, AttackTime);
@@ -210,7 +215,7 @@ void AEnemyBase::DamageToPlayer(ADefaultCharacter* Character)
 // AIController가 target으로 이동
 void AEnemyBase::MoveToTarget(AActor* Target)
 {
-	if (EnemyController == nullptr || Target == nullptr) return;
+	if (EnemyController == nullptr || Target == nullptr || State == EEnemyState::EES_Dead) return;
 	FAIMoveRequest MoveRequest;
 	MoveRequest.SetGoalActor(Target);
 	MoveRequest.SetAcceptanceRadius(AcceptanceRadius);
@@ -219,6 +224,7 @@ void AEnemyBase::MoveToTarget(AActor* Target)
 
 void AEnemyBase::CheckCombatTarget()
 {
+	if (State == EEnemyState::EES_Dead) return;
 	if (!InTargetRange(CombatTarget, CombatRadius))
 	{
 		ClearAttackTimer();
@@ -321,6 +327,7 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 
 void AEnemyBase::HandleAttackTarget(AController* EventInstigator)
 {
+	if (State == EEnemyState::EES_Dead) return;
 	CombatTarget = EventInstigator->GetPawn();
 	if (InTargetRange(CombatTarget, AttackRadius))
 	{
@@ -355,13 +362,32 @@ void AEnemyBase::HandleDamage(AActor* DamageCauser, float DamageAmount)
 	}
 }
 
+void AEnemyBase::Destroyed()
+{
+	Super::Destroyed();
+	DropItem();
+}
+
+void AEnemyBase::DropItem()
+{
+	if (FMath::FRand() < ItemDropRate && DropItemList.Num() > 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Drop Item"));
+		int32 RandNum = FMath::RandRange(0, DropItemList.Num() - 1);
+		const FVector Location{ GetActorLocation() };
+		const FRotator Rotation{ GetActorRotation() };
+		GetWorld()->SpawnActor<AActor>(DropItemList[RandNum], Location, Rotation);
+	};
+}
+
 void AEnemyBase::Die()
 {
 	State = EEnemyState::EES_Dead;
 
 	HPBarWidgetComponent->SetVisibility(false);
 
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+	LoseInterest();
 
 	PlayDeadAnim();
 

@@ -108,7 +108,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Combat)
 	float AttackMax = 1.f;
 
+	// 사망시 떨어질 수 있는 아이템 목록
+	UPROPERTY(EditAnywhere, Category = Item)
+	TArray<TSubclassOf<AActor>> DropItemList;
 	
+	// 아이템이 떨어질 확률
+	UPROPERTY(EditAnywhere, Category = Item)
+	float ItemDropRate = 0.3f;
+
 	// 공격 애니메이션 재생
 	void PlayAttackAnim();
 
@@ -162,6 +169,10 @@ protected:
 	// Hit react
 	UPROPERTY(EditAnywhere, BlueprintReadWrite);
 	float KnockBackDistance = 30.f;
+
+	virtual void Destroyed() override;
+
+	void DropItem();
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
