@@ -1,4 +1,4 @@
-
+ï»¿
 #include "DefaultCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -603,9 +603,9 @@ void ADefaultCharacter::UpdateStatManager(EStatTarget Stat, EStatUpdateType Upda
 
 void ADefaultCharacter::UpdateHealth(EStatUpdateType UpdateType, float AbilityPoint)
 {
-	float NewHP;
+	float NewHP = 0.f;
 
-	// Áõ°¨ ¿¬»ê
+	// ì¦ê° ì—°ì‚°
 	switch (UpdateType)
 	{
 	case EStatUpdateType::ESUT_Plus:
@@ -618,13 +618,13 @@ void ADefaultCharacter::UpdateHealth(EStatUpdateType UpdateType, float AbilityPo
 
 	DefaultStats.HP = FMath::Clamp(NewHP, 0.f, DefaultStats.HPMax);
 
-	// »ç¸Á È®ÀÎ
+	// ì‚¬ë§ í™•ì¸
 	if (DefaultStats.HP == 0.f)
 	{
 		Die();
 	}
 
-	// UI ¾÷µ¥ÀÌÆ®
+	// UI ì—…ë°ì´íŠ¸
 	ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
 	if (CharacterController)
 	{
@@ -638,7 +638,7 @@ void ADefaultCharacter::UpdateHealth(EStatUpdateType UpdateType, float AbilityPo
 
 void ADefaultCharacter::UpdateStamina(EStatUpdateType UpdateType, float AbilityPoint)
 {
-	float NewStamina;
+	float NewStamina = 0.f;
 
 	switch (UpdateType)
 	{
@@ -652,7 +652,7 @@ void ADefaultCharacter::UpdateStamina(EStatUpdateType UpdateType, float AbilityP
 
 	DefaultStats.Stamina = FMath::Clamp(NewStamina, 0.f, DefaultStats.StaminaMax);
 
-	// UI ¾÷µ¥ÀÌÆ®
+	// UI ì—…ë°ì´íŠ¸
 	ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
 	if (CharacterController)
 	{
@@ -675,7 +675,6 @@ void ADefaultCharacter::DownSizeCapsule(float DeltaTime)
 	if (GetCapsuleComponent() && GetMesh())
 	{
 		GetCapsuleComponent()->SetCapsuleHalfHeight(FMath::FInterpTo(GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), CapsuleDefaultHalfHeight / 2.f, DeltaTime, 30.f));
-
 	}
 }
 

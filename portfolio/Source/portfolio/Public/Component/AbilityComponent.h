@@ -75,26 +75,26 @@ public:
 	virtual void HandleSkillOne();
 	FORCEINLINE FCharacterSkill& GetSkillOne() { return SkillOne; }
 	FORCEINLINE bool GetCanSkillOne() const { return bCanSkillOne; }
-	FORCEINLINE FTimerHandle GetSkillOneHandle() const { return SkillOneHandle; }
+	FORCEINLINE FTimerHandle* GetSkillOneHandle() { return &SkillOneHandle; }
 
 	/** Two */
 	UFUNCTION(BlueprintCallable)
 	virtual void HandleSkillTwo();
 	FORCEINLINE FCharacterSkill& GetSkillTwo() { return SkillTwo; }
 	FORCEINLINE bool GetCanSkillTwo() const { return bCanSkillTwo; }
-	FORCEINLINE FTimerHandle GetSkillTwoHandle() const { return SkillTwoHandle; }
+	FORCEINLINE FTimerHandle* GetSkillTwoHandle() { return &SkillTwoHandle; }
 
 	/** Three */
 	UFUNCTION(BlueprintCallable)
 	virtual void HandleSkillThree();
 	FORCEINLINE FCharacterSkill& GetSkillThree() { return SkillThree; }
 	FORCEINLINE bool GetCanSkillThree() const { return bCanSkillThree; }
-	FORCEINLINE FTimerHandle GetSkillThreeHandle() const { return SkillThreeHandle; }
+	FORCEINLINE FTimerHandle* GetSkillThreeHandle() { return &SkillThreeHandle; }
 
 	/** Four */
 	UFUNCTION(BlueprintCallable)
 	virtual void HandleSkillFour();
 	FORCEINLINE FCharacterSkill& GetSkillFour() { return SkillFour; }
 	FORCEINLINE bool GetCanSkillFour() const { return bCanSkillFour; }
-	FORCEINLINE FTimerHandle GetSkillFourHandle() const { return SkillFourHandle; }
+	FORCEINLINE FTimerHandle* GetSkillFourHandle() { return &SkillFourHandle; }
 };

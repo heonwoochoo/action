@@ -30,6 +30,36 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	
 }
 
+void UInventoryComponent::EndTimerHandle1()
+{
+	bEnableItem1 = true;
+}
+
+void UInventoryComponent::EndTimerHandle2()
+{
+	bEnableItem2 = true;
+}
+
+void UInventoryComponent::EndTimerHandle3()
+{
+	bEnableItem3 = true;
+}
+
+void UInventoryComponent::EndTimerHandle4()
+{
+	bEnableItem4 = true;
+}
+
+void UInventoryComponent::EndTimerHandle5()
+{
+	bEnableItem5 = true;
+}
+
+void UInventoryComponent::EndTimerHandle6()
+{
+	bEnableItem6 = true;
+}
+
 void UInventoryComponent::EffectPotion(EStatTarget Target, float CoolDown, float AbilityPoint)
 {
 	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
@@ -37,6 +67,29 @@ void UInventoryComponent::EffectPotion(EStatTarget Target, float CoolDown, float
 	{
 		DefaultCharacter->UpdateStatManager(Target, EStatUpdateType::ESUT_Plus, AbilityPoint);
 	}
+}
+
+float UInventoryComponent::GetItemPotionCoolDown(EItemName Name)
+{
+	if (PotionDataTable)
+	{
+		FName RowName;
+		switch (Name)
+		{
+		case EItemName::EIN_HealthPotion:
+			RowName = "HealthPotion";
+			break;
+		case EItemName::EIN_StaminaPotion:
+			RowName = "StaminaPotion";
+			break;
+		}
+		FPotionInfo* PotionInfo = PotionDataTable->FindRow<FPotionInfo>(RowName, "");
+		if (PotionInfo)
+		{
+			return PotionInfo->CoolDown;
+		}
+	}
+	return 0.0f;
 }
 
 TMap<EItemName, uint8> UInventoryComponent::GetItemAmountMap() const
@@ -73,6 +126,7 @@ void UInventoryComponent::AddItemPotion(EItemName ItemName)
 		uint8 AmountMax = PotionDataTable->FindRow<FPotionInfo>(RowName, "")->AmountMax;
 		if (ItemsAmount[ItemName] < AmountMax)
 		{
+			
 			ItemsAmount[ItemName]++;
 		}
 	}
@@ -149,35 +203,69 @@ void UInventoryComponent::UpdatePotionUI()
 
 void UInventoryComponent::ItemHandle_1()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Handle 1"));
-	UseItemPotion(Item1);
+	if (bEnableItem1 && HasItemInContainer(EItemNumber::EIN_1))
+	{
+		bEnableItem1 = false;
+		const float CoolDown = GetItemPotionCoolDown(Item1);
+		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle1, this, &UInventoryComponent::EndTimerHandle1, CoolDown);
+		UseItemPotion(Item1);
+	}
 }
 
 void UInventoryComponent::ItemHandle_2()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Handle 2"));
-	UseItemPotion(Item2);
+	if (bEnableItem2 && HasItemInContainer(EItemNumber::EIN_2))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ItemHandle2"));
+		bEnableItem2 = false;
+		const float CoolDown = GetItemPotionCoolDown(Item2);
+		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle2, this, &UInventoryComponent::EndTimerHandle2, CoolDown);
+		UseItemPotion(Item2);
+	}
 }
 
 void UInventoryComponent::ItemHandle_3()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Handle 3"));
-	UseItemPotion(Item3);
+	if (bEnableItem3 && HasItemInContainer(EItemNumber::EIN_3))
+	{
+		bEnableItem3 = false;
+		const float CoolDown = GetItemPotionCoolDown(Item3);
+		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle3, this, &UInventoryComponent::EndTimerHandle3, CoolDown);
+		UseItemPotion(Item3);
+	}
 }
 
 void UInventoryComponent::ItemHandle_4()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Handle 4"));
+	if (bEnableItem4 && HasItemInContainer(EItemNumber::EIN_4))
+	{
+		bEnableItem4 = false;
+		const float CoolDown = GetItemPotionCoolDown(Item4);
+		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle4, this, &UInventoryComponent::EndTimerHandle4, CoolDown);
+		UseItemPotion(Item4);
+	}
 }
 
 void UInventoryComponent::ItemHandle_5()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Handle 5"));
+	if (bEnableItem5 && HasItemInContainer(EItemNumber::EIN_5))
+	{
+		bEnableItem5 = false;
+		const float CoolDown = GetItemPotionCoolDown(Item5);
+		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle5, this, &UInventoryComponent::EndTimerHandle5, CoolDown);
+		UseItemPotion(Item5);
+	}
 }
 
 void UInventoryComponent::ItemHandle_6()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Handle 6"));
+	if (bEnableItem6 && HasItemInContainer(EItemNumber::EIN_6))
+	{
+		bEnableItem6 = false;
+		const float CoolDown = GetItemPotionCoolDown(Item6);
+		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle6, this, &UInventoryComponent::EndTimerHandle6, CoolDown);
+		UseItemPotion(Item6);
+	}
 }
 
 void UInventoryComponent::ResetItemPotionMapping()
@@ -193,10 +281,100 @@ void UInventoryComponent::SetItemPotionMapping(EItemName Name, uint8 Idx)
 	{
 	case 0:
 		Item1 = Name;
+		break;
 	case 1:
 		Item2 = Name;
+		break;
 	case 2:
 		Item3 = Name;
+		break;
 	}
+}
+
+FTimerHandle* UInventoryComponent::GetItemTimerHandle(EItemNumber ItemNum)
+{
+	FTimerHandle* TimerHandle = nullptr;
+
+	switch (ItemNum)
+	{
+	case EItemNumber::EIN_1:
+		TimerHandle = &ItemTimerHandle1;
+		break;
+	case EItemNumber::EIN_2:
+		TimerHandle = &ItemTimerHandle2;
+		break;
+	case EItemNumber::EIN_3:
+		TimerHandle = &ItemTimerHandle3;
+		break;
+	case EItemNumber::EIN_4:
+		TimerHandle = &ItemTimerHandle4;
+		break;
+	case EItemNumber::EIN_5:
+		TimerHandle = &ItemTimerHandle5;
+		break;
+	case EItemNumber::EIN_6:
+		TimerHandle = &ItemTimerHandle6;
+		break;
+	}
+
+	return TimerHandle;
+}
+
+bool UInventoryComponent::GetEnableItem(EItemNumber ItemNum)
+{
+	bool EnableItem = false;
+
+	switch (ItemNum)
+	{
+	case EItemNumber::EIN_1:
+		EnableItem = bEnableItem1;
+		break;
+	case EItemNumber::EIN_2:
+		EnableItem = bEnableItem2;
+		break;
+	case EItemNumber::EIN_3:
+		EnableItem = bEnableItem3;
+		break;
+	case EItemNumber::EIN_4:
+		EnableItem = bEnableItem4;
+		break;
+	case EItemNumber::EIN_5:
+		EnableItem = bEnableItem5;
+		break;
+	case EItemNumber::EIN_6:
+		EnableItem = bEnableItem6;
+		break;
+	}
+
+	return EnableItem;
+}
+
+bool UInventoryComponent::HasItemInContainer(EItemNumber ItemNum)
+{
+	EItemName TargetItem = EItemName::EIN_None;
+
+	switch (ItemNum)
+	{
+	case EItemNumber::EIN_1:
+		TargetItem = Item1;
+		break;
+	case EItemNumber::EIN_2:
+		TargetItem = Item2;
+		break;
+	case EItemNumber::EIN_3:
+		TargetItem = Item3;
+		break;
+	case EItemNumber::EIN_4:
+		TargetItem = Item4;
+		break;
+	case EItemNumber::EIN_5:
+		TargetItem = Item5;
+		break;
+	case EItemNumber::EIN_6:
+		TargetItem = Item6;
+		break;
+	}
+
+	return TargetItem != EItemName::EIN_None;
 }
 

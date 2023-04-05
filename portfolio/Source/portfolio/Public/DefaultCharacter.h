@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+ï»¿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -67,7 +67,7 @@ protected:
 	void SkillManagerThree();
 	void SkillManagerFour();
 
-	/** ¾ÆÀÌÅÛ ÇÚµé·¯ */
+	/** ì•„ì´í…œ í•¸ë“¤ëŸ¬ */
 	void ItemManager_1();
 	void ItemManager_2();
 	void ItemManager_3();
@@ -196,7 +196,7 @@ private:
 	float InitialRelativeLocationZ;
 	
 
-	// Ä³¸¯ÅÍÀÇ µ¿ÀÛ »óÅÂ
+	// ìºë¦­í„°ì˜ ë™ì‘ ìƒíƒœ
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	ECharacterActionState CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 
@@ -214,7 +214,7 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
 	ECharacterClass DefaultClass;
 
-	// Ä³¸¯ÅÍÀÇ »ç¸Á »óÅÂ È®ÀÎ, ÀÌº¥Æ®ÀÇ ½ÇÇàÀ» ¸·À½
+	// ìºë¦­í„°ì˜ ì‚¬ë§ ìƒíƒœ í™•ì¸, ì´ë²¤íŠ¸ì˜ ì‹¤í–‰ì„ ë§‰ìŒ
 	bool IsPlayerDead();
 
 public:
@@ -263,7 +263,7 @@ public:
 
 	void Die();
 
-	// Ä³¸¯ÅÍÀÇ ½ºÅÈÀ» ¾÷µ¥ÀÌÆ® (Ã¼·Â, ±â·Â, °ø°İ·Â, ...)
+	// ìºë¦­í„°ì˜ ìŠ¤íƒ¯ì„ ì—…ë°ì´íŠ¸ (ì²´ë ¥, ê¸°ë ¥, ê³µê²©ë ¥, ...)
 	void UpdateStatManager(EStatTarget Stat, EStatUpdateType UpdateType,float AbilityPoint);
 	void UpdateHealth(EStatUpdateType UpdateType, float AbilityPoint);
 	void UpdateStamina(EStatUpdateType UpdateType, float AbilityPoint);

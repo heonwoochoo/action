@@ -44,3 +44,14 @@ struct FPotionInfo : public FTableRowBase
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UStaticMesh* Mesh;
 };
+
+UENUM(BlueprintType)
+enum class EItemNumber : uint8
+{
+	EIN_1 UMETA(DisplayName = "Item1"),
+	EIN_2 UMETA(DisplayName = "Item2"),
+	EIN_3 UMETA(DisplayName = "Item3"),
+	EIN_4 UMETA(DisplayName = "Item4"),
+	EIN_5 UMETA(DisplayName = "Item5"),
+	EIN_6 UMETA(DisplayName = "Item6"),
+};

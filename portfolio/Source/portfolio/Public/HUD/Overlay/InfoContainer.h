@@ -135,12 +135,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UProgressBar* SkillFourCoolDownProgressBar;
 
-	//==============
-	// 아이템
-	// 1,2,3 : 소모품
-	// 4,5,6 : 장비
-	//==============
-
+	//===========================
+	//          아이템
+	//      1,2,3 : 소모품
+	//      4,5,6 : 장비
+	//===========================
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* Item1_Amount;
@@ -149,10 +148,24 @@ public:
 	UImage* ItemImage1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UProgressBar* ItemCoolDownProgressBar1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ItemCoolDownText1;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* Item2_Amount;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* ItemImage2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UProgressBar* ItemCoolDownProgressBar2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ItemCoolDownText2;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* Item3_Amount;
@@ -161,10 +174,24 @@ public:
 	UImage* ItemImage3;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UProgressBar* ItemCoolDownProgressBar3;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ItemCoolDownText3;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* Item4_Amount;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* ItemImage4;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UProgressBar* ItemCoolDownProgressBar4;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ItemCoolDownText4;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* Item5_Amount;
@@ -173,10 +200,24 @@ public:
 	UImage* ItemImage5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UProgressBar* ItemCoolDownProgressBar5;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ItemCoolDownText5;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* Item6_Amount;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* ItemImage6;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UProgressBar* ItemCoolDownProgressBar6;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ItemCoolDownText6;
+
 
 
 	void Init();
@@ -210,12 +251,21 @@ public:
 	void UpdateSkillFourImage();
 
 	void UpdatePotionInventory();
-	void UpdatePotionUI(EItemName Name, UTexture2D* Image, uint8 Amount);
+	void UpdatePotionAmount(EItemName Name, UTexture2D* Image, uint8 Amount);
 	
 
 	bool CheckPotion(EItemName Name);
 
 	void InitItemPotions();
+
+	void UpdateItemCoolDown1();
+	void UpdateItemCoolDown2();
+	void UpdateItemCoolDown3();
+	void UpdateItemCoolDown4();
+	void UpdateItemCoolDown5();
+	void UpdateItemCoolDown6();
+
+	void UpdateCoolDownUI(FTimerHandle* TimerHandle, UTextBlock* Text, UProgressBar* ProgressBar, bool IsEnable);
 
 private:
 	// 아이템의 첫 번째 칸부터 순차적으로 이미지를 적용하기 위한 Index
