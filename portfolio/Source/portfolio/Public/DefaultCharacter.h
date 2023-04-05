@@ -195,9 +195,23 @@ private:
 
 	float InitialRelativeLocationZ;
 	
+	// 초당 재생량
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
+	float RegenerateHealthRate = 1.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
+	float RegenerateStaminaRate = 1.f;
+
+	FTimerHandle RegenerateHealthTimerHandle;
+
+	FTimerHandle RegenerateStaminaTimerHandle;
+
+	bool EnableRegenerateHealth = true;
+
+	bool EnableRegenerateStamina = true;
 
 	// 캐릭터의 동작 상태
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
 	ECharacterActionState CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 
 	void DoubleJump();
@@ -216,6 +230,15 @@ private:
 
 	// 캐릭터의 사망 상태 확인, 이벤트의 실행을 막음
 	bool IsPlayerDead();
+
+	// 체력, 스테미너가 Max 이하일 경우 재생
+	void RegenerateHealth();
+
+	void RegenerateStamina();
+
+	void TurnOnRegenerateHealth();
+
+	void TurnOnRegenerateStamina();
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

@@ -75,6 +75,9 @@ ADefaultCharacter::ADefaultCharacter()
 void ADefaultCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	RegenerateHealth();
+	RegenerateStamina();
 }
 
 void ADefaultCharacter::BeginPlay()
@@ -457,6 +460,16 @@ float ADefaultCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 	return 0.0f;
 }
 
+void ADefaultCharacter::TurnOnRegenerateHealth()
+{
+	EnableRegenerateHealth = true;
+}
+
+void ADefaultCharacter::TurnOnRegenerateStamina()
+{
+	EnableRegenerateStamina = true;
+}
+
 void ADefaultCharacter::DoubleJump()
 {
 	bCanDoubleJump = false;
@@ -494,6 +507,26 @@ void ADefaultCharacter::PlaySound(USoundCue* Sound)
 bool ADefaultCharacter::IsPlayerDead()
 {
 	return CharacterActionState == ECharacterActionState::ECAS_Dead;
+}
+
+void ADefaultCharacter::RegenerateHealth()
+{
+	if (DefaultStats.HP < DefaultStats.HPMax && EnableRegenerateHealth && !IsPlayerDead())
+	{
+		UpdateStatManager(EStatTarget::EST_Health, EStatUpdateType::ESUT_Plus, RegenerateHealthRate);
+		EnableRegenerateHealth = false;
+		GetWorld()->GetTimerManager().SetTimer(RegenerateHealthTimerHandle, this, &ADefaultCharacter::TurnOnRegenerateHealth, 1.f, false);
+	}
+}
+
+void ADefaultCharacter::RegenerateStamina()
+{
+	if (DefaultStats.Stamina < DefaultStats.StaminaMax && EnableRegenerateStamina && !IsPlayerDead())
+	{
+		UpdateStatManager(EStatTarget::EST_Stamina, EStatUpdateType::ESUT_Plus, RegenerateStaminaRate);
+		EnableRegenerateStamina = false;
+		GetWorld()->GetTimerManager().SetTimer(RegenerateStaminaTimerHandle, this, &ADefaultCharacter::TurnOnRegenerateStamina, 1.f, false);
+	}
 }
 
 UAbilityComponent* ADefaultCharacter::GetAbilityComponent() const
