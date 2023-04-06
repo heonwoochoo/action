@@ -322,3 +322,10 @@ enum class EStatTarget : uint8
 	EST_Health UMETA(DisplayName = "Health"),
 	EST_Stamina UMETA(DisplayName = "Stamina"),
 };
+
+UENUM(BlueprintType)
+enum class EHitType : uint8
+{
+	EHT_Default UMETA(DisplayName = "Default"),
+	EHT_Slash UMETA(DisplayName = "Slash"),
+};

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Items/KnifeProjectile.h"
@@ -80,11 +80,7 @@ void AKnifeProjectile::OnKnifeEffect(AActor* HitActor)
 		float Damage = Caster->GetCharacterStats().GetAbilityPower() + AssassinComponent->GetSkillOne().Damage;
 
 		// Damage event call
-		Caster->CheckEnemyInRange(GetActorLocation(), 50.f, Damage, KnifeHitSound);
-
-		// Spawn particle
-
-		// Play sound
+		Caster->CheckEnemyInRange(GetActorLocation(), 50.f, Damage, EHitType::EHT_Slash);
 
 		// Destroy instance
 		Destroy();
@@ -93,5 +89,5 @@ void AKnifeProjectile::OnKnifeEffect(AActor* HitActor)
 
 void AKnifeProjectile::OnBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// Àå¾Ö¹°¿¡ ¸ÂÀ¸¸é Á¦°ÅµÊ
+	// ì¥ì• ë¬¼ì— ë§ìœ¼ë©´ ì œê±°ë¨
 }

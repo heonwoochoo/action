@@ -13,6 +13,7 @@ class UAnimInstanceBase;
 class AKnifeProjectile;
 class AAssassin_SkillOne;
 class AEnemyBase;
+class USoundCue;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PORTFOLIO_API UAbilityComponent : public UActorComponent
@@ -66,6 +67,22 @@ protected:
 	void SetSkillFourTimer();
 	bool bCanSkillFour = true;
 
+	// 적중 시 파티클 이펙트
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Effect|Visual")
+	UParticleSystem* DefaultHitParticle;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Effect|Visual")
+	UParticleSystem* SlashHitParticle;
+
+	// 타격시 효과음
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Effect|Sound")
+	USoundCue* DefaultHitSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Effect|Sound")
+	USoundCue* SlashHitSound;
+
+
+
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UDataTable* SkillDataTable;
@@ -97,4 +114,10 @@ public:
 	FORCEINLINE FCharacterSkill& GetSkillFour() { return SkillFour; }
 	FORCEINLINE bool GetCanSkillFour() const { return bCanSkillFour; }
 	FORCEINLINE FTimerHandle* GetSkillFourHandle() { return &SkillFourHandle; }
+
+	// 적중 타입에 따라 다른 파티클 생성
+	void SpawnHitParticle(EHitType HitType, const FVector& Location, const FRotator& Rotation);
+	
+	// 적중 타입에 따라 다른 효과음 재생
+	void PlayHitSound(EHitType HitType, const FVector& Location);
 };

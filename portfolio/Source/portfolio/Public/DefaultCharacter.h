@@ -249,8 +249,6 @@ public:
 
 	UInventoryComponent* GetInventoryComponent() const;
 
-	void PlaySound(USoundCue* Sound);
-
 	UFUNCTION(BlueprintCallable)
 	void AttackChainStart();
 
@@ -258,7 +256,7 @@ public:
 	void AttackChainEnd();
 
 	UFUNCTION(BlueprintCallable)
-	void CheckEnemyInRange(const FVector Location, const float Radius, float Damage, USoundCue* HitSound);
+	void CheckEnemyInRange(const FVector Location, const float Radius, float Damage, EHitType HitType);
 
 	UFUNCTION(BlueprintCallable)
 	void EnableDoubleJump();
@@ -288,6 +286,7 @@ public:
 
 	// 캐릭터의 스탯을 업데이트 (체력, 기력, 공격력, ...)
 	void UpdateStatManager(EStatTarget Stat, EStatUpdateType UpdateType,float AbilityPoint);
+	
 	void UpdateHealth(EStatUpdateType UpdateType, float AbilityPoint);
 	void UpdateStamina(EStatUpdateType UpdateType, float AbilityPoint);
 };

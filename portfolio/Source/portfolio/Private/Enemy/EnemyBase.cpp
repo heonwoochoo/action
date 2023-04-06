@@ -386,6 +386,8 @@ void AEnemyBase::Die()
 
 	HPBarWidgetComponent->SetVisibility(false);
 
+	MotionWarpingComponent->Deactivate();
+
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 	LoseInterest();
 

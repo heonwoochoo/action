@@ -496,14 +496,6 @@ void ADefaultCharacter::FinishEvade()
 	CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 }
 
-void ADefaultCharacter::PlaySound(USoundCue* Sound)
-{
-	if (Sound)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, Sound, GetActorLocation());
-	}
-}
-
 bool ADefaultCharacter::IsPlayerDead()
 {
 	return CharacterActionState == ECharacterActionState::ECAS_Dead;
@@ -551,7 +543,7 @@ void ADefaultCharacter::AttackChainEnd()
 	AttackCount = 0;
 }
 
-void ADefaultCharacter::CheckEnemyInRange(const FVector Location, const float Radius, float Damage, USoundCue* HitSound)
+void ADefaultCharacter::CheckEnemyInRange(const FVector Location, const float Radius, float Damage, EHitType HitType)
 {
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = { UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn)};
 	TArray<AActor*> ActorsToIgnore = { this };
@@ -566,7 +558,14 @@ void ADefaultCharacter::CheckEnemyInRange(const FVector Location, const float Ra
 		if (Enemy && Enemy->ActorHasTag(FName("Enemy")) && Enemy->GetState() != EEnemyState::EES_Dead)
 		{
 			DamageToEnemy(Enemy, Damage);
-			PlaySound(HitSound);
+			
+			if (AbilityComponent)
+			{
+				const FVector& EnemyLocation = Enemy->GetActorLocation();
+				const FRotator& EnemyRotation = Enemy->GetActorRotation();
+				AbilityComponent->PlayHitSound(HitType, EnemyLocation);
+				AbilityComponent->SpawnHitParticle(HitType, EnemyLocation, EnemyRotation);
+			}
 		}
 	}
 }
@@ -716,6 +715,5 @@ void ADefaultCharacter::UpSizeCapsule(float DeltaTime)
 	if (GetCapsuleComponent() && GetMesh())
 	{
 		GetCapsuleComponent()->SetCapsuleHalfHeight(FMath::FInterpTo(GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), CapsuleDefaultHalfHeight, DeltaTime, 30.f));
-		UE_LOG(LogTemp, Warning, TEXT("Hello"));
 	}
 }

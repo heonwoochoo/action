@@ -6,6 +6,7 @@
 #include "DefaultCharacter.h"
 #include "Animation/AnimInstanceBase.h"
 #include "CharacterTypes.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values for this component's properties
 UAbilityComponent::UAbilityComponent()
@@ -110,11 +111,50 @@ void UAbilityComponent::HandleSkillFour()
 	
 }
 
+void UAbilityComponent::SpawnHitParticle(EHitType HitType, const FVector& Location, const FRotator& Rotation)
+{
+	UParticleSystem* Particle = nullptr;
+	
+	switch (HitType)
+	{
+	case EHitType::EHT_Default:
+		Particle = DefaultHitParticle;
+		break;
+	case EHitType::EHT_Slash:
+		Particle = SlashHitParticle;
+		break;
+	}
+
+	if (Particle != nullptr)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Particle, Location, Rotation);
+	}
+}
+
+void UAbilityComponent::PlayHitSound(EHitType HitType, const FVector& Location)
+{
+	USoundCue* SoundCue = nullptr;
+
+	switch (HitType)
+	{
+	case EHitType::EHT_Default:
+		SoundCue = DefaultHitSound;
+		break;
+	case EHitType::EHT_Slash:
+		SoundCue = SlashHitSound;
+		break;
+	}
+
+	if (SoundCue)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, SoundCue, Location);
+	}
+}
+
 
 // Called every frame
 void UAbilityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 }
 
