@@ -14,6 +14,7 @@
 #include "HelperFunction.h"
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Particles/ParticleSystem.h"
 
 UAssassinComponent::UAssassinComponent()
 {
@@ -39,11 +40,6 @@ void UAssassinComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 
-	if (bCheckSkillTwoDashOverlap)
-	{
-		SkillTwoDashOverlap();
-	}
-
 
 	if (bAttackSKillThree)
 	{
@@ -52,10 +48,7 @@ void UAssassinComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 
 }
 
-void UAssassinComponent::SetCheckSkillTwoDashOverlap(bool CanOverlap)
-{
-	bCheckSkillTwoDashOverlap = CanOverlap;
-}
+
 
 AActor* UAssassinComponent::FindEnemy()
 {
@@ -119,24 +112,14 @@ void UAssassinComponent::RotateToTarget(AActor* Target)
 	}
 }
 
-void UAssassinComponent::SkillTwoDashOverlap()
+
+
+void UAssassinComponent::SkillTwoFirstEffect()
 {
-	const TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes{ UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn) };
-	const TArray<AActor*> ActorsToIgnore{ Character };
-	TArray<AActor*> OutActors;
-	UKismetSystemLibrary::SphereOverlapActors(this, Character->GetActorLocation(), 200.f, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
-	DrawDebugSphere(GetWorld(), Character->GetActorLocation(), 200.f, 16, FColor::Orange, false, 0.5f);
-	for (auto Actor : OutActors)
+	if (SkillTwoFirstParticle)
 	{
-		if (Actor->ActorHasTag(FName("Enemy")))
-		{
-			AEnemyBase* Enemy = Cast<AEnemyBase>(Actor);
-			if (Enemy)
-			{
-				Enemy->LaunchCharacter(FVector(0.f, 0.f, 10.f), false, true);
-				Character->DamageToEnemy(Enemy, SkillTwo.Damage);
-			}
-		}
+		UGameplayStatics::SpawnEmitterAtLocation(this, SkillTwoFirstParticle, Character->GetActorLocation());
+		Character->CheckEnemyInRange(Character->GetActorLocation(), 300.f, SkillTwo.Damage, EHitType::EHT_Slash);
 	}
 }
 
@@ -145,6 +128,10 @@ void UAssassinComponent::SkillTwoEndEffect()
 	if (CameraShakeExplosion)
 	{
 		UGameplayStatics::PlayWorldCameraShake(this, CameraShakeExplosion, Character->GetFollowCamera()->GetComponentLocation(), 0.f, 500.f);
+	}
+	if (SkillTwoSecondNiagara)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, SkillTwoSecondNiagara, Character->GetActorLocation(), Character->GetActorRotation(), FVector(1));
 	}
 
 	const TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes{ UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn) };
@@ -159,8 +146,11 @@ void UAssassinComponent::SkillTwoEndEffect()
 			AEnemyBase* Enemy = Cast<AEnemyBase>(Actor);
 			if (Enemy)
 			{
+				// 적중 시 에어본
 				Enemy->LaunchCharacter(FVector(0.f, 0.f, 500.f), false, true);
 				Character->DamageToEnemy(Enemy, SkillTwo.Damage);
+				SpawnHitParticle(EHitType::EHT_Default, Enemy->GetActorLocation(), Enemy->GetActorRotation());
+				PlayHitSound(EHitType::EHT_Default, Enemy->GetActorLocation());
 			}
 		}
 	}
@@ -374,10 +364,6 @@ void UAssassinComponent::HandleSkillTwo()
 		{
 			bCanSkillTwo = false;
 			AnimInstance->Montage_Play(SkillTwo.Animation);
-
-			const FName WarpName = "AssassinSkillTwo";
-			const FVector Location = Character->GetActorLocation() + Character->GetActorForwardVector() * SkillTwoDashDistance;
-			Character->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocation(WarpName, Location);
 		}
 	}
 }

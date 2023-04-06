@@ -9,6 +9,7 @@
 class UCameraShakeBase;
 class AEnemyBase;
 class UNiagaraSystem;
+class UParticleSystem;
 UCLASS()
 class PORTFOLIO_API UAssassinComponent : public UAbilityComponent
 {
@@ -70,18 +71,21 @@ private:
 	//==============================
 	//			2번 스킬
 	//==============================
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillTwo", meta = (AllowPrivateAccess = "true"))
+	UParticleSystem* SkillTwoFirstParticle;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillTwo", meta = (AllowPrivateAccess = "true"))
+	UNiagaraSystem* SkillTwoSecondNiagara;
+	
 	// 첫 번째 동작시 대시 거리
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillTwo", meta = (AllowPrivateAccess = "true"))
 	float SkillTwoDashDistance = 1000.f;
 
-	// 대시 동작 중 범위에 걸린 적을 체크
-	void SkillTwoDashOverlap();
-
 	// 대시 동작 시 true로 바뀌고 종료시 false
 	bool bCheckSkillTwoDashOverlap = false;
+
 	
-	UFUNCTION(BlueprintCallable)
-	void SetCheckSkillTwoDashOverlap(bool CanOverlap);
+
 
 	// 내려찍을 때 카메라 효과
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
@@ -154,6 +158,9 @@ public:
 	virtual void HandleSkillTwo() override;
 
 	// Anim notify를 통해 호출되는 함수
+	UFUNCTION(BlueprintCallable)
+	void SkillTwoFirstEffect();
+
 	UFUNCTION(BlueprintCallable)
 	void SkillTwoEndEffect();
 
