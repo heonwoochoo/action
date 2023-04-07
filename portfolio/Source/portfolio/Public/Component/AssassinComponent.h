@@ -130,6 +130,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillThree", meta = (AllowPrivateAccess = "true"))
 	float MultiHitDeltaTime = 0.5f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillThree", meta = (AllowPrivateAccess = "true"))
+	UParticleSystem* SkillThreeParticle;
+
 	//==============================
 	//			4번 스킬
 	//==============================
@@ -172,6 +175,7 @@ public:
 	// Anim notify를 통해 호출되는 함수
 	UFUNCTION(BlueprintCallable)
 	void SpawnSkillThreeEffect();
+
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillThree|SkillEffect")
 	UNiagaraSystem* SkillThreeBloodAOE;

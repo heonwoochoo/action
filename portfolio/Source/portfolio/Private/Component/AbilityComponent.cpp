@@ -111,6 +111,14 @@ void UAbilityComponent::HandleSkillFour()
 	
 }
 
+void UAbilityComponent::SpawnParticleEffect(UParticleSystem* Particle)
+{
+	if (Particle)
+	{
+		UGameplayStatics::SpawnEmitterAttached(Particle, Character->GetEmitterComponent());
+	}
+}
+
 void UAbilityComponent::SpawnHitParticle(EHitType HitType, const FVector& Location, const FRotator& Rotation)
 {
 	UParticleSystem* Particle = nullptr;

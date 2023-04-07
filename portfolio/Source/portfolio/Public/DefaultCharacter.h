@@ -103,6 +103,10 @@ public:
 	
 
 private:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Particle, meta = (AllowPrivateAccess = "true"))
+	USceneComponent* EmitterComponent;
+
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
@@ -248,6 +252,8 @@ public:
 	UAbilityComponent* GetAbilityComponent() const;
 
 	UInventoryComponent* GetInventoryComponent() const;
+
+	FORCEINLINE USceneComponent* GetEmitterComponent() const { return EmitterComponent; }
 
 	UFUNCTION(BlueprintCallable)
 	void AttackChainStart();

@@ -115,7 +115,10 @@ public:
 	FORCEINLINE bool GetCanSkillFour() const { return bCanSkillFour; }
 	FORCEINLINE FTimerHandle* GetSkillFourHandle() { return &SkillFourHandle; }
 
-	// 적중 타입에 따라 다른 파티클 생성
+	// 기본 파티클 생성
+	void SpawnParticleEffect(UParticleSystem* Particle);
+
+	// 적중 타입에 따른 파티클 생성
 	void SpawnHitParticle(EHitType HitType, const FVector& Location, const FRotator& Rotation);
 	
 	// 적중 타입에 따라 다른 효과음 재생

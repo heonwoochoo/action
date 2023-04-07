@@ -173,6 +173,8 @@ void UAssassinComponent::HandleSkillThree()
 		{
 			bCanSkillThree = false;
 			AnimInstance->Montage_Play(SkillThree.Animation);
+
+			
 		}
 	}
 }
@@ -180,11 +182,12 @@ void UAssassinComponent::HandleSkillThree()
 void UAssassinComponent::SpawnSkillThreeEffect()
 {
 	if (Character)
-	{
-		SkillThreeSpawnLocation = Character->GetActorLocation();
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, SkillThreeBloodAOE, SkillThreeSpawnLocation, Character->GetActorRotation(), FVector(1));
-		bAttackSKillThree = true;
-		GetWorld()->GetTimerManager().SetTimer(SkillThreeSpawnTimer, this, &UAssassinComponent::SetFalseSkillThreeAttack, SkillThreeHitDuration, false);
+	{	
+		SpawnParticleEffect(SkillThreeParticle);
+		//SkillThreeSpawnLocation = Character->GetActorLocation();
+		//UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, SkillThreeBloodAOE, SkillThreeSpawnLocation, Character->GetActorRotation(), FVector(1));
+		//bAttackSKillThree = true;
+		//GetWorld()->GetTimerManager().SetTimer(SkillThreeSpawnTimer, this, &UAssassinComponent::SetFalseSkillThreeAttack, SkillThreeHitDuration, false);
 	}
 }
 

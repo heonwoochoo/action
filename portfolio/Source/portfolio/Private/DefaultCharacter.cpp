@@ -67,6 +67,9 @@ ADefaultCharacter::ADefaultCharacter()
 	// Create InventoryComponent
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 
+	EmitterComponent = CreateDefaultSubobject<USceneComponent>(TEXT("EmitterComponent"));
+	EmitterComponent->SetupAttachment(GetRootComponent());
+
 	InitialRelativeLocationZ = 0.f;
 
 	DefaultClass = ECharacterClass::ECC_Assassin;
