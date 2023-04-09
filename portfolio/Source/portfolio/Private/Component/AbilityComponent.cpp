@@ -121,44 +121,75 @@ void UAbilityComponent::SpawnParticleEffect(UParticleSystem* Particle)
 
 void UAbilityComponent::SpawnHitParticle(EHitType HitType, const FVector& Location, const FRotator& Rotation)
 {
-	UParticleSystem* Particle = nullptr;
-	
-	switch (HitType)
+	if (DefaultEffectDataTable)
 	{
-	case EHitType::EHT_Default:
-		Particle = DefaultHitParticle;
-		break;
-	case EHitType::EHT_Slash:
-		Particle = SlashHitParticle;
-		break;
-	}
+		FName RowClassName{ GetRowClassName() };
 
-	if (Particle != nullptr)
-	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Particle, Location, Rotation);
+		FCharacterDefaultEffect* DefaultEffect = DefaultEffectDataTable->FindRow<FCharacterDefaultEffect>(RowClassName, "");
+
+		if (DefaultEffect)
+		{
+			UParticleSystem* Particle = nullptr;
+			switch (HitType)
+			{
+			case EHitType::EHT_Default:
+				Particle = DefaultEffect->DefaultHitParticle;
+				break;
+			case EHitType::EHT_Slash:
+				Particle = DefaultEffect->SlashHitParticle;
+				break;
+			}
+
+			if (Particle != nullptr)
+			{
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Particle, Location, Rotation);
+			}
+		}
 	}
 }
 
 void UAbilityComponent::PlayHitSound(EHitType HitType, const FVector& Location)
 {
-	USoundCue* SoundCue = nullptr;
-
-	switch (HitType)
+	if (DefaultEffectDataTable)
 	{
-	case EHitType::EHT_Default:
-		SoundCue = DefaultHitSound;
-		break;
-	case EHitType::EHT_Slash:
-		SoundCue = SlashHitSound;
-		break;
-	}
+		FName RowClassName{ GetRowClassName() };
 
-	if (SoundCue)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, SoundCue, Location);
+		FCharacterDefaultEffect* DefaultEffect = DefaultEffectDataTable->FindRow<FCharacterDefaultEffect>(RowClassName, "");
+
+		if (DefaultEffect)
+		{
+			USoundCue* SoundCue = nullptr;
+
+			switch (HitType)
+			{
+			case EHitType::EHT_Default:
+				SoundCue = DefaultEffect->DefaultHitSound;
+				break;
+			case EHitType::EHT_Slash:
+				SoundCue = DefaultEffect->SlashHitSound;
+				break;
+			}
+
+			if (SoundCue)
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, SoundCue, Location);
+			}
+		}
 	}
 }
 
+FName UAbilityComponent::GetRowClassName()
+{
+	FName RowClassName = "";
+	ECharacterClass CharacterClass = Character->GetCharacterClass();
+	switch (CharacterClass)
+	{
+	case ECharacterClass::ECC_Assassin:
+		RowClassName = "Assassin";
+		break;
+	}
+	return RowClassName;
+}
 
 // Called every frame
 void UAbilityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

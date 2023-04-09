@@ -71,21 +71,12 @@ private:
 	//==============================
 	//			2번 스킬
 	//==============================
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillTwo", meta = (AllowPrivateAccess = "true"))
-	UParticleSystem* SkillTwoFirstParticle;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillTwo", meta = (AllowPrivateAccess = "true"))
-	UNiagaraSystem* SkillTwoSecondNiagara;
-	
 	// 첫 번째 동작시 대시 거리
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillTwo", meta = (AllowPrivateAccess = "true"))
 	float SkillTwoDashDistance = 1000.f;
 
 	// 대시 동작 시 true로 바뀌고 종료시 false
 	bool bCheckSkillTwoDashOverlap = false;
-
-	
-
 
 	// 내려찍을 때 카메라 효과
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
@@ -95,43 +86,18 @@ private:
 	//==============================
 	//			3번 스킬
 	//==============================
-	
-	
-	// 기둥이 생성되어 적을 끌어당기는 시간을 조절하는 타이머 핸들
-	FTimerHandle SkillThreeSpawnTimer;
+	// 파티클이 부착될 컴포넌트의 로테이션을 조절하기 위한 값을 담은 배열
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties|SkillThree", meta = (AllowPrivateAccess = "true"))
+	TArray<float> SkillThreeEffectRotationValues;
 
-	// 기둥 스폰 핸들 종료시 호출되는 함수
-	void SetFalseSkillThreeAttack();
+	// 게임 시작 시 호출
+	void InitSkillThreeEffectRotationValues();
 
-	bool bAttackSKillThree = false;
+	// 콤보 카운트
+	uint8 SkillThreeCombo = 0;
 
-	// 기둥 생성 동안 적에게 가하는 다단히트를 조절하는 타이머 핸들
-	FTimerHandle SkillThreeHitTimer;
-
-	// 타이머 종료 후 히트를 가능한 상태로 만드는 함수
-	void SkillThreeHitTimerEnd();
-
-	// true시 적을 히트
-	bool bMultiHit = true;
-
-	// 적을 기둥이 생성된 위치 중앙으로 끌어당김
-	void PullEnemyToCenter();
-
-	// 적에게 데미지
-	void AttackMultiHit(AEnemyBase* Enemy);
-
-	FVector SkillThreeSpawnLocation;
-
-	// 기둥 생성 후 히트가 지속되는 시간
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillThree", meta = (AllowPrivateAccess = "true"))
-	float SkillThreeHitDuration = 3.0f;
-
-	// 다단히트 간격
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillThree", meta = (AllowPrivateAccess = "true"))
-	float MultiHitDeltaTime = 0.5f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillThree", meta = (AllowPrivateAccess = "true"))
-	UParticleSystem* SkillThreeParticle;
+	// 콤보 카운트에 따른 컴포넌트 로테이션 조정
+	void AdjustCompRotationByCombo(uint8 ComboCount);
 
 	//==============================
 	//			4번 스킬
@@ -176,9 +142,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SpawnSkillThreeEffect();
 
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillThree|SkillEffect")
-	UNiagaraSystem* SkillThreeBloodAOE;
+	// 콤보 초기화, 스킬 첫 동작시 호출
+	UFUNCTION(BlueprintCallable)
+	void InitSkillThreeComboCount();
 
 	//==============================
 	//			4번 스킬

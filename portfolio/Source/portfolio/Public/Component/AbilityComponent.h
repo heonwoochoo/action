@@ -14,6 +14,7 @@ class AKnifeProjectile;
 class AAssassin_SkillOne;
 class AEnemyBase;
 class USoundCue;
+class UDataTable;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PORTFOLIO_API UAbilityComponent : public UActorComponent
@@ -67,24 +68,11 @@ protected:
 	void SetSkillFourTimer();
 	bool bCanSkillFour = true;
 
-	// 적중 시 파티클 이펙트
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Effect|Visual")
-	UParticleSystem* DefaultHitParticle;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Effect|Visual")
-	UParticleSystem* SlashHitParticle;
-
-	// 타격시 효과음
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Effect|Sound")
-	USoundCue* DefaultHitSound;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Effect|Sound")
-	USoundCue* SlashHitSound;
-
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Data")
+	UDataTable* DefaultEffectDataTable;
 
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Data")
 	UDataTable* SkillDataTable;
 
 	/** One */
@@ -123,4 +111,7 @@ public:
 	
 	// 적중 타입에 따라 다른 효과음 재생
 	void PlayHitSound(EHitType HitType, const FVector& Location);
+
+	// 캐릭터의 직업에 따른 RowName을 얻음
+	FName GetRowClassName();
 };

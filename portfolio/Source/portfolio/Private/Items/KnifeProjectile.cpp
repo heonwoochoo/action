@@ -77,7 +77,7 @@ void AKnifeProjectile::OnKnifeEffect(AActor* HitActor)
 			AssassinComponent->SetDashTarget(HitActor);
 		}
 		
-		float Damage = Caster->GetCharacterStats().GetAbilityPower() + AssassinComponent->GetSkillOne().Damage;
+		float Damage = Caster->GetCharacterStats().AbilityPower + AssassinComponent->GetSkillOne().Damage;
 
 		// Damage event call
 		Caster->CheckEnemyInRange(GetActorLocation(), 50.f, Damage, EHitType::EHT_Slash);

@@ -295,5 +295,6 @@ public:
 	
 	void UpdateHealth(EStatUpdateType UpdateType, float AbilityPoint);
 	void UpdateStamina(EStatUpdateType UpdateType, float AbilityPoint);
+
 };
 

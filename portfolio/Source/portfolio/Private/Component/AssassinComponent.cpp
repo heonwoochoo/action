@@ -25,6 +25,7 @@ void UAssassinComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyC
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
+
 }
 
 void UAssassinComponent::BeginPlay()
@@ -33,19 +34,12 @@ void UAssassinComponent::BeginPlay()
 	PrimaryComponentTick.SetTickFunctionEnable(true);
 	PrimaryComponentTick.RegisterTickFunction(GetComponentLevel());
 
+	InitSkillThreeEffectRotationValues();
 }
 
 void UAssassinComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-
-
-	if (bAttackSKillThree)
-	{
-		PullEnemyToCenter();
-	}
-
 }
 
 
@@ -116,9 +110,10 @@ void UAssassinComponent::RotateToTarget(AActor* Target)
 
 void UAssassinComponent::SkillTwoFirstEffect()
 {
-	if (SkillTwoFirstParticle)
+	if (SkillTwo.ParticleEffects.IsValidIndex(0))
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(this, SkillTwoFirstParticle, Character->GetActorLocation());
+		UParticleSystem* Effect = SkillTwo.ParticleEffects[0];
+		UGameplayStatics::SpawnEmitterAtLocation(this, Effect, Character->GetActorLocation());
 		Character->CheckEnemyInRange(Character->GetActorLocation(), 300.f, SkillTwo.Damage, EHitType::EHT_Slash);
 	}
 }
@@ -129,9 +124,10 @@ void UAssassinComponent::SkillTwoEndEffect()
 	{
 		UGameplayStatics::PlayWorldCameraShake(this, CameraShakeExplosion, Character->GetFollowCamera()->GetComponentLocation(), 0.f, 500.f);
 	}
-	if (SkillTwoSecondNiagara)
+	if (SkillTwo.NiagaraEffects.IsValidIndex(0))
 	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, SkillTwoSecondNiagara, Character->GetActorLocation(), Character->GetActorRotation(), FVector(1));
+		UNiagaraSystem* Effect = SkillTwo.NiagaraEffects[0];
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, Effect, Character->GetActorLocation(), Character->GetActorRotation());
 	}
 
 	const TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes{ UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn) };
@@ -161,7 +157,7 @@ void UAssassinComponent::HandleSkillThree()
 	if (!bCanSkillThree) return;
 
 	const float StaminaCost = SkillThree.Stamina;
-	const float PlayerStamina = Character->GetCharacterStats().GetStamina();
+	const float PlayerStamina = Character->GetCharacterStats().Stamina;
 
 	if (StaminaCost <= PlayerStamina)
 	{
@@ -173,21 +169,27 @@ void UAssassinComponent::HandleSkillThree()
 		{
 			bCanSkillThree = false;
 			AnimInstance->Montage_Play(SkillThree.Animation);
-
-			
 		}
 	}
 }
 
 void UAssassinComponent::SpawnSkillThreeEffect()
 {
-	if (Character)
+	if (Character && SkillThree.ParticleEffects.IsValidIndex(0))
 	{	
-		SpawnParticleEffect(SkillThreeParticle);
-		//SkillThreeSpawnLocation = Character->GetActorLocation();
-		//UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, SkillThreeBloodAOE, SkillThreeSpawnLocation, Character->GetActorRotation(), FVector(1));
-		//bAttackSKillThree = true;
-		//GetWorld()->GetTimerManager().SetTimer(SkillThreeSpawnTimer, this, &UAssassinComponent::SetFalseSkillThreeAttack, SkillThreeHitDuration, false);
+		// 1. 로테이션 조절
+		AdjustCompRotationByCombo(SkillThreeCombo);
+
+		// 2. 파티클 생성
+		UParticleSystem* Effect = SkillThree.ParticleEffects[0];
+		SpawnParticleEffect(Effect);
+
+		// 3. 범위 내 적 타격
+		const FVector Location = Character->GetEmitterComponent()->GetComponentLocation();
+		Character->CheckEnemyInRange(Location, 200.f, SkillThree.Damage, EHitType::EHT_Slash);
+
+		// 4. 콤보 증가
+		SkillThreeCombo++;
 	}
 }
 
@@ -196,7 +198,7 @@ void UAssassinComponent::HandleSkillFour()
 	if (!bCanSkillFour) return;
 
 	const float StaminaCost = SkillFour.Stamina;
-	const float PlayerStamina = Character->GetCharacterStats().GetStamina();
+	const float PlayerStamina = Character->GetCharacterStats().Stamina;
 
 	if (StaminaCost <= PlayerStamina)
 	{
@@ -253,45 +255,30 @@ void UAssassinComponent::SetDashTarget(AActor* Target)
 	DashTarget = Target;
 }
 
-
-
-void UAssassinComponent::SetFalseSkillThreeAttack()
+void UAssassinComponent::InitSkillThreeEffectRotationValues()
 {
-	bAttackSKillThree = false;
+	SkillThreeEffectRotationValues.Add(90.f);
+	SkillThreeEffectRotationValues.Add(-75.f);
+	SkillThreeEffectRotationValues.Add(75.f);
+	SkillThreeEffectRotationValues.Add(-90.f);
+	SkillThreeEffectRotationValues.Add(120.f);
+	SkillThreeEffectRotationValues.Add(-90.f);
+	SkillThreeEffectRotationValues.Add(90.f);
+	SkillThreeEffectRotationValues.Add(-90.f);
 }
 
-void UAssassinComponent::SkillThreeHitTimerEnd()
+void UAssassinComponent::InitSkillThreeComboCount()
 {
-	bMultiHit = true;
+	SkillThreeCombo = 0;
 }
 
-void UAssassinComponent::PullEnemyToCenter()
+void UAssassinComponent::AdjustCompRotationByCombo(uint8 ComboCount)
 {
-	const TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes{ UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn) };
-	const TArray<AActor*> ActorsToIgnore{ Character };
-	TArray<AActor*> OutActors;
-	UKismetSystemLibrary::SphereOverlapActors(this, Character->GetActorLocation(), 400.f, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
-	
-	for (AActor* Actor : OutActors)
+	USceneComponent* EmitterComponent = Character->GetEmitterComponent();
+	if (EmitterComponent && SkillThreeEffectRotationValues.IsValidIndex(ComboCount))
 	{
-		AEnemyBase* Enemy = Cast<AEnemyBase>(Actor);
-		if (Enemy)
-		{
-			FVector Dir = (SkillThreeSpawnLocation - Enemy->GetActorLocation()).GetSafeNormal();
-			Enemy->LaunchCharacter(Dir * 5.f, false, true);
-
-			AttackMultiHit(Enemy);
-		}
-	}
-}
-
-void UAssassinComponent::AttackMultiHit(AEnemyBase* Enemy)
-{
-	if (bMultiHit)
-	{
-		Character->DamageToEnemy(Enemy, SkillThree.Damage);
-		GetWorld()->GetTimerManager().SetTimer(SkillThreeHitTimer, this, &UAssassinComponent::SkillThreeHitTimerEnd, MultiHitDeltaTime, false);
-		bMultiHit = false;
+		float RollValue = SkillThreeEffectRotationValues[ComboCount];
+		EmitterComponent->SetRelativeRotation(FRotator(0.f,0.f, RollValue));
 	}
 }
 
@@ -316,7 +303,7 @@ void UAssassinComponent::LaunchEnemy(float ZScale)
 void UAssassinComponent::HandleSkillOne()
 {
 	const float StaminaCost = SkillOne.Stamina;
-	const float PlayerStamina = Character->GetCharacterStats().GetStamina();
+	const float PlayerStamina = Character->GetCharacterStats().Stamina;
 	if (StaminaCost <= PlayerStamina)
 	{
 		Super::HandleSkillOne();
@@ -356,7 +343,7 @@ void UAssassinComponent::HandleSkillTwo()
 {
 	if (!bCanSkillTwo) return;
 	const float StaminaCost = SkillTwo.Stamina;
-	const float PlayerStamina = Character->GetCharacterStats().GetStamina();
+	const float PlayerStamina = Character->GetCharacterStats().Stamina;
 	if (StaminaCost <= PlayerStamina)
 	{
 		Character->UpdateStatManager(EStatTarget::EST_Stamina, EStatUpdateType::ESUT_Minus, SkillTwo.Stamina);

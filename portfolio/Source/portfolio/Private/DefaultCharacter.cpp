@@ -105,8 +105,8 @@ void ADefaultCharacter::BeginPlay()
 
 	if (GetCharacterMovement())
 	{
-		GetCharacterMovement()->MaxWalkSpeed = DefaultStats.GetMovementSpeed();
-		SprintMaxSpeed = DefaultStats.GetMovementSpeed() * 2.f;
+		GetCharacterMovement()->MaxWalkSpeed = DefaultStats.MovementSpeed;
+		SprintMaxSpeed = DefaultStats.MovementSpeed * 2.f;
 	}
 
 	Tags.Add(FName("Player"));
@@ -612,7 +612,7 @@ void ADefaultCharacter::DamageToEnemy(AEnemyBase* Enemy, float Damage)
 {
 	TSubclassOf<UDamageType> DamageType;
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-	UGameplayStatics::ApplyDamage(Enemy, UHelperFunction::GetRandomDamage(Damage, DefaultStats.GetCritical()), CharacterController, this, DamageType);
+	UGameplayStatics::ApplyDamage(Enemy, UHelperFunction::GetRandomDamage(Damage, DefaultStats.Critical), CharacterController, this, DamageType);
 }
 
 void ADefaultCharacter::Die()
@@ -698,8 +698,6 @@ void ADefaultCharacter::UpdateStamina(EStatUpdateType UpdateType, float AbilityP
 		}
 	}
 }
-
-
 
 ECharacterClass ADefaultCharacter::GetCharacterClass()
 {

@@ -75,71 +75,71 @@ void UInfoContainer::Init()
 
 void UInfoContainer::UpdateADText()
 {
-	ADText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().GetAttackDamage())));
+	ADText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().AttackDamage)));
 }
 
 void UInfoContainer::UpdateADDefenseText()
 {
-	ADDefenseText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().GetAttackDamageDefense())));
+	ADDefenseText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().AttackDamageDefense)));
 }
 
 void UInfoContainer::UpdateAttackSpeedText()
 {
-	AttackSpeedText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().GetAttackSpeed())));
+	AttackSpeedText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().AttackSpeed)));
 }
 
 void UInfoContainer::UpdateCriticalText()
 {
-	CriticalText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().GetCritical())));
+	CriticalText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().Critical)));
 }
 
 void UInfoContainer::UpdateAPText()
 {
-	APText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().GetAbilityPower())));
+	APText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().AbilityPower)));
 }
 
 void UInfoContainer::UpdateAPDefenseText()
 {
-	APDefenseText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().GetAbilityPower())));
+	APDefenseText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().AbilityPowerDefense)));
 }
 
 void UInfoContainer::UpdateCoolDownText()
 {
-	CoolDownText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().GetCoolDown())));
+	CoolDownText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().CoolDown)));
 }
 
 void UInfoContainer::UpdateMovementSpeedText()
 {
-	MovementSpeedText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().GetMovementSpeed())));
+	MovementSpeedText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().MovementSpeed)));
 }
 
 void UInfoContainer::UpdateHP()
 {
-	HpCurrent->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().GetHP())));
-	HpMax->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().GetHPMax())));
-	HPProgressBar->SetPercent(Character->GetCharacterStats().HP / Character->GetCharacterStats().GetHPMax());	
+	HpCurrent->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().HP)));
+	HpMax->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().HPMax)));
+	HPProgressBar->SetPercent(Character->GetCharacterStats().HP / Character->GetCharacterStats().HPMax);	
 }
 
 void UInfoContainer::UpdateStamina()
 {
-	StaminaCurrent->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().GetStamina())));
-	StaminaMax->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().GetStaminaMax())));
-	StaminaProgressBar->SetPercent(Character->GetCharacterStats().Stamina / Character->GetCharacterStats().GetStaminaMax());
+	StaminaCurrent->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().Stamina)));
+	StaminaMax->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().StaminaMax)));
+	StaminaProgressBar->SetPercent(Character->GetCharacterStats().Stamina / Character->GetCharacterStats().StaminaMax);
 }
 
 void UInfoContainer::UpdateExp()
 {
-	ExpProgressBar->SetPercent(Character->GetCharacterStats().GetExp() / Character->GetCharacterStats().GetExpMax());
+	ExpProgressBar->SetPercent(Character->GetCharacterStats().Exp / Character->GetCharacterStats().ExpMax);
 }
 
 void UInfoContainer::UpdateLevel()
 {
-	LevelText->SetText(FText::FromString(FString::FromInt(Character->GetCharacterStats().GetLevel())));
+	LevelText->SetText(FText::FromString(FString::FromInt(Character->GetCharacterStats().Level)));
 }
 
 void UInfoContainer::UpdateGold()
 {
-	GoldText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().GetGold())));
+	GoldText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().Gold)));
 }
 
 void UInfoContainer::UpdateSkillOne()

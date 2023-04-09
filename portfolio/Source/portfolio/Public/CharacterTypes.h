@@ -9,6 +9,9 @@
 class UAnimMontage;
 class UBlendSpace;
 class UTexture2D;
+class UParticleSystem;
+class UNiagaraSystem;
+class USoundCue;
 
 UENUM(BlueprintType)
 enum class ECharacterEquipState : uint8
@@ -92,86 +95,6 @@ struct FCharacterStats : public FTableRowBase
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 Level;
-
-	float GetAttackDamage()
-	{
-		return AttackDamage;
-	}
-
-	float GetAttackDamageDefense()
-	{
-		return AttackDamageDefense;
-	}
-
-	float GetAttackSpeed()
-	{
-		return AttackSpeed;
-	}
-
-	float GetCritical()
-	{
-		return Critical;
-	}
-
-	float GetAbilityPower()
-	{
-		return AbilityPower;
-	}
-
-	float GetAbilityPowerDefense()
-	{
-		return AbilityPowerDefense;
-	}
-
-	float GetCoolDown()
-	{
-		return CoolDown;
-	}
-
-	float GetMovementSpeed()
-	{
-		return MovementSpeed;
-	}
-
-	float GetHPMax()
-	{
-		return HPMax;
-	}
-	
-	float GetHP()
-	{
-		return HP;
-	}
-
-	float GetStaminaMax()
-	{
-		return StaminaMax;
-	}
-
-	float GetStamina()
-	{
-		return Stamina;
-	}
-
-	float GetExpMax()
-	{
-		return ExpMax;
-	}
-
-	float GetExp()
-	{
-		return Exp;
-	}
-	
-	int32 GetGold()
-	{
-		return Gold;
-	}
-
-	int32 GetLevel()
-	{
-		return Level;
-	}
 };
 
 USTRUCT(BlueprintType)
@@ -280,6 +203,30 @@ struct FCharacterSkill : public FTableRowBase
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UAnimMontage* Animation;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<UParticleSystem*> ParticleEffects;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<UNiagaraSystem*> NiagaraEffects;
+};
+
+USTRUCT(BlueprintType)
+struct FCharacterDefaultEffect : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UParticleSystem* DefaultHitParticle;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UParticleSystem* SlashHitParticle;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USoundCue* DefaultHitSound;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USoundCue* SlashHitSound;
 };
 
 USTRUCT(BlueprintType)
