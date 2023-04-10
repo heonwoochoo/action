@@ -24,11 +24,22 @@ class PORTFOLIO_API AEnemyBase : public ACharacter
 public:
 	AEnemyBase();
 	virtual void Tick(float DeltaTime) override;
-	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+
 protected:
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+	UDataTable* EnemyStatsDataTable;
 	 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
+	FEnemyStats Stats;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	EEnemyState State = EEnemyState::EES_NoState;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	EEnemyName Name;
+
 	// =================
 	// Pawnsensing, AI
 	// =================
@@ -89,8 +100,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
 	float PatrolWaitMax = 10.f;
 
-	
-
 	UPROPERTY(EditAnywhere, Category = Combat)
 	double AcceptanceRadius = 50.f;
 
@@ -121,7 +130,7 @@ protected:
 
 	// 가격 타이밍에 Anim notify에서 호출되는 함수
 	UFUNCTION(BlueprintCallable)
-	void AttackCharacter();
+	virtual void AttackCharacter();
 
 	// 공격 종료시 Anim notify에서 호출되는 함수
 	UFUNCTION(BlueprintCallable)
@@ -175,17 +184,6 @@ protected:
 	void DropItem();
 
 private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
-	UDataTable* EnemyStatsDataTable;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
-	FEnemyStats Stats;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	EEnemyState State = EEnemyState::EES_NoState;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	EEnemyName Name;
 
 	AActor* HeadUpMark;
 

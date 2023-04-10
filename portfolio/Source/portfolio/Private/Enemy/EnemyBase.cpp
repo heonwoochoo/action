@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the DescrUKismetiption page of Project Settings.
 
 
 #include "Enemy/EnemyBase.h"
@@ -19,8 +19,7 @@
 #include "EnemyTypes.h"
 #include "Perception/PawnSensingComponent.h"
 #include "AIController.h"
-#include "Animation/EnemyAnimInstance.h"
-#include "Animation/AnimInstanceBase.h"
+
 
 AEnemyBase::AEnemyBase()
 {
@@ -46,7 +45,7 @@ AEnemyBase::AEnemyBase()
 	PawnSensing->SetPeripheralVisionAngle(45.f);
 	PawnSensing->SightRadius = 2000.f;
 
-	
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 }
 
 void AEnemyBase::BeginPlay()
@@ -54,13 +53,6 @@ void AEnemyBase::BeginPlay()
 	Super::BeginPlay();
 	
 	GetMesh()->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBase::OnBeginOverlapped);
-	if (EnemyStatsDataTable)
-	{
-		if (Name == EEnemyName::EEN_Man)
-		{
-			Stats = *EnemyStatsDataTable->FindRow<FEnemyStats>(FName("Man"), "");
-		}
-	}
 
 	if (PawnSensing) PawnSensing->OnSeePawn.AddDynamic(this, &AEnemyBase::PawnSeen);
 
@@ -77,7 +69,6 @@ void AEnemyBase::BeginPlay()
 void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 
 	if (State == EEnemyState::EES_Dead) return;
 	if (State > EEnemyState::EES_Patrolling)
@@ -108,7 +99,6 @@ void AEnemyBase::PawnSeen(APawn* SeenPawn)
 	if (bShouldChaseTarget)
 	{
 		CombatTarget = SeenPawn;
-
 		ChaseTarget();
 	}
 }
@@ -164,30 +154,6 @@ void AEnemyBase::PlayAttackAnim()
 
 void AEnemyBase::AttackCharacter()
 {
-	const FName SockeName = "FootRightAttack";
-	const FVector SocketLocation = GetMesh()->GetSocketLocation(SockeName);
-
-	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = { UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn) };
-	TArray<AActor*> ActorsToIgnore = { this };
-	TArray<AActor*> OutActors;
-
-	UKismetSystemLibrary::SphereOverlapActors(this, SocketLocation, 50.f, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
-	DrawDebugSphere(GetWorld(), SocketLocation, 50.f, 16, FColor::Red, false, 1.f);
-
-	for (AActor* Actor : OutActors)
-	{
-		ADefaultCharacter* Character = Cast<ADefaultCharacter>(Actor);
-		if (Character)
-		{
-			UAnimInstanceBase* AnimInstance = Cast<UAnimInstanceBase>(Character->GetMesh()->GetAnimInstance());
-			if (AnimInstance)
-			{
-				AnimInstance->PlayHitReact();
-			}
-
-			DamageToPlayer(Character);
-		}
-	}
 }
 
 void AEnemyBase::AttackEnd()
@@ -209,8 +175,6 @@ void AEnemyBase::DamageToPlayer(ADefaultCharacter* Character)
 	TSubclassOf<UDamageType> DamageType;
 	UGameplayStatics::ApplyDamage(Character, Stats.Damage, EnemyController, this, DamageType);
 }
-
-
 
 // AIController가 target으로 이동
 void AEnemyBase::MoveToTarget(AActor* Target)
@@ -372,7 +336,6 @@ void AEnemyBase::DropItem()
 {
 	if (FMath::FRand() < ItemDropRate && DropItemList.Num() > 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Drop Item"));
 		int32 RandNum = FMath::RandRange(0, DropItemList.Num() - 1);
 		const FVector Location{ GetActorLocation() };
 		const FRotator Rotation{ GetActorRotation() };
@@ -411,7 +374,6 @@ void AEnemyBase::PlayHitAnim()
 			ShowHealthBar();
 			AnimInstance->PlayHitReactOnGround();
 			MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("HitReactRotation"), DamageCauserActor->GetActorLocation());
-
 		}
 		else
 		{
@@ -426,7 +388,6 @@ void AEnemyBase::PlayDeadAnim()
 	UEnemyAnimInstance* AnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
 	if (AnimInstance)
 	{
-
 		AnimInstance->PlayDead();
 	}
 }
@@ -488,19 +449,4 @@ void AEnemyBase::SetHeadUpMark(AActor* NewMark)
 void AEnemyBase::RemoveMark()
 {
 	if (HeadUpMark) HeadUpMark->Destroy();
-}
-
-
-
-void AEnemyBase::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
-{
-	Super::PostEditChangeProperty(PropertyChangedEvent);
-
-	if (EnemyStatsDataTable)
-	{
-		if (Name == EEnemyName::EEN_Man)
-		{
-			Stats = *EnemyStatsDataTable->FindRow<FEnemyStats>(FName("Man"), "");
-		}
-	}
 }

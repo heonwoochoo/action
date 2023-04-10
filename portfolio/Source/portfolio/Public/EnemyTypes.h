@@ -8,6 +8,8 @@
 
 class UAnimMontage;
 class UBlendSpace1D;
+class USkeletalMesh;
+class UAnimInstance;
 
 UENUM(BlueprintType)
 enum class EEnemyState : uint8
@@ -23,7 +25,9 @@ enum class EEnemyState : uint8
 UENUM(BlueprintType)
 enum class EEnemyName : uint8
 {
+	EEN_None UMETA(DisplayName = "None"),
 	EEN_Man UMETA(DisplayName = "Man"),
+	EEN_MinionLane UMETA(DisplayName = "MinionLane"),
 };
 
 USTRUCT(BlueprintType)
@@ -45,6 +49,12 @@ struct FEnemyStats : public FTableRowBase
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float Exp;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USkeletalMesh* SkeletalMesh;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSubclassOf<UAnimInstance> AnimationClass;
 };
 
 USTRUCT(BlueprintType)

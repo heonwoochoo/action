@@ -10,13 +10,32 @@ void UEnemyAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	AEnemyBase* Enemy = Cast<AEnemyBase>(GetOwningActor());
-	if (Enemy && EnemyDefaultAnimationsDataTable)
+	
+	FName RowName = "";
+	if (Enemy)
 	{
-		HitReactOnGround = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(FName("Man"), "")->HitReactOnGround;
-		HitReactOnAir = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(FName("Man"), "")->HitReactOnAir;
-		IdleWalkRun = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(FName("Man"), "")->IdleWalkRun;
-		Dead = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(FName("Man"), "")->Dead;
-		Attack = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(FName("Man"), "")->Attack;
+		EEnemyName EnemyName = Enemy->GetName();
+		switch (EnemyName)
+		{
+		case EEnemyName::EEN_Man:
+			RowName = "Man";
+			break;
+		case EEnemyName::EEN_MinionLane:
+			RowName = "MinionLane";
+			break;
+		case EEnemyName::EEN_None:
+			RowName = "";
+			break;
+		}
+
+		if (Enemy && EnemyDefaultAnimationsDataTable && EnemyName != EEnemyName::EEN_None)
+		{
+			HitReactOnGround = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(RowName, "")->HitReactOnGround;
+			HitReactOnAir = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(RowName, "")->HitReactOnAir;
+			IdleWalkRun = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(RowName, "")->IdleWalkRun;
+			Dead = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(RowName, "")->Dead;
+			Attack = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(RowName, "")->Attack;
+		}
 	}
 }
 
@@ -52,7 +71,6 @@ void UEnemyAnimInstance::PlayDead()
 {
 	if (Dead)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("play Dead Animation"));
 		Montage_Play(Dead);
 	}
 }

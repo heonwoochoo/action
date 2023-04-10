@@ -177,7 +177,7 @@ void UAssassinComponent::SpawnSkillThreeEffect()
 {
 	if (Character && SkillThree.ParticleEffects.IsValidIndex(0))
 	{	
-		// 1. 로테이션 조절
+		// 1. 로테이션 조정
 		AdjustCompRotationByCombo(SkillThreeCombo);
 
 		// 2. 파티클 생성
