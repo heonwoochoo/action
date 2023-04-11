@@ -78,7 +78,7 @@ void AKnifeProjectile::OnKnifeEffect(AActor* HitActor)
 		float Damage = Caster->GetCharacterStats().AbilityPower + AssassinComponent->GetSkillOne().Damage;
 
 		// Damage event call
-		Caster->CheckEnemyInRange(GetActorLocation(), 100.f, Damage, EHitType::EHT_Slash);
+		Caster->CheckEnemyInRange(GetActorLocation(), 50.f, Damage, EHitType::EHT_Slash);
 
 		// Destroy instance
 		Destroy();

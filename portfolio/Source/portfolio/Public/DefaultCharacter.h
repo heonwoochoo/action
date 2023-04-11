@@ -245,8 +245,14 @@ private:
 	void TurnOnRegenerateStamina();
 
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UDataTable* StatsDataTable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Sound")
+	USoundCue* HitReactSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Camera")
+	TSubclassOf<UCameraShakeBase> HitCameraShakeClass;
 
 	UFUNCTION(BlueprintCallable)
 	UAbilityComponent* GetAbilityComponent() const;
@@ -289,6 +295,10 @@ public:
 	void DamageToEnemy(AEnemyBase* Enemy, float Damage);
 
 	void Die();
+
+	void PlaySoundCue(USoundCue* SoundAsset);
+
+	void PlayCameraShake(TSubclassOf<UCameraShakeBase> CameraShakeClass);
 
 	// 캐릭터의 스탯을 업데이트 (체력, 기력, 공격력, ...)
 	void UpdateStatManager(EStatTarget Stat, EStatUpdateType UpdateType,float AbilityPoint);

@@ -458,7 +458,14 @@ float ADefaultCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+	// 체력 업데이트
 	UpdateStatManager(EStatTarget::EST_Health, EStatUpdateType::ESUT_Minus, DamageAmount);
+	
+	// 피격 효과음 재생
+	PlaySoundCue(HitReactSound);
+
+	// 카메라 쉐이크 효과
+	PlayCameraShake(HitCameraShakeClass);
 
 	return 0.0f;
 }
@@ -621,6 +628,22 @@ void ADefaultCharacter::Die()
 	CharacterActionState = ECharacterActionState::ECAS_Dead;
 	Tags.Add(FName("Dead"));
 	UE_LOG(LogTemp, Warning, TEXT("Player dead"));
+}
+
+void ADefaultCharacter::PlaySoundCue(USoundCue* SoundAsset)
+{
+	if (SoundAsset)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, SoundAsset, GetActorLocation());
+	}
+}
+
+void ADefaultCharacter::PlayCameraShake(TSubclassOf<UCameraShakeBase> CameraShakeClass)
+{
+	if (CameraShakeClass)
+	{
+		UGameplayStatics::PlayWorldCameraShake(this, CameraShakeClass, GetFollowCamera()->GetComponentLocation(), 0.f, 500.f);
+	}
 }
 
 void ADefaultCharacter::UpdateStatManager(EStatTarget Stat, EStatUpdateType UpdateType, float AbilityPoint)

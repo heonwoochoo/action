@@ -120,10 +120,11 @@ void UAssassinComponent::SkillTwoFirstEffect()
 
 void UAssassinComponent::SkillTwoEndEffect()
 {
-	if (CameraShakeExplosion)
+	if (Character)
 	{
-		UGameplayStatics::PlayWorldCameraShake(this, CameraShakeExplosion, Character->GetFollowCamera()->GetComponentLocation(), 0.f, 500.f);
+		Character->PlayCameraShake(CameraShakeExplosion);
 	}
+
 	if (SkillTwo.NiagaraEffects.IsValidIndex(0))
 	{
 		UNiagaraSystem* Effect = SkillTwo.NiagaraEffects[0];
@@ -223,11 +224,10 @@ void UAssassinComponent::SkillFourEffect()
 void UAssassinComponent::SkillFourEndEffect()
 {
 	Character->LaunchCharacter(FVector(0.f, 0.f, -5000.f), false, true);
+
 	LaunchEnemy(-5000.f);
-	if (CameraShakeExplosion)
-	{
-		UGameplayStatics::PlayWorldCameraShake(this, CameraShakeExplosion, Character->GetFollowCamera()->GetComponentLocation(), 0.f, 500.f);
-	}
+
+	Character->PlayCameraShake(CameraShakeExplosion);
 }
 
 void UAssassinComponent::ThrowKnife()
