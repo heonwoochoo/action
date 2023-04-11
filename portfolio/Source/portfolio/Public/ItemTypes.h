@@ -43,6 +43,9 @@ struct FPotionInfo : public FTableRowBase
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UStaticMesh* Mesh;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UParticleSystem* ConsumeParticle;
 };
 
 UENUM(BlueprintType)

@@ -7,6 +7,7 @@
 #include "HUD/TargetMark.h"
 #include "Components/CapsuleComponent.h"
 #include "HUD/Overlay/InfoContainer.h"
+#include "HUD/ComboCountWidget.h"
 
 AHUDBase::AHUDBase()
 {
@@ -22,12 +23,31 @@ void AHUDBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	InitInfoContainer();
+	InitComboCountWidget();
+}
+
+void AHUDBase::InitInfoContainer()
+{
 	if (InfoContainerClass)
 	{
 		InfoContainer = Cast<UInfoContainer>(CreateWidget(GetOwningPlayerController(), InfoContainerClass));
 		if (InfoContainer)
 		{
 			InfoContainer->AddToViewport();
+		}
+	}
+}
+
+void AHUDBase::InitComboCountWidget()
+{
+	if (ComboCountClass)
+	{
+		ComboCountWidget = Cast<UComboCountWidget>(CreateWidget(GetOwningPlayerController(), ComboCountClass));
+		if (ComboCountWidget)
+		{
+			ComboCountWidget->AddToViewport();
+			ComboCountWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 }

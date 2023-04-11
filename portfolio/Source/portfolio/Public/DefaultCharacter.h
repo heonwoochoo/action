@@ -37,6 +37,22 @@ public:
 			
 
 protected:
+	// 캐릭터의 Stat이 설정되어있는 데이터테이블
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UDataTable* StatsDataTable;
+
+	// 피격시 재생될 사운드
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Sound")
+	USoundCue* HitReactSound;
+
+	// 피격시 카메라 효과
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Camera")
+	TSubclassOf<UCameraShakeBase> HitCameraShakeClass;
+
+	// 피격시 화면에 나타날 카메라 렌즈 효과
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Camera")
+	TSubclassOf<AEmitterCameraLensEffectBase> HitReactCameraLens;
+
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
@@ -105,7 +121,6 @@ public:
 	
 
 private:
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Particle, meta = (AllowPrivateAccess = "true"))
 	USceneComponent* EmitterComponent;
 
@@ -201,6 +216,13 @@ private:
 
 	float InitialRelativeLocationZ;
 	
+
+
+	// 공격시 콤보 증가
+	int32 ComboCount = 0;
+
+	FTimerHandle ComboTimerHandle;
+
 	// 초당 재생량
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
 	float RegenerateHealthRate = 1.f;
@@ -239,29 +261,15 @@ private:
 
 	// 체력, 스테미너가 Max 이하일 경우 재생
 	void RegenerateHealth();
-
 	void RegenerateStamina();
-
 	void TurnOnRegenerateHealth();
-
 	void TurnOnRegenerateStamina();
 
+	// 콤보 카운트 초기화
+	void ResetComboCount();
+
 public:
-	// 캐릭터의 Stat이 설정되어있는 데이터테이블
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UDataTable* StatsDataTable;
-
-	// 피격시 재생될 사운드
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Sound")
-	USoundCue* HitReactSound;
-
-	// 피격시 카메라 효과
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Camera")
-	TSubclassOf<UCameraShakeBase> HitCameraShakeClass;
-
-	// 피격시 화면에 나타날 카메라 렌즈 효과
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Camera")
-	TSubclassOf<AEmitterCameraLensEffectBase> HitReactCameraLens;
+	void HandleComboCount();
 
 	UFUNCTION(BlueprintCallable)
 	UAbilityComponent* GetAbilityComponent() const;

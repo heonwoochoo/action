@@ -11,6 +11,8 @@ class ACharacter;
 class ATargetMark;
 class UUserWidget;
 class UInfoContainer;
+class UComboCountWidget;
+class UWidgetAnimation;
 
 UCLASS()
 class PORTFOLIO_API AHUDBase : public AHUD
@@ -34,11 +36,22 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Overlay", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UUserWidget> InfoContainerClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Combat", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UComboCountWidget> ComboCountClass;
+
 	UInfoContainer* InfoContainer;
+
+	UComboCountWidget* ComboCountWidget;
+
+	void InitInfoContainer();
+	void InitComboCountWidget();
 
 public:
 	void ShowDamageOnScreen(ACharacter* Actor, float Damage);
 	void ShowTargetMark(ACharacter* Enemy, ACharacter* Caster);
-	
+
 	FORCEINLINE UInfoContainer* GetInfoContainer() { return InfoContainer; }
+	FORCEINLINE UComboCountWidget* GetComboCountWidget() { return ComboCountWidget; }
+
+	
 };

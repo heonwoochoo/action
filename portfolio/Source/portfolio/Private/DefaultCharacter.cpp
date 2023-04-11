@@ -22,6 +22,7 @@
 #include "HUD/HUDBase.h"
 #include "HUD/Overlay/InfoContainer.h"
 #include "Component/InventoryComponent.h"
+#include "HUD/ComboCountWidget.h"
 
 ADefaultCharacter::ADefaultCharacter()
 {
@@ -483,6 +484,27 @@ void ADefaultCharacter::TurnOnRegenerateStamina()
 	EnableRegenerateStamina = true;
 }
 
+void ADefaultCharacter::ResetComboCount()
+{
+	// 콤보 초기화
+	ComboCount = 0;
+
+	// UI 업데이트
+	ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
+	if (CharacterController)
+	{
+		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+		if (HUDBase)
+		{
+			UComboCountWidget* ComboCountWidget = HUDBase->GetComboCountWidget();
+			if (ComboCountWidget)
+			{
+				ComboCountWidget->PlayHideAnimation();
+			}
+		}
+	}
+}
+
 void ADefaultCharacter::DoubleJump()
 {
 	bCanDoubleJump = false;
@@ -532,6 +554,32 @@ void ADefaultCharacter::RegenerateStamina()
 		EnableRegenerateStamina = false;
 		GetWorld()->GetTimerManager().SetTimer(RegenerateStaminaTimerHandle, this, &ADefaultCharacter::TurnOnRegenerateStamina, 1.f, false);
 	}
+}
+
+void ADefaultCharacter::HandleComboCount()
+{
+	// 카운트 증가
+	ComboCount++;
+
+	// UI 업데이트
+	ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
+	if (CharacterController)
+	{
+		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+		if (HUDBase)
+		{
+			UComboCountWidget* ComboCountWidget = HUDBase->GetComboCountWidget();
+			if (ComboCountWidget)
+			{	
+				ComboCountWidget->SetComboCount(ComboCount);
+				ComboCountWidget->SetVisibility(ESlateVisibility::Visible);
+			}
+		}
+	}
+
+	// 리셋 타이머
+	float ResetTime = 5.0f;
+	GetWorld()->GetTimerManager().SetTimer(ComboTimerHandle, this, &ADefaultCharacter::ResetComboCount, ResetTime, false);
 }
 
 UAbilityComponent* ADefaultCharacter::GetAbilityComponent() const
@@ -623,6 +671,8 @@ void ADefaultCharacter::DamageToEnemy(AEnemyBase* Enemy, float Damage)
 	TSubclassOf<UDamageType> DamageType;
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 	UGameplayStatics::ApplyDamage(Enemy, UHelperFunction::GetRandomDamage(Damage, DefaultStats.Critical), CharacterController, this, DamageType);
+
+	HandleComboCount();
 }
 
 void ADefaultCharacter::Die()

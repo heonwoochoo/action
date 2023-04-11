@@ -7,7 +7,6 @@
 #include "ItemTypes.h"
 #include "InventoryComponent.generated.h"
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PORTFOLIO_API UInventoryComponent : public UActorComponent
 {
@@ -25,6 +24,9 @@ public:
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UDataTable* PotionDataTable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Sound", meta = (AllowPrivateAccess = "true"))
+	USoundCue* PotionConsumeSound;
 
 	// 저장되어 있는 아이템
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -69,10 +71,17 @@ private:
 	void EndTimerHandle5();
 	void EndTimerHandle6();
 
+	// 포션의 데이터 값을 캐릭터에게 적용
 	void EffectPotion(EStatTarget Target, float CoolDown, float AbilityPoint);
+
+	// 포션 소모시 캐릭터 주위 파티클 생성
+	void SpawnConsumeParticle(UParticleSystem* Particle);
 
 	// 포션 데이터 테이블로부터 아이템의 쿨다운 값 반환
 	float GetItemPotionCoolDown(EItemName Name);
+
+	// 포션 소모시 재생되는 사운드
+	void PlayConsumeSound();
 
 public:
 	TMap<EItemName, uint8> GetItemAmountMap() const;

@@ -6,6 +6,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "HUD/Overlay/InfoContainer.h"
 #include "DefaultCharacter.h"
+#include "Components/CapsuleComponent.h"
+#include "Sound/SoundCue.h"
 
 UInventoryComponent::UInventoryComponent()
 {
@@ -20,6 +22,7 @@ void UInventoryComponent::BeginPlay()
 	Super::BeginPlay();
 
 	ResetItemPotionMapping();
+
 }
 
 
@@ -69,6 +72,19 @@ void UInventoryComponent::EffectPotion(EStatTarget Target, float CoolDown, float
 	}
 }
 
+void UInventoryComponent::SpawnConsumeParticle(UParticleSystem* Particle)
+{
+	if (Particle)
+	{
+		ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+		if (DefaultCharacter)
+		{
+			USceneComponent* AttachedComponent = Cast<USceneComponent>(DefaultCharacter->GetCapsuleComponent());
+			UGameplayStatics::SpawnEmitterAttached(Particle, AttachedComponent);
+		}
+	}
+}
+
 float UInventoryComponent::GetItemPotionCoolDown(EItemName Name)
 {
 	if (PotionDataTable)
@@ -90,6 +106,14 @@ float UInventoryComponent::GetItemPotionCoolDown(EItemName Name)
 		}
 	}
 	return 0.0f;
+}
+
+void UInventoryComponent::PlayConsumeSound()
+{
+	if (PotionConsumeSound)
+	{
+		UGameplayStatics::PlaySound2D(this, PotionConsumeSound);
+	}
 }
 
 TMap<EItemName, uint8> UInventoryComponent::GetItemAmountMap() const
@@ -162,12 +186,14 @@ void UInventoryComponent::UseItemPotion(EItemName ItemName)
 	if (!PotionInfo) return;
 
 	EStatTarget Target = PotionInfo->StatTarget;
-	float CoolDown = PotionInfo->CoolDown;
-	float AbilityPoint = PotionInfo->AbilityPoint;
+	const float CoolDown = PotionInfo->CoolDown;
+	const float AbilityPoint = PotionInfo->AbilityPoint;
 
-	// 캐릭터에 적용
 	EffectPotion(Target, CoolDown, AbilityPoint);
 
+	SpawnConsumeParticle(PotionInfo->ConsumeParticle);
+
+	PlayConsumeSound();
 
 	// 멤버변수의 데이터를 업데이트
 	if (ItemsAmount.Contains(ItemName))
@@ -216,7 +242,6 @@ void UInventoryComponent::ItemHandle_2()
 {
 	if (bEnableItem2 && HasItemInContainer(EItemNumber::EIN_2))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ItemHandle2"));
 		bEnableItem2 = false;
 		const float CoolDown = GetItemPotionCoolDown(Item2);
 		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle2, this, &UInventoryComponent::EndTimerHandle2, CoolDown);
