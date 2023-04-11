@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
 #include "CharacterTypes.h"
+#include "Particles/EmitterCameraLensEffectBase.h"
 #include "DefaultCharacter.generated.h"
 
 class USpringArmComponent;
@@ -20,6 +21,7 @@ class UDataTable;
 class USoundCue;
 class AEnemyBase;
 class UInventoryComponent;
+class UParticleSystem;
 
 UCLASS(config=Game)
 class ADefaultCharacter : public ACharacter
@@ -245,14 +247,21 @@ private:
 	void TurnOnRegenerateStamina();
 
 public:
+	// 캐릭터의 Stat이 설정되어있는 데이터테이블
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UDataTable* StatsDataTable;
 
+	// 피격시 재생될 사운드
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Sound")
 	USoundCue* HitReactSound;
 
+	// 피격시 카메라 효과
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Camera")
 	TSubclassOf<UCameraShakeBase> HitCameraShakeClass;
+
+	// 피격시 화면에 나타날 카메라 렌즈 효과
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Camera")
+	TSubclassOf<AEmitterCameraLensEffectBase> HitReactCameraLens;
 
 	UFUNCTION(BlueprintCallable)
 	UAbilityComponent* GetAbilityComponent() const;
@@ -299,6 +308,8 @@ public:
 	void PlaySoundCue(USoundCue* SoundAsset);
 
 	void PlayCameraShake(TSubclassOf<UCameraShakeBase> CameraShakeClass);
+
+	void PlayCameraLensEffect(TSubclassOf<AEmitterCameraLensEffectBase> CameraLensEffectClass);
 
 	// 캐릭터의 스탯을 업데이트 (체력, 기력, 공격력, ...)
 	void UpdateStatManager(EStatTarget Stat, EStatUpdateType UpdateType,float AbilityPoint);

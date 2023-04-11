@@ -467,6 +467,9 @@ float ADefaultCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 	// 카메라 쉐이크 효과
 	PlayCameraShake(HitCameraShakeClass);
 
+	// 카메라 렌즈 효과
+	PlayCameraLensEffect(HitReactCameraLens);
+
 	return 0.0f;
 }
 
@@ -643,6 +646,15 @@ void ADefaultCharacter::PlayCameraShake(TSubclassOf<UCameraShakeBase> CameraShak
 	if (CameraShakeClass)
 	{
 		UGameplayStatics::PlayWorldCameraShake(this, CameraShakeClass, GetFollowCamera()->GetComponentLocation(), 0.f, 500.f);
+	}
+}
+
+void ADefaultCharacter::PlayCameraLensEffect(TSubclassOf<AEmitterCameraLensEffectBase> CameraLensEffectClass)
+{
+	APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(this, 0);
+	if (CameraManager && CameraLensEffectClass)
+	{
+		CameraManager->AddCameraLensEffect(CameraLensEffectClass);
 	}
 }
 
