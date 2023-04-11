@@ -24,6 +24,7 @@
 #include "Component/InventoryComponent.h"
 #include "HUD/ComboCountWidget.h"
 #include "Items/Potion.h"
+#include "HUD/OverlappedItemWidget.h"
 
 ADefaultCharacter::ADefaultCharacter()
 {
@@ -620,6 +621,16 @@ void ADefaultCharacter::BeginOverlapped(UPrimitiveComponent* OverlappedComponent
 	{
 		PrevOverlappedItem = OverlappedItem;
 		OverlappedItem = OtherActor;
+
+		ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
+		if (CharacterController)
+		{
+			AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+			if (HUDBase)
+			{
+				HUDBase->GetOverlappedItemWidget()->SetVisibility(ESlateVisibility::Visible);
+			}
+		}
 	}
 }
 
@@ -634,6 +645,16 @@ void ADefaultCharacter::EndOverlapped(UPrimitiveComponent* OverlappedComponent, 
 		else if (OtherActor == PrevOverlappedItem)
 		{
 			PrevOverlappedItem = nullptr;
+		}
+
+		ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
+		if (CharacterController)
+		{
+			AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+			if (HUDBase)
+			{
+				HUDBase->GetOverlappedItemWidget()->SetVisibility(ESlateVisibility::Hidden);
+			}
 		}
 	}
 }

@@ -12,7 +12,7 @@ class ATargetMark;
 class UUserWidget;
 class UInfoContainer;
 class UComboCountWidget;
-class UWidgetAnimation;
+class UOverlappedItemWidget;
 
 UCLASS()
 class PORTFOLIO_API AHUDBase : public AHUD
@@ -39,12 +39,18 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Combat", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UComboCountWidget> ComboCountClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Item", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UOverlappedItemWidget> OverlappedItemClass;
+
 	UInfoContainer* InfoContainer;
 
 	UComboCountWidget* ComboCountWidget;
 
+	UOverlappedItemWidget* OverlappedItemWidget;
+
 	void InitInfoContainer();
 	void InitComboCountWidget();
+	void InitOverlappedItemWidget();
 
 public:
 	void ShowDamageOnScreen(ACharacter* Actor, float Damage);
@@ -52,6 +58,6 @@ public:
 
 	FORCEINLINE UInfoContainer* GetInfoContainer() { return InfoContainer; }
 	FORCEINLINE UComboCountWidget* GetComboCountWidget() { return ComboCountWidget; }
-
+	FORCEINLINE UOverlappedItemWidget* GetOverlappedItemWidget() { return OverlappedItemWidget; }
 	
 };

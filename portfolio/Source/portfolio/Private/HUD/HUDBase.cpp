@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "HUD/Overlay/InfoContainer.h"
 #include "HUD/ComboCountWidget.h"
+#include "HUD/OverlappedItemWidget.h"
 
 AHUDBase::AHUDBase()
 {
@@ -25,6 +26,7 @@ void AHUDBase::BeginPlay()
 
 	InitInfoContainer();
 	InitComboCountWidget();
+	InitOverlappedItemWidget();
 }
 
 void AHUDBase::InitInfoContainer()
@@ -48,6 +50,19 @@ void AHUDBase::InitComboCountWidget()
 		{
 			ComboCountWidget->AddToViewport();
 			ComboCountWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+}
+
+void AHUDBase::InitOverlappedItemWidget()
+{
+	if (OverlappedItemClass)
+	{
+		OverlappedItemWidget = Cast<UOverlappedItemWidget>(CreateWidget(GetOwningPlayerController(), OverlappedItemClass));
+		if (OverlappedItemWidget)
+		{
+			OverlappedItemWidget->AddToViewport();
+			OverlappedItemWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 }
