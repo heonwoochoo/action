@@ -23,6 +23,7 @@
 #include "HUD/Overlay/InfoContainer.h"
 #include "Component/InventoryComponent.h"
 #include "HUD/ComboCountWidget.h"
+#include "Items/Potion.h"
 
 ADefaultCharacter::ADefaultCharacter()
 {
@@ -110,6 +111,9 @@ void ADefaultCharacter::BeginPlay()
 		SprintMaxSpeed = DefaultStats.MovementSpeed * 2.f;
 	}
 
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ADefaultCharacter::BeginOverlapped);
+	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &ADefaultCharacter::EndOverlapped);
+
 	Tags.Add(FName("Player"));
 }
 
@@ -157,6 +161,7 @@ void ADefaultCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 		EnhancedInputComponent->BindAction(Item4Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::ItemManager_4);
 		EnhancedInputComponent->BindAction(Item5Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::ItemManager_5);
 		EnhancedInputComponent->BindAction(Item6Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::ItemManager_6);
+		EnhancedInputComponent->BindAction(PickupAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::PickupItem);
 	}
 }
 
@@ -432,6 +437,23 @@ void ADefaultCharacter::ItemManager_6()
 	}
 }
 
+void ADefaultCharacter::PickupItem()
+{
+	if (OverlappedItem)
+	{
+		if (OverlappedItem->ActorHasTag(FName("Potion")))
+		{
+			APotion* Potion = Cast<APotion>(OverlappedItem);
+			if (Potion)
+			{
+				Potion->HandlePickupPotion(this);
+			}
+		}
+
+		PlaySoundCue(PickupSound);
+	}
+}
+
 FVector ADefaultCharacter::GetMeleeAttackLocation()
 {
 	return GetActorLocation() + GetActorForwardVector() * MeleeAttackDistance;
@@ -590,6 +612,30 @@ UAbilityComponent* ADefaultCharacter::GetAbilityComponent() const
 UInventoryComponent* ADefaultCharacter::GetInventoryComponent() const
 {
 	return InventoryComponent;
+}
+
+void ADefaultCharacter::BeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->ActorHasTag(FName("Item")))
+	{
+		PrevOverlappedItem = OverlappedItem;
+		OverlappedItem = OtherActor;
+	}
+}
+
+void ADefaultCharacter::EndOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor->ActorHasTag(FName("Item")))
+	{
+		if (OtherActor == OverlappedItem)
+		{
+			OverlappedItem = nullptr;
+		}
+		else if (OtherActor == PrevOverlappedItem)
+		{
+			PrevOverlappedItem = nullptr;
+		}
+	}
 }
 
 void ADefaultCharacter::AttackChainStart()

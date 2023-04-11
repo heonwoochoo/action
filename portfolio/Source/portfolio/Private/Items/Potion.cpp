@@ -31,12 +31,9 @@ APotion::APotion()
 void APotion::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	if (CollisionComponent)
-	{
-		CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &APotion::BeginOverlap);
-	}
 
+	Tags.Add(FName("Item"));
+	Tags.Add(FName("Potion"));
 }
 
 void APotion::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
@@ -63,27 +60,8 @@ void APotion::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent
 	}
 }
 
-void APotion::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (OtherActor->ActorHasTag(FName("Player")))
-	{
-		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-		if (PickupParticle)
-		{
-			const FTransform Transform{ GetTransform() };
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), PickupParticle, Transform);
-		}
-
-		Character = OtherActor;
-
-		GetWorld()->GetTimerManager().SetTimer(PickupTimerHandle, this, &APotion::EndPickupTimer, PickupScaleTime);
-	}	
-}
-
 void APotion::Destroyed()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Potion Destroyed!"));
 }
 
 void APotion::Tick(float DeltaTime)
@@ -106,6 +84,21 @@ void APotion::Tick(float DeltaTime)
 			}
 		}
 	}
+}
+
+void APotion::HandlePickupPotion(AActor* PickupCharacter)
+{
+	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	if (PickupParticle)
+	{
+		const FTransform Transform{ GetTransform() };
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), PickupParticle, Transform);
+	}
+
+	Character = PickupCharacter;
+
+	GetWorld()->GetTimerManager().SetTimer(PickupTimerHandle, this, &APotion::EndPickupTimer, PickupScaleTime);
 }
 
 void APotion::EndPickupTimer()

@@ -92,6 +92,8 @@ protected:
 	void ItemManager_4();
 	void ItemManager_5();
 	void ItemManager_6();
+	void PickupItem();
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackForwardDistance = 50.f;
@@ -189,6 +191,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* Item6Action;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* PickupAction;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability, meta = (AllowPrivateAccess = "true"))
 	UAbilityComponent* AbilityComponent;
 
@@ -215,8 +220,10 @@ private:
 	float CapsuleDefaultHalfHeight = 96.f;
 
 	float InitialRelativeLocationZ;
-	
 
+	// 픽업 사운드
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect|Sound", meta = (AllowPrivateAccess = "true"))
+	USoundCue* PickupSound;
 
 	// 공격시 콤보 증가
 	int32 ComboCount = 0;
@@ -241,6 +248,10 @@ private:
 	// 캐릭터의 동작 상태
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
 	ECharacterActionState CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
+
+	// 충돌체가 오버랩 된 아이템
+	AActor* OverlappedItem;
+	AActor* PrevOverlappedItem;
 
 	void DoubleJump();
 
@@ -277,6 +288,12 @@ public:
 	UInventoryComponent* GetInventoryComponent() const;
 
 	FORCEINLINE USceneComponent* GetEmitterComponent() const { return EmitterComponent; }
+
+	UFUNCTION()
+	void BeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void EndOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UFUNCTION(BlueprintCallable)
 	void AttackChainStart();
