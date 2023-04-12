@@ -22,6 +22,7 @@ class USoundCue;
 class AEnemyBase;
 class UInventoryComponent;
 class UParticleSystem;
+class AHUDBase;
 
 UCLASS(config=Game)
 class ADefaultCharacter : public ACharacter
@@ -205,6 +206,8 @@ private:
 
 	UAnimInstanceBase* AnimInstance;
 	
+	AHUDBase* HUDBase;
+
 	bool bCanAttack = true;
 
 	uint8 AttackCount = 0;

@@ -29,4 +29,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* ItemCoolDown;
 
+public:
+	// 오버랩 창에 표시될 UI 업데이트
+	void UpdateOverlappedItemInfo(AActor* Item);
 };

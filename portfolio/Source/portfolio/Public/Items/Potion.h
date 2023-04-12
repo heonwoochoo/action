@@ -11,6 +11,7 @@ class USphereComponent;
 class UDataTable;
 class UParticleSystem;
 class UCurveFloat;
+class UTexture2D;
 
 UCLASS()
 class PORTFOLIO_API APotion : public AActor
@@ -53,6 +54,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void HandlePickupPotion(AActor* PickupCharacter);
+
+	FPotionInfo* GetPotionInfo();
+	FName GetName();
+	FName GetDescription();
+	float GetCoolDown();
+	UTexture2D* GetImage();
 
 private:
 	FTimerHandle PickupTimerHandle;

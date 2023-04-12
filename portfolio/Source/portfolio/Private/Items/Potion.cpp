@@ -101,6 +101,68 @@ void APotion::HandlePickupPotion(AActor* PickupCharacter)
 	GetWorld()->GetTimerManager().SetTimer(PickupTimerHandle, this, &APotion::EndPickupTimer, PickupScaleTime);
 }
 
+FPotionInfo* APotion::GetPotionInfo()
+{
+	if (PotionDataTable && PotionName != EItemName::EIN_None)
+	{
+		FName RowName = "";
+		switch (PotionName)
+		{
+		case EItemName::EIN_HealthPotion:
+			RowName = "HealthPotion";
+			break;
+		case EItemName::EIN_StaminaPotion:
+			RowName = "StaminaPotion";
+			break;
+		case EItemName::EIN_None:
+			break;
+		}
+
+		return PotionDataTable->FindRow<FPotionInfo>(RowName, "");
+	}
+	return nullptr;
+}
+
+FName APotion::GetName()
+{
+	FPotionInfo* PotionInfo = GetPotionInfo();
+	if (PotionInfo)
+	{
+		return PotionInfo->UIName;
+	}
+	return FName();
+}
+
+FName APotion::GetDescription()
+{
+	FPotionInfo* PotionInfo = GetPotionInfo();
+	if (PotionInfo)
+	{
+		return PotionInfo->Description;
+	}
+	return FName();
+}
+
+float APotion::GetCoolDown()
+{
+	FPotionInfo* PotionInfo = GetPotionInfo();
+	if (PotionInfo)
+	{
+		return PotionInfo->CoolDown;
+	}
+	return 0.0f;
+}
+
+UTexture2D* APotion::GetImage()
+{
+	FPotionInfo* PotionInfo = GetPotionInfo();
+	if (PotionInfo)
+	{
+		return PotionInfo->Image;
+	}
+	return nullptr;
+}
+
 void APotion::EndPickupTimer()
 {
 	// 아이템이 필드에서 사라지면서 캐릭터가 아이템을 획득

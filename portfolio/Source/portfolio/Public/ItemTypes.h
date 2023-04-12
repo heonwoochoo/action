@@ -24,6 +24,9 @@ struct FPotionInfo : public FTableRowBase
 	EItemName Name;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName UIName;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FName Description;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

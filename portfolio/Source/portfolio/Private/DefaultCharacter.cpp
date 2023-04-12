@@ -115,6 +115,12 @@ void ADefaultCharacter::BeginPlay()
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ADefaultCharacter::BeginOverlapped);
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &ADefaultCharacter::EndOverlapped);
 
+	ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
+	if (CharacterController)
+	{
+		HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+	}
+
 	Tags.Add(FName("Player"));
 }
 
@@ -513,17 +519,12 @@ void ADefaultCharacter::ResetComboCount()
 	ComboCount = 0;
 
 	// UI 업데이트
-	ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
-	if (CharacterController)
+	if (HUDBase)
 	{
-		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
-		if (HUDBase)
+		UComboCountWidget* ComboCountWidget = HUDBase->GetComboCountWidget();
+		if (ComboCountWidget)
 		{
-			UComboCountWidget* ComboCountWidget = HUDBase->GetComboCountWidget();
-			if (ComboCountWidget)
-			{
-				ComboCountWidget->PlayHideAnimation();
-			}
+			ComboCountWidget->PlayHideAnimation();
 		}
 	}
 }
@@ -585,18 +586,13 @@ void ADefaultCharacter::HandleComboCount()
 	ComboCount++;
 
 	// UI 업데이트
-	ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
-	if (CharacterController)
+	if (HUDBase)
 	{
-		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
-		if (HUDBase)
-		{
-			UComboCountWidget* ComboCountWidget = HUDBase->GetComboCountWidget();
-			if (ComboCountWidget)
-			{	
-				ComboCountWidget->SetComboCount(ComboCount);
-				ComboCountWidget->SetVisibility(ESlateVisibility::Visible);
-			}
+		UComboCountWidget* ComboCountWidget = HUDBase->GetComboCountWidget();
+		if (ComboCountWidget)
+		{	
+			ComboCountWidget->SetComboCount(ComboCount);
+			ComboCountWidget->SetVisibility(ESlateVisibility::Visible);
 		}
 	}
 
@@ -622,13 +618,14 @@ void ADefaultCharacter::BeginOverlapped(UPrimitiveComponent* OverlappedComponent
 		PrevOverlappedItem = OverlappedItem;
 		OverlappedItem = OtherActor;
 
-		ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
-		if (CharacterController)
+		if (HUDBase)
 		{
-			AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
-			if (HUDBase)
+			// 아이템 정보 표시
+			UOverlappedItemWidget* OverlappedItemWidget = HUDBase->GetOverlappedItemWidget();
+			if (OverlappedItemWidget)
 			{
-				HUDBase->GetOverlappedItemWidget()->SetVisibility(ESlateVisibility::Visible);
+				OverlappedItemWidget->SetVisibility(ESlateVisibility::Visible);
+				OverlappedItemWidget->UpdateOverlappedItemInfo(OverlappedItem);
 			}
 		}
 	}
@@ -647,14 +644,9 @@ void ADefaultCharacter::EndOverlapped(UPrimitiveComponent* OverlappedComponent, 
 			PrevOverlappedItem = nullptr;
 		}
 
-		ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
-		if (CharacterController)
+		if (HUDBase)
 		{
-			AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
-			if (HUDBase)
-			{
-				HUDBase->GetOverlappedItemWidget()->SetVisibility(ESlateVisibility::Hidden);
-			}
+			HUDBase->GetOverlappedItemWidget()->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 }
@@ -812,14 +804,9 @@ void ADefaultCharacter::UpdateHealth(EStatUpdateType UpdateType, float AbilityPo
 	}
 
 	// UI 업데이트
-	ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
-	if (CharacterController)
+	if (HUDBase)
 	{
-		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
-		if (HUDBase)
-		{
-			HUDBase->GetInfoContainer()->UpdateHP();
-		}
+		HUDBase->GetInfoContainer()->UpdateHP();
 	}
 }
 
@@ -840,14 +827,9 @@ void ADefaultCharacter::UpdateStamina(EStatUpdateType UpdateType, float AbilityP
 	DefaultStats.Stamina = FMath::Clamp(NewStamina, 0.f, DefaultStats.StaminaMax);
 
 	// UI 업데이트
-	ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
-	if (CharacterController)
+	if (HUDBase)
 	{
-		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
-		if (HUDBase)
-		{
-			HUDBase->GetInfoContainer()->UpdateStamina();
-		}
+		HUDBase->GetInfoContainer()->UpdateStamina();
 	}
 }
 
