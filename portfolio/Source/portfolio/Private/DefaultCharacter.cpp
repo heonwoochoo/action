@@ -763,6 +763,7 @@ void ADefaultCharacter::PlayCameraLensEffect(TSubclassOf<AEmitterCameraLensEffec
 	APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(this, 0);
 	if (CameraManager && CameraLensEffectClass)
 	{
+		CameraManager->ClearCameraLensEffects();
 		CameraManager->AddCameraLensEffect(CameraLensEffectClass);
 	}
 }

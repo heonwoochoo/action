@@ -74,6 +74,7 @@ Plugins/*/Intermediate/*
 DerivedDataCache/*
 
 # CustomAssets
+Content/__ExternalActors__/*
 Content/Frank_Slash_Pack/*
 Content/InfinityBladeWeapons/*
 Content/InfinityBladeEffects/*
@@ -87,3 +88,6 @@ Content/sA_BloodMagic_1/*
 Content/sA_DarkKnight_Set/*
 Content/ParagonCountess/*
 Content/ParagonMinions/*
+Content/Castle/*
+Content/png/*
+Content/psd/*
