@@ -5,6 +5,7 @@
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "HUD/Menu/MainMenu.h"
+#include "GameFramework/GameUserSettings.h"
 
 void UOptionsMenu::NativeConstruct()
 {
@@ -66,4 +67,28 @@ void UOptionsMenu::OnClickedBackButton()
 			RemoveFromParent();
 		}
 	}
+}
+
+void UOptionsMenu::OnHoveredWindowMode()
+{
+}
+
+void UOptionsMenu::OnUnhoveredWindowMode()
+{
+}
+
+void UOptionsMenu::OnHoveredWindowModeArrowLeft()
+{
+}
+
+void UOptionsMenu::OnUnhoveredWindowModeArrowLeft()
+{
+}
+
+void UOptionsMenu::OnHoveredWindowModeArrowRight()
+{
+}
+
+void UOptionsMenu::OnUnhoveredWindowModeArrowRight()
+{
 }
