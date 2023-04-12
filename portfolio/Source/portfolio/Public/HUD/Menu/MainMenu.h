@@ -4,14 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "MainMunu.generated.h"
+#include "MainMenu.generated.h"
 
 class UButton;
 class UImage;
 class UTexture2D;
+class UOptionsMenu;
 
 UCLASS()
-class PORTFOLIO_API UMainMunu : public UUserWidget
+class PORTFOLIO_API UMainMenu : public UUserWidget
 {
 	GENERATED_BODY()
 	
@@ -42,11 +43,21 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* QuitButtonImage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserWidget")
+	TSubclassOf<UOptionsMenu> OptionsMenuClass;
+
+	// 게임 시작시 열리는 레벨
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "World")
+	TSoftObjectPtr<UWorld> DefaultLevel;
+
 	UFUNCTION()
 	void OnHoveredStartButton();
 
 	UFUNCTION()
 	void OnUnhoveredStartButton();
+
+	UFUNCTION()
+	void OnClickedStartButton();
 
 	UFUNCTION()
 	void OnHoveredOptionsButton();
@@ -55,14 +66,25 @@ protected:
 	void OnUnhoveredOptionsButton();
 
 	UFUNCTION()
+	void OnClickedOptionsButton();
+
+	UFUNCTION()
 	void OnHoveredCreditsButton();
 
 	UFUNCTION()
 	void OnUnhoveredCreditsButton();
 
 	UFUNCTION()
+	void OnClickedCreditsButton();
+
+	UFUNCTION()
 	void OnHoveredQuitButton();
 
 	UFUNCTION()
 	void OnUnhoveredQuitButton();
+
+	UFUNCTION()
+	void OnClickedQuitButton();
+
+
 };

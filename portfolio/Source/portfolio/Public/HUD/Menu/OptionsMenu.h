@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -9,6 +9,7 @@
 class UButton;
 class UImage;
 class UTexture2D;
+class UMainMenu;
 
 UCLASS()
 class PORTFOLIO_API UOptionsMenu : public UUserWidget
@@ -24,13 +25,25 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* ArrowLeft;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* ActiveBackButtonImage;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Texture")
 	UTexture2D* ActivedArrowLeft;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Texture")
 	UTexture2D* DeactivedArrowLeft;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserWidget")
+	TSubclassOf<UMainMenu> MainMenuClass;
+
+	UFUNCTION()
 	void OnHoveredBackButton();
+
+	UFUNCTION()
 	void OnUnhoveredBackButton();
+
+	UFUNCTION()
+	void OnClickedBackButton();
 
 };
