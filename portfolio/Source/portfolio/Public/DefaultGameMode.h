@@ -7,6 +7,7 @@
 #include "DefaultGameMode.generated.h"
 
 class AEnemyBase;
+class USoundCue;
 
 UCLASS(minimalapi)
 class ADefaultGameMode : public AGameModeBase
@@ -20,25 +21,19 @@ protected:
 public:
 	ADefaultGameMode();
 
-	// 리스폰 지점
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
-	TArray<AActor*> RespawnPoints;
+private:
 
-	// 리스폰될 예정인 액터의 클래스
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
-	TArray<TSubclassOf<AEnemyBase>> Enemies;
+	// 넘길 때 버튼 소리
+	UPROPERTY(EditDefaultsOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
+	USoundCue* ClickSound1;
 
-	// 적의 최대 개체 수
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
-	int32 EnemyMaxNumber = 10;
+	UPROPERTY(EditDefaultsOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
+	// 확인 버튼 소리
+	USoundCue* ClickSound2;
 
-	FTimerHandle EnemyRespawnTimerHandle;
-
-	int32 CheckEnemyNumber();
-
-	void RespawnEnemy();
-
-	bool bRespawnFlag = true;
+public:
+	void PlayClickSound1();
+	void PlayClickSound2();
 };
 
 

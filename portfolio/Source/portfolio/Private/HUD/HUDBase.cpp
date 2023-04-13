@@ -23,10 +23,6 @@ void AHUDBase::Tick(float DeltaSeconds)
 void AHUDBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	InitInfoContainer();
-	InitComboCountWidget();
-	InitOverlappedItemWidget();
 }
 
 void AHUDBase::InitInfoContainer()
@@ -90,4 +86,11 @@ void AHUDBase::ShowTargetMark(ACharacter* Enemy, ACharacter* Caster)
 		SpawnInfo.Instigator = Caster;
 		ATargetMark* TargetMark = GetWorld()->SpawnActor<ATargetMark>(TargetMarkClass, Location, Rotation, SpawnInfo);
 	}
+}
+
+void AHUDBase::InitScreenOverlay()
+{
+	InitInfoContainer();
+	InitComboCountWidget();
+	InitOverlappedItemWidget();
 }

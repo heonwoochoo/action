@@ -60,4 +60,6 @@ public:
 	FORCEINLINE UComboCountWidget* GetComboCountWidget() { return ComboCountWidget; }
 	FORCEINLINE UOverlappedItemWidget* GetOverlappedItemWidget() { return OverlappedItemWidget; }
 	
+	UFUNCTION(BlueprintCallable)
+	void InitScreenOverlay();
 };

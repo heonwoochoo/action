@@ -5,56 +5,36 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "Enemy/EnemyBase.h"
+#include "Sound/SoundCue.h"
 
 ADefaultGameMode::ADefaultGameMode()
 {
-	// set default pawn class to our Blueprinted character
-	//static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter"));
-	//if (PlayerPawnBPClass.Class != NULL)
-	//{
-	//	DefaultPawnClass = PlayerPawnBPClass.Class;
-	//}
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 }
 
-int32 ADefaultGameMode::CheckEnemyNumber()
+void ADefaultGameMode::PlayClickSound1()
 {
-	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsWithTag(this, FName("Enemy"), Actors);
-
-	return Actors.Num();
+	if (ClickSound1)
+	{
+		UGameplayStatics::PlaySound2D(this, ClickSound1);
+	}
 }
 
-void ADefaultGameMode::RespawnEnemy()
-{	
-	if (RespawnPoints.Num() > 0 && Enemies.Num() > 0)
+void ADefaultGameMode::PlayClickSound2()
+{
+	if (ClickSound2)
 	{
-		const int32 RandTargetPointNum = FMath::RandRange(0, RespawnPoints.Num() - 1);
-		const FVector Location = RespawnPoints[RandTargetPointNum]->GetActorLocation();
-		const FRotator Rotation = RespawnPoints[RandTargetPointNum]->GetActorRotation();
-
-		const int32 RandEnemyNum = FMath::RandRange(0, Enemies.Num() - 1);
-
-		GetWorld()->SpawnActor<AEnemyBase>(Enemies[RandEnemyNum], Location, Rotation);
+		UGameplayStatics::PlaySound2D(this, ClickSound2);
 	}
-	bRespawnFlag = true;
 }
 
 void ADefaultGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UGameplayStatics::GetAllActorsWithTag(this, FName("Respawn"), RespawnPoints);
-	RespawnEnemy();
 }
 
 void ADefaultGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (CheckEnemyNumber() < EnemyMaxNumber && bRespawnFlag)
-	{
-		bRespawnFlag = false;
-		GetWorld()->GetTimerManager().SetTimer(EnemyRespawnTimerHandle, this, &ADefaultGameMode::RespawnEnemy, 3.f, false);
-	}
 }
