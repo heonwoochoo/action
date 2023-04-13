@@ -11,6 +11,8 @@ class UImage;
 class UTexture2D;
 class UMainMenu;
 class UTextBlock;
+class UProgressBar;
+class USlider;
 
 UCLASS()
 class PORTFOLIO_API UOptionsMenu : public UUserWidget
@@ -32,16 +34,16 @@ protected:
 
 	// 텍스쳐
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Texture")
-	UTexture2D* ActivedArrowLeft;
+	UTexture2D* ActivatedArrowLeft;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Texture")
-	UTexture2D* DeactivedArrowLeft;
+	UTexture2D* DeactivatedArrowLeft;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Texture")
-	UTexture2D* ActivedArrowRight;
+	UTexture2D* ActivatedArrowRight;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Texture")
-	UTexture2D* DeactivedArrowRight;
+	UTexture2D* DeactivatedArrowRight;
 
 	// 메인메뉴 위젯 클래스
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserWidget")
@@ -73,6 +75,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* WindowModeButtonRightArrow;
 
+
+
 	// Display Resolution
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UButton* DisplayResolutionOverlayButton;
@@ -94,6 +98,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* DisplayResolutionButtonRightArrow;
+
+
 
 	// Post Processing
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
@@ -117,6 +123,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* PostProcessingButtonRightArrow;
 
+
+
 	// Anti Aliasing
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UButton* AntiAliasingOverlayButton;
@@ -138,6 +146,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* AntiAliasingButtonRightArrow;
+
+
 
 	// Texture Quality
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
@@ -161,6 +171,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* TextureQualityButtonRightArrow;
 
+
+
 	// Shadow Quality
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UButton* ShadowQualityOverlayButton;
@@ -183,6 +195,23 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* ShadowQualityButtonRightArrow;
 
+
+
+	// Sound
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UButton* SoundOverlayButton;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* SoundOverlayImage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UProgressBar* SoundProgressBar;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	USlider* SoundSlider;
+
+
+
 	// Reset Button
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* ResetImage;
@@ -200,6 +229,8 @@ protected:
 	// ==========================
 	//		이벤트 발생시 호출
 	// ==========================
+
+	// Back
 	UFUNCTION()
 	void OnHoveredBackButton();
 
@@ -209,6 +240,7 @@ protected:
 	UFUNCTION()
 	void OnClickedBackButton();
 
+	// Window Mode
 	UFUNCTION()
 	void OnHoveredWindowMode();
 
@@ -226,4 +258,117 @@ protected:
 
 	UFUNCTION()
 	void OnUnhoveredWindowModeArrowRight();
+
+	// Display Resolution
+	UFUNCTION()
+	void OnHoveredDisplayResolution();
+
+	UFUNCTION()
+	void OnUnhoveredDisplayResolution();
+
+	UFUNCTION()
+	void OnHoveredDisplayResolutionArrowLeft();
+
+	UFUNCTION()
+	void OnUnhoveredDisplayResolutionArrowLeft();
+
+	UFUNCTION()
+	void OnHoveredDisplayResolutionArrowRight();
+
+	UFUNCTION()
+	void OnUnhoveredDisplayResolutionArrowRight();
+
+	// Post Processing
+	UFUNCTION()
+	void OnHoveredPostProcessing();
+
+	UFUNCTION()
+	void OnUnhoveredPostProcessing();
+
+	UFUNCTION()
+	void OnHoveredPostProcessingArrowLeft();
+
+	UFUNCTION()
+	void OnUnhoveredPostProcessingArrowLeft();
+
+	UFUNCTION()
+	void OnHoveredPostProcessingArrowRight();
+
+	UFUNCTION()
+	void OnUnhoveredPostProcessingArrowRight();
+
+	// Anti Aliasing
+	UFUNCTION()
+	void OnHoveredAntiAliasing();
+
+	UFUNCTION()
+	void OnUnhoveredAntiAliasing();
+
+	UFUNCTION()
+	void OnHoveredAntiAliasingArrowLeft();
+
+	UFUNCTION()
+	void OnUnhoveredAntiAliasingArrowLeft();
+
+	UFUNCTION()
+	void OnHoveredAntiAliasingArrowRight();
+
+	UFUNCTION()
+	void OnUnhoveredAntiAliasingArrowRight();
+
+	// Texture Quality
+	UFUNCTION()
+	void OnHoveredTextureQuality();
+
+	UFUNCTION()
+	void OnUnhoveredTextureQuality();
+
+	UFUNCTION()
+	void OnHoveredTextureQualityArrowLeft();
+
+	UFUNCTION()
+	void OnUnhoveredTextureQualityArrowLeft();
+
+	UFUNCTION()
+	void OnHoveredTextureQualityArrowRight();
+
+	UFUNCTION()
+	void OnUnhoveredTextureQualityArrowRight();
+
+	// Shadow Quality
+	UFUNCTION()
+	void OnHoveredShadowQuality();
+
+	UFUNCTION()
+	void OnUnhoveredShadowQuality();
+
+	UFUNCTION()
+	void OnHoveredShadowQualityArrowLeft();
+
+	UFUNCTION()
+	void OnUnhoveredShadowQualityArrowLeft();
+
+	UFUNCTION()
+	void OnHoveredShadowQualityArrowRight();
+
+	UFUNCTION()
+	void OnUnhoveredShadowQualityArrowRight();
+
+	// Sound
+	UFUNCTION()
+	void OnHoveredSound();
+
+	UFUNCTION()
+	void OnUnhoveredSound();
+
+
+private:
+	void InitBack();
+	void InitWindowMode();
+	void InitDisplayResolution();
+	void InitPostProcessing();
+	void InitAntiAliasing();
+	void InitTextureQuality();
+	void InitShadowQuality();
+	void InitSound();
 };
