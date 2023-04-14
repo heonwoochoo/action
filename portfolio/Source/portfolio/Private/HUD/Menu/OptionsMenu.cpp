@@ -9,14 +9,11 @@
 #include "Components/Slider.h"
 #include "Components/ProgressBar.h"
 #include "HUD/Menu/OptionsWidget.h"
-#include "Kismet/GameplayStatics.h"
-#include "DefaultGameMode.h"
 
 void UOptionsMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	InitBack();
 
 	if (OptionClass)
 	{
@@ -29,80 +26,14 @@ void UOptionsMenu::NativeConstruct()
 	}
 }
 
-void UOptionsMenu::OnHoveredBackButton()
-{
-	if (ArrowLeft && ActivatedArrowLeft)
-	{
-		ArrowLeft->SetBrushFromTexture(ActivatedArrowLeft);
-	}
-
-	if (ActiveBackButtonImage)
-	{
-		ActiveBackButtonImage->SetOpacity(1.f);
-	}
-}
-
-void UOptionsMenu::OnUnhoveredBackButton()
-{
-	if (ArrowLeft && DeactivatedArrowLeft)
-	{
-		ArrowLeft->SetBrushFromTexture(DeactivatedArrowLeft);
-	}
-
-	if (ActiveBackButtonImage)
-	{
-		ActiveBackButtonImage->SetOpacity(0.f);
-	}
-}
-
 void UOptionsMenu::OnClickedBackButton()
 {
-	if (MainMenuClass)
-	{
-		UMainMenu* MainMenu = Cast<UMainMenu>(CreateWidget(this, MainMenuClass));
-		if (MainMenu)
-		{
-			MainMenu->AddToViewport();
+	SelectedOption->RemoveFromParent();
 
-			SelectedOption->RemoveFromParent();
-			RemoveFromParent();
-		}
-	}
-
-	PlayBackButtonSound();
-}
-
-void UOptionsMenu::InitBack()
-{
-	if (BackButton)
-	{
-		BackButton->OnHovered.AddDynamic(this, &UOptionsMenu::OnHoveredBackButton);
-		BackButton->OnUnhovered.AddDynamic(this, &UOptionsMenu::OnUnhoveredBackButton);
-		BackButton->OnClicked.AddDynamic(this, &UOptionsMenu::OnClickedBackButton);
-	}
-
-	if (ArrowLeft && DeactivatedArrowLeft)
-	{
-		ArrowLeft->SetBrushFromTexture(DeactivatedArrowLeft);
-		ArrowLeft->SetDesiredSizeOverride(FVector2D(48.f));
-	}
-
-	if (ActiveBackButtonImage)
-	{
-		ActiveBackButtonImage->SetOpacity(0.f);
-	}
+	Super::OnClickedBackButton();
 }
 
 void UOptionsMenu::SetSelectedOption(UOptionsWidget* Widget)
 {
 	SelectedOption = Widget;
-}
-
-void UOptionsMenu::PlayBackButtonSound()
-{
-	ADefaultGameMode* DefaultGameMode = Cast<ADefaultGameMode>(UGameplayStatics::GetGameMode(this));
-	if (DefaultGameMode)
-	{
-		DefaultGameMode->PlayCheckButtonClickSound();
-	}
 }

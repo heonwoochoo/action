@@ -58,7 +58,7 @@ void UOptionsGraphic::OnUnhoveredWindowModeArrowLeft()
 void UOptionsGraphic::OnClickedWindowModeArrowLeft()
 {
 	EWindowMode::Type CurrentMode = Settings.WindowMode;
-	EWindowMode::Type NextMode;
+	EWindowMode::Type NextMode{};
 	switch (CurrentMode)
 	{
 	case EWindowMode::Type::Fullscreen:
@@ -96,7 +96,7 @@ void UOptionsGraphic::OnUnhoveredWindowModeArrowRight()
 void UOptionsGraphic::OnClickedWindowModeArrowRight()
 {
 	EWindowMode::Type CurrentMode = Settings.WindowMode;
-	EWindowMode::Type NextMode;
+	EWindowMode::Type NextMode{};
 	switch (CurrentMode)
 	{
 	case EWindowMode::Type::Fullscreen:

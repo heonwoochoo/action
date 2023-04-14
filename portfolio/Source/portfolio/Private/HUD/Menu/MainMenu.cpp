@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "DefaultGameMode.h"
+#include "HUD/Menu/StartMenu.h"
 
 void UMainMenu::NativeConstruct()
 {
@@ -37,14 +38,25 @@ void UMainMenu::OnUnhoveredStartButton()
 
 void UMainMenu::OnClickedStartButton()
 {
-	// 오픈월드 열기
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
-	if (PlayerController)
+	// 시작 메뉴 열기
+	if (StartMenuClass)
 	{
-		PlayerController->SetInputMode(FInputModeGameOnly());
-		PlayerController->SetShowMouseCursor(false);
-		UGameplayStatics::OpenLevelBySoftObjectPtr(this, DefaultLevel);
+		UStartMenu* StartMenu = Cast<UStartMenu>(CreateWidget(this, StartMenuClass));
+		if (StartMenu)
+		{
+			StartMenu->AddToViewport();
+			RemoveFromParent();
+		}
 	}
+
+	//// 오픈월드 열기
+	//APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	//if (PlayerController)
+	//{
+	//	PlayerController->SetInputMode(FInputModeGameOnly());
+	//	PlayerController->SetShowMouseCursor(false);
+	//	UGameplayStatics::OpenLevelBySoftObjectPtr(this, DefaultLevel);
+	//}
 
 	PlayButtonClickSound();
 }

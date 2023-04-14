@@ -9,7 +9,7 @@
 class UButton;
 class UImage;
 class UTexture2D;
-class UOptionsMenu;
+class USubMenu;
 
 UCLASS()
 class PORTFOLIO_API UMainMenu : public UUserWidget
@@ -44,7 +44,10 @@ protected:
 	UImage* QuitButtonImage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserWidget")
-	TSubclassOf<UOptionsMenu> OptionsMenuClass;
+	TSubclassOf<USubMenu> StartMenuClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserWidget")
+	TSubclassOf<USubMenu> OptionsMenuClass;
 
 	// 게임 시작시 열리는 레벨
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "World")
