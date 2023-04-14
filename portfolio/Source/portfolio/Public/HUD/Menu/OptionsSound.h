@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "HUD/Menu/OptionsWidget.h"
+#include "DefaultGameInstance.h"
 #include "OptionsSound.generated.h"
 
 class UButton;
@@ -117,10 +118,26 @@ protected:
 	UFUNCTION()
 	void OnChangedMusicValue(float Value);
 
+	// Reset, Confirm
+	virtual void OnClickedReset() override;
+	virtual void OnClickedConfirm() override;
+
 private:
+	// 게임인스턴스, 변경된 값을 저장하기 위함
+	UDefaultGameInstance* GameInstance;
+
+	// 복원용 세팅값, 리셋 버튼 클릭시 해당 변수에 저장된 값으로 세팅
+	FSoundSettings ResetSettings;
+
 	void InitMaster();
 	void InitEffect();
 	void InitMusic();
 
 	void SetVolume(USoundMix* SoundMix, USoundClass* SoundClass, float Value);
+
+	// 인스턴스 생성시 설정된 볼륨 조절 값을 불러와 UI 업데이트
+	void UpdateUI();
+
+	// 인스턴스 생성시 호출
+	void SetResetSettings();
 };

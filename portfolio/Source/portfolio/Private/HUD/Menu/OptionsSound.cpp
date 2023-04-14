@@ -14,6 +14,12 @@ void UOptionsSound::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+
+	SetResetSettings();
+
+	UpdateUI();
+
 	InitMaster();
 	InitEffect();
 	InitMusic();
@@ -41,6 +47,7 @@ void UOptionsSound::OnChangedMasterValue(float Value)
 	{
 		MasterProgressBar->SetPercent(Value);
 		SetVolume(MasterMix, MasterClass, Value);
+		GameInstance->SetSoundSettings(ESoundOptionsType::ESOT_Master, Value);
 	}
 }
 
@@ -66,6 +73,7 @@ void UOptionsSound::OnChangedEffectValue(float Value)
 	{
 		EffectProgressBar->SetPercent(Value);
 		SetVolume(EffectMix, EffectClass, Value);
+		GameInstance->SetSoundSettings(ESoundOptionsType::ESOT_Effect, Value);
 	}
 }
 
@@ -91,7 +99,36 @@ void UOptionsSound::OnChangedMusicValue(float Value)
 	{
 		MusicProgressBar->SetPercent(Value);
 		SetVolume(MusicMix, MusicClass, Value);
+		GameInstance->SetSoundSettings(ESoundOptionsType::ESOT_Music, Value);
 	}
+}
+
+void UOptionsSound::OnClickedReset()
+{
+	Super::OnClickedReset();
+
+	if (MasterProgressBar && MasterSlider)
+	{
+		MasterSlider->SetValue(ResetSettings.MasterVolume);
+		OnChangedMasterValue(ResetSettings.MasterVolume);
+	}
+	if (EffectProgressBar && EffectSlider)
+	{
+		EffectSlider->SetValue(ResetSettings.EffectVolume);
+		OnChangedEffectValue(ResetSettings.EffectVolume);
+	}
+	if (MusicProgressBar && MusicSlider)
+	{
+		MusicSlider->SetValue(ResetSettings.MusicVolume);
+		OnChangedMusicValue(ResetSettings.MusicVolume);
+	}
+}
+
+void UOptionsSound::OnClickedConfirm()
+{
+	Super::OnClickedConfirm();
+
+
 }
 
 void UOptionsSound::InitMaster()
@@ -137,4 +174,37 @@ void UOptionsSound::InitMusic()
 void UOptionsSound::SetVolume(USoundMix* SoundMix, USoundClass* SoundClass, float Value)
 {
 	UGameplayStatics::SetSoundMixClassOverride(this, SoundMix, SoundClass, Value);
+}
+
+void UOptionsSound::UpdateUI()
+{
+	
+	if (GameInstance)
+	{
+		const FSoundSettings Settings = GameInstance->GetSoundSettings();
+
+		if (MasterProgressBar && MasterSlider)
+		{
+			MasterProgressBar->SetPercent(Settings.MasterVolume);
+			MasterSlider->SetValue(Settings.MasterVolume);
+		}
+		if (EffectProgressBar && EffectSlider)
+		{
+			EffectProgressBar->SetPercent(Settings.EffectVolume);
+			EffectSlider->SetValue(Settings.EffectVolume);
+		}
+		if (MusicProgressBar && MusicSlider)
+		{
+			MusicProgressBar->SetPercent(Settings.MusicVolume);
+			MusicSlider->SetValue(Settings.MusicVolume);
+		}
+	}
+}
+
+void UOptionsSound::SetResetSettings()
+{
+	if (GameInstance)
+	{
+		ResetSettings = GameInstance->GetSoundSettings();
+	}
 }
