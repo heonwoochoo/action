@@ -12,6 +12,14 @@ class UTexture2D;
 class UMainMenu;
 class UTextBlock;
 class UOptionsMenu;
+class UGameUserSettings;
+
+struct FGraphicSetting
+{
+	EWindowMode::Type WindowMode;
+
+	int32 ResolutionLevel;
+};
 
 UCLASS()
 class PORTFOLIO_API UOptionsGraphic : public UOptionsWidget
@@ -179,10 +187,16 @@ protected:
 	void OnUnhoveredWindowModeArrowLeft();
 
 	UFUNCTION()
+	void OnClickedWindowModeArrowLeft();
+
+	UFUNCTION()
 	void OnHoveredWindowModeArrowRight();
 
 	UFUNCTION()
 	void OnUnhoveredWindowModeArrowRight();
+
+	UFUNCTION()
+	void OnClickedWindowModeArrowRight();
 
 	// Display Resolution
 	UFUNCTION()
@@ -198,10 +212,16 @@ protected:
 	void OnUnhoveredDisplayResolutionArrowLeft();
 
 	UFUNCTION()
+	void OnClickedDisplayResolutionArrowLeft();
+
+	UFUNCTION()
 	void OnHoveredDisplayResolutionArrowRight();
 
 	UFUNCTION()
 	void OnUnhoveredDisplayResolutionArrowRight();
+
+	UFUNCTION()
+	void OnClickedDisplayResolutionArrowRight();
 
 	// Post Processing
 	UFUNCTION()
@@ -217,10 +237,16 @@ protected:
 	void OnUnhoveredPostProcessingArrowLeft();
 
 	UFUNCTION()
+	void OnClickedPostProcessingArrowLeft();
+
+	UFUNCTION()
 	void OnHoveredPostProcessingArrowRight();
 
 	UFUNCTION()
 	void OnUnhoveredPostProcessingArrowRight();
+
+	UFUNCTION()
+	void OnClickedPostProcessingArrowRight();
 
 	// Anti Aliasing
 	UFUNCTION()
@@ -236,10 +262,16 @@ protected:
 	void OnUnhoveredAntiAliasingArrowLeft();
 
 	UFUNCTION()
+	void OnClickedAntiAliasingArrowLeft();
+
+	UFUNCTION()
 	void OnHoveredAntiAliasingArrowRight();
 
 	UFUNCTION()
 	void OnUnhoveredAntiAliasingArrowRight();
+
+	UFUNCTION()
+	void OnClickedAntiAliasingArrowRight();
 
 	// Texture Quality
 	UFUNCTION()
@@ -255,10 +287,16 @@ protected:
 	void OnUnhoveredTextureQualityArrowLeft();
 
 	UFUNCTION()
+	void OnClickedTextureQualityArrowLeft();
+
+	UFUNCTION()
 	void OnHoveredTextureQualityArrowRight();
 
 	UFUNCTION()
 	void OnUnhoveredTextureQualityArrowRight();
+
+	UFUNCTION()
+	void OnClickedTextureQualityArrowRight();
 
 	// Shadow Quality
 	UFUNCTION()
@@ -274,14 +312,49 @@ protected:
 	void OnUnhoveredShadowQualityArrowLeft();
 
 	UFUNCTION()
+	void OnClickedShadowQualityArrowLeft();
+
+	UFUNCTION()
 	void OnHoveredShadowQualityArrowRight();
 
 	UFUNCTION()
 	void OnUnhoveredShadowQualityArrowRight();
 
+	UFUNCTION()
+	void OnClickedShadowQualityArrowRight();
+
+	// Reset , Confirm
+	virtual void OnClickedReset() override;
+	virtual void OnClickedConfirm() override;
+
 private:
+	UGameUserSettings* UserSettings;
+
+	// 컨펌시 그래픽 세팅을 위한 데이터를 저장하고 있는 변수
+	// UI 생성시 현재 세팅 값을 초기값으로 복사함
+	FGraphicSetting Settings;
+
+	// 초기화를 위해 UI 생성 당시의 세팅 값을 저장
+	FGraphicSetting ResetSettings;
+
+	//==========================
+	//		WindowMode
+	//==========================
 	void InitWindowMode();
+	FText GetWindowModeText(EWindowMode::Type Mode);
+
+	//==========================
+	//    Display Resoultion
+	//==========================
 	void InitDisplayResolution();
+	FIntPoint GetResolutionFromInt(int32 num);
+	int32 GetIntFromResolution(FIntPoint Resolution);
+	FText GetTextFromResolution(FIntPoint Resolution);
+
+	void ChangeLevel(int32* OptionLevel, bool IsIncrease);
+
+
+	
 	void InitPostProcessing();
 	void InitAntiAliasing();
 	void InitTextureQuality();

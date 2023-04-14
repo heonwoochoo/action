@@ -5,10 +5,13 @@
 #include "Components/Image.h"
 #include "HUD/Menu/OptionsMenu.h"
 #include "GameFramework/GameUserSettings.h"
+#include "Components/TextBlock.h"
 
 void UOptionsGraphic::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	UserSettings = UGameUserSettings::GetGameUserSettings();
 
 	InitWindowMode();
 	InitDisplayResolution();
@@ -16,6 +19,8 @@ void UOptionsGraphic::NativeConstruct()
 	InitAntiAliasing();
 	InitTextureQuality();
 	InitShadowQuality();
+
+	ResetSettings = Settings;
 }
 
 void UOptionsGraphic::OnHoveredWindowMode()
@@ -50,6 +55,28 @@ void UOptionsGraphic::OnUnhoveredWindowModeArrowLeft()
 	}
 }
 
+void UOptionsGraphic::OnClickedWindowModeArrowLeft()
+{
+	EWindowMode::Type CurrentMode = Settings.WindowMode;
+	EWindowMode::Type NextMode;
+	switch (CurrentMode)
+	{
+	case EWindowMode::Type::Fullscreen:
+		NextMode = EWindowMode::Type::Windowed;
+		break;
+	case EWindowMode::Type::Windowed:
+		NextMode = EWindowMode::Type::WindowedFullscreen;
+		break;
+	case EWindowMode::Type::WindowedFullscreen:
+		NextMode = EWindowMode::Type::Fullscreen;
+		break;
+	}
+	Settings.WindowMode = NextMode;
+	WindowModeSetText->SetText(GetWindowModeText(NextMode));
+
+	PlayChangeButtonSound();
+}
+
 void UOptionsGraphic::OnHoveredWindowModeArrowRight()
 {
 	if (WindowModeButtonRightArrow && ActivatedSmallArrowRight)
@@ -64,6 +91,28 @@ void UOptionsGraphic::OnUnhoveredWindowModeArrowRight()
 	{
 		WindowModeButtonRightArrow->SetBrushFromTexture(DeactivatedSmallArrowRight);
 	}
+}
+
+void UOptionsGraphic::OnClickedWindowModeArrowRight()
+{
+	EWindowMode::Type CurrentMode = Settings.WindowMode;
+	EWindowMode::Type NextMode;
+	switch (CurrentMode)
+	{
+	case EWindowMode::Type::Fullscreen:
+		NextMode = EWindowMode::Type::WindowedFullscreen;
+		break;
+	case EWindowMode::Type::WindowedFullscreen:
+		NextMode = EWindowMode::Type::Windowed;
+		break;
+	case EWindowMode::Type::Windowed:
+		NextMode = EWindowMode::Type::Fullscreen;
+		break;
+	}
+	Settings.WindowMode = NextMode;
+	WindowModeSetText->SetText(GetWindowModeText(NextMode));
+
+	PlayChangeButtonSound();
 }
 
 void UOptionsGraphic::OnHoveredDisplayResolution()
@@ -98,6 +147,17 @@ void UOptionsGraphic::OnUnhoveredDisplayResolutionArrowLeft()
 	}
 }
 
+void UOptionsGraphic::OnClickedDisplayResolutionArrowLeft()
+{
+	PlayChangeButtonSound();
+
+	ChangeLevel(&Settings.ResolutionLevel, false);
+
+	FIntPoint Resolution = GetResolutionFromInt(Settings.ResolutionLevel);
+
+	DisplayResolutionSetText->SetText(GetTextFromResolution(Resolution));
+}
+
 void UOptionsGraphic::OnHoveredDisplayResolutionArrowRight()
 {
 	if (DisplayResolutionButtonRightArrow && ActivatedSmallArrowRight)
@@ -112,6 +172,17 @@ void UOptionsGraphic::OnUnhoveredDisplayResolutionArrowRight()
 	{
 		DisplayResolutionButtonRightArrow->SetBrushFromTexture(DeactivatedSmallArrowRight);
 	}
+}
+
+void UOptionsGraphic::OnClickedDisplayResolutionArrowRight()
+{
+	PlayChangeButtonSound();
+
+	ChangeLevel(&Settings.ResolutionLevel, true);
+
+	FIntPoint Resolution = GetResolutionFromInt(Settings.ResolutionLevel);
+
+	DisplayResolutionSetText->SetText(GetTextFromResolution(Resolution));
 }
 
 void UOptionsGraphic::OnHoveredPostProcessing()
@@ -146,6 +217,11 @@ void UOptionsGraphic::OnUnhoveredPostProcessingArrowLeft()
 	}
 }
 
+void UOptionsGraphic::OnClickedPostProcessingArrowLeft()
+{
+	PlayChangeButtonSound();
+}
+
 void UOptionsGraphic::OnHoveredPostProcessingArrowRight()
 {
 	if (PostProcessingButtonRightArrow && ActivatedSmallArrowRight)
@@ -160,6 +236,11 @@ void UOptionsGraphic::OnUnhoveredPostProcessingArrowRight()
 	{
 		PostProcessingButtonRightArrow->SetBrushFromTexture(DeactivatedSmallArrowRight);
 	}
+}
+
+void UOptionsGraphic::OnClickedPostProcessingArrowRight()
+{
+	PlayChangeButtonSound();
 }
 
 void UOptionsGraphic::OnHoveredAntiAliasing()
@@ -194,6 +275,11 @@ void UOptionsGraphic::OnUnhoveredAntiAliasingArrowLeft()
 	}
 }
 
+void UOptionsGraphic::OnClickedAntiAliasingArrowLeft()
+{
+	PlayChangeButtonSound();
+}
+
 void UOptionsGraphic::OnHoveredAntiAliasingArrowRight()
 {
 	if (AntiAliasingButtonRightArrow && ActivatedSmallArrowRight)
@@ -208,6 +294,11 @@ void UOptionsGraphic::OnUnhoveredAntiAliasingArrowRight()
 	{
 		AntiAliasingButtonRightArrow->SetBrushFromTexture(DeactivatedSmallArrowRight);
 	}
+}
+
+void UOptionsGraphic::OnClickedAntiAliasingArrowRight()
+{
+	PlayChangeButtonSound();
 }
 
 void UOptionsGraphic::OnHoveredTextureQuality()
@@ -242,6 +333,11 @@ void UOptionsGraphic::OnUnhoveredTextureQualityArrowLeft()
 	}
 }
 
+void UOptionsGraphic::OnClickedTextureQualityArrowLeft()
+{
+	PlayChangeButtonSound();
+}
+
 void UOptionsGraphic::OnHoveredTextureQualityArrowRight()
 {
 	if (TextureQualityButtonRightArrow && ActivatedSmallArrowRight)
@@ -256,6 +352,11 @@ void UOptionsGraphic::OnUnhoveredTextureQualityArrowRight()
 	{
 		TextureQualityButtonRightArrow->SetBrushFromTexture(DeactivatedSmallArrowRight);
 	}
+}
+
+void UOptionsGraphic::OnClickedTextureQualityArrowRight()
+{
+	PlayChangeButtonSound();
 }
 
 void UOptionsGraphic::OnHoveredShadowQuality()
@@ -290,6 +391,11 @@ void UOptionsGraphic::OnUnhoveredShadowQualityArrowLeft()
 	}
 }
 
+void UOptionsGraphic::OnClickedShadowQualityArrowLeft()
+{
+	PlayChangeButtonSound();
+}
+
 void UOptionsGraphic::OnHoveredShadowQualityArrowRight()
 {
 	if (ShadowQualityButtonRightArrow && ActivatedSmallArrowRight)
@@ -306,6 +412,150 @@ void UOptionsGraphic::OnUnhoveredShadowQualityArrowRight()
 	}
 }
 
+void UOptionsGraphic::OnClickedShadowQualityArrowRight()
+{
+	PlayChangeButtonSound();
+}
+
+void UOptionsGraphic::OnClickedReset()
+{
+	Super::OnClickedReset();
+	
+	Settings = ResetSettings;
+
+	// Window Mode
+	WindowModeSetText->SetText(GetWindowModeText(Settings.WindowMode));
+
+	// Display Resolution
+	FIntPoint Resolution = GetResolutionFromInt(Settings.ResolutionLevel);
+	DisplayResolutionSetText->SetText(GetTextFromResolution(Resolution));
+}
+
+void UOptionsGraphic::OnClickedConfirm()
+{
+	Super::OnClickedConfirm();
+	
+	if (UserSettings)
+	{
+		UserSettings->SetFullscreenMode(Settings.WindowMode);
+		UserSettings->SetScreenResolution(GetResolutionFromInt(Settings.ResolutionLevel));
+
+		UserSettings->ApplySettings(false);
+	}
+}
+
+FText UOptionsGraphic::GetWindowModeText(EWindowMode::Type Mode)
+{
+	FName ShowText{};
+	switch (Mode)
+	{
+	case EWindowMode::Type::Fullscreen:
+		ShowText = "Full";
+		break;
+	case EWindowMode::Type::Windowed:
+		ShowText = "Windowed";
+		break;
+	case EWindowMode::Type::WindowedFullscreen:
+		ShowText = "Windowed Full";
+		break;
+	default:
+		ShowText = "UnKnowned";
+		break;
+	}
+	return FText::FromName(ShowText);
+}
+
+FIntPoint UOptionsGraphic::GetResolutionFromInt(int32 num)
+{
+	FIntPoint Resolution{};
+
+	switch (num)
+	{
+	case 0:
+		Resolution.X = 720;
+		Resolution.Y = 480;
+		break;
+	case 1:
+		Resolution.X = 1280;
+		Resolution.Y = 720;
+		break;
+	case 2:
+		Resolution.X = 1920;
+		Resolution.Y = 1080;
+		break;
+	case 3:
+		Resolution.X = 2560;
+		Resolution.Y = 1440;
+		break;
+	default:
+		Resolution.X = 2560;
+		Resolution.Y = 1440;
+		break;
+	}
+
+	return Resolution;
+}
+
+int32 UOptionsGraphic::GetIntFromResolution(FIntPoint Resolution)
+{
+	int32 X = Resolution.X;
+	int32 Y = Resolution.Y;
+
+	if (X == (int32)2560 && Y == (int32)1440)
+	{
+		return 3;
+	}
+	else if (X == (int32)1920 && Y == (int32)1080)
+	{
+		return 2;
+	}
+	else if (X == (int32)1280 && Y == (int32)720)
+	{
+		return 1;
+	}
+	else if (X == (int32)720 && Y == (int32)480)
+	{
+		return 0;
+	}
+
+	return 3;
+}
+
+FText UOptionsGraphic::GetTextFromResolution(FIntPoint Resolution)
+{
+	FString X = FString::FromInt(Resolution.X);
+	FString Y = FString::FromInt(Resolution.Y);
+	FString Point = X + " x " + Y;
+
+	return FText::FromString(Point);
+}
+
+void UOptionsGraphic::ChangeLevel(int32* OptionLevel, bool IsIncrease)
+{
+	if (IsIncrease == true) // 증가, Right Arrow가 클릭되었을 때
+	{
+		if (*OptionLevel >= 3)
+		{
+			*OptionLevel = 0;
+		}
+		else
+		{
+			*OptionLevel = *OptionLevel + 1;
+		}
+	}
+	else // 감소, Left Arrow가 클릭되었을 때
+	{
+		if (*OptionLevel <= 0)
+		{
+			*OptionLevel = 3;
+		}
+		else
+		{
+			*OptionLevel = *OptionLevel - 1;
+		}
+	}
+}
+
 void UOptionsGraphic::InitWindowMode()
 {
 	if (WindowModeOverlayButton)
@@ -317,11 +567,21 @@ void UOptionsGraphic::InitWindowMode()
 	{
 		WindowModeButtonLeft->OnHovered.AddDynamic(this, &UOptionsGraphic::OnHoveredWindowModeArrowLeft);
 		WindowModeButtonLeft->OnUnhovered.AddDynamic(this, &UOptionsGraphic::OnUnhoveredWindowModeArrowLeft);
+		WindowModeButtonLeft->OnClicked.AddDynamic(this, &UOptionsGraphic::OnClickedWindowModeArrowLeft);
 	}
 	if (WindowModeButtonRight)
 	{
 		WindowModeButtonRight->OnHovered.AddDynamic(this, &UOptionsGraphic::OnHoveredWindowModeArrowRight);
 		WindowModeButtonRight->OnUnhovered.AddDynamic(this, &UOptionsGraphic::OnUnhoveredWindowModeArrowRight);
+		WindowModeButtonRight->OnClicked.AddDynamic(this, &UOptionsGraphic::OnClickedWindowModeArrowRight);
+	}
+	if (UserSettings && WindowModeSetText)
+	{
+		EWindowMode::Type WindowMode = UserSettings->GetFullscreenMode();
+
+		WindowModeSetText->SetText(GetWindowModeText(WindowMode));
+
+		Settings.WindowMode = WindowMode;
 	}
 }
 
@@ -336,11 +596,22 @@ void UOptionsGraphic::InitDisplayResolution()
 	{
 		DisplayResolutionButtonLeft->OnHovered.AddDynamic(this, &UOptionsGraphic::OnHoveredDisplayResolutionArrowLeft);
 		DisplayResolutionButtonLeft->OnUnhovered.AddDynamic(this, &UOptionsGraphic::OnUnhoveredDisplayResolutionArrowLeft);
+		DisplayResolutionButtonLeft->OnClicked.AddDynamic(this, &UOptionsGraphic::OnClickedDisplayResolutionArrowLeft);
 	}
 	if (DisplayResolutionButtonRight)
 	{
 		DisplayResolutionButtonRight->OnHovered.AddDynamic(this, &UOptionsGraphic::OnHoveredDisplayResolutionArrowRight);
 		DisplayResolutionButtonRight->OnUnhovered.AddDynamic(this, &UOptionsGraphic::OnUnhoveredDisplayResolutionArrowRight);
+		DisplayResolutionButtonRight->OnClicked.AddDynamic(this, &UOptionsGraphic::OnClickedDisplayResolutionArrowRight);
+	}
+
+	if (UserSettings && DisplayResolutionSetText)
+	{
+		FIntPoint Resolution = UserSettings->GetScreenResolution();
+
+		DisplayResolutionSetText->SetText(GetTextFromResolution(Resolution));
+
+		Settings.ResolutionLevel = GetIntFromResolution(Resolution);
 	}
 }
 
@@ -355,11 +626,13 @@ void UOptionsGraphic::InitPostProcessing()
 	{
 		PostProcessingButtonLeft->OnHovered.AddDynamic(this, &UOptionsGraphic::OnHoveredPostProcessingArrowLeft);
 		PostProcessingButtonLeft->OnUnhovered.AddDynamic(this, &UOptionsGraphic::OnUnhoveredPostProcessingArrowLeft);
+		PostProcessingButtonLeft->OnClicked.AddDynamic(this, &UOptionsGraphic::OnClickedPostProcessingArrowLeft);
 	}
 	if (PostProcessingButtonRight)
 	{
 		PostProcessingButtonRight->OnHovered.AddDynamic(this, &UOptionsGraphic::OnHoveredPostProcessingArrowRight);
 		PostProcessingButtonRight->OnUnhovered.AddDynamic(this, &UOptionsGraphic::OnUnhoveredPostProcessingArrowRight);
+		PostProcessingButtonRight->OnClicked.AddDynamic(this, &UOptionsGraphic::OnClickedPostProcessingArrowRight);
 	}
 }
 
@@ -374,11 +647,13 @@ void UOptionsGraphic::InitAntiAliasing()
 	{
 		AntiAliasingButtonLeft->OnHovered.AddDynamic(this, &UOptionsGraphic::OnHoveredAntiAliasingArrowLeft);
 		AntiAliasingButtonLeft->OnUnhovered.AddDynamic(this, &UOptionsGraphic::OnUnhoveredAntiAliasingArrowLeft);
+		AntiAliasingButtonLeft->OnClicked.AddDynamic(this, &UOptionsGraphic::OnClickedAntiAliasingArrowLeft);
 	}
 	if (AntiAliasingButtonRight)
 	{
 		AntiAliasingButtonRight->OnHovered.AddDynamic(this, &UOptionsGraphic::OnHoveredAntiAliasingArrowRight);
 		AntiAliasingButtonRight->OnUnhovered.AddDynamic(this, &UOptionsGraphic::OnUnhoveredAntiAliasingArrowRight);
+		AntiAliasingButtonRight->OnClicked.AddDynamic(this, &UOptionsGraphic::OnClickedAntiAliasingArrowRight);
 	}
 }
 
@@ -393,11 +668,13 @@ void UOptionsGraphic::InitTextureQuality()
 	{
 		TextureQualityButtonLeft->OnHovered.AddDynamic(this, &UOptionsGraphic::OnHoveredTextureQualityArrowLeft);
 		TextureQualityButtonLeft->OnUnhovered.AddDynamic(this, &UOptionsGraphic::OnUnhoveredTextureQualityArrowLeft);
+		TextureQualityButtonLeft->OnClicked.AddDynamic(this, &UOptionsGraphic::OnClickedTextureQualityArrowLeft);
 	}
 	if (TextureQualityButtonRight)
 	{
 		TextureQualityButtonRight->OnHovered.AddDynamic(this, &UOptionsGraphic::OnHoveredTextureQualityArrowRight);
 		TextureQualityButtonRight->OnUnhovered.AddDynamic(this, &UOptionsGraphic::OnUnhoveredTextureQualityArrowRight);
+		TextureQualityButtonRight->OnClicked.AddDynamic(this, &UOptionsGraphic::OnClickedTextureQualityArrowRight);
 	}
 }
 
@@ -412,10 +689,12 @@ void UOptionsGraphic::InitShadowQuality()
 	{
 		ShadowQualityButtonLeft->OnHovered.AddDynamic(this, &UOptionsGraphic::OnHoveredShadowQualityArrowLeft);
 		ShadowQualityButtonLeft->OnUnhovered.AddDynamic(this, &UOptionsGraphic::OnUnhoveredShadowQualityArrowLeft);
+		ShadowQualityButtonLeft->OnClicked.AddDynamic(this, &UOptionsGraphic::OnClickedShadowQualityArrowLeft);
 	}
 	if (ShadowQualityButtonRight)
 	{
 		ShadowQualityButtonRight->OnHovered.AddDynamic(this, &UOptionsGraphic::OnHoveredShadowQualityArrowRight);
 		ShadowQualityButtonRight->OnUnhovered.AddDynamic(this, &UOptionsGraphic::OnUnhoveredShadowQualityArrowRight);
+		ShadowQualityButtonRight->OnClicked.AddDynamic(this, &UOptionsGraphic::OnClickedShadowQualityArrowRight);
 	}
 }

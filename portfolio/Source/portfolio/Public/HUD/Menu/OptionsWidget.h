@@ -95,7 +95,7 @@ protected:
 	void OnUnhoveredReset();
 
 	UFUNCTION()
-	void OnClickedReset();
+	virtual void OnClickedReset();
 
 	// Confirm
 	UFUNCTION()
@@ -105,7 +105,7 @@ protected:
 	void OnUnhoveredConfirm();
 
 	UFUNCTION()
-	void OnClickedConfirm();
+	virtual void OnClickedConfirm();
 
 	// Option Change
 	UFUNCTION()
