@@ -94,12 +94,18 @@ protected:
 	UFUNCTION()
 	void OnUnhoveredReset();
 
+	UFUNCTION()
+	void OnClickedReset();
+
 	// Confirm
 	UFUNCTION()
 	void OnHoveredConfirm();
 
 	UFUNCTION()
 	void OnUnhoveredConfirm();
+
+	UFUNCTION()
+	void OnClickedConfirm();
 
 	// Option Change
 	UFUNCTION()
@@ -124,4 +130,7 @@ private:
 
 public:
 	void SetOptionsMenu(UOptionsMenu* Widget);
+
+	void PlayChangeButtonSound();
+	void PlayBoxButtonSound();
 };

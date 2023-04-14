@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Level/DefaultWorldLevel.h"
@@ -15,7 +15,7 @@ void ADefaultWorldLevel::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ½ºÅ©¸°¿¡ UI Ç¥½Ã
+	// ìŠ¤í¬ë¦°ì— UI í‘œì‹œ
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 	if (PlayerController)
 	{
@@ -26,7 +26,7 @@ void ADefaultWorldLevel::BeginPlay()
 		}
 	}
 
-	// ¸®½ºÆù ÁöÁ¡ ¹è¿­¿¡ ´ã±â
+	// ë¦¬ìŠ¤í° ì§€ì  ë°°ì—´ì— ë‹´ê¸°
 	UGameplayStatics::GetAllActorsWithTag(this, FName("Respawn"), RespawnPoints);
 	RespawnEnemy();
 }
@@ -35,7 +35,7 @@ void ADefaultWorldLevel::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	// ÀÏÁ¤ ¸¶¸® ¼ö ÀÌÇÏ°¡ µÇ¸é Àû ¸®½ºÆù
+	// ì¼ì • ë§ˆë¦¬ ìˆ˜ ì´í•˜ê°€ ë˜ë©´ ì  ë¦¬ìŠ¤í°
 	if (CheckEnemyNumber() < EnemyMaxNumber && bRespawnFlag)
 	{
 		bRespawnFlag = false;

@@ -7,23 +7,16 @@
 #include "HUD/Menu/OptionsMenu.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "DefaultGameMode.h"
 
 void UMainMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	StartButton->OnHovered.AddDynamic(this, &UMainMenu::OnHoveredStartButton);
-	StartButton->OnUnhovered.AddDynamic(this, &UMainMenu::OnUnhoveredStartButton);
-	StartButton->OnClicked.AddDynamic(this, &UMainMenu::OnClickedStartButton);
-	OptionsButton->OnHovered.AddDynamic(this, &UMainMenu::OnHoveredOptionsButton);
-	OptionsButton->OnUnhovered.AddDynamic(this, &UMainMenu::OnUnhoveredOptionsButton);
-	OptionsButton->OnClicked.AddDynamic(this, &UMainMenu::OnClickedOptionsButton);
-	CreditsButton->OnHovered.AddDynamic(this, &UMainMenu::OnHoveredCreditsButton);
-	CreditsButton->OnUnhovered.AddDynamic(this, &UMainMenu::OnUnhoveredCreditsButton);
-	CreditsButton->OnClicked.AddDynamic(this, &UMainMenu::OnClickedCreditsButton);
-	QuitButton->OnHovered.AddDynamic(this, &UMainMenu::OnHoveredQuitButton);
-	QuitButton->OnUnhovered.AddDynamic(this, &UMainMenu::OnUnhoveredQuitButton);
-	QuitButton->OnClicked.AddDynamic(this, &UMainMenu::OnClickedQuitButton);
+	InitStartButton();
+	InitOptionsButton();
+	InitCreditsButton();
+	InitQuitButton();
 }
 
 void UMainMenu::OnHoveredStartButton()
@@ -44,6 +37,7 @@ void UMainMenu::OnUnhoveredStartButton()
 
 void UMainMenu::OnClickedStartButton()
 {
+	// 오픈월드 열기
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 	if (PlayerController)
 	{
@@ -51,6 +45,8 @@ void UMainMenu::OnClickedStartButton()
 		PlayerController->SetShowMouseCursor(false);
 		UGameplayStatics::OpenLevelBySoftObjectPtr(this, DefaultLevel);
 	}
+
+	PlayButtonClickSound();
 }
 
 void UMainMenu::OnHoveredOptionsButton()
@@ -71,6 +67,7 @@ void UMainMenu::OnUnhoveredOptionsButton()
 
 void UMainMenu::OnClickedOptionsButton()
 {
+	// 옵션 메뉴 열기
 	if (OptionsMenuClass)
 	{
 		UOptionsMenu* OptionMenu = Cast<UOptionsMenu>(CreateWidget(this, OptionsMenuClass));
@@ -80,6 +77,8 @@ void UMainMenu::OnClickedOptionsButton()
 			RemoveFromParent();
 		}
 	}
+
+	PlayButtonClickSound();
 }
 
 void UMainMenu::OnHoveredCreditsButton()
@@ -100,6 +99,7 @@ void UMainMenu::OnUnhoveredCreditsButton()
 
 void UMainMenu::OnClickedCreditsButton()
 {
+	PlayButtonClickSound();
 }
 
 void UMainMenu::OnHoveredQuitButton()
@@ -120,5 +120,56 @@ void UMainMenu::OnUnhoveredQuitButton()
 
 void UMainMenu::OnClickedQuitButton()
 {
+	// 게임종료
 	UKismetSystemLibrary::QuitGame(this, UGameplayStatics::GetPlayerController(this, 0), EQuitPreference::Quit, false);
+	PlayButtonClickSound();
+}
+
+void UMainMenu::InitStartButton()
+{
+	if (StartButton)
+	{
+		StartButton->OnHovered.AddDynamic(this, &UMainMenu::OnHoveredStartButton);
+		StartButton->OnUnhovered.AddDynamic(this, &UMainMenu::OnUnhoveredStartButton);
+		StartButton->OnClicked.AddDynamic(this, &UMainMenu::OnClickedStartButton);
+	}
+}
+
+void UMainMenu::InitOptionsButton()
+{
+	if (OptionsButton)
+	{
+		OptionsButton->OnHovered.AddDynamic(this, &UMainMenu::OnHoveredOptionsButton);
+		OptionsButton->OnUnhovered.AddDynamic(this, &UMainMenu::OnUnhoveredOptionsButton);
+		OptionsButton->OnClicked.AddDynamic(this, &UMainMenu::OnClickedOptionsButton);
+	}
+}
+
+void UMainMenu::InitCreditsButton()
+{
+	if (CreditsButton)
+	{
+		CreditsButton->OnHovered.AddDynamic(this, &UMainMenu::OnHoveredCreditsButton);
+		CreditsButton->OnUnhovered.AddDynamic(this, &UMainMenu::OnUnhoveredCreditsButton);
+		CreditsButton->OnClicked.AddDynamic(this, &UMainMenu::OnClickedCreditsButton);
+	}
+}
+
+void UMainMenu::InitQuitButton()
+{
+	if (QuitButton)
+	{
+		QuitButton->OnHovered.AddDynamic(this, &UMainMenu::OnHoveredQuitButton);
+		QuitButton->OnUnhovered.AddDynamic(this, &UMainMenu::OnUnhoveredQuitButton);
+		QuitButton->OnClicked.AddDynamic(this, &UMainMenu::OnClickedQuitButton);
+	}
+}
+
+void UMainMenu::PlayButtonClickSound()
+{
+	ADefaultGameMode* DefaultGameMode = Cast<ADefaultGameMode>(UGameplayStatics::GetGameMode(this));
+	if (DefaultGameMode)
+	{
+		DefaultGameMode->PlayCheckButtonClickSound();
+	}
 }

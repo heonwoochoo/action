@@ -22,18 +22,17 @@ public:
 	ADefaultGameMode();
 
 private:
-
 	// 넘길 때 버튼 소리
 	UPROPERTY(EditDefaultsOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
-	USoundCue* ClickSound1;
+	USoundCue* ChangeButtonClickSound;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
 	// 확인 버튼 소리
-	USoundCue* ClickSound2;
+	UPROPERTY(EditDefaultsOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
+	USoundCue* CheckButtonClickSound;
 
 public:
-	void PlayClickSound1();
-	void PlayClickSound2();
+	void PlayChangeButtonClickSound();
+	void PlayCheckButtonClickSound();
 };
 
 

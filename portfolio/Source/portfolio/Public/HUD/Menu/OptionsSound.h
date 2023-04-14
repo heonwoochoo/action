@@ -13,6 +13,8 @@ class UMainMenu;
 class UTextBlock;
 class UProgressBar;
 class USlider;
+class USoundClass;
+class USoundMix;
 
 UCLASS()
 class PORTFOLIO_API UOptionsSound : public UOptionsWidget
@@ -21,6 +23,27 @@ class PORTFOLIO_API UOptionsSound : public UOptionsWidget
 	
 protected:
 	virtual void NativeConstruct() override;
+
+	//=======================
+	//       사운드 믹스
+	//=======================
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound|Class")
+	USoundClass* MasterClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound|Class")
+	USoundClass* EffectClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound|Class")
+	USoundClass* MusicClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound|Mix")
+	USoundMix* MasterMix;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound|Mix")
+	USoundMix* EffectMix;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound|Mix")
+	USoundMix* MusicMix;
 
 	// Master
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
@@ -99,5 +122,5 @@ private:
 	void InitEffect();
 	void InitMusic();
 
-
+	void SetVolume(USoundMix* SoundMix, USoundClass* SoundClass, float Value);
 };

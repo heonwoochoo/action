@@ -69,4 +69,5 @@ private:
 	
 public:
 	void SetSelectedOption(UOptionsWidget* Widget);
+	void PlayBackButtonSound();
 };

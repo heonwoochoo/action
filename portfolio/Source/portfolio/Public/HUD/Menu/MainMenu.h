@@ -86,5 +86,11 @@ protected:
 	UFUNCTION()
 	void OnClickedQuitButton();
 
+private:
+	void InitStartButton();
+	void InitOptionsButton();
+	void InitCreditsButton();
+	void InitQuitButton();
 
+	void PlayButtonClickSound();
 };

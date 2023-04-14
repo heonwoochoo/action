@@ -8,6 +8,7 @@
 #include "Components/Slider.h"
 #include "Components/ProgressBar.h"
 #include "HUD/Menu/OptionsMenu.h"
+#include "Kismet/GameplayStatics.h"
 
 void UOptionsSound::NativeConstruct()
 {
@@ -36,9 +37,10 @@ void UOptionsSound::OnUnhoveredMaster()
 
 void UOptionsSound::OnChangedMasterValue(float Value)
 {
-	if (MasterProgressBar)
+	if (MasterProgressBar && MasterMix && MasterClass)
 	{
 		MasterProgressBar->SetPercent(Value);
+		SetVolume(MasterMix, MasterClass, Value);
 	}
 }
 
@@ -60,9 +62,10 @@ void UOptionsSound::OnUnhoveredEffect()
 
 void UOptionsSound::OnChangedEffectValue(float Value)
 {
-	if (EffectProgressBar)
+	if (EffectProgressBar && EffectMix && EffectClass)
 	{
 		EffectProgressBar->SetPercent(Value);
+		SetVolume(EffectMix, EffectClass, Value);
 	}
 }
 
@@ -84,9 +87,10 @@ void UOptionsSound::OnUnhoveredMusic()
 
 void UOptionsSound::OnChangedMusicValue(float Value)
 {
-	if (MusicProgressBar)
+	if (MusicProgressBar && MusicMix && MusicClass)
 	{
 		MusicProgressBar->SetPercent(Value);
+		SetVolume(MusicMix, MusicClass, Value);
 	}
 }
 
@@ -114,6 +118,7 @@ void UOptionsSound::InitEffect()
 	{
 		EffectSlider->OnValueChanged.AddDynamic(this, &UOptionsSound::OnChangedEffectValue);
 	}
+
 }
 
 void UOptionsSound::InitMusic()
@@ -127,4 +132,9 @@ void UOptionsSound::InitMusic()
 	{
 		MusicSlider->OnValueChanged.AddDynamic(this, &UOptionsSound::OnChangedMusicValue);
 	}
+}
+
+void UOptionsSound::SetVolume(USoundMix* SoundMix, USoundClass* SoundClass, float Value)
+{
+	UGameplayStatics::SetSoundMixClassOverride(this, SoundMix, SoundClass, Value);
 }

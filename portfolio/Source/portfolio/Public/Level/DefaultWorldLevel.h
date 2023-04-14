@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -20,16 +20,16 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
-	// ¸®½ºÆùµÉ ¿¹Á¤ÀÎ ¾×ÅÍÀÇ Å¬·¡½º
+	// ë¦¬ìŠ¤í°ë  ì˜ˆì •ì¸ ì•¡í„°ì˜ í´ë˜ìŠ¤
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy")
 	TArray<TSubclassOf<AEnemyBase>> Enemies;
 
-	// ÀûÀÇ ÃÖ´ë °³Ã¼ ¼ö
+	// ì ì˜ ìµœëŒ€ ê°œì²´ ìˆ˜
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy")
 	int32 EnemyMaxNumber = 2;
 
 private:
-	// ¸®½ºÆù ÁöÁ¡
+	// ë¦¬ìŠ¤í° ì§€ì 
 	TArray<AActor*> RespawnPoints;
 
 	FTimerHandle EnemyRespawnTimerHandle;

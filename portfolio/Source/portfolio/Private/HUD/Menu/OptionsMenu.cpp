@@ -9,6 +9,8 @@
 #include "Components/Slider.h"
 #include "Components/ProgressBar.h"
 #include "HUD/Menu/OptionsWidget.h"
+#include "Kismet/GameplayStatics.h"
+#include "DefaultGameMode.h"
 
 void UOptionsMenu::NativeConstruct()
 {
@@ -66,6 +68,8 @@ void UOptionsMenu::OnClickedBackButton()
 			RemoveFromParent();
 		}
 	}
+
+	PlayBackButtonSound();
 }
 
 void UOptionsMenu::InitBack()
@@ -92,4 +96,13 @@ void UOptionsMenu::InitBack()
 void UOptionsMenu::SetSelectedOption(UOptionsWidget* Widget)
 {
 	SelectedOption = Widget;
+}
+
+void UOptionsMenu::PlayBackButtonSound()
+{
+	ADefaultGameMode* DefaultGameMode = Cast<ADefaultGameMode>(UGameplayStatics::GetGameMode(this));
+	if (DefaultGameMode)
+	{
+		DefaultGameMode->PlayCheckButtonClickSound();
+	}
 }

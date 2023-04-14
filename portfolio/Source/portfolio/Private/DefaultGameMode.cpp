@@ -12,19 +12,19 @@ ADefaultGameMode::ADefaultGameMode()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-void ADefaultGameMode::PlayClickSound1()
+void ADefaultGameMode::PlayChangeButtonClickSound()
 {
-	if (ClickSound1)
+	if (ChangeButtonClickSound)
 	{
-		UGameplayStatics::PlaySound2D(this, ClickSound1);
+		UGameplayStatics::PlaySound2D(this, ChangeButtonClickSound);
 	}
 }
 
-void ADefaultGameMode::PlayClickSound2()
+void ADefaultGameMode::PlayCheckButtonClickSound()
 {
-	if (ClickSound2)
+	if (CheckButtonClickSound)
 	{
-		UGameplayStatics::PlaySound2D(this, ClickSound2);
+		UGameplayStatics::PlaySound2D(this, CheckButtonClickSound);
 	}
 }
 

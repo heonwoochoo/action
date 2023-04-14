@@ -5,6 +5,8 @@
 #include "Components/Image.h"
 #include "Components/Button.h"
 #include "HUD/Menu/OptionsMenu.h"
+#include "Kismet/GameplayStatics.h"
+#include "DefaultGameMode.h"
 
 void UOptionsWidget::NativeConstruct()
 {
@@ -31,6 +33,11 @@ void UOptionsWidget::OnUnhoveredReset()
 	}
 }
 
+void UOptionsWidget::OnClickedReset()
+{
+	PlayBoxButtonSound();
+}
+
 void UOptionsWidget::OnHoveredConfirm()
 {
 	if (ConfirmImage && ActivatedBox)
@@ -45,6 +52,11 @@ void UOptionsWidget::OnUnhoveredConfirm()
 	{
 		ConfirmImage->SetBrushFromTexture(DeactivatedBox);
 	}
+}
+
+void UOptionsWidget::OnClickedConfirm()
+{
+	PlayBoxButtonSound();
 }
 
 void UOptionsWidget::OnHoveredOptionLeftButton()
@@ -92,6 +104,8 @@ void UOptionsWidget::OnClickedOptionChangeButton()
 			RemoveFromParent();
 		}
 	}
+
+	PlayChangeButtonSound();
 }
 
 void UOptionsWidget::InitReset()
@@ -100,6 +114,7 @@ void UOptionsWidget::InitReset()
 	{
 		ResetButton->OnHovered.AddDynamic(this, &UOptionsWidget::OnHoveredReset);
 		ResetButton->OnUnhovered.AddDynamic(this, &UOptionsWidget::OnUnhoveredReset);
+		ResetButton->OnClicked.AddDynamic(this, &UOptionsWidget::OnClickedReset);
 	}
 }
 
@@ -109,6 +124,7 @@ void UOptionsWidget::InitConfirm()
 	{
 		ConfirmButton->OnHovered.AddDynamic(this, &UOptionsWidget::OnHoveredConfirm);
 		ConfirmButton->OnUnhovered.AddDynamic(this, &UOptionsWidget::OnUnhoveredConfirm);
+		ConfirmButton->OnClicked.AddDynamic(this, &UOptionsWidget::OnClickedConfirm);
 	}
 }
 
@@ -125,6 +141,24 @@ void UOptionsWidget::InitOptionChangeButton()
 		OptionRightButton->OnHovered.AddDynamic(this, &UOptionsWidget::OnHoveredOptionRightButton);
 		OptionRightButton->OnUnhovered.AddDynamic(this, &UOptionsWidget::OnUnhoveredOptionRightButton);
 		OptionRightButton->OnClicked.AddDynamic(this, &UOptionsWidget::OnClickedOptionChangeButton);
+	}
+}
+
+void UOptionsWidget::PlayChangeButtonSound()
+{
+	ADefaultGameMode* DefaultGameMode = Cast<ADefaultGameMode>(UGameplayStatics::GetGameMode(this));
+	if (DefaultGameMode)
+	{
+		DefaultGameMode->PlayChangeButtonClickSound();
+	}
+}
+
+void UOptionsWidget::PlayBoxButtonSound()
+{
+	ADefaultGameMode* DefaultGameMode = Cast<ADefaultGameMode>(UGameplayStatics::GetGameMode(this));
+	if (DefaultGameMode)
+	{
+		DefaultGameMode->PlayCheckButtonClickSound();
 	}
 }
 
