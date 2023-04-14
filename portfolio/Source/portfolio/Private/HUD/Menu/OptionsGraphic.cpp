@@ -151,7 +151,7 @@ void UOptionsGraphic::OnClickedDisplayResolutionArrowLeft()
 {
 	PlayChangeButtonSound();
 
-	ChangeLevel(&Settings.ResolutionLevel, false);
+	ChangeLevel(Settings.ResolutionLevel, false);
 
 	FIntPoint Resolution = GetResolutionFromInt(Settings.ResolutionLevel);
 
@@ -178,7 +178,7 @@ void UOptionsGraphic::OnClickedDisplayResolutionArrowRight()
 {
 	PlayChangeButtonSound();
 
-	ChangeLevel(&Settings.ResolutionLevel, true);
+	ChangeLevel(Settings.ResolutionLevel, true);
 
 	FIntPoint Resolution = GetResolutionFromInt(Settings.ResolutionLevel);
 
@@ -220,6 +220,11 @@ void UOptionsGraphic::OnUnhoveredPostProcessingArrowLeft()
 void UOptionsGraphic::OnClickedPostProcessingArrowLeft()
 {
 	PlayChangeButtonSound();
+
+	ChangeLevel(Settings.PostProcessingLevel, false);
+
+	FText PostProcessingText = GetLevelTextFromInt(Settings.PostProcessingLevel);
+	PostProcessingSetText->SetText(PostProcessingText);
 }
 
 void UOptionsGraphic::OnHoveredPostProcessingArrowRight()
@@ -241,6 +246,11 @@ void UOptionsGraphic::OnUnhoveredPostProcessingArrowRight()
 void UOptionsGraphic::OnClickedPostProcessingArrowRight()
 {
 	PlayChangeButtonSound();
+
+	ChangeLevel(Settings.PostProcessingLevel, true);
+
+	FText PostProcessingText = GetLevelTextFromInt(Settings.PostProcessingLevel);
+	PostProcessingSetText->SetText(PostProcessingText);
 }
 
 void UOptionsGraphic::OnHoveredAntiAliasing()
@@ -278,6 +288,11 @@ void UOptionsGraphic::OnUnhoveredAntiAliasingArrowLeft()
 void UOptionsGraphic::OnClickedAntiAliasingArrowLeft()
 {
 	PlayChangeButtonSound();
+
+	ChangeLevel(Settings.AntiAliasingLevel, false);
+
+	FText AntiAliasingText = GetLevelTextFromInt(Settings.AntiAliasingLevel);
+	AntiAliasingSetText->SetText(AntiAliasingText);
 }
 
 void UOptionsGraphic::OnHoveredAntiAliasingArrowRight()
@@ -299,6 +314,11 @@ void UOptionsGraphic::OnUnhoveredAntiAliasingArrowRight()
 void UOptionsGraphic::OnClickedAntiAliasingArrowRight()
 {
 	PlayChangeButtonSound();
+
+	ChangeLevel(Settings.AntiAliasingLevel, true);
+
+	FText AntiAliasingText = GetLevelTextFromInt(Settings.AntiAliasingLevel);
+	AntiAliasingSetText->SetText(AntiAliasingText);
 }
 
 void UOptionsGraphic::OnHoveredTextureQuality()
@@ -336,6 +356,11 @@ void UOptionsGraphic::OnUnhoveredTextureQualityArrowLeft()
 void UOptionsGraphic::OnClickedTextureQualityArrowLeft()
 {
 	PlayChangeButtonSound();
+
+	ChangeLevel(Settings.TextureQualityLevel, false);
+
+	FText TextureQualityText = GetLevelTextFromInt(Settings.TextureQualityLevel);
+	TextureQualitySetText->SetText(TextureQualityText);
 }
 
 void UOptionsGraphic::OnHoveredTextureQualityArrowRight()
@@ -357,6 +382,11 @@ void UOptionsGraphic::OnUnhoveredTextureQualityArrowRight()
 void UOptionsGraphic::OnClickedTextureQualityArrowRight()
 {
 	PlayChangeButtonSound();
+
+	ChangeLevel(Settings.TextureQualityLevel, true);
+
+	FText TextureQualityText = GetLevelTextFromInt(Settings.TextureQualityLevel);
+	TextureQualitySetText->SetText(TextureQualityText);
 }
 
 void UOptionsGraphic::OnHoveredShadowQuality()
@@ -394,6 +424,11 @@ void UOptionsGraphic::OnUnhoveredShadowQualityArrowLeft()
 void UOptionsGraphic::OnClickedShadowQualityArrowLeft()
 {
 	PlayChangeButtonSound();
+
+	ChangeLevel(Settings.ShadowQualityLevel, false);
+
+	FText ShadowQualityText = GetLevelTextFromInt(Settings.ShadowQualityLevel);
+	ShadowQualitySetText->SetText(ShadowQualityText);
 }
 
 void UOptionsGraphic::OnHoveredShadowQualityArrowRight()
@@ -415,6 +450,11 @@ void UOptionsGraphic::OnUnhoveredShadowQualityArrowRight()
 void UOptionsGraphic::OnClickedShadowQualityArrowRight()
 {
 	PlayChangeButtonSound();
+
+	ChangeLevel(Settings.ShadowQualityLevel, true);
+
+	FText ShadowQualityText = GetLevelTextFromInt(Settings.ShadowQualityLevel);
+	ShadowQualitySetText->SetText(ShadowQualityText);
 }
 
 void UOptionsGraphic::OnClickedReset()
@@ -429,6 +469,22 @@ void UOptionsGraphic::OnClickedReset()
 	// Display Resolution
 	FIntPoint Resolution = GetResolutionFromInt(Settings.ResolutionLevel);
 	DisplayResolutionSetText->SetText(GetTextFromResolution(Resolution));
+
+	// Post Processing
+	FText PostProcessingText = GetLevelTextFromInt(Settings.PostProcessingLevel);
+	PostProcessingSetText->SetText(PostProcessingText);
+
+	// Anti Aliasing
+	FText AntiAliasingText = GetLevelTextFromInt(Settings.AntiAliasingLevel);
+	AntiAliasingSetText->SetText(AntiAliasingText);
+
+	// Texture Quality
+	FText TextureQualityText = GetLevelTextFromInt(Settings.TextureQualityLevel);
+	TextureQualitySetText->SetText(TextureQualityText);
+
+	// Shadow Quality
+	FText ShadowQualityText = GetLevelTextFromInt(Settings.ShadowQualityLevel);
+	ShadowQualitySetText->SetText(ShadowQualityText);
 }
 
 void UOptionsGraphic::OnClickedConfirm()
@@ -439,6 +495,10 @@ void UOptionsGraphic::OnClickedConfirm()
 	{
 		UserSettings->SetFullscreenMode(Settings.WindowMode);
 		UserSettings->SetScreenResolution(GetResolutionFromInt(Settings.ResolutionLevel));
+		UserSettings->SetPostProcessingQuality(Settings.PostProcessingLevel);
+		UserSettings->SetAntiAliasingQuality(Settings.AntiAliasingLevel);
+		UserSettings->SetTextureQuality(Settings.TextureQualityLevel);
+		UserSettings->SetShadowQuality(Settings.ShadowQualityLevel);
 
 		UserSettings->ApplySettings(false);
 	}
@@ -530,30 +590,51 @@ FText UOptionsGraphic::GetTextFromResolution(FIntPoint Resolution)
 	return FText::FromString(Point);
 }
 
-void UOptionsGraphic::ChangeLevel(int32* OptionLevel, bool IsIncrease)
+void UOptionsGraphic::ChangeLevel(int32& OptionLevel, bool IsIncrease)
 {
 	if (IsIncrease == true) // 증가, Right Arrow가 클릭되었을 때
 	{
-		if (*OptionLevel >= 3)
+		if (OptionLevel >= 3)
 		{
-			*OptionLevel = 0;
+			OptionLevel = 0;
 		}
 		else
 		{
-			*OptionLevel = *OptionLevel + 1;
+			OptionLevel = OptionLevel + 1;
 		}
 	}
 	else // 감소, Left Arrow가 클릭되었을 때
 	{
-		if (*OptionLevel <= 0)
+		if (OptionLevel <= 0)
 		{
-			*OptionLevel = 3;
+			OptionLevel = 3;
 		}
 		else
 		{
-			*OptionLevel = *OptionLevel - 1;
+			OptionLevel = OptionLevel - 1;
 		}
 	}
+}
+
+FText UOptionsGraphic::GetLevelTextFromInt(int32 num)
+{
+	FName LevelText{};
+	switch (num)
+	{
+	case 0:
+		LevelText = "Low";
+		break;
+	case 1:
+		LevelText = "Medium";
+		break;
+	case 2:
+		LevelText = "High";
+		break;
+	case 3:
+		LevelText = "Epic";
+		break;
+	}
+	return FText::FromName(LevelText);
 }
 
 void UOptionsGraphic::InitWindowMode()
@@ -634,6 +715,14 @@ void UOptionsGraphic::InitPostProcessing()
 		PostProcessingButtonRight->OnUnhovered.AddDynamic(this, &UOptionsGraphic::OnUnhoveredPostProcessingArrowRight);
 		PostProcessingButtonRight->OnClicked.AddDynamic(this, &UOptionsGraphic::OnClickedPostProcessingArrowRight);
 	}
+	if (UserSettings && PostProcessingSetText)
+	{
+		Settings.PostProcessingLevel = UserSettings->GetPostProcessingQuality();
+
+		FText ShowingText = GetLevelTextFromInt(Settings.PostProcessingLevel);
+
+		PostProcessingSetText->SetText(ShowingText);
+	}
 }
 
 void UOptionsGraphic::InitAntiAliasing()
@@ -654,6 +743,14 @@ void UOptionsGraphic::InitAntiAliasing()
 		AntiAliasingButtonRight->OnHovered.AddDynamic(this, &UOptionsGraphic::OnHoveredAntiAliasingArrowRight);
 		AntiAliasingButtonRight->OnUnhovered.AddDynamic(this, &UOptionsGraphic::OnUnhoveredAntiAliasingArrowRight);
 		AntiAliasingButtonRight->OnClicked.AddDynamic(this, &UOptionsGraphic::OnClickedAntiAliasingArrowRight);
+	}
+	if (UserSettings && AntiAliasingSetText)
+	{
+		Settings.AntiAliasingLevel = UserSettings->GetAntiAliasingQuality();
+
+		FText ShowingText = GetLevelTextFromInt(Settings.AntiAliasingLevel);
+
+		AntiAliasingSetText->SetText(ShowingText);
 	}
 }
 
@@ -676,6 +773,14 @@ void UOptionsGraphic::InitTextureQuality()
 		TextureQualityButtonRight->OnUnhovered.AddDynamic(this, &UOptionsGraphic::OnUnhoveredTextureQualityArrowRight);
 		TextureQualityButtonRight->OnClicked.AddDynamic(this, &UOptionsGraphic::OnClickedTextureQualityArrowRight);
 	}
+	if (UserSettings && TextureQualitySetText)
+	{
+		Settings.TextureQualityLevel = UserSettings->GetTextureQuality();
+
+		FText ShowingText = GetLevelTextFromInt(Settings.TextureQualityLevel);
+
+		TextureQualitySetText->SetText(ShowingText);
+	}
 }
 
 void UOptionsGraphic::InitShadowQuality()
@@ -696,5 +801,13 @@ void UOptionsGraphic::InitShadowQuality()
 		ShadowQualityButtonRight->OnHovered.AddDynamic(this, &UOptionsGraphic::OnHoveredShadowQualityArrowRight);
 		ShadowQualityButtonRight->OnUnhovered.AddDynamic(this, &UOptionsGraphic::OnUnhoveredShadowQualityArrowRight);
 		ShadowQualityButtonRight->OnClicked.AddDynamic(this, &UOptionsGraphic::OnClickedShadowQualityArrowRight);
+	}
+	if (UserSettings && ShadowQualitySetText)
+	{
+		Settings.ShadowQualityLevel = UserSettings->GetShadowQuality();
+
+		FText ShowingText = GetLevelTextFromInt(Settings.ShadowQualityLevel);
+
+		ShadowQualitySetText->SetText(ShowingText);
 	}
 }

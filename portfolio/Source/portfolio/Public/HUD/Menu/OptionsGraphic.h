@@ -19,6 +19,14 @@ struct FGraphicSetting
 	EWindowMode::Type WindowMode;
 
 	int32 ResolutionLevel;
+
+	int32 PostProcessingLevel;
+
+	int32 AntiAliasingLevel;
+
+	int32 TextureQualityLevel;
+
+	int32 ShadowQualityLevel;
 };
 
 UCLASS()
@@ -334,7 +342,7 @@ private:
 	// UI 생성시 현재 세팅 값을 초기값으로 복사함
 	FGraphicSetting Settings;
 
-	// 초기화를 위해 UI 생성 당시의 세팅 값을 저장
+	// 복원을 위해 UI 생성시 세팅 값을 저장
 	FGraphicSetting ResetSettings;
 
 	//==========================
@@ -351,13 +359,30 @@ private:
 	int32 GetIntFromResolution(FIntPoint Resolution);
 	FText GetTextFromResolution(FIntPoint Resolution);
 
-	void ChangeLevel(int32* OptionLevel, bool IsIncrease);
-
-
-	
+	//==========================
+	//    Post Processing
+	//==========================
 	void InitPostProcessing();
+
+	//==========================
+	//    Anti Aliasing
+	//==========================
 	void InitAntiAliasing();
+
+	//==========================
+	//    Texture Quality
+	//==========================
 	void InitTextureQuality();
+
+	//==========================
+	//    Shadow Quality
+	//==========================
 	void InitShadowQuality();
 
+
+	// 클릭된 증감 버튼에 따라 세팅 값을 바꿈
+	void ChangeLevel(int32& OptionLevel, bool IsIncrease);
+
+	// Low, Medium, High, Epic
+	FText GetLevelTextFromInt(int32 num);
 };
