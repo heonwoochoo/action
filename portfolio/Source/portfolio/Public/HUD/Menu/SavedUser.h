@@ -65,8 +65,6 @@ private:
 	// 마지막 플레이 날짜
 	FDateTime RecentDate;
 
-
-
 	// 클릭시 True
 	bool IsSelected = false;
 
@@ -84,9 +82,10 @@ public:
 
 	void SetStartMenu(UStartMenu* UserWidget);
 
+	FText GetUserName() const;
 	void SetUserName(FText Name);
 
 	void SetListNumber(int32 Num);
 
-	void SetCreatedDate();
+	void SetCreatedDate(FDateTime Date);
 };

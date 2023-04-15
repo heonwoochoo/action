@@ -60,7 +60,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserWidget")
 	TSubclassOf<USavedUser> SavedUserClass;
 
-	// 저장된 유저 리스트
+	// 저장된 유저 위젯 리스트
 	TArray<USavedUser*> SavedUserList;
 
 	// 현재 선택된 유저
@@ -104,6 +104,7 @@ private:
 	void InitLoadButton();
 	void InitDeleteButton();
 
+	void LoadUserNameFromSaveGame();
 public:
 	void AddUser(const FText UserName);
 	

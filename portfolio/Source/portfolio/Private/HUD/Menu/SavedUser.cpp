@@ -108,6 +108,11 @@ void USavedUser::SetStartMenu(UStartMenu* UserWidget)
 	StartMenu = UserWidget;
 }
 
+FText USavedUser::GetUserName() const
+{
+	return UserName;
+}
+
 void USavedUser::SetUserName(FText Name)
 {
 	UserName = Name;
@@ -128,10 +133,9 @@ void USavedUser::SetListNumber(int32 Num)
 	}
 }
 
-void USavedUser::SetCreatedDate()
+void USavedUser::SetCreatedDate(FDateTime Date)
 {
-	CreatedDate = UKismetMathLibrary::Now();
-
+	CreatedDate = Date;
 	FString Year = FString::FromInt(CreatedDate.GetYear());
 	FString Month = FString::FromInt(CreatedDate.GetMonth());
 	FString Day = FString::FromInt(CreatedDate.GetDay());

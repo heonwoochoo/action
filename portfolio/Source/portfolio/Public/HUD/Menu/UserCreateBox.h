@@ -91,16 +91,25 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UserName", meta = (AllowPrivateAccess = "true"))
 	FName WhiteSpaceMessage;
 
-	// 영문만 입력하세요
+	// 영문만 입력하세요 에러 메세지
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UserName", meta = (AllowPrivateAccess = "true"))
 	FName NeedAlphaMessage;
+
+	// 이미 존재하는 이름입니다 에러 메세지
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UserName", meta = (AllowPrivateAccess = "true"))
+	FName ExistNameMessage;
 
 	// 유효한 이름인가?
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UserName", meta = (AllowPrivateAccess = "true"))
 	bool bIsValidUserName = false;
 
+	
+
 	// 입력으로 들어온 문자열 검사, 유효하지 않은 문자 입력시 에러 메세지 나타냄
 	void CheckIsValidUserName(const FText& Text);
+
+	// 이미 존재하는 유저인지 세이브 파일 확인
+	void CheckExistUserName(const FText& Text);
 
 	//==============================================================
 

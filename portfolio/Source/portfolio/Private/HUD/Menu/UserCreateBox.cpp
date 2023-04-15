@@ -37,10 +37,15 @@ void UUserCreateBox::OnUnhoveredOKButton()
 
 void UUserCreateBox::OnClickedOKButton()
 {
-	if (UsernameTextBox && StartMenu && bIsValidUserName)
+	if (UsernameTextBox)
 	{
-		StartMenu->AddUser(UsernameTextBox->GetText());
-		RemoveFromParent();
+		CheckExistUserName(UsernameTextBox->GetText());
+
+		if (StartMenu && bIsValidUserName)
+		{
+			StartMenu->AddUser(UsernameTextBox->GetText());
+			RemoveFromParent();
+		}
 	}
 
 	PlayButtonSound();
@@ -118,6 +123,23 @@ void UUserCreateBox::CheckIsValidUserName(const FText& Text)
 
 	ErrorMessageText->SetText(FText::FromName(" "));
 	bIsValidUserName = true;
+}
+
+void UUserCreateBox::CheckExistUserName(const FText& Text)
+{
+	bool IsExist = UGameplayStatics::DoesSaveGameExist(Text.ToString(), 0);
+	if (IsExist)
+	{
+		bIsValidUserName = false;
+		if (ErrorMessageText)
+		{
+			ErrorMessageText->SetText(FText::FromName(ExistNameMessage));
+		}
+	}
+	else
+	{
+		bIsValidUserName = true;
+	}
 }
 
 void UUserCreateBox::InitUsernameTextBox()

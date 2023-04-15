@@ -7,6 +7,9 @@
 #include "Components/Image.h"
 #include "HUD/Menu/UserCreateBox.h"
 #include "HUD/Menu/SavedUser.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameInstance/DefaultGameInstance.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UStartMenu::NativeConstruct()
 {
@@ -15,6 +18,8 @@ void UStartMenu::NativeConstruct()
 	InitNewButton();
 	InitLoadButton();
 	InitDeleteButton();
+
+	LoadUserNameFromSaveGame();
 }
 
 void UStartMenu::OnHoveredNewButton()
@@ -84,12 +89,30 @@ void UStartMenu::OnUnhoveredDeleteButton()
 
 void UStartMenu::OnClickedDeleteButton()
 {
-	SavedUserList.Remove(SelectedUser);
-	SelectedUser->RemoveFromParent();
-
-	for (int32 i = 0; i < SavedUserList.Num(); ++i)
+	if (SelectedUser)
 	{
-		SavedUserList[i]->SetListNumber(i + 1);
+		UDefaultGameInstance* DefaultGameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+		if (DefaultGameInstance)
+		{
+			FString UserName = SelectedUser->GetUserName().ToString();
+			DefaultGameInstance->RemoveUserSaveGame(UserName);
+		}
+
+		// 멤버 변수 데이터 업데이트
+		SavedUserList.Remove(SelectedUser);
+
+		// UI 인스턴스 제거
+		SelectedUser->RemoveFromParent();
+
+		if (SelectedUser)
+		{
+			SelectedUser = nullptr;
+		}
+
+		for (int32 i = 0; i < SavedUserList.Num(); ++i)
+		{
+			SavedUserList[i]->SetListNumber(i + 1);
+		}
 	}
 
 	PlayButtonSound();
@@ -135,16 +158,68 @@ void UStartMenu::InitDeleteButton()
 	}
 }
 
+void UStartMenu::LoadUserNameFromSaveGame()
+{
+	// 세이브 게임 불러오기
+	UDefaultGameInstance* DefaultGameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (DefaultGameInstance)
+	{
+		// 유저 이름 데이터가 저장된 세이브 파일 로드
+		DefaultGameInstance->LoadDefaultSaveGame();
+
+		TArray<FString> UserNames = DefaultGameInstance->GetAllSavedUserName();
+
+		UE_LOG(LogTemp, Warning, TEXT("UserNames Number = %d"), UserNames.Num());
+		if (UserNames.Num() < 1) return;
+
+		for (FString UserName : UserNames)
+		{
+			
+			bool IsExist = UGameplayStatics::DoesSaveGameExist(UserName, 0);
+			if (IsExist)
+			{
+				// 세이브 게임 파일이 존재
+				USavedUser* SavedUser = Cast<USavedUser>(CreateWidget(this, SavedUserClass));
+				if (SavedUser)
+				{
+					
+					SavedUser->SetStartMenu(this);
+					SavedUser->SetUserName(FText::FromString(UserName));
+					SavedUser->SetListNumber(SavedUserList.Num() + 1);
+					SavedUser->SetCreatedDate(DefaultGameInstance->GetUserCreatedDate(UserName));
+
+					SavedUserList.Add(SavedUser);
+
+					if (SavedGameBox)
+					{
+						SavedGameBox->AddChildToStackBox(SavedUser);
+					}
+				}
+			}
+			else
+			{
+				// 저장된 유저 이름과 실제 세이브 파일이 일치하지 않을 경우 리스트에서 삭제
+				DefaultGameInstance->RemoveUserFromDefaultSaveGame(UserName);
+			}
+		}
+	}
+}
+
 void UStartMenu::AddUser(const FText UserName)
 {
+	UDefaultGameInstance* DefaultGameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (DefaultGameInstance)
+	{
+		DefaultGameInstance->CreateUserSaveGame(UserName.ToString());
+	}
+
 	USavedUser* SavedUser = Cast<USavedUser>(CreateWidget(this, SavedUserClass));
 	if (SavedUser)
 	{
 		SavedUser->SetStartMenu(this);
 		SavedUser->SetUserName(UserName);
 		SavedUser->SetListNumber(SavedUserList.Num() + 1);
-		SavedUser->SetCreatedDate();
-
+		SavedUser->SetCreatedDate(UKismetMathLibrary::Now());
 		SavedUserList.Add(SavedUser);
 		
 		if (SavedGameBox)

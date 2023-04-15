@@ -1,13 +1,24 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "SaveGame/DefaultSaveGame.h"
 
-FVector UDefaultSaveGame::GetLocation() const
+FString UDefaultSaveGame::GetSlotName() const
 {
-	return FVector();
+	return SlotName;
 }
 
-void UDefaultSaveGame::SetLocation(const FVector& Pos)
+void UDefaultSaveGame::AddUser(FString UserName)
 {
+	UserNames.Add(UserName);
+}
+
+void UDefaultSaveGame::RemoveUser(FString UserName)
+{
+	UserNames.Remove(UserName);
+}
+
+TArray<FString> UDefaultSaveGame::GetAllUserName() const
+{
+	return UserNames;
 }

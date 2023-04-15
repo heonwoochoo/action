@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -7,7 +7,8 @@
 #include "DefaultSaveGame.generated.h"
 
 /**
- * 
+ * ê²Œì„ ì‹œì‘ì‹œ ë¬´ì¡°ê±´ ë¡œë“œë˜ëŠ” íŒŒì¼
+ * ì„¸ì´ë¸Œí•œ ìœ ì €ì˜ ì´ë¦„ì„ ì €ì¥í•˜ê³  ìˆì–´ í•´ë‹¹ ì´ë¦„ì˜ ìŠ¬ë¡¯ì„ ë¶ˆëŸ¬ì˜´
  */
 UCLASS()
 class PORTFOLIO_API UDefaultSaveGame : public USaveGame
@@ -15,13 +16,18 @@ class PORTFOLIO_API UDefaultSaveGame : public USaveGame
 	GENERATED_BODY()
 
 private:
-	// ½½·Ô¿¡ ÀúÀåÇÒ À¯ÀúÀÇ °íÀ¯ ÀÌ¸§
-	FName UserName;
+	// í•´ë‹¹ í´ë˜ìŠ¤ì˜ ìŠ¬ë¡¯ ì´ë¦„
+	FString SlotName = "Default";
 
-	// ÀúÀåµÈ Æ÷Áö¼Ç
-	FVector Location;
+	// ì €ì¥ëœ ìœ ì €ì˜ ê³ ìœ í•œ ì´ë¦„
+	TArray<FString> UserNames;
 
 public:
-	FVector GetLocation() const;
-	void SetLocation(const FVector& Pos);
+	FString GetSlotName() const;
+
+	void AddUser(FString UserName);
+	
+	void RemoveUser(FString UserName);
+
+	TArray<FString> GetAllUserName() const;
 };
