@@ -84,6 +84,14 @@ void UStartMenu::OnUnhoveredDeleteButton()
 
 void UStartMenu::OnClickedDeleteButton()
 {
+	SavedUserList.Remove(SelectedUser);
+	SelectedUser->RemoveFromParent();
+
+	for (int32 i = 0; i < SavedUserList.Num(); ++i)
+	{
+		SavedUserList[i]->SetListNumber(i + 1);
+	}
+
 	PlayButtonSound();
 }
 
@@ -133,6 +141,10 @@ void UStartMenu::AddUser(const FText UserName)
 	if (SavedUser)
 	{
 		SavedUser->SetStartMenu(this);
+		SavedUser->SetUserName(UserName);
+		SavedUser->SetListNumber(SavedUserList.Num() + 1);
+		SavedUser->SetCreatedDate();
+
 		SavedUserList.Add(SavedUser);
 		
 		if (SavedGameBox)

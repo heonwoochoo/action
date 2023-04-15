@@ -53,6 +53,20 @@ protected:
 	void ChangeTextColor(FColor Color);
 
 private:
+	// 생성넘버
+	int32 ListNumber;
+
+	// 유저 이름
+	FText UserName;
+
+	// 생성 날짜
+	FDateTime CreatedDate;
+
+	// 마지막 플레이 날짜
+	FDateTime RecentDate;
+
+
+
 	// 클릭시 True
 	bool IsSelected = false;
 
@@ -69,4 +83,10 @@ public:
 	void UnCheckedButton();
 
 	void SetStartMenu(UStartMenu* UserWidget);
+
+	void SetUserName(FText Name);
+
+	void SetListNumber(int32 Num);
+
+	void SetCreatedDate();
 };

@@ -8,6 +8,8 @@
 #include "DefaultGameMode.h"
 #include "Components/TextBlock.h"
 #include "HUD/Menu/StartMenu.h"
+#include "Styling/SlateColor.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void USavedUser::NativeConstruct()
 {
@@ -71,11 +73,12 @@ void USavedUser::ChangeTextColor(FColor Color)
 {
 	if (ListNumberText && UserNameText && CreatedDateText && RecentDateText && PlayTimeText)
 	{
-		//ListNumberText->SetColorAndOpacity(Color);
-		//UserNameText->SetColorAndOpacity(Color);
-		//CreatedDateText->SetColorAndOpacity(Color);
-		//RecentDateText->SetColorAndOpacity(Color);
-		//PlayTimeText->SetColorAndOpacity(Color);
+		FSlateColor NewColor(Color);
+		ListNumberText->SetColorAndOpacity(NewColor);
+		UserNameText->SetColorAndOpacity(NewColor);
+		CreatedDateText->SetColorAndOpacity(NewColor);
+		RecentDateText->SetColorAndOpacity(NewColor);
+		PlayTimeText->SetColorAndOpacity(NewColor);
 	}
 }
 
@@ -103,4 +106,40 @@ void USavedUser::UnCheckedButton()
 void USavedUser::SetStartMenu(UStartMenu* UserWidget)
 {
 	StartMenu = UserWidget;
+}
+
+void USavedUser::SetUserName(FText Name)
+{
+	UserName = Name;
+
+	if (UserNameText)
+	{
+		UserNameText->SetText(UserName);
+	}
+}
+
+void USavedUser::SetListNumber(int32 Num)
+{
+	ListNumber = Num;
+
+	if (ListNumberText)
+	{
+		ListNumberText->SetText(FText::FromString(FString::FromInt(ListNumber)));
+	}
+}
+
+void USavedUser::SetCreatedDate()
+{
+	CreatedDate = UKismetMathLibrary::Now();
+
+	FString Year = FString::FromInt(CreatedDate.GetYear());
+	FString Month = FString::FromInt(CreatedDate.GetMonth());
+	FString Day = FString::FromInt(CreatedDate.GetDay());
+
+	FString DateText = Year + "/" + Month + "/" + Day;
+
+	if (CreatedDateText)
+	{
+		CreatedDateText->SetText(FText::FromString(DateText));
+	}
 }

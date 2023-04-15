@@ -107,8 +107,6 @@ private:
 	// StartMenu 인스턴스
 	UStartMenu* StartMenu;
 
-
-
 	// UI 생성시 호출
 	void InitUsernameTextBox();
 	void InitOKButton();
