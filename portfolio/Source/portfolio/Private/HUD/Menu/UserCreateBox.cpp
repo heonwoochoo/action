@@ -13,6 +13,7 @@ void UUserCreateBox::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	InitUsernameTextBox();
 	InitOKButton();
 	InitCancelButton();
 }
@@ -35,6 +36,7 @@ void UUserCreateBox::OnUnhoveredOKButton()
 
 void UUserCreateBox::OnClickedOKButton()
 {
+
 	PlayButtonSound();
 }
 
@@ -59,6 +61,66 @@ void UUserCreateBox::OnClickedCancelButton()
 	RemoveFromParent();
 
 	PlayButtonSound();
+}
+
+void UUserCreateBox::OnChangedEnterText(const FText& Text)
+{
+	CheckIsValidUserName(Text);
+}
+
+void UUserCreateBox::CheckIsValidUserName(const FText& Text)
+{
+	if (!ErrorMessageText) return;
+
+	FString InputText = Text.ToString();
+
+	int32 TextLength = InputText.Len();
+
+	// 글자수 미달
+	if (TextLength < MinUserNameLength)
+	{
+		ErrorMessageText->SetText(FText::FromName(ShortLengthMessage));
+		bIsValidUserName = false;
+		return;
+	}
+
+	// 글자수 초과
+	if (InputText.Len() > MaxUserNameLength)
+	{
+		ErrorMessageText->SetText(FText::FromName(ExceedMaxLengthMessage));
+		bIsValidUserName = false;
+		return;
+	}
+
+	for (auto& c : InputText)
+	{
+		if (isspace(c))
+		{
+			// 공백 포함
+			ErrorMessageText->SetText(FText::FromName(WhiteSpaceMessage));
+			bIsValidUserName = false;
+			return;
+		}
+		else if (!isalpha(c))
+		{
+			// 영문 아님
+			ErrorMessageText->SetText(FText::FromName(NeedAlphaMessage));
+			bIsValidUserName = false;
+			return;
+		}
+	}
+
+	ErrorMessageText->SetText(FText::FromName(" "));
+	bIsValidUserName = true;
+}
+
+void UUserCreateBox::InitUsernameTextBox()
+{
+	if (UsernameTextBox)
+	{
+		UsernameTextBox->OnTextChanged.AddDynamic(this, &UUserCreateBox::OnChangedEnterText);
+		CheckIsValidUserName(UsernameTextBox->GetText());
+	}
 }
 
 void UUserCreateBox::InitOKButton()
@@ -88,4 +150,9 @@ void UUserCreateBox::PlayButtonSound()
 	{
 		DefaultGameMode->PlayCheckButtonClickSound();
 	}
+}
+
+void UUserCreateBox::SetStartMenu(UStartMenu* UserWidget)
+{
+	StartMenu = UserWidget;
 }

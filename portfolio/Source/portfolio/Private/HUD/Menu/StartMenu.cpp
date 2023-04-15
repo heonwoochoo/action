@@ -38,6 +38,7 @@ void UStartMenu::OnClickedNewButton()
 	if (UserCreateBox)
 	{
 		UserCreateBox->AddToViewport(1);
+		UserCreateBox->SetStartMenu(this);
 	}
 
 	PlayButtonSound();
