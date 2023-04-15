@@ -5,6 +5,7 @@
 #include "Components/StackBox.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
+#include "HUD/Menu/UserCreateBox.h"
 
 void UStartMenu::NativeConstruct()
 {
@@ -33,6 +34,12 @@ void UStartMenu::OnUnhoveredNewButton()
 
 void UStartMenu::OnClickedNewButton()
 {
+	UserCreateBox = Cast<UUserCreateBox>(CreateWidget(this, UserCreateBoxClass));
+	if (UserCreateBox)
+	{
+		UserCreateBox->AddToViewport(1);
+	}
+
 	PlayButtonSound();
 }
 
@@ -76,6 +83,16 @@ void UStartMenu::OnUnhoveredDeleteButton()
 void UStartMenu::OnClickedDeleteButton()
 {
 	PlayButtonSound();
+}
+
+void UStartMenu::OnClickedBackButton()
+{
+	if (UserCreateBox)
+	{
+		UserCreateBox->RemoveFromParent();
+	}
+
+	Super::OnClickedBackButton();
 }
 
 void UStartMenu::InitNewButton()

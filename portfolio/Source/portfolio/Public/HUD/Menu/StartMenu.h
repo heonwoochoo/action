@@ -10,6 +10,7 @@ class UButton;
 class UImage;
 class UStackBox;
 class UTexture2D;
+class UUserCreateBox;
 
 UCLASS()
 class PORTFOLIO_API UStartMenu : public USubMenu
@@ -47,6 +48,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Texture")
 	UTexture2D* DeactivatedBox;
 
+	// 유저 생성 UI 클래스
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserWidget")
+	TSubclassOf<UUserCreateBox> UserCreateBoxClass;
+
+	// 유저 생성 UI 인스턴스
+	UUserCreateBox* UserCreateBox;
+
 	// ==========================
 	//		이벤트 발생시 호출
 	// ==========================
@@ -77,6 +85,8 @@ protected:
 
 	UFUNCTION()
 	void OnClickedDeleteButton();
+
+	virtual void OnClickedBackButton() override;
 
 private:
 	void InitNewButton();
