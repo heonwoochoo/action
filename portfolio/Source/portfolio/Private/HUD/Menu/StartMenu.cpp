@@ -6,6 +6,7 @@
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "HUD/Menu/UserCreateBox.h"
+#include "HUD/Menu/SavedUser.h"
 
 void UStartMenu::NativeConstruct()
 {
@@ -124,4 +125,29 @@ void UStartMenu::InitDeleteButton()
 		DeleteButton->OnUnhovered.AddDynamic(this, &UStartMenu::OnUnhoveredDeleteButton);
 		DeleteButton->OnClicked.AddDynamic(this, &UStartMenu::OnClickedDeleteButton);
 	}
+}
+
+void UStartMenu::AddUser(const FText UserName)
+{
+	USavedUser* SavedUser = Cast<USavedUser>(CreateWidget(this, SavedUserClass));
+	if (SavedUser)
+	{
+		SavedUser->SetStartMenu(this);
+		SavedUserList.Add(SavedUser);
+		
+		if (SavedGameBox)
+		{
+			SavedGameBox->AddChildToStackBox(SavedUser);
+		}
+	}
+}
+
+USavedUser* UStartMenu::GetSelectedUser() const
+{
+	return SelectedUser;
+}
+
+void UStartMenu::SetSelectedUser(USavedUser* SavedUser)
+{
+	SelectedUser = SavedUser;
 }

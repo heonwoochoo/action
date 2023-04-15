@@ -8,6 +8,7 @@
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 #include "DefaultGameMode.h"
+#include "HUD/Menu/StartMenu.h"
 
 void UUserCreateBox::NativeConstruct()
 {
@@ -36,6 +37,11 @@ void UUserCreateBox::OnUnhoveredOKButton()
 
 void UUserCreateBox::OnClickedOKButton()
 {
+	if (UsernameTextBox && StartMenu && bIsValidUserName)
+	{
+		StartMenu->AddUser(UsernameTextBox->GetText());
+		RemoveFromParent();
+	}
 
 	PlayButtonSound();
 }
