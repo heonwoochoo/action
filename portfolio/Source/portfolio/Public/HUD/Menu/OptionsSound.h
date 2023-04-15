@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "HUD/Menu/OptionsWidget.h"
-#include "DefaultGameInstance.h"
+#include "GameInstance/DefaultGameInstance.h"
 #include "OptionsSound.generated.h"
 
 class UButton;

@@ -6,7 +6,7 @@
 #include "Components/Image.h"
 #include "HUD/Menu/MainMenu.h"
 #include "Kismet/GameplayStatics.h"
-#include "DefaultGameMode.h"
+#include "GameMode/DefaultGameMode.h"
 
 void USubMenu::NativeConstruct()
 {

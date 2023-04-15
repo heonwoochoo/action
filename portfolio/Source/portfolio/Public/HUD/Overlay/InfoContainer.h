@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "ItemTypes.h"
+#include "Types/ItemTypes.h"
 #include "InfoContainer.generated.h"
 
 class UTextBlock;

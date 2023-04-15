@@ -2,7 +2,7 @@
 
 
 #include "Enemy/Man.h"
-#include "EnemyTypes.h"
+#include "Types/EnemyTypes.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Animation/AnimInstanceBase.h"
 #include "DefaultCharacter.h"

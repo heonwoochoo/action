@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Component/AssassinComponent.h"
-#include "CharacterTypes.h"
+#include "Types/CharacterTypes.h"
 #include "Enemy/EnemyBase.h"
 #include "Animation/AnimInstanceBase.h"
 #include "DefaultCharacter.h"

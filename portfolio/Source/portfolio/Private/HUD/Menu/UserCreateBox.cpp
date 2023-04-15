@@ -7,7 +7,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
-#include "DefaultGameMode.h"
+#include "GameMode/DefaultGameMode.h"
 #include "HUD/Menu/StartMenu.h"
 
 void UUserCreateBox::NativeConstruct()

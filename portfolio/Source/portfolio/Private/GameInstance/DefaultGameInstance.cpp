@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "DefaultGameInstance.h"
+#include "GameInstance/DefaultGameInstance.h"
 
 FSoundSettings UDefaultGameInstance::GetSoundSettings() const
 {

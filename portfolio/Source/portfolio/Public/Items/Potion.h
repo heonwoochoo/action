@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "ItemTypes.h"
+#include "Types/ItemTypes.h"
 #include "Potion.generated.h"
 
 class USphereComponent;

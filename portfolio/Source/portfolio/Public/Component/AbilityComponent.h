@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "CharacterTypes.h"
+#include "Types/CharacterTypes.h"
 #include "AbilityComponent.generated.h"
 
 class UCharacterDataAsset;

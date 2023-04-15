@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
-#include "CharacterTypes.h"
+#include "Types/CharacterTypes.h"
 #include "Particles/EmitterCameraLensEffectBase.h"
 #include "DefaultCharacter.generated.h"
 

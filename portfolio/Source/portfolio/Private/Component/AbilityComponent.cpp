@@ -5,7 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "DefaultCharacter.h"
 #include "Animation/AnimInstanceBase.h"
-#include "CharacterTypes.h"
+#include "Types/CharacterTypes.h"
 #include "Sound/SoundCue.h"
 
 // Sets default values for this component's properties

@@ -6,7 +6,7 @@
 #include "DefaultCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/ProgressBar.h"
-#include "CharacterTypes.h"
+#include "Types/CharacterTypes.h"
 #include "Component/AbilityComponent.h"
 #include "Components/Image.h"
 #include "Component/InventoryComponent.h"

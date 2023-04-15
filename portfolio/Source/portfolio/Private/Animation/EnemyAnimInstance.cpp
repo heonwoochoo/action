@@ -3,7 +3,7 @@
 
 #include "Animation/EnemyAnimInstance.h"
 #include "Enemy/EnemyBase.h"
-#include "EnemyTypes.h"
+#include "Types/EnemyTypes.h"
 
 void UEnemyAnimInstance::NativeInitializeAnimation()
 {

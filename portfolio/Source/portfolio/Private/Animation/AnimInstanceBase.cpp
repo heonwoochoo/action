@@ -6,7 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Component/AbilityComponent.h"
-#include "CharacterTypes.h"
+#include "Types/CharacterTypes.h"
 
 void UAnimInstanceBase::NativeInitializeAnimation()
 {

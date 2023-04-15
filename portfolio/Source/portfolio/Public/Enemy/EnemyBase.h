@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "EnemyTypes.h"
+#include "Types/EnemyTypes.h"
 #include "EnemyBase.generated.h"
 
 class UEnemyDataAsset;

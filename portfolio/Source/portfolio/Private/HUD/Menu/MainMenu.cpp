@@ -7,7 +7,7 @@
 #include "HUD/Menu/OptionsMenu.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "DefaultGameMode.h"
+#include "GameMode/DefaultGameMode.h"
 #include "HUD/Menu/StartMenu.h"
 
 void UMainMenu::NativeConstruct()

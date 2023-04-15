@@ -16,7 +16,7 @@
 #include "Controller/CharacterController.h"
 #include "HUD/DamageText.h"
 #include "HUD/TargetMark.h"
-#include "EnemyTypes.h"
+#include "Types/EnemyTypes.h"
 #include "Perception/PawnSensingComponent.h"
 #include "AIController.h"
 

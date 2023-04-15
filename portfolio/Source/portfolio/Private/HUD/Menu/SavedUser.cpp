@@ -5,7 +5,7 @@
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Kismet/GameplayStatics.h"
-#include "DefaultGameMode.h"
+#include "GameMode/DefaultGameMode.h"
 #include "Components/TextBlock.h"
 #include "HUD/Menu/StartMenu.h"
 #include "Styling/SlateColor.h"

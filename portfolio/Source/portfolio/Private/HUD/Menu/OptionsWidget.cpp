@@ -6,7 +6,7 @@
 #include "Components/Button.h"
 #include "HUD/Menu/OptionsMenu.h"
 #include "Kismet/GameplayStatics.h"
-#include "DefaultGameMode.h"
+#include "GameMode/DefaultGameMode.h"
 
 void UOptionsWidget::NativeConstruct()
 {
