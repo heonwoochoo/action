@@ -122,4 +122,9 @@ public:
 
 	// 선택된 유저를 목록에서 제거, 세이브 파일 삭제
 	void DeleteSelectedUser();
+
+	// 버튼을 활성/비활성화
+	void SetEnableNewButton(bool IsEnable) const;
+	void SetEnableLoadButton(bool IsEnable) const;
+	void SetEnableDeleteButton(bool IsEnable) const;
 };

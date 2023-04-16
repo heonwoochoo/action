@@ -128,6 +128,7 @@ void UStartMenu::InitLoadButton()
 		LoadButton->OnHovered.AddDynamic(this, &UStartMenu::OnHoveredLoadButton);
 		LoadButton->OnUnhovered.AddDynamic(this, &UStartMenu::OnUnhoveredLoadButton);
 		LoadButton->OnClicked.AddDynamic(this, &UStartMenu::OnClickedLoadButton);
+		SetEnableLoadButton(false);
 	}
 }
 
@@ -138,6 +139,7 @@ void UStartMenu::InitDeleteButton()
 		DeleteButton->OnHovered.AddDynamic(this, &UStartMenu::OnHoveredDeleteButton);
 		DeleteButton->OnUnhovered.AddDynamic(this, &UStartMenu::OnUnhoveredDeleteButton);
 		DeleteButton->OnClicked.AddDynamic(this, &UStartMenu::OnClickedDeleteButton);
+		SetEnableDeleteButton(false);
 	}
 }
 
@@ -247,3 +249,52 @@ void UStartMenu::DeleteSelectedUser()
 		}
 	}
 }
+
+void UStartMenu::SetEnableNewButton(bool IsEnable) const
+{
+	if (NewButton)
+	{
+		if (IsEnable)
+		{
+			NewButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f));
+		}
+		else
+		{
+			NewButton->SetColorAndOpacity(FLinearColor(0.2f, 0.2f, 0.2f));
+		}
+		NewButton->SetIsEnabled(IsEnable);
+	}
+}
+
+void UStartMenu::SetEnableLoadButton(bool IsEnable) const
+{
+	if (LoadButton)
+	{
+		if (IsEnable)
+		{
+			LoadButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f));
+		}
+		else
+		{
+			LoadButton->SetColorAndOpacity(FLinearColor(0.2f, 0.2f, 0.2f));
+		}
+		LoadButton->SetIsEnabled(IsEnable);
+	}
+}
+
+void UStartMenu::SetEnableDeleteButton(bool IsEnable) const
+{
+	if (DeleteButton)
+	{
+		if (IsEnable)
+		{
+			DeleteButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f));
+		}
+		else
+		{
+			DeleteButton->SetColorAndOpacity(FLinearColor(0.2f, 0.2f, 0.2f));
+		}
+		DeleteButton->SetIsEnabled(IsEnable);
+	}
+}
+

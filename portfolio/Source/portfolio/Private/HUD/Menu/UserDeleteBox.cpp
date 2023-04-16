@@ -17,6 +17,8 @@ void UUserDeleteBox::OnClickedOKButton()
 	if (StartMenu)
 	{
 		StartMenu->DeleteSelectedUser();
+		StartMenu->SetEnableLoadButton(false);
+		StartMenu->SetEnableDeleteButton(false);
 	}
 
 	RemoveFromParent();

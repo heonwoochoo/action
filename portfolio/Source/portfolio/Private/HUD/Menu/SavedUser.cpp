@@ -47,6 +47,8 @@ void USavedUser::OnClickedSelectButton()
 		if (PrevSelectedUser == nullptr)
 		{
 			StartMenu->SetSelectedUser(this);
+			StartMenu->SetEnableLoadButton(true);
+			StartMenu->SetEnableDeleteButton(true);
 		}
 		else if (PrevSelectedUser != this)
 		{
