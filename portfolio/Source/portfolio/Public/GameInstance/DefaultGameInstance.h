@@ -24,6 +24,10 @@ private:
 
 	FString DefaultSlot;
 
+	// 유저가 최초로 생성되는 월드
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "World", meta = (AllowPrivateAccess = "true"))
+	TSoftObjectPtr<UWorld> DefaultWorldLevel;
+
 protected:
 	// 생성된 유저의 고유한 슬롯 이름을 저장하고 있는 클래스
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SaveGame");
@@ -62,4 +66,12 @@ public:
 
 	// 특정 유저의 생성 날짜 얻기
 	FDateTime GetUserCreatedDate(FString UserName);
+
+	// 기본 오픈월드 열기
+	void OpenDefaultWorldLevel();
+
+	// 로드한 세이브 게임 인스턴스 저장
+	void SetUserSaveGame(UUserSaveGame* SaveGame);
+	
+	UUserSaveGame* GetUserSaveGame() const;
 };

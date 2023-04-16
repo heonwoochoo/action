@@ -11,6 +11,7 @@
 #include "GameInstance/DefaultGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "HUD/Menu/UserDeleteBox.h"
+#include "SaveGame/UserSaveGame.h"
 
 void UStartMenu::NativeConstruct()
 {
@@ -70,6 +71,10 @@ void UStartMenu::OnUnhoveredLoadButton()
 void UStartMenu::OnClickedLoadButton()
 {
 	PlayButtonSound();
+
+	PlayOpenWorld();
+
+	RemoveFromParent();
 }
 
 void UStartMenu::OnHoveredDeleteButton()
@@ -103,6 +108,7 @@ void UStartMenu::OnClickedDeleteButton()
 
 void UStartMenu::OnClickedBackButton()
 {
+	// 한번씩 에러가 남, 크게 중요한건 아니라 나중에 해결방안 찾아보기
 	//if (UserCreateBox)
 	//{
 	//	UserCreateBox->RemoveFromParent();
@@ -182,6 +188,30 @@ void UStartMenu::LoadUserNameFromSaveGame()
 			{
 				// 저장된 유저 이름과 실제 세이브 파일이 일치하지 않을 경우 리스트에서 삭제
 				DefaultGameInstance->RemoveUserFromDefaultSaveGame(UserName);
+			}
+		}
+	}
+}
+
+void UStartMenu::PlayOpenWorld()
+{
+	// 세이브 파일로드
+	if (SelectedUser)
+	{
+		const FString UserName = SelectedUser->GetUserName().ToString();
+		bool IsExist = UGameplayStatics::DoesSaveGameExist(UserName, 0);
+		if (IsExist)
+		{
+			UUserSaveGame* UserSaveGame = Cast<UUserSaveGame>(UGameplayStatics::LoadGameFromSlot(UserName, 0));
+			if (UserSaveGame)
+			{
+				UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+				if (GameInstance)
+				{
+					GameInstance->SetUserSaveGame(UserSaveGame);
+					UserSaveGame->SlotName = UserName;
+					GameInstance->OpenDefaultWorldLevel();
+				}
 			}
 		}
 	}

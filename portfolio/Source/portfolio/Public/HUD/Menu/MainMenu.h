@@ -49,10 +49,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserWidget")
 	TSubclassOf<USubMenu> OptionsMenuClass;
 
-	// 게임 시작시 열리는 레벨
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "World")
-	TSoftObjectPtr<UWorld> DefaultLevel;
-
 	UFUNCTION()
 	void OnHoveredStartButton();
 

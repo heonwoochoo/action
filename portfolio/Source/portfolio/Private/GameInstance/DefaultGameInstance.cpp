@@ -136,3 +136,25 @@ FDateTime UDefaultGameInstance::GetUserCreatedDate(FString UserName)
 	}
 	return FDateTime();
 }
+
+void UDefaultGameInstance::OpenDefaultWorldLevel()
+{
+	// 오픈월드 열기
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	if (PlayerController)
+	{
+		PlayerController->SetInputMode(FInputModeGameOnly());
+		PlayerController->SetShowMouseCursor(false);
+		UGameplayStatics::OpenLevelBySoftObjectPtr(this, DefaultWorldLevel);
+	}
+}
+
+void UDefaultGameInstance::SetUserSaveGame(UUserSaveGame* SaveGame)
+{
+	UserSaveGame = SaveGame;
+}
+
+UUserSaveGame* UDefaultGameInstance::GetUserSaveGame() const
+{
+	return UserSaveGame;
+}

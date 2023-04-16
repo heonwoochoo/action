@@ -49,15 +49,6 @@ void UMainMenu::OnClickedStartButton()
 		}
 	}
 
-	//// 오픈월드 열기
-	//APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
-	//if (PlayerController)
-	//{
-	//	PlayerController->SetInputMode(FInputModeGameOnly());
-	//	PlayerController->SetShowMouseCursor(false);
-	//	UGameplayStatics::OpenLevelBySoftObjectPtr(this, DefaultLevel);
-	//}
-
 	PlayButtonClickSound();
 }
 

@@ -114,6 +114,8 @@ private:
 
 	void LoadUserNameFromSaveGame();
 
+	void PlayOpenWorld();
+
 public:
 	void AddUser(const FText UserName);
 	
