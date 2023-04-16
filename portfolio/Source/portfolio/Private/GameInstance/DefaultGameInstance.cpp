@@ -34,18 +34,10 @@ void UDefaultGameInstance::LoadDefaultSaveGame()
 	if (IsExist)
 	{
 		DefaultSaveGame = Cast<UDefaultSaveGame>(UGameplayStatics::LoadGameFromSlot(DefaultSlot, 0));
-		SaveDefaultSaveGame();
 	}
 	else
 	{
 		DefaultSaveGame = Cast<UDefaultSaveGame>(UGameplayStatics::CreateSaveGameObject(DefaultSaveGameClass));
-	}
-}
-
-void UDefaultGameInstance::SaveDefaultSaveGame()
-{
-	if (DefaultSaveGame)
-	{
 		UGameplayStatics::SaveGameToSlot(DefaultSaveGame, DefaultSlot, 0);
 	}
 }
@@ -54,8 +46,8 @@ void UDefaultGameInstance::AddUserToDefaultSaveGame(FString UserName)
 {
 	if (DefaultSaveGame)
 	{
-		DefaultSaveGame->AddUser(UserName);
-		SaveDefaultSaveGame();
+		DefaultSaveGame->UserNames.Add(UserName);
+		UGameplayStatics::SaveGameToSlot(DefaultSaveGame, DefaultSlot, 0);
 	}
 }
 
@@ -63,8 +55,8 @@ void UDefaultGameInstance::RemoveUserFromDefaultSaveGame(FString UserName)
 {
 	if (DefaultSaveGame)
 	{
-		DefaultSaveGame->RemoveUser(UserName);
-		SaveDefaultSaveGame();
+		DefaultSaveGame->UserNames.Remove(UserName);
+		UGameplayStatics::SaveGameToSlot(DefaultSaveGame, DefaultSlot, 0);
 	}
 }
 
@@ -72,7 +64,7 @@ TArray<FString> UDefaultGameInstance::GetAllSavedUserName() const
 {
 	if (DefaultSaveGame)
 	{
-		return DefaultSaveGame->GetAllUserName();
+		return DefaultSaveGame->UserNames;
 	}
 	else
 	{
@@ -88,8 +80,8 @@ void UDefaultGameInstance::CreateUserSaveGame(FString UserName)
 		UUserSaveGame* NewUserSaveGame = Cast<UUserSaveGame>(UGameplayStatics::CreateSaveGameObject(UserSaveGameClass));
 		if (NewUserSaveGame)
 		{
-			NewUserSaveGame->SetSlotName(UserName);
-			NewUserSaveGame->SetCreatedDate(UKismetMathLibrary::Now());
+			NewUserSaveGame->SlotName = UserName;
+			NewUserSaveGame->CreatedDate = UKismetMathLibrary::Now();
 			bool IsSuccess = UGameplayStatics::SaveGameToSlot(NewUserSaveGame, UserName, 0);
 			if (IsSuccess)
 			{
@@ -134,7 +126,7 @@ FDateTime UDefaultGameInstance::GetUserCreatedDate(FString UserName)
 		UUserSaveGame* LoadedUserSaveGame = Cast<UUserSaveGame>(UGameplayStatics::LoadGameFromSlot(UserName, 0));
 		if (LoadedUserSaveGame)
 		{
-			return LoadedUserSaveGame->GetCreatedDate();
+			return LoadedUserSaveGame->CreatedDate;
 		}
 	}
 	return FDateTime();

@@ -42,9 +42,6 @@ public:
 	// 스타트 메뉴에서 불러옴
 	void LoadDefaultSaveGame();
 
-	// 유저 생성, 삭제시 호출
-	void SaveDefaultSaveGame();
-
 	// 유저 생성
 	void AddUserToDefaultSaveGame(FString UserName);
 

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -14,23 +14,17 @@ class PORTFOLIO_API UUserSaveGame : public USaveGame
 {
 	GENERATED_BODY()
 	
-private:
-	// »ı¼º½Ã À¯Àú ÀÌ¸§°ú ÀÏÄ¡
+public:
+	// ìƒì„±ì‹œ ìœ ì € ì´ë¦„ê³¼ ì¼ì¹˜
+	UPROPERTY(VisibleAnywhere, Category = Basic)
 	FString SlotName;
 
-	// »ı¼º ³¯Â¥
+	// ìƒì„± ë‚ ì§œ
+	UPROPERTY(VisibleAnywhere, Category = Basic)
 	FDateTime CreatedDate;
 
-	// ¸¶Áö¸· ÇÃ·¹ÀÌ ³¯Â¥
+	// ë§ˆì§€ë§‰ í”Œë ˆì´ ë‚ ì§œ
+	UPROPERTY(VisibleAnywhere, Category = Basic)
 	FDateTime RecentDate;
 
-public:
-	FString GetSlotName() const;
-	void SetSlotName(FString Name);
-
-	FDateTime GetCreatedDate() const;
-	void SetCreatedDate(FDateTime Date);
-
-	FDateTime GetRecentDate() const;
-	void SetRecentDate(FDateTime Date);
 };

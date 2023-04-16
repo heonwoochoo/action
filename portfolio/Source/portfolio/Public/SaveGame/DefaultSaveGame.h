@@ -15,19 +15,9 @@ class PORTFOLIO_API UDefaultSaveGame : public USaveGame
 {
 	GENERATED_BODY()
 
-private:
-	// 해당 클래스의 슬롯 이름
-	FString SlotName = "Default";
-
+public:
 	// 저장된 유저의 고유한 이름
+	UPROPERTY(VisibleAnywhere, Category = Basic)
 	TArray<FString> UserNames;
 
-public:
-	FString GetSlotName() const;
-
-	void AddUser(FString UserName);
-	
-	void RemoveUser(FString UserName);
-
-	TArray<FString> GetAllUserName() const;
 };

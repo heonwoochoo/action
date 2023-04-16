@@ -120,10 +120,10 @@ void UStartMenu::OnClickedDeleteButton()
 
 void UStartMenu::OnClickedBackButton()
 {
-	if (UserCreateBox)
-	{
-		UserCreateBox->RemoveFromParent();
-	}
+	//if (UserCreateBox)
+	//{
+	//	UserCreateBox->RemoveFromParent();
+	//}
 
 	Super::OnClickedBackButton();
 }
@@ -169,12 +169,10 @@ void UStartMenu::LoadUserNameFromSaveGame()
 
 		TArray<FString> UserNames = DefaultGameInstance->GetAllSavedUserName();
 
-		UE_LOG(LogTemp, Warning, TEXT("UserNames Number = %d"), UserNames.Num());
 		if (UserNames.Num() < 1) return;
 
 		for (FString UserName : UserNames)
 		{
-			
 			bool IsExist = UGameplayStatics::DoesSaveGameExist(UserName, 0);
 			if (IsExist)
 			{
@@ -182,7 +180,6 @@ void UStartMenu::LoadUserNameFromSaveGame()
 				USavedUser* SavedUser = Cast<USavedUser>(CreateWidget(this, SavedUserClass));
 				if (SavedUser)
 				{
-					
 					SavedUser->SetStartMenu(this);
 					SavedUser->SetUserName(FText::FromString(UserName));
 					SavedUser->SetListNumber(SavedUserList.Num() + 1);
