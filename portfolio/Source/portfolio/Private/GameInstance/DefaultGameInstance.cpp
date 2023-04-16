@@ -7,6 +7,11 @@
 #include "SaveGame/UserSaveGame.h"
 #include "Kismet/KismetMathLibrary.h"
 
+UDefaultGameInstance::UDefaultGameInstance()
+	:DefaultSlot("Default")
+{
+}
+
 FSoundSettings UDefaultGameInstance::GetSoundSettings() const
 {
 	return SoundSettings;

@@ -15,28 +15,12 @@ void UUserCreateBox::NativeConstruct()
 	Super::NativeConstruct();
 
 	InitUsernameTextBox();
-	InitOKButton();
-	InitCancelButton();
-}
-
-void UUserCreateBox::OnHoveredOKButton()
-{
-	if (ActivatedBox && OKImage)
-	{
-		OKImage->SetBrushFromTexture(ActivatedBox);
-	}
-}
-
-void UUserCreateBox::OnUnhoveredOKButton()
-{
-	if (DeactivatedBox && OKImage)
-	{
-		OKImage->SetBrushFromTexture(DeactivatedBox);
-	}
 }
 
 void UUserCreateBox::OnClickedOKButton()
 {
+	Super::OnClickedOKButton();
+
 	if (UsernameTextBox)
 	{
 		CheckExistUserName(UsernameTextBox->GetText());
@@ -47,31 +31,6 @@ void UUserCreateBox::OnClickedOKButton()
 			RemoveFromParent();
 		}
 	}
-
-	PlayButtonSound();
-}
-
-void UUserCreateBox::OnHoveredCancelButton()
-{
-	if (ActivatedBox && CancelImage)
-	{
-		CancelImage->SetBrushFromTexture(ActivatedBox);
-	}
-}
-
-void UUserCreateBox::OnUnhoveredCancelButton()
-{
-	if (DeactivatedBox && CancelImage)
-	{
-		CancelImage->SetBrushFromTexture(DeactivatedBox);
-	}
-}
-
-void UUserCreateBox::OnClickedCancelButton()
-{
-	RemoveFromParent();
-
-	PlayButtonSound();
 }
 
 void UUserCreateBox::OnChangedEnterText(const FText& Text)
@@ -148,35 +107,6 @@ void UUserCreateBox::InitUsernameTextBox()
 	{
 		UsernameTextBox->OnTextChanged.AddDynamic(this, &UUserCreateBox::OnChangedEnterText);
 		CheckIsValidUserName(UsernameTextBox->GetText());
-	}
-}
-
-void UUserCreateBox::InitOKButton()
-{
-	if (OKButton)
-	{
-		OKButton->OnHovered.AddDynamic(this, &UUserCreateBox::OnHoveredOKButton);
-		OKButton->OnUnhovered.AddDynamic(this, &UUserCreateBox::OnUnhoveredOKButton);
-		OKButton->OnClicked.AddDynamic(this, &UUserCreateBox::OnClickedOKButton);
-	}
-}
-
-void UUserCreateBox::InitCancelButton()
-{
-	if (CancelButton)
-	{
-		CancelButton->OnHovered.AddDynamic(this, &UUserCreateBox::OnHoveredCancelButton);
-		CancelButton->OnUnhovered.AddDynamic(this, &UUserCreateBox::OnUnhoveredCancelButton);
-		CancelButton->OnClicked.AddDynamic(this, &UUserCreateBox::OnClickedCancelButton);
-	}
-}
-
-void UUserCreateBox::PlayButtonSound()
-{
-	ADefaultGameMode* DefaultGameMode = Cast<ADefaultGameMode>(UGameplayStatics::GetGameMode(this));
-	if (DefaultGameMode)
-	{
-		DefaultGameMode->PlayCheckButtonClickSound();
 	}
 }
 

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "HUD/TwoButtonWidget.h"
 #include "UserCreateBox.generated.h"
 
 class UButton;
@@ -14,7 +14,7 @@ class UTextBlock;
 class UStartMenu;
 
 UCLASS()
-class PORTFOLIO_API UUserCreateBox : public UUserWidget
+class PORTFOLIO_API UUserCreateBox : public UTwoButtonWidget
 {
 	GENERATED_BODY()
 	
@@ -22,50 +22,13 @@ protected:
 	virtual void NativeConstruct() override;
 
 	// 텍스쳐
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Texture")
-	UTexture2D* ActivatedBox;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Texture")
-	UTexture2D* DeactivatedBox;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* ErrorMessageText;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UEditableTextBox* UsernameTextBox;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UImage* OKImage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UButton* OKButton;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UImage* CancelImage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UButton* CancelButton;
-
-	UFUNCTION()
-	void OnHoveredOKButton();
-
-	UFUNCTION()
-	void OnUnhoveredOKButton();
-
-	UFUNCTION()
-	void OnClickedOKButton();
-
-	UFUNCTION()
-	void OnHoveredCancelButton();
-
-	UFUNCTION()
-	void OnUnhoveredCancelButton();
-
-	UFUNCTION()
-	void OnClickedCancelButton();
-
 	UFUNCTION()
 	void OnChangedEnterText(const FText& Text);
+
+	virtual void OnClickedOKButton() override;
 
 private:
 	//============================================================
@@ -102,7 +65,6 @@ private:
 	// 유효한 이름인가?
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UserName", meta = (AllowPrivateAccess = "true"))
 	bool bIsValidUserName = false;
-
 	
 
 	// 입력으로 들어온 문자열 검사, 유효하지 않은 문자 입력시 에러 메세지 나타냄
@@ -112,17 +74,11 @@ private:
 	void CheckExistUserName(const FText& Text);
 
 	//==============================================================
-
 	// StartMenu 인스턴스
 	UStartMenu* StartMenu;
 
 	// UI 생성시 호출
 	void InitUsernameTextBox();
-	void InitOKButton();
-	void InitCancelButton();
-
-	// OK, Cancel 버튼 클릭시 재생
-	void PlayButtonSound();
 
 public:
 	void SetStartMenu(UStartMenu* UserWidget);

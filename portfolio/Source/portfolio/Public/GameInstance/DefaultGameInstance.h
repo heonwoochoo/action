@@ -16,10 +16,13 @@ class PORTFOLIO_API UDefaultGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
+public:
+	UDefaultGameInstance();
+
 private:
 	FSoundSettings SoundSettings;
 
-	FString DefaultSlot = "Default";
+	FString DefaultSlot;
 
 protected:
 	// 생성된 유저의 고유한 슬롯 이름을 저장하고 있는 클래스

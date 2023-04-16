@@ -12,6 +12,7 @@ class UStackBox;
 class UTexture2D;
 class UUserCreateBox;
 class USavedUser;
+class UUserDeleteBox;
 
 UCLASS()
 class PORTFOLIO_API UStartMenu : public USubMenu
@@ -55,6 +56,13 @@ protected:
 
 	// 유저 생성 UI 인스턴스
 	UUserCreateBox* UserCreateBox;
+
+	// 유저 삭제 창 UI 클래스
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserWidget")
+	TSubclassOf<UUserDeleteBox> UserDeleteBoxClass;
+
+	// 유저 삭제 UI 인스턴스
+	UUserDeleteBox* UserDeleteBox;
 
 	// 리스트에 들어갈 UI 클래스
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserWidget")
@@ -105,9 +113,13 @@ private:
 	void InitDeleteButton();
 
 	void LoadUserNameFromSaveGame();
+
 public:
 	void AddUser(const FText UserName);
 	
 	USavedUser* GetSelectedUser() const;
 	void SetSelectedUser(USavedUser* SavedUser);
+
+	// 선택된 유저를 목록에서 제거, 세이브 파일 삭제
+	void DeleteSelectedUser();
 };

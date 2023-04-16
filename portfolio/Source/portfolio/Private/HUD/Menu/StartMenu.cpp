@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameInstance/DefaultGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "HUD/Menu/UserDeleteBox.h"
 
 void UStartMenu::NativeConstruct()
 {
@@ -89,30 +90,12 @@ void UStartMenu::OnUnhoveredDeleteButton()
 
 void UStartMenu::OnClickedDeleteButton()
 {
-	if (SelectedUser)
+	UserDeleteBox = Cast<UUserDeleteBox>(CreateWidget(this, UserDeleteBoxClass));
+	if (UserDeleteBox && SelectedUser)
 	{
-		UDefaultGameInstance* DefaultGameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
-		if (DefaultGameInstance)
-		{
-			FString UserName = SelectedUser->GetUserName().ToString();
-			DefaultGameInstance->RemoveUserSaveGame(UserName);
-		}
-
-		// 멤버 변수 데이터 업데이트
-		SavedUserList.Remove(SelectedUser);
-
-		// UI 인스턴스 제거
-		SelectedUser->RemoveFromParent();
-
-		if (SelectedUser)
-		{
-			SelectedUser = nullptr;
-		}
-
-		for (int32 i = 0; i < SavedUserList.Num(); ++i)
-		{
-			SavedUserList[i]->SetListNumber(i + 1);
-		}
+		UserDeleteBox->AddToViewport(1);
+		UserDeleteBox->SetStartMenu(this);
+		UserDeleteBox->SetUserNameText(SelectedUser->GetUserName());
 	}
 
 	PlayButtonSound();
@@ -234,4 +217,33 @@ USavedUser* UStartMenu::GetSelectedUser() const
 void UStartMenu::SetSelectedUser(USavedUser* SavedUser)
 {
 	SelectedUser = SavedUser;
+}
+
+void UStartMenu::DeleteSelectedUser()
+{
+	if (SelectedUser)
+	{
+		UDefaultGameInstance* DefaultGameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+		if (DefaultGameInstance)
+		{
+			FString UserName = SelectedUser->GetUserName().ToString();
+			DefaultGameInstance->RemoveUserSaveGame(UserName);
+		}
+
+		// 멤버 변수 데이터 업데이트
+		SavedUserList.Remove(SelectedUser);
+
+		// UI 인스턴스 제거
+		SelectedUser->RemoveFromParent();
+
+		if (SelectedUser)
+		{
+			SelectedUser = nullptr;
+		}
+
+		for (int32 i = 0; i < SavedUserList.Num(); ++i)
+		{
+			SavedUserList[i]->SetListNumber(i + 1);
+		}
+	}
 }
