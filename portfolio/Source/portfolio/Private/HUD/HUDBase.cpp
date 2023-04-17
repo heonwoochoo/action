@@ -9,6 +9,9 @@
 #include "HUD/Overlay/InfoContainer.h"
 #include "HUD/ComboCountWidget.h"
 #include "HUD/OverlappedItemWidget.h"
+#include "HUD/Menu/InGameMenu.h"
+#include "Kismet/GameplayStatics.h"
+#include "Controller/CharacterController.h"
 
 AHUDBase::AHUDBase()
 {
@@ -93,4 +96,42 @@ void AHUDBase::InitScreenOverlay()
 	InitInfoContainer();
 	InitComboCountWidget();
 	InitOverlappedItemWidget();
+}
+
+void AHUDBase::OpenInGameMenu()
+{
+	if (InGameMenuClass)
+	{
+		InGameMenuWidget = Cast<UInGameMenu>(CreateWidget(GetWorld(), InGameMenuClass));
+		if (InGameMenuWidget)
+		{
+			InGameMenuWidget->AddToViewport();
+
+			ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+			if (CharacterController)
+			{
+				CharacterController->SetShowMouseCursor(true);
+				CharacterController->SetInputMode(FInputModeGameAndUI());
+				CharacterController->SetIgnoreLookInput(true);
+				CharacterController->SetIgnoreMoveInput(true);
+			}
+		}
+	}
+}
+
+void AHUDBase::CloseInGameMenu()
+{
+	if (InGameMenuWidget)
+	{
+		InGameMenuWidget->PlayHideAnimation();
+	}
+
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		CharacterController->SetShowMouseCursor(false);
+		CharacterController->SetInputMode(FInputModeGameOnly());
+		CharacterController->ResetIgnoreLookInput();
+		CharacterController->ResetIgnoreMoveInput();
+	}
 }

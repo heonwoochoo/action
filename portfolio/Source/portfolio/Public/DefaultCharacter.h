@@ -95,6 +95,8 @@ protected:
 	void ItemManager_6();
 	void PickupItem();
 
+	/** 인게임 메뉴 토글 */
+	void HandleInGameMenu();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackForwardDistance = 50.f;
@@ -195,6 +197,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PickupAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* InGameMenuAction;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability, meta = (AllowPrivateAccess = "true"))
 	UAbilityComponent* AbilityComponent;
 
@@ -207,6 +212,9 @@ private:
 	UAnimInstanceBase* AnimInstance;
 	
 	AHUDBase* HUDBase;
+
+	// 인게임 메뉴창 오픈 여부
+	bool IsOpenInGameMenu = false;
 
 	bool bCanAttack = true;
 

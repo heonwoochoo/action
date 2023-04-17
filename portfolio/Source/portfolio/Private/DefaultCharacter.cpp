@@ -169,12 +169,15 @@ void ADefaultCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 		EnhancedInputComponent->BindAction(Item5Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::ItemManager_5);
 		EnhancedInputComponent->BindAction(Item6Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::ItemManager_6);
 		EnhancedInputComponent->BindAction(PickupAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::PickupItem);
+		
+		// Open widget
+		EnhancedInputComponent->BindAction(InGameMenuAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::HandleInGameMenu);
 	}
 }
 
 void ADefaultCharacter::Move(const FInputActionValue& Value)
 {
-	if (IsPlayerDead()) return;
+	if (IsPlayerDead() || IsOpenInGameMenu) return;
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -215,7 +218,7 @@ void ADefaultCharacter::Move(const FInputActionValue& Value)
 
 void ADefaultCharacter::MoveEnd()
 {
-	if (IsPlayerDead()) return;
+	if (IsPlayerDead() || IsOpenInGameMenu) return;
 	CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 }
 
@@ -234,7 +237,7 @@ void ADefaultCharacter::Look(const FInputActionValue& Value)
 
 void ADefaultCharacter::Jump()
 {
-	if (IsPlayerDead()) return;
+	if (IsPlayerDead() || IsOpenInGameMenu) return;
 	CharacterActionState = ECharacterActionState::ECAS_Jump;
 	if (!bCanDoubleJump)
 	{
@@ -248,7 +251,7 @@ void ADefaultCharacter::Jump()
 
 void ADefaultCharacter::DefaultAttack(const FInputActionValue& Value)
 {
-	if (IsPlayerDead()) return;
+	if (IsPlayerDead() || IsOpenInGameMenu) return;
 	if (CharacterActionState == ECharacterActionState::ECAS_Unoccupied
 		|| CharacterActionState == ECharacterActionState::ECAS_AttackCombo
 		|| CharacterActionState == ECharacterActionState::ECAS_MoveForward
@@ -291,7 +294,7 @@ void ADefaultCharacter::DefaultAttack(const FInputActionValue& Value)
 
 void ADefaultCharacter::OnSprint()
 {
-	if (IsPlayerDead()) return;
+	if (IsPlayerDead() || IsOpenInGameMenu) return;
 	if (GetVelocity().Size() > 0.f)
 	{
 		if (CharacterActionState != ECharacterActionState::ECAS_Jump)
@@ -307,7 +310,7 @@ void ADefaultCharacter::OnSprint()
 
 void ADefaultCharacter::OffSprint()
 {
-	if (IsPlayerDead()) return;
+	if (IsPlayerDead() || IsOpenInGameMenu) return;
 	if (CharacterActionState != ECharacterActionState::ECAS_Jump)
 	{
 		CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
@@ -319,7 +322,7 @@ void ADefaultCharacter::OffSprint()
 
 void ADefaultCharacter::OnEvade()
 {
-	if (IsPlayerDead()) return;
+	if (IsPlayerDead() || IsOpenInGameMenu) return;
 	if (AnimInstance && GetVelocity().Size() 
 		&& !GetCharacterMovement()->IsFalling()
 		&& CharacterActionState != ECharacterActionState::ECAS_Evade
@@ -355,7 +358,7 @@ void ADefaultCharacter::OnEvade()
 
 void ADefaultCharacter::SkillManagerOne()
 {
-	if (IsPlayerDead()) return;
+	if (IsPlayerDead() || IsOpenInGameMenu) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		
@@ -365,7 +368,7 @@ void ADefaultCharacter::SkillManagerOne()
 
 void ADefaultCharacter::SkillManagerTwo()
 {
-	if (IsPlayerDead()) return;
+	if (IsPlayerDead() || IsOpenInGameMenu) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillTwo();
@@ -374,7 +377,7 @@ void ADefaultCharacter::SkillManagerTwo()
 
 void ADefaultCharacter::SkillManagerThree()
 {
-	if (IsPlayerDead()) return;
+	if (IsPlayerDead() || IsOpenInGameMenu) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillThree();
@@ -383,7 +386,7 @@ void ADefaultCharacter::SkillManagerThree()
 
 void ADefaultCharacter::SkillManagerFour()
 {
-	if (IsPlayerDead()) return;
+	if (IsPlayerDead() || IsOpenInGameMenu) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillFour();
@@ -392,7 +395,7 @@ void ADefaultCharacter::SkillManagerFour()
 
 void ADefaultCharacter::ItemManager_1()
 {
-	if (IsPlayerDead()) return;
+	if (IsPlayerDead() || IsOpenInGameMenu) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->ItemHandle_1();
@@ -401,7 +404,7 @@ void ADefaultCharacter::ItemManager_1()
 
 void ADefaultCharacter::ItemManager_2()
 {
-	if (IsPlayerDead()) return;
+	if (IsPlayerDead() || IsOpenInGameMenu) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->ItemHandle_2();
@@ -410,7 +413,7 @@ void ADefaultCharacter::ItemManager_2()
 
 void ADefaultCharacter::ItemManager_3()
 {
-	if (IsPlayerDead()) return;
+	if (IsPlayerDead() || IsOpenInGameMenu) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->ItemHandle_3();
@@ -419,7 +422,7 @@ void ADefaultCharacter::ItemManager_3()
 
 void ADefaultCharacter::ItemManager_4()
 {
-	if (IsPlayerDead()) return;
+	if (IsPlayerDead() || IsOpenInGameMenu) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->ItemHandle_4();
@@ -428,7 +431,7 @@ void ADefaultCharacter::ItemManager_4()
 
 void ADefaultCharacter::ItemManager_5()
 {
-	if (IsPlayerDead()) return;
+	if (IsPlayerDead() || IsOpenInGameMenu) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->ItemHandle_5();
@@ -437,7 +440,7 @@ void ADefaultCharacter::ItemManager_5()
 
 void ADefaultCharacter::ItemManager_6()
 {
-	if (IsPlayerDead()) return;
+	if (IsPlayerDead() || IsOpenInGameMenu) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->ItemHandle_6();
@@ -446,6 +449,7 @@ void ADefaultCharacter::ItemManager_6()
 
 void ADefaultCharacter::PickupItem()
 {
+	if (IsOpenInGameMenu) return;
 	if (OverlappedItem)
 	{
 		if (OverlappedItem->ActorHasTag(FName("Potion")))
@@ -458,6 +462,25 @@ void ADefaultCharacter::PickupItem()
 		}
 
 		PlaySoundCue(PickupSound);
+	}
+}
+
+void ADefaultCharacter::HandleInGameMenu()
+{
+	if (HUDBase)
+	{
+		if (!IsOpenInGameMenu)
+		{
+			// 메뉴 열기
+			IsOpenInGameMenu = true;
+			HUDBase->OpenInGameMenu();
+		}
+		else
+		{
+			// 메뉴 닫기
+			IsOpenInGameMenu = false;
+			HUDBase->CloseInGameMenu();
+		}
 	}
 }
 

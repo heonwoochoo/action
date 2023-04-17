@@ -89,9 +89,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* LevelText;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* GoldText;
-
 	//================
 	// 스킬
 	//================
@@ -236,7 +233,6 @@ public:
 	void UpdateExp();
 
 	void UpdateLevel();
-	void UpdateGold();
 
 	void UpdateSkillOne();
 	void UpdateSkillOneImage();

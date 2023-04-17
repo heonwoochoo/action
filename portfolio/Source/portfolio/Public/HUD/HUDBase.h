@@ -13,6 +13,7 @@ class UUserWidget;
 class UInfoContainer;
 class UComboCountWidget;
 class UOverlappedItemWidget;
+class UInGameMenu;
 
 UCLASS()
 class PORTFOLIO_API AHUDBase : public AHUD
@@ -42,11 +43,16 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Item", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UOverlappedItemWidget> OverlappedItemClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Overlay", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UInGameMenu> InGameMenuClass;
+
 	UInfoContainer* InfoContainer;
 
 	UComboCountWidget* ComboCountWidget;
 
 	UOverlappedItemWidget* OverlappedItemWidget;
+
+	UInGameMenu* InGameMenuWidget;
 
 	void InitInfoContainer();
 	void InitComboCountWidget();
@@ -62,4 +68,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void InitScreenOverlay();
+
+	void OpenInGameMenu();
+	void CloseInGameMenu();
 };

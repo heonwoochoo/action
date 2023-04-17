@@ -60,7 +60,6 @@ void UInfoContainer::Init()
 	UpdateStamina();
 	UpdateExp();
 	UpdateLevel();
-	UpdateGold();
 	UpdateSkillOne();
 	UpdateSkillOneImage();
 	UpdateSkillTwo();
@@ -135,11 +134,6 @@ void UInfoContainer::UpdateExp()
 void UInfoContainer::UpdateLevel()
 {
 	LevelText->SetText(FText::FromString(FString::FromInt(Character->GetCharacterStats().Level)));
-}
-
-void UInfoContainer::UpdateGold()
-{
-	GoldText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().Gold)));
 }
 
 void UInfoContainer::UpdateSkillOne()
