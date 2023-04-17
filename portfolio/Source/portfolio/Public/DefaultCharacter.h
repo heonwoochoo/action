@@ -29,8 +29,6 @@ class ADefaultCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-
-
 public:
 	ADefaultCharacter();
 
@@ -38,19 +36,19 @@ public:
 			
 
 protected:
-	// 캐릭터의 Stat이 설정되어있는 데이터테이블
+	/** 캐릭터의 기본 스탯 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UDataTable* StatsDataTable;
 
-	// 피격시 재생될 사운드
+	/** 피격시 재생 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Sound")
 	USoundCue* HitReactSound;
 
-	// 피격시 카메라 효과
+	/** 피격시 카메라 효과 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Camera")
 	TSubclassOf<UCameraShakeBase> HitCameraShakeClass;
 
-	// 피격시 화면에 나타날 카메라 렌즈 효과
+	/** 피격시 카메라 렌즈효과*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Camera")
 	TSubclassOf<AEmitterCameraLensEffectBase> HitReactCameraLens;
 
@@ -121,6 +119,7 @@ public:
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
 
 
 	
@@ -214,7 +213,7 @@ private:
 	AHUDBase* HUDBase;
 
 	// 인게임 메뉴창 오픈 여부
-	bool IsOpenInGameMenu = false;
+	bool bIsOpenInGameMenu = false;
 
 	bool bCanAttack = true;
 
@@ -289,6 +288,12 @@ private:
 
 	// 콤보 카운트 초기화
 	void ResetComboCount();
+
+	/**
+	* true 반환시 플레이어의 움직임을 제한합니다.
+	* ex) 사망, 인게임 메뉴 열기
+	*/
+	bool ShouldInputActivated();
 
 public:
 	void HandleComboCount();

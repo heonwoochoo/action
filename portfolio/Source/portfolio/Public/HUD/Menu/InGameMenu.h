@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -58,7 +58,7 @@ protected:
 	UButton* ExitButton;
 
 	//====================
-	// ÀÌº¥Æ® ¹ß»ı½Ã È£Ãâ
+	// ì´ë²¤íŠ¸ ë°œìƒì‹œ í˜¸ì¶œ
 	//====================
 	
 	UFUNCTION()
@@ -117,8 +117,8 @@ public:
 	void PlayShowAnimation();
 	void PlayHideAnimation();
 
-	// Hide ¾Ö´Ï¸ŞÀÌ¼Ç Á¾·á ½Ã È£Ãâ
-	// ¸Ş´º Ã¢À» ´İÀ½
+	// Hide ì• ë‹ˆë©”ì´ì…˜ ì¢…ë£Œ ì‹œ í˜¸ì¶œ
+	// ë©”ë‰´ ì°½ì„ ë‹«ìŒ
 	void OnEndHideAnimation();
 
 	FWidgetAnimationDynamicEvent EndAnimationEvent;

@@ -155,9 +155,6 @@ void UStartMenu::LoadUserNameFromSaveGame()
 	UDefaultGameInstance* DefaultGameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
 	if (DefaultGameInstance)
 	{
-		// 유저 이름 데이터가 저장된 세이브 파일 로드
-		DefaultGameInstance->LoadDefaultSaveGame();
-
 		TArray<FString> UserNames = DefaultGameInstance->GetAllSavedUserName();
 
 		if (UserNames.Num() < 1) return;

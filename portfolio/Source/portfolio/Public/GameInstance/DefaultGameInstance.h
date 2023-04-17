@@ -17,12 +17,12 @@ class PORTFOLIO_API UDefaultGameInstance : public UGameInstance
 	GENERATED_BODY()
 	
 public:
-	UDefaultGameInstance();
+	virtual void Init() override;
 
 private:
 	FSoundSettings SoundSettings;
 
-	FString DefaultSlot;
+	FString DefaultSlot = TEXT("Default");
 
 	// 유저가 최초로 생성되는 월드
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "World", meta = (AllowPrivateAccess = "true"))
@@ -46,7 +46,10 @@ public:
 	FSoundSettings GetSoundSettings() const;
 	void SetSoundSettings(ESoundOptionsType SoundType, float Value);
 
-	// 스타트 메뉴에서 불러옴
+	/**
+	*	Default 세이브 파일을 로드
+	*	저장된 유저의 리스트를 포함하고 있음
+	*/
 	void LoadDefaultSaveGame();
 
 	// 유저 생성

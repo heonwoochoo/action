@@ -1,4 +1,6 @@
-﻿
+﻿// Fill out your copyright notice in the Description page of Project Settings.
+
+
 #include "DefaultCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -177,7 +179,7 @@ void ADefaultCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 
 void ADefaultCharacter::Move(const FInputActionValue& Value)
 {
-	if (IsPlayerDead() || IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -189,7 +191,7 @@ void ADefaultCharacter::Move(const FInputActionValue& Value)
 
 		// get forward vector
 		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	
+
 		// get right vector 
 		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
@@ -197,7 +199,7 @@ void ADefaultCharacter::Move(const FInputActionValue& Value)
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
 
-		if (GetVelocity().Size() > 0.f 
+		if (GetVelocity().Size() > 0.f
 			&& CharacterActionState != ECharacterActionState::ECAS_Evade
 			&& CharacterActionState != ECharacterActionState::ECAS_Jump
 			&& CharacterActionState != ECharacterActionState::ECAS_Attack
@@ -218,7 +220,7 @@ void ADefaultCharacter::Move(const FInputActionValue& Value)
 
 void ADefaultCharacter::MoveEnd()
 {
-	if (IsPlayerDead() || IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 }
 
@@ -237,11 +239,11 @@ void ADefaultCharacter::Look(const FInputActionValue& Value)
 
 void ADefaultCharacter::Jump()
 {
-	if (IsPlayerDead() || IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	CharacterActionState = ECharacterActionState::ECAS_Jump;
 	if (!bCanDoubleJump)
 	{
-		Super::Jump();				
+		Super::Jump();
 	}
 	else
 	{
@@ -251,7 +253,7 @@ void ADefaultCharacter::Jump()
 
 void ADefaultCharacter::DefaultAttack(const FInputActionValue& Value)
 {
-	if (IsPlayerDead() || IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	if (CharacterActionState == ECharacterActionState::ECAS_Unoccupied
 		|| CharacterActionState == ECharacterActionState::ECAS_AttackCombo
 		|| CharacterActionState == ECharacterActionState::ECAS_MoveForward
@@ -294,7 +296,7 @@ void ADefaultCharacter::DefaultAttack(const FInputActionValue& Value)
 
 void ADefaultCharacter::OnSprint()
 {
-	if (IsPlayerDead() || IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	if (GetVelocity().Size() > 0.f)
 	{
 		if (CharacterActionState != ECharacterActionState::ECAS_Jump)
@@ -310,7 +312,7 @@ void ADefaultCharacter::OnSprint()
 
 void ADefaultCharacter::OffSprint()
 {
-	if (IsPlayerDead() || IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	if (CharacterActionState != ECharacterActionState::ECAS_Jump)
 	{
 		CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
@@ -322,7 +324,7 @@ void ADefaultCharacter::OffSprint()
 
 void ADefaultCharacter::OnEvade()
 {
-	if (IsPlayerDead() || IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	if (AnimInstance && GetVelocity().Size() 
 		&& !GetCharacterMovement()->IsFalling()
 		&& CharacterActionState != ECharacterActionState::ECAS_Evade
@@ -358,7 +360,7 @@ void ADefaultCharacter::OnEvade()
 
 void ADefaultCharacter::SkillManagerOne()
 {
-	if (IsPlayerDead() || IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		
@@ -368,7 +370,7 @@ void ADefaultCharacter::SkillManagerOne()
 
 void ADefaultCharacter::SkillManagerTwo()
 {
-	if (IsPlayerDead() || IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillTwo();
@@ -377,7 +379,7 @@ void ADefaultCharacter::SkillManagerTwo()
 
 void ADefaultCharacter::SkillManagerThree()
 {
-	if (IsPlayerDead() || IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillThree();
@@ -386,7 +388,7 @@ void ADefaultCharacter::SkillManagerThree()
 
 void ADefaultCharacter::SkillManagerFour()
 {
-	if (IsPlayerDead() || IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillFour();
@@ -395,7 +397,7 @@ void ADefaultCharacter::SkillManagerFour()
 
 void ADefaultCharacter::ItemManager_1()
 {
-	if (IsPlayerDead() || IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->ItemHandle_1();
@@ -404,7 +406,7 @@ void ADefaultCharacter::ItemManager_1()
 
 void ADefaultCharacter::ItemManager_2()
 {
-	if (IsPlayerDead() || IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->ItemHandle_2();
@@ -413,7 +415,7 @@ void ADefaultCharacter::ItemManager_2()
 
 void ADefaultCharacter::ItemManager_3()
 {
-	if (IsPlayerDead() || IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->ItemHandle_3();
@@ -422,7 +424,7 @@ void ADefaultCharacter::ItemManager_3()
 
 void ADefaultCharacter::ItemManager_4()
 {
-	if (IsPlayerDead() || IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->ItemHandle_4();
@@ -431,7 +433,7 @@ void ADefaultCharacter::ItemManager_4()
 
 void ADefaultCharacter::ItemManager_5()
 {
-	if (IsPlayerDead() || IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->ItemHandle_5();
@@ -440,7 +442,7 @@ void ADefaultCharacter::ItemManager_5()
 
 void ADefaultCharacter::ItemManager_6()
 {
-	if (IsPlayerDead() || IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->ItemHandle_6();
@@ -449,7 +451,7 @@ void ADefaultCharacter::ItemManager_6()
 
 void ADefaultCharacter::PickupItem()
 {
-	if (IsOpenInGameMenu) return;
+	if (ShouldInputActivated()) return;
 	if (OverlappedItem)
 	{
 		if (OverlappedItem->ActorHasTag(FName("Potion")))
@@ -469,16 +471,16 @@ void ADefaultCharacter::HandleInGameMenu()
 {
 	if (HUDBase)
 	{
-		if (!IsOpenInGameMenu)
+		if (!bIsOpenInGameMenu)
 		{
 			// 메뉴 열기
-			IsOpenInGameMenu = true;
+			bIsOpenInGameMenu = true;
 			HUDBase->OpenInGameMenu();
 		}
 		else
 		{
 			// 메뉴 닫기
-			IsOpenInGameMenu = false;
+			bIsOpenInGameMenu = false;
 			HUDBase->CloseInGameMenu();
 		}
 	}
@@ -601,6 +603,11 @@ void ADefaultCharacter::RegenerateStamina()
 		EnableRegenerateStamina = false;
 		GetWorld()->GetTimerManager().SetTimer(RegenerateStaminaTimerHandle, this, &ADefaultCharacter::TurnOnRegenerateStamina, 1.f, false);
 	}
+}
+
+bool ADefaultCharacter::ShouldInputActivated()
+{
+	return IsPlayerDead() || bIsOpenInGameMenu;
 }
 
 void ADefaultCharacter::HandleComboCount()

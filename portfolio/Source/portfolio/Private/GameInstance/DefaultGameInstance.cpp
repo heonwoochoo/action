@@ -7,9 +7,11 @@
 #include "SaveGame/UserSaveGame.h"
 #include "Kismet/KismetMathLibrary.h"
 
-UDefaultGameInstance::UDefaultGameInstance()
-	:DefaultSlot("Default")
+void UDefaultGameInstance::Init()
 {
+	Super::Init();
+
+	LoadDefaultSaveGame();
 }
 
 FSoundSettings UDefaultGameInstance::GetSoundSettings() const
@@ -35,7 +37,7 @@ void UDefaultGameInstance::SetSoundSettings(ESoundOptionsType SoundType, float V
 
 void UDefaultGameInstance::LoadDefaultSaveGame()
 {
-	bool IsExist = UGameplayStatics::DoesSaveGameExist(DefaultSlot, 0);
+	const bool IsExist = UGameplayStatics::DoesSaveGameExist(DefaultSlot, 0);
 	if (IsExist)
 	{
 		DefaultSaveGame = Cast<UDefaultSaveGame>(UGameplayStatics::LoadGameFromSlot(DefaultSlot, 0));
@@ -71,15 +73,12 @@ TArray<FString> UDefaultGameInstance::GetAllSavedUserName() const
 	{
 		return DefaultSaveGame->UserNames;
 	}
-	else
-	{
-		return TArray<FString>();
-	}
+	return TArray<FString>();
 }
 
 void UDefaultGameInstance::CreateUserSaveGame(FString UserName)
 {
-	bool IsExist = UGameplayStatics::DoesSaveGameExist(UserName, 0);
+	const bool IsExist = UGameplayStatics::DoesSaveGameExist(UserName, 0);
 	if (!IsExist)
 	{
 		UUserSaveGame* NewUserSaveGame = Cast<UUserSaveGame>(UGameplayStatics::CreateSaveGameObject(UserSaveGameClass));
@@ -87,7 +86,7 @@ void UDefaultGameInstance::CreateUserSaveGame(FString UserName)
 		{
 			NewUserSaveGame->SlotName = UserName;
 			NewUserSaveGame->CreatedDate = UKismetMathLibrary::Now();
-			bool IsSuccess = UGameplayStatics::SaveGameToSlot(NewUserSaveGame, UserName, 0);
+			const bool IsSuccess = UGameplayStatics::SaveGameToSlot(NewUserSaveGame, UserName, 0);
 			if (IsSuccess)
 			{
 				// Default 세이브 게임에 유저 리스트 업데이트
@@ -103,10 +102,10 @@ void UDefaultGameInstance::CreateUserSaveGame(FString UserName)
 
 void UDefaultGameInstance::RemoveUserSaveGame(FString UserName)
 {
-	bool IsExist = UGameplayStatics::DoesSaveGameExist(UserName, 0);
+	const bool IsExist = UGameplayStatics::DoesSaveGameExist(UserName, 0);
 	if (IsExist)
 	{
-		bool IsSuccess = UGameplayStatics::DeleteGameInSlot(UserName, 0);
+		const bool IsSuccess = UGameplayStatics::DeleteGameInSlot(UserName, 0);
 		if (IsSuccess)
 		{
 			// Default 세이브 게임에 유저 리스트 업데이트
@@ -125,7 +124,7 @@ void UDefaultGameInstance::RemoveUserSaveGame(FString UserName)
 
 FDateTime UDefaultGameInstance::GetUserCreatedDate(FString UserName)
 {
-	bool IsExist = UGameplayStatics::DoesSaveGameExist(UserName, 0);
+	const bool IsExist = UGameplayStatics::DoesSaveGameExist(UserName, 0);
 	if (IsExist)
 	{
 		UUserSaveGame* LoadedUserSaveGame = Cast<UUserSaveGame>(UGameplayStatics::LoadGameFromSlot(UserName, 0));
