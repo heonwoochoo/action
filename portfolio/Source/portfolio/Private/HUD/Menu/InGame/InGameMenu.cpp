@@ -12,6 +12,7 @@
 void UInGameMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
+
 	InitCharacterButton();
 	InitInventoryButton();
 	InitQuestButton();
@@ -279,6 +280,7 @@ void UInGameMenu::RemoveOpenedWidget()
 {
 	if (ExitBox)
 	{
+		ExitBox->RemoveExitQuestionBox();
 		ExitBox->RemoveFromParent();
 	}
 }

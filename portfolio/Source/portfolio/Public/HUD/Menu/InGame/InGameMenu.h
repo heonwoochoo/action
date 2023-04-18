@@ -143,6 +143,7 @@ public:
 
 	// Hide 애니메이션 종료 시 호출
 	// 메뉴 창을 닫음
+	UFUNCTION()
 	void OnEndHideAnimation();
 
 	// 버튼 클릭 사운드 재생

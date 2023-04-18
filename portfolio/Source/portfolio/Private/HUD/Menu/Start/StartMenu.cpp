@@ -155,6 +155,7 @@ void UStartMenu::LoadUserNameFromSaveGame()
 	UDefaultGameInstance* DefaultGameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
 	if (DefaultGameInstance)
 	{
+		DefaultGameInstance->LoadDefaultSaveGame();
 		TArray<FString> UserNames = DefaultGameInstance->GetAllSavedUserName();
 
 		if (UserNames.Num() < 1) return;

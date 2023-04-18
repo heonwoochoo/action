@@ -6,6 +6,9 @@
 #include "Components/Image.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameMode/DefaultGameMode.h"
+#include "HUD/Menu/InGame/ExitQuestionBox.h"
+#include "Components/Overlay.h"
+#include "HUD/Menu/InGame/ReturnQuestionBox.h"
 
 void UExitBox::NativeConstruct()
 {
@@ -32,6 +35,16 @@ void UExitBox::OnUnhoveredReturnSMenuButton()
 
 void UExitBox::OnClickedReturnSMenuButton()
 {
+	if (ReturnQuestionBoxClass)
+	{
+		ReturnQuestionBox = Cast<UReturnQuestionBox>(CreateWidget(this, ReturnQuestionBoxClass));
+		if (ReturnQuestionBox)
+		{
+			ReturnQuestionBox->AddToViewport();
+			ReturnQuestionBox->SetExitBox(this);
+			Deactivate();
+		}
+	}
 	PlayButtonSound();
 }
 
@@ -53,7 +66,17 @@ void UExitBox::OnUnhoveredExitGameButton()
 
 void UExitBox::OnClickedExitGameButton()
 {
-	
+	if (ExitQuestionBoxClass)
+	{
+		ExitQuestionBox = Cast<UExitQuestionBox>(CreateWidget(this, ExitQuestionBoxClass));
+		if (ExitQuestionBox)
+		{
+			ExitQuestionBox->AddToViewport();
+			ExitQuestionBox->SetExitBox(this);
+			Deactivate();
+		}
+	}
+
 	PlayButtonSound();
 }
 
@@ -115,5 +138,36 @@ void UExitBox::PlayButtonSound()
 	if (DefaultGameMode)
 	{
 		DefaultGameMode->PlayCheckButtonClickSound();
+	}
+}
+
+void UExitBox::RemoveExitQuestionBox()
+{
+	if (ExitQuestionBox)
+	{
+		ExitQuestionBox->RemoveFromParent();
+	}
+
+	if (ReturnQuestionBox)
+	{
+		ReturnQuestionBox->RemoveFromParent();
+	}
+}
+
+void UExitBox::Deactivate()
+{
+	SetIsEnabled(false);
+	if (ExitBoxOverlay)
+	{
+		ExitBoxOverlay->SetRenderOpacity(0.3f);
+	}
+}
+
+void UExitBox::Activate()
+{
+	SetIsEnabled(true);
+	if (ExitBoxOverlay)
+	{
+		ExitBoxOverlay->SetRenderOpacity(1.f);
 	}
 }

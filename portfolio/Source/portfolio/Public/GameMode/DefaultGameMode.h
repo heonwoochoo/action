@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "GameFramework/GameMode.h"
 #include "DefaultGameMode.generated.h"
 
 class AEnemyBase;
 class USoundCue;
 
 UCLASS(minimalapi)
-class ADefaultGameMode : public AGameModeBase
+class ADefaultGameMode : public AGameMode
 {
 	GENERATED_BODY()
 

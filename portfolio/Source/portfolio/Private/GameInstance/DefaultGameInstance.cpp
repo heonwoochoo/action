@@ -157,3 +157,13 @@ UUserSaveGame* UDefaultGameInstance::GetUserSaveGame() const
 {
 	return UserSaveGame;
 }
+
+void UDefaultGameInstance::OpenGameStartLevel()
+{
+	// 게임시작 창 열기
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	if (PlayerController)
+	{
+		UGameplayStatics::OpenLevelBySoftObjectPtr(this, GameStartLevel);
+	}
+}

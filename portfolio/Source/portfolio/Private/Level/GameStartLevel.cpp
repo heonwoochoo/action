@@ -3,7 +3,6 @@
 
 #include "Level/GameStartLevel.h"
 #include "HUD/Menu/MainMenu.h"
-#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 
@@ -27,7 +26,7 @@ void AGameStartLevel::ShowMainMenu()
 			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 			if (PlayerController)
 			{
-				UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PlayerController, MainMenu);
+				PlayerController->SetInputMode(FInputModeUIOnly());
 				PlayerController->SetShowMouseCursor(true);
 			}
 		}

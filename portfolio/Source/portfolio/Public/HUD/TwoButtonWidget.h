@@ -57,7 +57,7 @@ protected:
 	void OnUnhoveredCancelButton();
 
 	UFUNCTION()
-	void OnClickedCancelButton();
+	virtual void OnClickedCancelButton();
 
 private:
 	void InitOKButton();

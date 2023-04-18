@@ -24,9 +24,13 @@ private:
 
 	FString DefaultSlot = TEXT("Default");
 
-	// 유저가 최초로 생성되는 월드
+	// 유저 생성 시 최초로 배치되는 월드
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "World", meta = (AllowPrivateAccess = "true"))
 	TSoftObjectPtr<UWorld> DefaultWorldLevel;
+
+	// 게임 시작 메뉴가 나오는 월드
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "World", meta = (AllowPrivateAccess = "true"))
+	TSoftObjectPtr<UWorld> GameStartLevel;
 
 protected:
 	// 생성된 유저의 고유한 슬롯 이름을 저장하고 있는 클래스
@@ -78,4 +82,7 @@ public:
 	void SetUserSaveGame(UUserSaveGame* SaveGame);
 	
 	UUserSaveGame* GetUserSaveGame() const;
+
+	// 메인메뉴가 나오는 시작 레벨 열기
+	void OpenGameStartLevel();
 };
