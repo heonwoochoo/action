@@ -9,6 +9,7 @@
 class UButton;
 class UImage;
 class UWidgetAnimation;
+class UExitBox;
 
 UCLASS()
 class PORTFOLIO_API UInGameMenu : public UUserWidget
@@ -52,10 +53,23 @@ protected:
 	UButton* SettingsButton;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* SaveButtonImage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UButton* SaveButton;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* ExitButtonImage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UButton* ExitButton;
+
+	// Exit 버튼을 누르면 나오는 위젯 클래스
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Menu")
+	TSubclassOf<UExitBox> ExitBoxClass;
+
+	// 생성된 Exit 위젯 인스턴스
+	UExitBox* ExitBox;
 
 	//====================
 	// 이벤트 발생시 호출
@@ -98,6 +112,15 @@ protected:
 	void OnClickedSettingsButton();
 
 	UFUNCTION()
+	void OnHoveredSaveButton();
+
+	UFUNCTION()
+	void OnUnhoveredSaveButton();
+
+	UFUNCTION()
+	void OnClickedSaveButton();
+
+	UFUNCTION()
 	void OnHoveredExitButton();
 
 	UFUNCTION()
@@ -111,6 +134,7 @@ private:
 	void InitInventoryButton();
 	void InitQuestButton();
 	void InitSettingsButton();
+	void InitSaveButton();
 	void InitExitButton();
 
 public:
@@ -121,5 +145,11 @@ public:
 	// 메뉴 창을 닫음
 	void OnEndHideAnimation();
 
+	// 버튼 클릭 사운드 재생
+	void PlayButtonSound();
+
 	FWidgetAnimationDynamicEvent EndAnimationEvent;
+
+	// 열려있는 창 제거 (인벤토리, 캐릭터, ...)
+	void RemoveOpenedWidget();
 };

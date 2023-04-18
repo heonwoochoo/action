@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "HUD/Menu/OptionsWidget.h"
+#include "HUD/Menu/Options/OptionsWidget.h"
 #include "OptionsGraphic.generated.h"
 
 class UButton;

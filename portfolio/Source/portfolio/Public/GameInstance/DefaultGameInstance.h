@@ -44,6 +44,7 @@ protected:
 
 public:
 	FSoundSettings GetSoundSettings() const;
+
 	void SetSoundSettings(ESoundOptionsType SoundType, float Value);
 
 	/**

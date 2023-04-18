@@ -9,7 +9,7 @@
 #include "HUD/Overlay/InfoContainer.h"
 #include "HUD/ComboCountWidget.h"
 #include "HUD/OverlappedItemWidget.h"
-#include "HUD/Menu/InGameMenu.h"
+#include "HUD/Menu/InGame/InGameMenu.h"
 #include "Kismet/GameplayStatics.h"
 #include "Controller/CharacterController.h"
 
@@ -123,6 +123,7 @@ void AHUDBase::CloseInGameMenu()
 {
 	if (InGameMenuWidget)
 	{
+		InGameMenuWidget->RemoveOpenedWidget();
 		InGameMenuWidget->PlayHideAnimation();
 	}
 

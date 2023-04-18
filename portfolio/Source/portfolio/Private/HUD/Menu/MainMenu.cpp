@@ -4,11 +4,11 @@
 #include "HUD/Menu/MainMenu.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
-#include "HUD/Menu/OptionsMenu.h"
+#include "HUD/Menu/Options/OptionsMenu.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "GameMode/DefaultGameMode.h"
-#include "HUD/Menu/StartMenu.h"
+#include "HUD/Menu/Start/StartMenu.h"
 
 void UMainMenu::NativeConstruct()
 {

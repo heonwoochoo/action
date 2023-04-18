@@ -1,17 +1,22 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HUD/Menu/InGameMenu.h"
+#include "HUD/Menu/InGame/InGameMenu.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Animation/UMGSequencePlayer.h"
+#include "HUD/Menu/InGame/ExitBox.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameMode/DefaultGameMode.h"
 
 void UInGameMenu::NativeConstruct()
 {
+	Super::NativeConstruct();
 	InitCharacterButton();
 	InitInventoryButton();
 	InitQuestButton();
 	InitSettingsButton();
+	InitSaveButton();
 	InitExitButton();
 
 	EndAnimationEvent.BindDynamic(this, &UInGameMenu::OnEndHideAnimation);
@@ -23,6 +28,8 @@ void UInGameMenu::NativeConstruct()
 
 	PlayShowAnimation();
 }
+
+
 
 void UInGameMenu::OnHoveredCharacterButton()
 {
@@ -104,6 +111,26 @@ void UInGameMenu::OnClickedSettingsButton()
 {
 }
 
+void UInGameMenu::OnHoveredSaveButton()
+{
+	if (SaveButtonImage)
+	{
+		SaveButtonImage->SetOpacity(1.f);
+	}
+}
+
+void UInGameMenu::OnUnhoveredSaveButton()
+{
+	if (SaveButtonImage)
+	{
+		SaveButtonImage->SetOpacity(0.3f);
+	}
+}
+
+void UInGameMenu::OnClickedSaveButton()
+{
+}
+
 void UInGameMenu::OnHoveredExitButton()
 {
 	if (ExitButtonImage)
@@ -122,6 +149,16 @@ void UInGameMenu::OnUnhoveredExitButton()
 
 void UInGameMenu::OnClickedExitButton()
 {
+	if (ExitBoxClass)
+	{
+		ExitBox =  Cast<UExitBox>(CreateWidget(this, ExitBoxClass));
+		if (ExitBox)
+		{
+			ExitBox->AddToViewport();
+		}
+	}
+	
+	PlayButtonSound();
 }
 
 void UInGameMenu::InitCharacterButton()
@@ -180,6 +217,20 @@ void UInGameMenu::InitSettingsButton()
 	}
 }
 
+void UInGameMenu::InitSaveButton()
+{
+	if (SaveButton)
+	{
+		SaveButton->OnHovered.AddDynamic(this, &UInGameMenu::OnHoveredSaveButton);
+		SaveButton->OnUnhovered.AddDynamic(this, &UInGameMenu::OnUnhoveredSaveButton);
+		SaveButton->OnClicked.AddDynamic(this, &UInGameMenu::OnClickedSaveButton);
+	}
+	if (SaveButtonImage)
+	{
+		SaveButtonImage->SetOpacity(0.3f);
+	}
+}
+
 void UInGameMenu::InitExitButton()
 {
 	if (ExitButton)
@@ -213,4 +264,21 @@ void UInGameMenu::PlayHideAnimation()
 void UInGameMenu::OnEndHideAnimation()
 {
 	RemoveFromParent();
+}
+
+void UInGameMenu::PlayButtonSound()
+{
+	ADefaultGameMode* DefaultGameMode = Cast<ADefaultGameMode>(UGameplayStatics::GetGameMode(this));
+	if (DefaultGameMode)
+	{
+		DefaultGameMode->PlayCheckButtonClickSound();
+	}
+}
+
+void UInGameMenu::RemoveOpenedWidget()
+{
+	if (ExitBox)
+	{
+		ExitBox->RemoveFromParent();
+	}
 }

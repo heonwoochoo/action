@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HUD/Menu/SubMenu.h"
+#include "HUD/Menu/Start/SubMenu.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "HUD/Menu/MainMenu.h"

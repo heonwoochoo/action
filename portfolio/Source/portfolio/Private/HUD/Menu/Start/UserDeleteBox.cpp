@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HUD/Menu/UserDeleteBox.h"
-#include "HUD/Menu/StartMenu.h"
+#include "HUD/Menu/Start/UserDeleteBox.h"
+#include "HUD/Menu/Start/StartMenu.h"
 #include "Components/TextBlock.h"
 
 void UUserDeleteBox::NativeConstruct()

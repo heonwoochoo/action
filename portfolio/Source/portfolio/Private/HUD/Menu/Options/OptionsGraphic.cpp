@@ -1,9 +1,9 @@
-﻿
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "HUD/Menu/OptionsGraphic.h"
+#include "HUD/Menu/Options/OptionsGraphic.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
-#include "HUD/Menu/OptionsMenu.h"
+#include "HUD/Menu/Options/OptionsMenu.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Components/TextBlock.h"
 

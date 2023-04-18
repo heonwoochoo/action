@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "HUD/Menu/SubMenu.h"
+#include "HUD/Menu/Start/SubMenu.h"
 #include "StartMenu.generated.h"
 
 class UButton;

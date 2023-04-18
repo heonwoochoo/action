@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "HUD/Menu/OptionsWidget.h"
+#include "HUD/Menu/Options/OptionsWidget.h"
 #include "GameInstance/DefaultGameInstance.h"
 #include "OptionsSound.generated.h"
 

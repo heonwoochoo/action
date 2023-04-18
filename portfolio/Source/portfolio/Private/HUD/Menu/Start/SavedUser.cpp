@@ -1,13 +1,13 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HUD/Menu/SavedUser.h"
+#include "HUD/Menu/Start/SavedUser.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameMode/DefaultGameMode.h"
 #include "Components/TextBlock.h"
-#include "HUD/Menu/StartMenu.h"
+#include "HUD/Menu/Start/StartMenu.h"
 #include "Styling/SlateColor.h"
 #include "Kismet/KismetMathLibrary.h"
 

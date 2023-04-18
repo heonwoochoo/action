@@ -1,14 +1,14 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HUD/Menu/UserCreateBox.h"
+#include "HUD/Menu/Start/UserCreateBox.h"
 #include "Components/EditableTextBox.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameMode/DefaultGameMode.h"
-#include "HUD/Menu/StartMenu.h"
+#include "HUD/Menu/Start/StartMenu.h"
 
 void UUserCreateBox::NativeConstruct()
 {
