@@ -160,7 +160,7 @@ void UStartMenu::LoadUserNameFromSaveGame()
 
 		if (UserNames.Num() < 1) return;
 
-		for (FString UserName : UserNames)
+		for (const FString& UserName : UserNames)
 		{
 			bool IsExist = UGameplayStatics::DoesSaveGameExist(UserName, 0);
 			if (IsExist)
@@ -172,7 +172,15 @@ void UStartMenu::LoadUserNameFromSaveGame()
 					SavedUser->SetStartMenu(this);
 					SavedUser->SetUserName(FText::FromString(UserName));
 					SavedUser->SetListNumber(SavedUserList.Num() + 1);
-					SavedUser->SetCreatedDate(DefaultGameInstance->GetUserCreatedDate(UserName));
+
+					UUserSaveGame* UserSaveGame = Cast<UUserSaveGame>(UGameplayStatics::LoadGameFromSlot(UserName, 0));
+					if (UserSaveGame)
+					{
+						FUserSavedSystemInfo SystemInfo = UserSaveGame->SystemInfo;
+						SavedUser->SetCreatedDate(SystemInfo.CreatedDate);
+						SavedUser->SetRecentDate(SystemInfo.RecentDate);
+						SavedUser->SetPlayTime(SystemInfo.PlayTime);
+					}
 
 					SavedUserList.Add(SavedUser);
 

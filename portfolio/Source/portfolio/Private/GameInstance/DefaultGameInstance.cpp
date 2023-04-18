@@ -6,6 +6,7 @@
 #include "SaveGame/DefaultSaveGame.h"
 #include "SaveGame/UserSaveGame.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "GameFramework/GameState.h"
 
 void UDefaultGameInstance::Init()
 {
@@ -85,7 +86,7 @@ void UDefaultGameInstance::CreateUserSaveGame(FString UserName)
 		if (NewUserSaveGame)
 		{
 			NewUserSaveGame->SlotName = UserName;
-			NewUserSaveGame->CreatedDate = UKismetMathLibrary::Now();
+			NewUserSaveGame->SystemInfo.CreatedDate = UKismetMathLibrary::Now();
 			const bool IsSuccess = UGameplayStatics::SaveGameToSlot(NewUserSaveGame, UserName, 0);
 			if (IsSuccess)
 			{
@@ -96,7 +97,7 @@ void UDefaultGameInstance::CreateUserSaveGame(FString UserName)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Exist username already"));
+		UE_LOG(LogTemp, Warning, TEXT("Exist username"));
 	}
 }
 
@@ -122,28 +123,18 @@ void UDefaultGameInstance::RemoveUserSaveGame(FString UserName)
 	}
 }
 
-FDateTime UDefaultGameInstance::GetUserCreatedDate(FString UserName)
-{
-	const bool IsExist = UGameplayStatics::DoesSaveGameExist(UserName, 0);
-	if (IsExist)
-	{
-		UUserSaveGame* LoadedUserSaveGame = Cast<UUserSaveGame>(UGameplayStatics::LoadGameFromSlot(UserName, 0));
-		if (LoadedUserSaveGame)
-		{
-			return LoadedUserSaveGame->CreatedDate;
-		}
-	}
-	return FDateTime();
-}
-
 void UDefaultGameInstance::OpenDefaultWorldLevel()
 {
+	// 유저명 저장
+	PlayingUserName = UserSaveGame->SlotName;
+
 	// 오픈월드 열기
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 	if (PlayerController)
 	{
 		PlayerController->SetInputMode(FInputModeGameOnly());
 		PlayerController->SetShowMouseCursor(false);
+
 		UGameplayStatics::OpenLevelBySoftObjectPtr(this, DefaultWorldLevel);
 	}
 }
@@ -165,5 +156,50 @@ void UDefaultGameInstance::OpenGameStartLevel()
 	if (PlayerController)
 	{
 		UGameplayStatics::OpenLevelBySoftObjectPtr(this, GameStartLevel);
+	}
+}
+
+bool UDefaultGameInstance::SaveGame()
+{
+	if (UserSaveGame)
+	{
+		const bool IsExist = UGameplayStatics::DoesSaveGameExist(PlayingUserName, 0);
+		if (IsExist)
+		{
+			const bool IsSuccess = UGameplayStatics::SaveGameToSlot(UserSaveGame, PlayingUserName, 0);
+			if (IsSuccess)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void UDefaultGameInstance::UpdateSaveGameSystemInfo()
+{
+	if (!PlayingUserName.IsEmpty())
+	{
+		const bool IsExist = UGameplayStatics::DoesSaveGameExist(PlayingUserName, 0);
+		if (IsExist)
+		{
+			UserSaveGame = Cast<UUserSaveGame>(UGameplayStatics::LoadGameFromSlot(PlayingUserName, 0));
+		}
+
+		// 이름 업데이트
+		UserSaveGame->SlotName = PlayingUserName;
+
+		// 마지막 플레이 시간 업데이트
+		FDateTime Now = UKismetMathLibrary::Now();
+		UserSaveGame->SystemInfo.RecentDate = Now;
+
+		// 플레이 시간 누적
+		AGameState* GameState = Cast<AGameState>(UGameplayStatics::GetGameState(this));
+		if (GameState)
+		{
+			APlayerController* Controller = UGameplayStatics::GetPlayerController(this, 0);
+			const float PlaySeconds = GameState->GetPlayerStartTime(Controller);
+			UserSaveGame->SystemInfo.PlayTime += PlaySeconds;
+		}
 	}
 }

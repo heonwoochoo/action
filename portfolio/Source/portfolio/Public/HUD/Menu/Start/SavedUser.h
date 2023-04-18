@@ -65,6 +65,9 @@ private:
 	// 마지막 플레이 날짜
 	FDateTime RecentDate;
 
+	// 플레이 타임 (초)
+	float PlayTime;
+
 	// 클릭시 True
 	bool IsSelected = false;
 
@@ -75,6 +78,9 @@ private:
 
 	// 스타트 메뉴 인스턴스
 	UStartMenu* StartMenu;
+
+	// Date 타입을 날짜형식 String 타입으로 변환
+	FString TransformDateToString(FDateTime Date);
 
 public:
 	// 다른 유저 선택시 체크 옵션 해제
@@ -88,4 +94,8 @@ public:
 	void SetListNumber(int32 Num);
 
 	void SetCreatedDate(FDateTime Date);
+
+	void SetRecentDate(FDateTime Date);
+
+	void SetPlayTime(float Seconds);
 };

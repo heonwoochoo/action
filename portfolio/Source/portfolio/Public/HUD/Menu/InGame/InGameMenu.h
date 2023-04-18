@@ -10,6 +10,7 @@ class UButton;
 class UImage;
 class UWidgetAnimation;
 class UExitBox;
+class USavedNotifyBox;
 
 UCLASS()
 class PORTFOLIO_API UInGameMenu : public UUserWidget
@@ -68,8 +69,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Menu")
 	TSubclassOf<UExitBox> ExitBoxClass;
 
-	// 생성된 Exit 위젯 인스턴스
 	UExitBox* ExitBox;
+
+	// 세이브 완료시 나오는 위젯 클래스
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Menu")
+	TSubclassOf<USavedNotifyBox> SavedNotifyBoxClass;
+
+	USavedNotifyBox* SavedNotifyBox;
 
 	//====================
 	// 이벤트 발생시 호출

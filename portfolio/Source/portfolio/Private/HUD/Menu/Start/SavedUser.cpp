@@ -93,6 +93,15 @@ void USavedUser::PlaySelectButtonClickSound()
 	}
 }
 
+FString USavedUser::TransformDateToString(FDateTime Date)
+{
+	FString Year = FString::FromInt(Date.GetYear());
+	FString Month = FString::FromInt(Date.GetMonth());
+	FString Day = FString::FromInt(Date.GetDay());
+	FString DateText = Year + TEXT("/") + Month + TEXT("/") + Day;
+	return DateText;
+}
+
 void USavedUser::UnCheckedButton()
 {
 	IsSelected = false;
@@ -138,14 +147,35 @@ void USavedUser::SetListNumber(int32 Num)
 void USavedUser::SetCreatedDate(FDateTime Date)
 {
 	CreatedDate = Date;
-	FString Year = FString::FromInt(CreatedDate.GetYear());
-	FString Month = FString::FromInt(CreatedDate.GetMonth());
-	FString Day = FString::FromInt(CreatedDate.GetDay());
-
-	FString DateText = Year + "/" + Month + "/" + Day;
-
+	FString DateText = TransformDateToString(CreatedDate);
 	if (CreatedDateText)
 	{
 		CreatedDateText->SetText(FText::FromString(DateText));
+	}
+}
+
+void USavedUser::SetRecentDate(FDateTime Date)
+{
+	RecentDate = Date;
+	FString DateText = TransformDateToString(RecentDate);
+	if (RecentDateText)
+	{
+		RecentDateText->SetText(FText::FromString(DateText));
+	}
+}
+
+void USavedUser::SetPlayTime(float Seconds)
+{
+	PlayTime = Seconds;
+
+	FDateTime TotalTime(Seconds);
+	FString Hour = FString::FromInt(TotalTime.GetHour());
+	FString Minute = FString::FromInt(TotalTime.GetMinute());
+	FString Sec = FString::FromInt(TotalTime.GetSecond());
+	
+	FString Time = Hour + TEXT("h ") + Minute + TEXT("m ") + Sec + TEXT("s");
+	if (PlayTimeText)
+	{
+		PlayTimeText->SetText(FText::FromString(Time));
 	}
 }

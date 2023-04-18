@@ -46,6 +46,9 @@ protected:
 	// 현재 플레이 중인 유저의 세이브 게임 인스턴스
 	UUserSaveGame* UserSaveGame;
 
+	// 유저 이름
+	FString PlayingUserName;
+
 public:
 	FSoundSettings GetSoundSettings() const;
 
@@ -72,9 +75,6 @@ public:
 	// 유저 세이브 파일 삭제
 	void RemoveUserSaveGame(FString UserName);
 
-	// 특정 유저의 생성 날짜 얻기
-	FDateTime GetUserCreatedDate(FString UserName);
-
 	// 기본 오픈월드 열기
 	void OpenDefaultWorldLevel();
 
@@ -85,4 +85,10 @@ public:
 
 	// 메인메뉴가 나오는 시작 레벨 열기
 	void OpenGameStartLevel();
+
+	// 현재상태 저장하기
+	bool SaveGame();
+
+	// 세이브 게임 시스템 변수 업데이트
+	void UpdateSaveGameSystemInfo();
 };

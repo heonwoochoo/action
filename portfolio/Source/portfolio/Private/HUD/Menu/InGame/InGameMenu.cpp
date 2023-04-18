@@ -8,6 +8,8 @@
 #include "HUD/Menu/InGame/ExitBox.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameMode/DefaultGameMode.h"
+#include "GameInstance/DefaultGameInstance.h"
+#include "HUD/Menu/InGame/SavedNotifyBox.h"
 
 void UInGameMenu::NativeConstruct()
 {
@@ -130,6 +132,25 @@ void UInGameMenu::OnUnhoveredSaveButton()
 
 void UInGameMenu::OnClickedSaveButton()
 {
+	UDefaultGameInstance* DefaultGameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (DefaultGameInstance && SavedNotifyBoxClass)
+	{
+		// 데이터 업데이트
+		DefaultGameInstance->UpdateSaveGameSystemInfo();
+
+		// 저장
+		bool IsSuccess = DefaultGameInstance->SaveGame();
+		if (IsSuccess)
+		{
+			// 성공 알림 박스
+			SavedNotifyBox = Cast<USavedNotifyBox>(CreateWidget(this, SavedNotifyBoxClass));
+			if (SavedNotifyBox)
+			{
+				SavedNotifyBox->AddToViewport();
+			}
+		}
+	}
+	PlayButtonSound();
 }
 
 void UInGameMenu::OnHoveredExitButton()
