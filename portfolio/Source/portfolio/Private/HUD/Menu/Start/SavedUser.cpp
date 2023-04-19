@@ -168,12 +168,26 @@ void USavedUser::SetPlayTime(float Seconds)
 {
 	PlayTime = Seconds;
 
-	FDateTime TotalTime(Seconds);
-	FString Hour = FString::FromInt(TotalTime.GetHour());
-	FString Minute = FString::FromInt(TotalTime.GetMinute());
-	FString Sec = FString::FromInt(TotalTime.GetSecond());
+	int32 Hours = int32(PlayTime) / 3600;
+
+	int32 Remaining = int32(PlayTime) % 3600;
+	int32 Minutes{};
+	if (Remaining != 0)
+	{
+		Minutes = Remaining / 60;
+	}
+	else
+	{
+		Minutes = 0;
+	}
 	
-	FString Time = Hour + TEXT("h ") + Minute + TEXT("m ") + Sec + TEXT("s");
+	Remaining = Remaining % 60;
+
+	FString Time = 
+		FString::FromInt(Hours) + TEXT("h ") + 
+		FString::FromInt(Minutes) + TEXT("m ") + 
+		FString::FromInt(Remaining) + TEXT("s");
+
 	if (PlayTimeText)
 	{
 		PlayTimeText->SetText(FText::FromString(Time));
