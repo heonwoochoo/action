@@ -10,6 +10,7 @@
 #include "GameMode/DefaultGameMode.h"
 #include "GameInstance/DefaultGameInstance.h"
 #include "HUD/Menu/InGame/SavedNotifyBox.h"
+#include "HUD/Menu/InGame/Inventory.h"
 
 void UInGameMenu::NativeConstruct()
 {
@@ -72,6 +73,16 @@ void UInGameMenu::OnUnhoveredInventoryButton()
 
 void UInGameMenu::OnClickedInventoryButton()
 {
+	if (InventoryClass)
+	{
+		Inventory = Cast<UInventory>(CreateWidget(this, InventoryClass));
+		if (Inventory)
+		{
+			Inventory->AddToViewport();
+		}
+	}
+
+	PlayButtonSound();
 }
 
 void UInGameMenu::OnHoveredQuestButton()
@@ -303,5 +314,10 @@ void UInGameMenu::RemoveOpenedWidget()
 	{
 		ExitBox->RemoveExitQuestionBox();
 		ExitBox->RemoveFromParent();
+	}
+
+	if (Inventory)
+	{
+		Inventory->RemoveFromParent();
 	}
 }

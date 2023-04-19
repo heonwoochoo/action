@@ -11,6 +11,7 @@ class UImage;
 class UWidgetAnimation;
 class UExitBox;
 class USavedNotifyBox;
+class UInventory;
 
 UCLASS()
 class PORTFOLIO_API UInGameMenu : public UUserWidget
@@ -76,6 +77,13 @@ protected:
 	TSubclassOf<USavedNotifyBox> SavedNotifyBoxClass;
 
 	USavedNotifyBox* SavedNotifyBox;
+
+	// 인벤토리 위젯 클래스
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Menu")
+	TSubclassOf<UInventory> InventoryClass;
+
+	UInventory* Inventory;
+
 
 	//====================
 	// 이벤트 발생시 호출
