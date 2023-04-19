@@ -31,7 +31,7 @@ struct FUserInGameInfo
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FVector Location;
+	FTransform Transform;
 };
 
 UCLASS()
@@ -50,5 +50,5 @@ public:
 
 	// 인게임 정보 (위치, 스탯)
 	UPROPERTY(VisibleAnywhere, Category = Basic)
-	FUserSavedSystemInfo InGameInfo;
+	FUserInGameInfo InGameInfo;
 };

@@ -27,6 +27,8 @@
 #include "HUD/ComboCountWidget.h"
 #include "Items/Potion.h"
 #include "HUD/OverlappedItemWidget.h"
+#include "GameInstance/DefaultGameInstance.h"
+#include "SaveGame/UserSaveGame.h"
 
 ADefaultCharacter::ADefaultCharacter()
 {
@@ -124,6 +126,8 @@ void ADefaultCharacter::BeginPlay()
 	}
 
 	Tags.Add(FName("Player"));
+
+	LoadDataFromSaveGame();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -608,6 +612,31 @@ void ADefaultCharacter::RegenerateStamina()
 bool ADefaultCharacter::ShouldInputActivated()
 {
 	return IsPlayerDead() || bIsOpenInGameMenu;
+}
+
+void ADefaultCharacter::LoadDataFromSaveGame()
+{
+	UDefaultGameInstance* DefaultGameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (DefaultGameInstance)
+	{
+		const FString UserName = DefaultGameInstance->GetUserName();
+		bool IsExist = UGameplayStatics::DoesSaveGameExist(UserName, 0);
+		if (IsExist)
+		{
+			UUserSaveGame* UserSaveGame = Cast<UUserSaveGame>(UGameplayStatics::LoadGameFromSlot(UserName, 0));
+			if (UserSaveGame)
+			{
+				const FUserInGameInfo& InGameInfo = UserSaveGame->InGameInfo;
+
+				// 위치 설정
+				const FTransform& SavedTransform = InGameInfo.Transform;
+				if (SavedTransform.IsValid())
+				{
+					SetActorTransform(SavedTransform);
+				}
+			}
+		}
+	}
 }
 
 void ADefaultCharacter::HandleComboCount()

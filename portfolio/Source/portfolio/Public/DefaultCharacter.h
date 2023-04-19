@@ -295,6 +295,9 @@ private:
 	*/
 	bool ShouldInputActivated();
 
+	// 게임 시작 시 저장된 캐릭터의 데이터 불러오기
+	void LoadDataFromSaveGame();
+
 public:
 	void HandleComboCount();
 

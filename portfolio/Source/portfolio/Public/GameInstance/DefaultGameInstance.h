@@ -86,9 +86,17 @@ public:
 	// 메인메뉴가 나오는 시작 레벨 열기
 	void OpenGameStartLevel();
 
-	// 현재상태 저장하기
+	// 파일 저장하기
 	bool SaveGame();
+
+	// 저장할 데이터 업데이트
+	void UpdateSaveGame();
 
 	// 세이브 게임 시스템 변수 업데이트
 	void UpdateSaveGameSystemInfo();
+
+	// 세이브 게임 인게임 정보 업데이트
+	void UpdateSaveGameInGameInfo();
+
+	FString GetUserName() const;
 };

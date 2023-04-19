@@ -136,7 +136,7 @@ void UInGameMenu::OnClickedSaveButton()
 	if (DefaultGameInstance && SavedNotifyBoxClass)
 	{
 		// 데이터 업데이트
-		DefaultGameInstance->UpdateSaveGameSystemInfo();
+		DefaultGameInstance->UpdateSaveGame();
 
 		// 저장
 		bool IsSuccess = DefaultGameInstance->SaveGame();

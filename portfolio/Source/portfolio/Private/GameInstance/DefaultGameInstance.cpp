@@ -7,6 +7,7 @@
 #include "SaveGame/UserSaveGame.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/GameState.h"
+#include "DefaultCharacter.h"
 
 void UDefaultGameInstance::Init()
 {
@@ -176,7 +177,7 @@ bool UDefaultGameInstance::SaveGame()
 	return false;
 }
 
-void UDefaultGameInstance::UpdateSaveGameSystemInfo()
+void UDefaultGameInstance::UpdateSaveGame()
 {
 	if (!PlayingUserName.IsEmpty())
 	{
@@ -184,22 +185,46 @@ void UDefaultGameInstance::UpdateSaveGameSystemInfo()
 		if (IsExist)
 		{
 			UserSaveGame = Cast<UUserSaveGame>(UGameplayStatics::LoadGameFromSlot(PlayingUserName, 0));
-		}
-
-		// 이름 업데이트
-		UserSaveGame->SlotName = PlayingUserName;
-
-		// 마지막 플레이 시간 업데이트
-		FDateTime Now = UKismetMathLibrary::Now();
-		UserSaveGame->SystemInfo.RecentDate = Now;
-
-		// 플레이 시간 누적
-		AGameState* GameState = Cast<AGameState>(UGameplayStatics::GetGameState(this));
-		if (GameState)
-		{
-			APlayerController* Controller = UGameplayStatics::GetPlayerController(this, 0);
-			const float PlaySeconds = GameState->GetPlayerStartTime(Controller);
-			UserSaveGame->SystemInfo.PlayTime += PlaySeconds;
+			if (UserSaveGame)
+			{
+				UpdateSaveGameSystemInfo();
+				UpdateSaveGameInGameInfo();
+			}
 		}
 	}
+}
+
+void UDefaultGameInstance::UpdateSaveGameSystemInfo()
+{
+	// 이름 업데이트
+	UserSaveGame->SlotName = PlayingUserName;
+
+	// 마지막 플레이 시간 업데이트
+	FDateTime Now = UKismetMathLibrary::Now();
+	UserSaveGame->SystemInfo.RecentDate = Now;
+
+	// 플레이 시간 누적
+	AGameState* GameState = Cast<AGameState>(UGameplayStatics::GetGameState(this));
+	if (GameState)
+	{
+		APlayerController* Controller = UGameplayStatics::GetPlayerController(this, 0);
+		const float PlaySeconds = GameState->GetPlayerStartTime(Controller);
+		UserSaveGame->SystemInfo.PlayTime += PlaySeconds;
+	}
+}
+
+void UDefaultGameInstance::UpdateSaveGameInGameInfo()
+{
+	// 위치 업데이트
+	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (DefaultCharacter)
+	{
+		const FTransform Transform = DefaultCharacter->GetActorTransform();
+		UserSaveGame->InGameInfo.Transform = Transform;
+	}
+}
+
+FString UDefaultGameInstance::GetUserName() const
+{
+	return PlayingUserName;
 }
