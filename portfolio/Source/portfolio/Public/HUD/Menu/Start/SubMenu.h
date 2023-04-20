@@ -56,6 +56,8 @@ protected:
 private:
 	void InitBack();
 
+	bool IsInGameMode();
+
 public:
 	void PlayButtonSound();
 };

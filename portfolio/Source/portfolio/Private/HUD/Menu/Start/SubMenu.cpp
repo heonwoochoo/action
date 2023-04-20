@@ -7,6 +7,9 @@
 #include "HUD/Menu/MainMenu.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameMode/DefaultGameMode.h"
+#include "GameInstance/DefaultGameInstance.h"
+#include "Controller/CharacterController.h"
+#include "DefaultCharacter.h"
 
 void USubMenu::NativeConstruct()
 {
@@ -43,6 +46,27 @@ void USubMenu::OnUnhoveredBackButton()
 
 void USubMenu::OnClickedBackButton()
 {
+	PlayButtonSound();
+
+	if (IsInGameMode())
+	{
+		// 인풋 모드 변경
+		ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+		if (CharacterController)
+		{
+			CharacterController->SetInputModeToGame();
+		}
+		// 오픈 상태 변수 변경
+		ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+		if (DefaultCharacter)
+		{
+			DefaultCharacter->SetIsOpenInGameMenu(false);
+		}
+
+		RemoveFromParent();
+		return;
+	}
+	
 	if (MainMenuClass)
 	{
 		UMainMenu* MainMenu = Cast<UMainMenu>(CreateWidget(this, MainMenuClass));
@@ -52,8 +76,6 @@ void USubMenu::OnClickedBackButton()
 			RemoveFromParent();
 		}
 	}
-
-	PlayButtonSound();
 }
 
 void USubMenu::InitBack()
@@ -75,6 +97,22 @@ void USubMenu::InitBack()
 	{
 		ActiveBackButtonImage->SetOpacity(0.f);
 	}
+}
+
+bool USubMenu::IsInGameMode()
+{
+	UDefaultGameInstance* DefaultGameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (DefaultGameInstance)
+	{
+		TSoftObjectPtr<UWorld> GameStartLevelClass = DefaultGameInstance->GetGameStartLevel();
+		const FString& GameStartLevelName = GameStartLevelClass.GetAssetName();
+		const FString& CurrntLevelName = UGameplayStatics::GetCurrentLevelName(this);
+		if (GameStartLevelName != CurrntLevelName)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 void USubMenu::PlayButtonSound()

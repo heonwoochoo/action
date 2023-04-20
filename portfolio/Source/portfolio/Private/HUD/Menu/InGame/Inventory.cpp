@@ -138,11 +138,7 @@ void UInventory::OnClickedExitButton()
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 	if (CharacterController)
 	{
-		// 인풋모드 게임으로 변경
-		CharacterController->SetShowMouseCursor(false);
-		CharacterController->SetInputMode(FInputModeGameOnly());
-		CharacterController->ResetIgnoreLookInput();
-		CharacterController->ResetIgnoreMoveInput();
+		CharacterController->SetInputModeToGame();
 
 		// 위치저장
 		UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(InventoryCanvas);

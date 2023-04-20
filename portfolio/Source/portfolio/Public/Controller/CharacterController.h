@@ -41,4 +41,7 @@ public:
 	{
 		QuestInitialLocation = NewLocation;
 	}
+
+	// 인풋모드 상태 전환
+	void SetInputModeToGame();
 };

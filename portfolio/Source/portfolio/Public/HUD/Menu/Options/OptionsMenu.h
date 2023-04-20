@@ -6,10 +6,7 @@
 #include "HUD/Menu/Start/SubMenu.h"
 #include "OptionsMenu.generated.h"
 
-class UButton;
 class UImage;
-class UTexture2D;
-class UMainMenu;
 class UOptionsWidget;
 
 UCLASS()
@@ -20,7 +17,10 @@ class PORTFOLIO_API UOptionsMenu : public USubMenu
 protected:
 	virtual void NativeConstruct() override;
 
-	// 옵션 메뉴 생성시 표시될 옵션 클래스
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* BackgroundImage;
+
+	// 옵션 메뉴 생성시 첫 페이지에 표시될 옵션 클래스
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserWidget")
 	TSubclassOf<UOptionsWidget> OptionClass;
 
@@ -32,4 +32,6 @@ protected:
 
 public:
 	void SetSelectedOption(UOptionsWidget* Widget);
+
+	void HideBackgroundImage();
 };

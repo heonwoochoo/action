@@ -228,3 +228,8 @@ FString UDefaultGameInstance::GetUserName() const
 {
 	return PlayingUserName;
 }
+
+TSoftObjectPtr<UWorld> UDefaultGameInstance::GetGameStartLevel() const
+{
+	return GameStartLevel;
+}

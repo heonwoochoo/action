@@ -2,18 +2,12 @@
 
 
 #include "HUD/Menu/Options/OptionsMenu.h"
-#include "Components/Button.h"
 #include "Components/Image.h"
-#include "HUD/Menu/MainMenu.h"
-#include "GameFramework/GameUserSettings.h"
-#include "Components/Slider.h"
-#include "Components/ProgressBar.h"
 #include "HUD/Menu/Options/OptionsWidget.h"
 
 void UOptionsMenu::NativeConstruct()
 {
 	Super::NativeConstruct();
-
 
 	if (OptionClass)
 	{
@@ -36,4 +30,12 @@ void UOptionsMenu::OnClickedBackButton()
 void UOptionsMenu::SetSelectedOption(UOptionsWidget* Widget)
 {
 	SelectedOption = Widget;
+}
+
+void UOptionsMenu::HideBackgroundImage()
+{
+	if (BackgroundImage)
+	{
+		BackgroundImage->SetVisibility(ESlateVisibility::Hidden);
+	}
 }

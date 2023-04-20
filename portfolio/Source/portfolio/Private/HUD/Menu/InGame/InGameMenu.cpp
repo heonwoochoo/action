@@ -11,6 +11,7 @@
 #include "GameInstance/DefaultGameInstance.h"
 #include "HUD/Menu/InGame/SavedNotifyBox.h"
 #include "HUD/Menu/InGame/Inventory.h"
+#include "HUD/Menu/Options/OptionsMenu.h"
 
 void UInGameMenu::NativeConstruct()
 {
@@ -76,12 +77,12 @@ void UInGameMenu::OnClickedInventoryButton()
 	PlayButtonSound();
 	if (InventoryClass)
 	{
-		Inventory = Cast<UInventory>(CreateWidget(this, InventoryClass));
+		UInventory* Inventory = Cast<UInventory>(CreateWidget(this, InventoryClass));
 		if (Inventory)
 		{
 			Inventory->AddToViewport();
 			
-			// 인벤토리 창이 열리면 인게임 메뉴 닫기
+			//인게임 메뉴 닫기
 			PlayHideAnimation();
 		}
 	}
@@ -125,6 +126,20 @@ void UInGameMenu::OnUnhoveredSettingsButton()
 
 void UInGameMenu::OnClickedSettingsButton()
 {
+	PlayButtonSound();
+
+	if (OptionsMenuClass)
+	{
+		UOptionsMenu* OptionsMenu = Cast<UOptionsMenu>(CreateWidget(this, OptionsMenuClass));
+		if (OptionsMenu)
+		{
+			OptionsMenu->AddToViewport();
+			OptionsMenu->HideBackgroundImage();
+
+			//인게임 메뉴 닫기
+			PlayHideAnimation();
+		}
+	}
 }
 
 void UInGameMenu::OnHoveredSaveButton()
@@ -316,10 +331,5 @@ void UInGameMenu::RemoveOpenedWidget()
 	{
 		ExitBox->RemoveExitQuestionBox();
 		ExitBox->RemoveFromParent();
-	}
-
-	if (Inventory)
-	{
-		Inventory->RemoveFromParent();
 	}
 }

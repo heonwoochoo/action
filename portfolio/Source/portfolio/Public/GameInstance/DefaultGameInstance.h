@@ -99,4 +99,6 @@ public:
 	void UpdateSaveGameInGameInfo();
 
 	FString GetUserName() const;
+
+	TSoftObjectPtr<UWorld> GetGameStartLevel() const;
 };

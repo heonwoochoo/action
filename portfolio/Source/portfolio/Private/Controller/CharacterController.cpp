@@ -10,3 +10,11 @@ ACharacterController::ACharacterController()
 	InventoryInitialLocation = ViewportSize;
 	QuestInitialLocation = ViewportSize;
 }
+
+void ACharacterController::SetInputModeToGame()
+{
+	SetShowMouseCursor(false);
+	SetInputMode(FInputModeGameOnly());
+	ResetIgnoreLookInput();
+	ResetIgnoreMoveInput();
+}
