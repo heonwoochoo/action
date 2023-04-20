@@ -18,6 +18,7 @@ class PORTFOLIO_API UExitBox : public UUserWidget
 	GENERATED_BODY()
 protected:
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 
 	// 텍스쳐
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Texture")

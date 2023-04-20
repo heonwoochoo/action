@@ -8,8 +8,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameMode/DefaultGameMode.h"
 #include "GameInstance/DefaultGameInstance.h"
-#include "Controller/CharacterController.h"
-#include "DefaultCharacter.h"
 
 void USubMenu::NativeConstruct()
 {
@@ -50,19 +48,6 @@ void USubMenu::OnClickedBackButton()
 
 	if (IsInGameMode())
 	{
-		// 인풋 모드 변경
-		ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-		if (CharacterController)
-		{
-			CharacterController->SetInputModeToGame();
-		}
-		// 오픈 상태 변수 변경
-		ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-		if (DefaultCharacter)
-		{
-			DefaultCharacter->SetIsOpenInGameMenu(false);
-		}
-
 		RemoveFromParent();
 		return;
 	}

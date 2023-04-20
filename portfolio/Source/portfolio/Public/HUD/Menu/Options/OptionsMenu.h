@@ -16,6 +16,7 @@ class PORTFOLIO_API UOptionsMenu : public USubMenu
 	
 protected:
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* BackgroundImage;

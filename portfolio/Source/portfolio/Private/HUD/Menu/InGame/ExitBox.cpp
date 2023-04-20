@@ -9,12 +9,33 @@
 #include "HUD/Menu/InGame/ExitQuestionBox.h"
 #include "Components/Overlay.h"
 #include "HUD/Menu/InGame/ReturnQuestionBox.h"
+#include "Controller/CharacterController.h"
+#include "DefaultCharacter.h"
 
 void UExitBox::NativeConstruct()
 {
 	InitReturnSMenuButton();
 	InitExitGameButton();
 	InitCancelButton();
+}
+
+void UExitBox::NativeDestruct()
+{
+	Super::NativeDestruct();
+
+	// 인풋모드 변경
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		CharacterController->SetInputModeToGame();
+	}
+
+	// 오픈 상태 변수 변경
+	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (DefaultCharacter)
+	{
+		DefaultCharacter->SetIsOpenInGameMenu(false);
+	}
 }
 
 void UExitBox::OnHoveredReturnSMenuButton()

@@ -12,6 +12,7 @@
 #include "HUD/Menu/InGame/SavedNotifyBox.h"
 #include "HUD/Menu/InGame/Inventory.h"
 #include "HUD/Menu/Options/OptionsMenu.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 void UInGameMenu::NativeConstruct()
 {
@@ -207,7 +208,7 @@ void UInGameMenu::OnClickedExitButton()
 			ExitBox->AddToViewport();
 		}
 	}
-	
+	RemoveFromParent();
 	PlayButtonSound();
 }
 
@@ -313,6 +314,7 @@ void UInGameMenu::PlayHideAnimation()
 
 void UInGameMenu::OnEndHideAnimation()
 {
+
 	RemoveFromParent();
 }
 
@@ -327,9 +329,18 @@ void UInGameMenu::PlayButtonSound()
 
 void UInGameMenu::RemoveOpenedWidget()
 {
-	if (ExitBox)
+	TArray<TSubclassOf<UUserWidget>> AllWidgetClass = { ExitBoxClass, SavedNotifyBoxClass, InventoryClass, OptionsMenuClass };
+
+	for (const auto& WidgetClass : AllWidgetClass)
 	{
-		ExitBox->RemoveExitQuestionBox();
-		ExitBox->RemoveFromParent();
+		TArray<UUserWidget*> FoundWidget;
+		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundWidget, WidgetClass);
+		if (FoundWidget.Num() >= 1)
+		{
+			for (auto Widget : FoundWidget)
+			{
+				Widget->RemoveFromParent();
+			}
+		}
 	}
 }

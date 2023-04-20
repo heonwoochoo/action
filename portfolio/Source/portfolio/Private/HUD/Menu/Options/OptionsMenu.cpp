@@ -4,6 +4,9 @@
 #include "HUD/Menu/Options/OptionsMenu.h"
 #include "Components/Image.h"
 #include "HUD/Menu/Options/OptionsWidget.h"
+#include "Controller/CharacterController.h"
+#include "DefaultCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 void UOptionsMenu::NativeConstruct()
 {
@@ -20,10 +23,31 @@ void UOptionsMenu::NativeConstruct()
 	}
 }
 
+void UOptionsMenu::NativeDestruct()
+{
+	Super::NativeDestruct();
+
+	// 인풋 모드 변경
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		CharacterController->SetInputModeToGame();
+	}
+	// 오픈 상태 변수 변경
+	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (DefaultCharacter)
+	{
+		DefaultCharacter->SetIsOpenInGameMenu(false);
+	}
+	// 열려있는 자식 위젯 닫기
+	if (SelectedOption)
+	{
+		SelectedOption->RemoveFromParent();
+	}
+}
+
 void UOptionsMenu::OnClickedBackButton()
 {
-	SelectedOption->RemoveFromParent();
-
 	Super::OnClickedBackButton();
 }
 

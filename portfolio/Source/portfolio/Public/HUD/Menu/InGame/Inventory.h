@@ -27,6 +27,8 @@ protected:
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
+	virtual void NativeDestruct() override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UCanvasPanel* InventoryCanvas;
 
@@ -134,6 +136,7 @@ public:
 	void PlayButtonSound();
 
 	void SetInGameMenu(UInGameMenu* InInGameMenu);
+
 
 private:
 	// 오픈시 저장된 위치 값 불러오기

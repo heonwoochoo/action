@@ -7,7 +7,6 @@
 #include "Components/Image.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameMode/DefaultGameMode.h"
-#include "Kismet/GameplayStatics.h"
 #include "Controller/CharacterController.h"
 #include "DefaultCharacter.h"
 #include "Components/CanvasPanel.h"
@@ -41,6 +40,25 @@ void UInventory::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 			const float NewY = MouseLocation.Y - OffsetY;
 			CanvasPanelSlot->SetPosition(FVector2D(NewX, NewY));
 		}
+	}
+}
+
+void UInventory::NativeDestruct()
+{
+	Super::NativeDestruct();
+
+	// 인풋모드 변경
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		CharacterController->SetInputModeToGame();
+	}
+
+	// 오픈 상태 변수 변경
+	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (DefaultCharacter)
+	{
+		DefaultCharacter->SetIsOpenInGameMenu(false);
 	}
 }
 
@@ -85,6 +103,18 @@ void UInventory::OnReleasedInventoryDragButton()
 	if (InventoryDragOverlay)
 	{
 		InventoryDragOverlay->SetRenderOpacity(1.f);
+	}
+
+	// 위치저장
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{	
+		UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(InventoryCanvas);
+		if (CanvasPanelSlot)
+		{
+			const FVector2D& CurrentLocation = CanvasPanelSlot->GetPosition();
+			CharacterController->SetInventoryInitialLocation(CurrentLocation);
+		}
 	}
 
 	bCanMovable = false;
@@ -135,26 +165,7 @@ void UInventory::OnClickedExitButton()
 {
 	PlayButtonSound();
 
-	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-	if (CharacterController)
-	{
-		CharacterController->SetInputModeToGame();
 
-		// 위치저장
-		UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(InventoryCanvas);
-		if (CanvasPanelSlot)
-		{
-			const FVector2D& CurrentLocation = CanvasPanelSlot->GetPosition();
-			CharacterController->SetInventoryInitialLocation(CurrentLocation);
-		}
-	}
-
-	// 오픈 상태 변수 변경
-	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	if (DefaultCharacter)
-	{
-		DefaultCharacter->SetIsOpenInGameMenu(false);
-	}
 
 	RemoveFromParent();
 }
