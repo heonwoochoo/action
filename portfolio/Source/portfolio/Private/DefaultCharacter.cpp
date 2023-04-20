@@ -893,6 +893,11 @@ void ADefaultCharacter::UpdateStamina(EStatUpdateType UpdateType, float AbilityP
 	}
 }
 
+void ADefaultCharacter::SetIsOpenInGameMenu(bool IsOpen)
+{
+	bIsOpenInGameMenu = IsOpen;
+}
+
 ECharacterClass ADefaultCharacter::GetCharacterClass()
 {
 	return DefaultClass;

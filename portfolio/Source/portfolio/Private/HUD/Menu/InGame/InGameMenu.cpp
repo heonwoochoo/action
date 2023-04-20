@@ -73,16 +73,18 @@ void UInGameMenu::OnUnhoveredInventoryButton()
 
 void UInGameMenu::OnClickedInventoryButton()
 {
+	PlayButtonSound();
 	if (InventoryClass)
 	{
 		Inventory = Cast<UInventory>(CreateWidget(this, InventoryClass));
 		if (Inventory)
 		{
 			Inventory->AddToViewport();
+			
+			// 인벤토리 창이 열리면 인게임 메뉴 닫기
+			PlayHideAnimation();
 		}
 	}
-
-	PlayButtonSound();
 }
 
 void UInGameMenu::OnHoveredQuestButton()

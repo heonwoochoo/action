@@ -14,6 +14,7 @@ class UHorizontalBox;
 class UTextBlock;
 class UTexture2D;
 class UInGameMenu;
+class UCanvasPanel;
 
 UCLASS()
 class PORTFOLIO_API UInventory : public UUserWidget
@@ -23,6 +24,14 @@ class PORTFOLIO_API UInventory : public UUserWidget
 protected:
 
 	virtual void NativeConstruct() override;
+
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UCanvasPanel* InventoryCanvas;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UOverlay* InventoryDragOverlay;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* InventoryTextImage;
@@ -125,4 +134,16 @@ public:
 	void PlayButtonSound();
 
 	void SetInGameMenu(UInGameMenu* InInGameMenu);
+
+private:
+	// 오픈시 저장된 위치 값 불러오기
+	void InitCanvasLocation();
+
+	// 버튼 Press,Release 이벤트로 토글
+	// true시 인벤토리 창이 마우스 따라 이동
+	bool bCanMovable = false;
+
+	// 마우스와 캔버스의 간격
+	float OffsetX;
+	float OffsetY;
 };
