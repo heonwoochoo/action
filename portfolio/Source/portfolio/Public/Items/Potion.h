@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Items/ItemBase.h"
 #include "Types/ItemTypes.h"
 #include "Potion.generated.h"
 
@@ -14,7 +14,7 @@ class UCurveFloat;
 class UTexture2D;
 
 UCLASS()
-class PORTFOLIO_API APotion : public AActor
+class PORTFOLIO_API APotion : public AItemBase
 {
 	GENERATED_BODY()
 	
@@ -23,30 +23,9 @@ public:
 
 
 protected:
-	UPROPERTY(VisibleDefaultsOnly)
-	USphereComponent* CollisionComponent;
-
-	UPROPERTY(EditDefaultsOnly)
-	UStaticMeshComponent* StaticMesh;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
-	UDataTable* PotionDataTable;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
-	EItemName PotionName = EItemName::EIN_None;
-
-	// 아이템 획득 시 생성될 파티클
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Particle")
-	UParticleSystem* PickupParticle;
-
-	// 획득 시 스케일 값의 변화 (애니메이션 효과)
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
-	UCurveFloat* PickupScaleCurve;
-
 	virtual void BeginPlay() override;
 
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
-
 
 	virtual void Destroyed() override;
 
@@ -55,11 +34,6 @@ public:
 
 	void HandlePickupPotion(AActor* PickupCharacter);
 
-	FPotionInfo* GetPotionInfo();
-	FName GetName();
-	FName GetDescription();
-	float GetCoolDown();
-	UTexture2D* GetImage();
 
 private:
 	FTimerHandle PickupTimerHandle;

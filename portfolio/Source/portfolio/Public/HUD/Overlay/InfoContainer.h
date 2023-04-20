@@ -246,11 +246,8 @@ public:
 	void UpdateSkillFour();
 	void UpdateSkillFourImage();
 
-	void UpdatePotionInventory();
-	void UpdatePotionAmount(EItemName Name, UTexture2D* Image, uint8 Amount);
-	
-
-	bool CheckPotion(EItemName Name);
+	void UpdateConsumableQuickSlot();
+	void UpdateConsumableAmount(const FName& Name, UTexture2D* Image, uint8 Amount);
 
 	void InitItemPotions();
 
@@ -271,7 +268,7 @@ private:
 	TArray<FPotionUI> ItemPotions;
 
 	// 소모품 UI 초기화
-	void RemovePotionUI();
+	void RemoveConsumableUI();
 
 	// 인벤토리 컴포넌트의 현재 인벤토리가 가지고 있는 포션 개수를 확인하여 업데이트 수행
 	void CheckItemPotionInInventory();

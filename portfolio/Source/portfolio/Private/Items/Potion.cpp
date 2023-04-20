@@ -13,26 +13,17 @@ APotion::APotion()
 {
  	PrimaryActorTick.bCanEverTick = true;
 
-	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	if (CollisionComponent)
 	{
-		RootComponent = CollisionComponent;
 		CollisionComponent->SetSphereRadius(100.f);
 	}
-
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	if (StaticMesh)
-	{
-		StaticMesh->SetupAttachment(GetRootComponent());
-	}
-
 }
 
 void APotion::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Tags.Add(FName("Item"));
+	
 	Tags.Add(FName("Potion"));
 }
 
@@ -40,22 +31,14 @@ void APotion::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
-	if (PotionDataTable && PotionName != EItemName::EIN_None)
+	if (Name.IsValid() && ItemSpecData)
 	{
-		FName RowName;
-		switch (PotionName)
-		{
-		case EItemName::EIN_HealthPotion:
-			RowName = "HealthPotion";
-			break;
-		case EItemName::EIN_StaminaPotion:
-			RowName = "StaminaPotion";
-			break;
-		}
+		Spec = *ItemSpecData->FindRow<FItemSpec>(Name, "");
 
 		if (StaticMesh)
 		{
-			StaticMesh->SetStaticMesh(PotionDataTable->FindRow<FPotionInfo>(RowName, "")->Mesh);
+			UStaticMesh* Mesh = Spec.StaticMesh;
+			StaticMesh->SetStaticMesh(Mesh);
 		}	
 	}
 }
@@ -101,68 +84,6 @@ void APotion::HandlePickupPotion(AActor* PickupCharacter)
 	GetWorld()->GetTimerManager().SetTimer(PickupTimerHandle, this, &APotion::EndPickupTimer, PickupScaleTime);
 }
 
-FPotionInfo* APotion::GetPotionInfo()
-{
-	if (PotionDataTable && PotionName != EItemName::EIN_None)
-	{
-		FName RowName = "";
-		switch (PotionName)
-		{
-		case EItemName::EIN_HealthPotion:
-			RowName = "HealthPotion";
-			break;
-		case EItemName::EIN_StaminaPotion:
-			RowName = "StaminaPotion";
-			break;
-		case EItemName::EIN_None:
-			break;
-		}
-
-		return PotionDataTable->FindRow<FPotionInfo>(RowName, "");
-	}
-	return nullptr;
-}
-
-FName APotion::GetName()
-{
-	FPotionInfo* PotionInfo = GetPotionInfo();
-	if (PotionInfo)
-	{
-		return PotionInfo->UIName;
-	}
-	return FName();
-}
-
-FName APotion::GetDescription()
-{
-	FPotionInfo* PotionInfo = GetPotionInfo();
-	if (PotionInfo)
-	{
-		return PotionInfo->Description;
-	}
-	return FName();
-}
-
-float APotion::GetCoolDown()
-{
-	FPotionInfo* PotionInfo = GetPotionInfo();
-	if (PotionInfo)
-	{
-		return PotionInfo->CoolDown;
-	}
-	return 0.0f;
-}
-
-UTexture2D* APotion::GetImage()
-{
-	FPotionInfo* PotionInfo = GetPotionInfo();
-	if (PotionInfo)
-	{
-		return PotionInfo->Image;
-	}
-	return nullptr;
-}
-
 void APotion::EndPickupTimer()
 {
 	// 아이템이 필드에서 사라지면서 캐릭터가 아이템을 획득
@@ -170,11 +91,12 @@ void APotion::EndPickupTimer()
 	if (PlayerCharacter)
 	{
 		UInventoryComponent* InventoryComponent = PlayerCharacter->GetInventoryComponent();
-		if (InventoryComponent && PotionName != EItemName::EIN_None)
+		if (InventoryComponent)
 		{
-			InventoryComponent->AddItemPotion(PotionName);
+			InventoryComponent->AddItem(Name);
 		}
 	}
+
 	Destroy();
 }
 

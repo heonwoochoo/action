@@ -23,31 +23,31 @@ public:
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UDataTable* PotionDataTable;
+	UDataTable* ItemSpecData;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Sound", meta = (AllowPrivateAccess = "true"))
 	USoundCue* PotionConsumeSound;
 
 	// 저장되어 있는 아이템
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TMap<EItemName, uint8> ItemsAmount;
+	TMap<FName, uint8> ItemList;
 
 	// 입력 이벤트와 매핑될 아이템
 	// 1,2,3 : 소모품
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	EItemName Item1;
+	FName Item1;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	EItemName Item2;
+	FName Item2;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	EItemName Item3;
+	FName Item3;
 
 	// 4,5,6 : 장비
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	EItemName Item4;
+	FName Item4;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	EItemName Item5;
+	FName Item5;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	EItemName Item6;
+	FName Item6;
 
 	// 쿨타임 적용을 위한 타이머 핸들
 	FTimerHandle ItemTimerHandle1;
@@ -72,32 +72,29 @@ private:
 	void EndTimerHandle6();
 
 	// 포션의 데이터 값을 캐릭터에게 적용
-	void EffectPotion(EStatTarget Target, float CoolDown, float AbilityPoint);
+	void EffectConsumable(const FName& ItemName, const FItemSpec& Spec);
 
 	// 포션 소모시 캐릭터 주위 파티클 생성
 	void SpawnConsumeParticle(UParticleSystem* Particle);
-
-	// 포션 데이터 테이블로부터 아이템의 쿨다운 값 반환
-	float GetItemPotionCoolDown(EItemName Name);
 
 	// 포션 소모시 재생되는 사운드
 	void PlayConsumeSound();
 
 public:
-	TMap<EItemName, uint8> GetItemAmountMap() const;
+	const TMap<FName, uint8>& GetItemList() const;
 
-	uint8 GetItemAmount(EItemName ItemName);
+	uint8 GetItemAmount(const FName& ItemName);
 
 	// 소모품 획득시 아이템 목록 업데이트
-	void AddItemPotion(EItemName ItemName);
+	void AddItem(const FName& ItemName);
 
 	// 소모품 사용시 아이템 목록 업데이트
-	void UseItemPotion(EItemName ItemName);
+	void UseItem(const FName& ItemName, const FItemSpec& Spec);
 
-	UDataTable* GetPotionDataTable() const;
+	UDataTable* GetItemDataTable() const;
 
 	// UI 이미지와 수량을 업데이트
-	void UpdatePotionUI();
+	void UpdateConsumableUI();
 
 	// 아이템 사용 키보드 입력 이벤트 발생시 호출
 	void ItemHandle_1();
@@ -108,10 +105,10 @@ public:
 	void ItemHandle_6();
 
 	// 소모품 아이템 매핑 초기화
-	void ResetItemPotionMapping();
+	void ResetItemConsumableMapping();
 
 	// 소모품 아이템 매핑, UI가 업데이트 되면서 호출됨
-	void SetItemPotionMapping(EItemName Name, uint8 Idx);
+	void SetItemConsumableMapping(const FName& Name, uint8 Idx);
 
 	FTimerHandle* GetItemTimerHandle(EItemNumber ItemNum);
 

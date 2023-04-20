@@ -69,7 +69,7 @@ void UInfoContainer::Init()
 	UpdateSkillFour();
 	UpdateSkillFourImage();
 
-	RemovePotionUI();
+	RemoveConsumableUI();
 }
 
 void UInfoContainer::UpdateADText()
@@ -196,20 +196,17 @@ void UInfoContainer::UpdateSkillFourImage()
 	SkillFourImage->SetBrushFromTexture(AbilityComponent->GetSkillFour().Image);
 }
 
-void UInfoContainer::UpdatePotionInventory()
+void UInfoContainer::UpdateConsumableQuickSlot()
 {
 	if (InventoryComponent)
 	{
-		RemovePotionUI();
-			
-		// 키보드 매핑 초기화
-		InventoryComponent->ResetItemPotionMapping();
+		RemoveConsumableUI();
 
 		CheckItemPotionInInventory();
 	}
 }
 
-void UInfoContainer::UpdatePotionAmount(EItemName Name, UTexture2D* Image, uint8 Amount)
+void UInfoContainer::UpdateConsumableAmount(const FName& Name, UTexture2D* Image, uint8 Amount)
 {
 	if (PotionIdx < 3)
 	{
@@ -218,14 +215,14 @@ void UInfoContainer::UpdatePotionAmount(EItemName Name, UTexture2D* Image, uint8
 		ItemPotions[PotionIdx].Amount->SetText(FText::FromString(FString::FromInt(Amount)));
 
 		// 키보드 매핑 재등록
-		InventoryComponent->SetItemPotionMapping(Name, PotionIdx);
+		InventoryComponent->SetItemConsumableMapping(Name, PotionIdx);
 
 		// 다음 칸의 UI를 업데이트 하기 위해 인덱스 증가
 		PotionIdx++;
 	}
 }
 
-void UInfoContainer::RemovePotionUI()
+void UInfoContainer::RemoveConsumableUI()
 {
 	PotionIdx = 0;
 	for (auto Potion : ItemPotions)
@@ -234,14 +231,6 @@ void UInfoContainer::RemovePotionUI()
 		Potion.Image->SetBrushFromTexture(nullptr);
 		Potion.Image->SetColorAndOpacity(FLinearColor(0.f, 0.f, 0.f));
 	}
-}
-
-bool UInfoContainer::CheckPotion(EItemName Name)
-{
-	bool result =
-		Name == EItemName::EIN_HealthPotion ||
-		Name == EItemName::EIN_StaminaPotion;
-	return result;
 }
 
 void UInfoContainer::InitItemPotions()
@@ -253,27 +242,17 @@ void UInfoContainer::InitItemPotions()
 
 void UInfoContainer::CheckItemPotionInInventory()
 {
-	UDataTable* PotionDataTable = InventoryComponent->GetPotionDataTable();
-	if (PotionDataTable)
+	UDataTable* ItemSpecData = InventoryComponent->GetItemDataTable();
+	if (ItemSpecData)
 	{
-		TMap<EItemName, uint8> Inventory = InventoryComponent->GetItemAmountMap();
-		for (auto Item : Inventory)
+		const TMap<FName, uint8>& ItemList = InventoryComponent->GetItemList();
+		for (const auto& Item : ItemList)
 		{
-			if (CheckPotion(Item.Key))
-			{
-				FName RowName;
-				switch (Item.Key)
-				{
-				case EItemName::EIN_HealthPotion:
-					RowName = "HealthPotion";
-					break;
-				case EItemName::EIN_StaminaPotion:
-					RowName = "StaminaPotion";
-					break;
-				}
-				FPotionInfo* PotionInfo = PotionDataTable->FindRow<FPotionInfo>(RowName, "");
-				UpdatePotionAmount(PotionInfo->Name, PotionInfo->Image, Item.Value);
-			}
+			const FName& ItemName = Item.Key;
+			const uint8 Amount = Item.Value;
+
+			FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(ItemName, "");
+			UpdateConsumableAmount(ItemName, Spec->Image, Amount);
 		}
 	}
 }

@@ -8,50 +8,6 @@
 #include "ItemTypes.generated.h"
 
 UENUM(BlueprintType)
-enum class EItemName : uint8
-{
-	EIN_None UMETA(DisplayName = "None"),
-	EIN_HealthPotion UMETA(DisplayName = "HealthPotion"),
-	EIN_StaminaPotion UMETA(DisplayName = "StaminaPotion"),
-};
-
-USTRUCT(BlueprintType)
-struct FPotionInfo : public FTableRowBase
-{
-	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	EItemName Name;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FName UIName;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FName Description;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	EStatTarget StatTarget;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float CoolDown;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float AbilityPoint;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	uint8 AmountMax;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UTexture2D* Image;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UStaticMesh* Mesh;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UParticleSystem* ConsumeParticle;
-};
-
-UENUM(BlueprintType)
 enum class EItemNumber : uint8
 {
 	EIN_1 UMETA(DisplayName = "Item1"),
@@ -60,4 +16,69 @@ enum class EItemNumber : uint8
 	EIN_4 UMETA(DisplayName = "Item4"),
 	EIN_5 UMETA(DisplayName = "Item5"),
 	EIN_6 UMETA(DisplayName = "Item6"),
+};
+
+UENUM(BlueprintType)
+enum class EEquipmentType : uint8
+{
+	EET_None UMETA(DisplayName = "None"),
+	EET_Weapon UMETA(DisplayName = "Weapon"),
+	EET_SubWeapon UMETA(DisplayName = "SubWeapon"),
+	EET_Armour UMETA(DisplayName = "Armour"),
+	EET_Helmet UMETA(DisplayName = "Helmet"),
+	EET_Shoes UMETA(DisplayName = "Shoes"),
+	EET_Accessory UMETA(DisplayName = "Accessory"),
+	EET_Shield UMETA(DisplayName = "Shield"),
+};
+
+UENUM(BlueprintType)
+enum class EItemType : uint8
+{
+	EIT_Equipment UMETA(DisplayName = "Equipment"),
+	EIT_Consumable UMETA(DisplayName = "Consumable"),
+};
+
+UENUM(BlueprintType)
+enum class EItemRarity : uint8
+{
+	EIR_Normal UMETA(DisplayName = "Normal"),
+	EIR_Rare UMETA(DisplayName = "Rare"),
+	EIR_Unique UMETA(DisplayName = "Unique"),
+	EIR_Epic UMETA(DisplayName = "Epic"),
+};
+
+USTRUCT(BlueprintType)
+struct FItemSpec : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	EItemType Type;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName Name;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName Description;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FCharacterStats Stats;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	ECharacterClass Class;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	uint8 AmountMax;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	EItemRarity Rarity;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UTexture2D* Image;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UStaticMesh* StaticMesh;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USkeletalMesh* SkeletalMesh;
 };
