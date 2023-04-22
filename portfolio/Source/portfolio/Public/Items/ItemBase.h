@@ -20,15 +20,18 @@ public:
 	AItemBase();
 
 protected:
+
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* CollisionComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* StaticMesh;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USkeletalMeshComponent* SkeletalMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
@@ -37,7 +40,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	FName Name;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	FItemSpec Spec;
 
 	// 아이템 획득 시 생성될 파티클

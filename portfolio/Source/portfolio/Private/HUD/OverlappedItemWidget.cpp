@@ -5,31 +5,26 @@
 #include "Items/Potion.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "Items/ItemBase.h"
 
 void UOverlappedItemWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 }
 
-void UOverlappedItemWidget::UpdateOverlappedItemInfo(AActor* Item)
+void UOverlappedItemWidget::UpdateOverlappedItemInfo(AItemBase* Item)
 {
-	if (Item->ActorHasTag(FName("Potion")))
+	if (Item->ActorHasTag(FName("Item")))
 	{
-		APotion* Potion = Cast<APotion>(Item);
-		
-		if (Potion)
-		{
-			if (ItemImage && ItemName && ItemDescription && ItemCoolDown)
-			{
-				// 이미지
-				ItemImage->SetBrushFromTexture(Potion->GetImage());
-				// 이름
-				ItemName->SetText(FText::FromName(Potion->GetName()));
-				// 정보
-				ItemDescription->SetText(FText::FromName(Potion->GetDescription()));
-				// 쿨다운
-				ItemCoolDown->SetText(FText::FromString(FString::SanitizeFloat(Potion->GetCoolDown())));
-			}
-		}
+		const FItemSpec& Spec = Item->GetItemSpec();
+
+		// 이미지
+		ItemImage->SetBrushFromTexture(Spec.Image);
+		// 이름
+		ItemName->SetText(FText::FromName(Spec.Name));
+		// 정보
+		ItemDescription->SetText(FText::FromName(Spec.Description));
+		// 쿨다운
+		ItemCoolDown->SetText(FText::FromString(FString::SanitizeFloat(Spec.Stats.CoolDown)));
 	}
 }

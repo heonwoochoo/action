@@ -67,7 +67,7 @@ void UInventoryComponent::EffectConsumable(const FName& ItemName, const FItemSpe
 	EStatTarget Target{};
 
 	const FCharacterStats& Stats = Spec.Stats;
-	float AbilityPoint;
+	float AbilityPoint{};
 
 	if (Stats.HP > 0)
 	{
@@ -172,8 +172,7 @@ void UInventoryComponent::UseItem(const FName& ItemName, const FItemSpec& Spec)
 			UpdateConsumableUI();
 		}
 
-		// 추후 수정
-		//SpawnConsumeParticle(PotionInfo->ConsumeParticle);
+		SpawnConsumeParticle(Spec.EffectParticle);
 
 		PlayConsumeSound();
 	}
@@ -193,10 +192,10 @@ void UInventoryComponent::UpdateConsumableUI()
 		UInfoContainer* InfoContainer = HUD->GetInfoContainer();
 		if (InfoContainer)
 		{
-			InfoContainer->UpdateConsumableQuickSlot();
-
 			// 순서도 바뀔 수 있으니 업데이트 시켜야함
 			ResetItemConsumableMapping();
+
+			InfoContainer->UpdateConsumableQuickSlot();
 		}
 	}
 }

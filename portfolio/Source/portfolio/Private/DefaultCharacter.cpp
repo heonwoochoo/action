@@ -29,6 +29,7 @@
 #include "HUD/OverlappedItemWidget.h"
 #include "GameInstance/DefaultGameInstance.h"
 #include "SaveGame/UserSaveGame.h"
+#include "Items/ItemBase.h"
 
 ADefaultCharacter::ADefaultCharacter()
 {
@@ -464,6 +465,7 @@ void ADefaultCharacter::PickupItem()
 			if (Potion)
 			{
 				Potion->HandlePickupPotion(this);
+				
 			}
 		}
 
@@ -675,7 +677,7 @@ void ADefaultCharacter::BeginOverlapped(UPrimitiveComponent* OverlappedComponent
 	if (OtherActor->ActorHasTag(FName("Item")))
 	{
 		PrevOverlappedItem = OverlappedItem;
-		OverlappedItem = OtherActor;
+		OverlappedItem = Cast<AItemBase>(OtherActor);
 
 		if (HUDBase)
 		{

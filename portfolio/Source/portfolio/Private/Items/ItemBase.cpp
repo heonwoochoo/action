@@ -29,6 +29,22 @@ void AItemBase::BeginPlay()
 	Tags.Add(FName("Item"));
 }
 
+void AItemBase::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	if (Name.IsValid() && ItemSpecData)
+	{
+		Spec = *ItemSpecData->FindRow<FItemSpec>(Name, "");
+
+		if (StaticMesh)
+		{
+			UStaticMesh* Mesh = Spec.StaticMesh;
+			StaticMesh->SetStaticMesh(Mesh);
+		}
+	}
+}
+
 void AItemBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

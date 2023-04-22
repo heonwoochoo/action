@@ -23,6 +23,7 @@ class AEnemyBase;
 class UInventoryComponent;
 class UParticleSystem;
 class AHUDBase;
+class AItemBase;
 
 UCLASS(config=Game)
 class ADefaultCharacter : public ACharacter
@@ -259,9 +260,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
 	ECharacterActionState CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 
-	// 충돌체가 오버랩 된 아이템
-	AActor* OverlappedItem;
-	AActor* PrevOverlappedItem;
+	// 캐릭터에 오버랩 된 아이템
+	AItemBase* OverlappedItem;
+	AItemBase* PrevOverlappedItem;
 
 	void DoubleJump();
 

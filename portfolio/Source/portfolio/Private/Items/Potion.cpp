@@ -27,26 +27,6 @@ void APotion::BeginPlay()
 	Tags.Add(FName("Potion"));
 }
 
-void APotion::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
-{
-	Super::PostEditChangeProperty(PropertyChangedEvent);
-
-	if (Name.IsValid() && ItemSpecData)
-	{
-		Spec = *ItemSpecData->FindRow<FItemSpec>(Name, "");
-
-		if (StaticMesh)
-		{
-			UStaticMesh* Mesh = Spec.StaticMesh;
-			StaticMesh->SetStaticMesh(Mesh);
-		}	
-	}
-}
-
-void APotion::Destroyed()
-{
-}
-
 void APotion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

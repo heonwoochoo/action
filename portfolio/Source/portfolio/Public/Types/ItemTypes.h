@@ -81,4 +81,7 @@ struct FItemSpec : public FTableRowBase
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	USkeletalMesh* SkeletalMesh;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UParticleSystem* EffectParticle;
 };

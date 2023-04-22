@@ -8,6 +8,7 @@
 
 class UImage;
 class UTextBlock;
+class AItemBase;
 
 UCLASS()
 class PORTFOLIO_API UOverlappedItemWidget : public UUserWidget
@@ -31,5 +32,5 @@ protected:
 
 public:
 	// 오버랩 창에 표시될 UI 업데이트
-	void UpdateOverlappedItemInfo(AActor* Item);
+	void UpdateOverlappedItemInfo(AItemBase* Item);
 };
