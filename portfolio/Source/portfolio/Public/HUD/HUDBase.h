@@ -12,7 +12,7 @@ class ATargetMark;
 class UUserWidget;
 class UInfoContainer;
 class UComboCountWidget;
-class UOverlappedItemWidget;
+class UItemTooltipWidget;
 class UInGameMenu;
 
 UCLASS()
@@ -41,7 +41,7 @@ private:
 	TSubclassOf<UComboCountWidget> ComboCountClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Item", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<UOverlappedItemWidget> OverlappedItemClass;
+	TSubclassOf<UItemTooltipWidget> OverlappedItemClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Overlay", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UInGameMenu> InGameMenuClass;
@@ -50,13 +50,13 @@ private:
 
 	UComboCountWidget* ComboCountWidget;
 
-	UOverlappedItemWidget* OverlappedItemWidget;
+	UItemTooltipWidget* ItemTooltipWidget;
 
 	UInGameMenu* InGameMenuWidget;
 
 	void InitInfoContainer();
 	void InitComboCountWidget();
-	void InitOverlappedItemWidget();
+	void InitItemTooltipWidget();
 
 public:
 	void ShowDamageOnScreen(ACharacter* Actor, float Damage);
@@ -64,7 +64,7 @@ public:
 
 	FORCEINLINE UInfoContainer* GetInfoContainer() { return InfoContainer; }
 	FORCEINLINE UComboCountWidget* GetComboCountWidget() { return ComboCountWidget; }
-	FORCEINLINE UOverlappedItemWidget* GetOverlappedItemWidget() { return OverlappedItemWidget; }
+	FORCEINLINE UItemTooltipWidget* GetOverlappedItemWidget() { return ItemTooltipWidget; }
 	
 	UFUNCTION(BlueprintCallable)
 	void InitScreenOverlay();

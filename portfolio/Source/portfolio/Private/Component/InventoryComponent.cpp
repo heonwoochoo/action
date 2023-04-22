@@ -108,7 +108,7 @@ void UInventoryComponent::PlayConsumeSound()
 	}
 }
 
-const TMap<FName, uint8>& UInventoryComponent::GetItemList() const
+TMap<FName, uint8> UInventoryComponent::GetItemList() const
 {
 	return ItemList;
 }
@@ -200,101 +200,101 @@ void UInventoryComponent::UpdateConsumableUI()
 	}
 }
 
-void UInventoryComponent::ItemHandle_1()
+void UInventoryComponent::SlotHandle_1()
 {
-	if (bEnableItem1 && ItemSpecData && HasItemInContainer(EItemNumber::EIN_1))
+	if (bEnableItem1 && ItemSpecData && Slot1 != FName())
 	{
 		bEnableItem1 = false;
 
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Item1, "");
+		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Slot1, "");
 		const float CoolDown = ItemSpec.Stats.CoolDown;
 
 		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle1, this, &UInventoryComponent::EndTimerHandle1, CoolDown);
 		
-		UseItem(Item1, ItemSpec);
+		UseItem(Slot1, ItemSpec);
 	}
 }
 
-void UInventoryComponent::ItemHandle_2()
+void UInventoryComponent::SlotHandle_2()
 {
 	if (bEnableItem2 && ItemSpecData && HasItemInContainer(EItemNumber::EIN_2))
 	{
 		bEnableItem2 = false;
 
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Item2, "");
+		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Slot2, "");
 		const float CoolDown = ItemSpec.Stats.CoolDown;
 
 		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle2, this, &UInventoryComponent::EndTimerHandle2, CoolDown);
 
-		UseItem(Item2, ItemSpec);
+		UseItem(Slot2, ItemSpec);
 	}
 }
 
-void UInventoryComponent::ItemHandle_3()
+void UInventoryComponent::SlotHandle_3()
 {
 	if (bEnableItem3 && ItemSpecData && HasItemInContainer(EItemNumber::EIN_3))
 	{
 		bEnableItem3 = false;
 
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Item3, "");
+		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Slot3, "");
 		const float CoolDown = ItemSpec.Stats.CoolDown;
 
 		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle3, this, &UInventoryComponent::EndTimerHandle3, CoolDown);
 
-		UseItem(Item3, ItemSpec);
+		UseItem(Slot3, ItemSpec);
 	}
 }
 
-void UInventoryComponent::ItemHandle_4()
+void UInventoryComponent::SlotHandle_4()
 {
 	if (bEnableItem4 && ItemSpecData && HasItemInContainer(EItemNumber::EIN_4))
 	{
 		bEnableItem4 = false;
 
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Item4, "");
+		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Slot4, "");
 		const float CoolDown = ItemSpec.Stats.CoolDown;
 
 		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle4, this, &UInventoryComponent::EndTimerHandle4, CoolDown);
 
-		UseItem(Item4, ItemSpec);
+		UseItem(Slot4, ItemSpec);
 	}
 }
 
-void UInventoryComponent::ItemHandle_5()
+void UInventoryComponent::SlotHandle_5()
 {
 	if (bEnableItem5 && ItemSpecData && HasItemInContainer(EItemNumber::EIN_5))
 	{
 		bEnableItem5 = false;
 
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Item5, "");
+		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Slot5, "");
 		const float CoolDown = ItemSpec.Stats.CoolDown;
 
 		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle5, this, &UInventoryComponent::EndTimerHandle5, CoolDown);
 
-		UseItem(Item5, ItemSpec);
+		UseItem(Slot5, ItemSpec);
 	}
 }
 
-void UInventoryComponent::ItemHandle_6()
+void UInventoryComponent::SlotHandle_6()
 {
 	if (bEnableItem6 && ItemSpecData && HasItemInContainer(EItemNumber::EIN_6))
 	{
 		bEnableItem6 = false;
 
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Item6, "");
+		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Slot6, "");
 		const float CoolDown = ItemSpec.Stats.CoolDown;
 
 		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle6, this, &UInventoryComponent::EndTimerHandle6, CoolDown);
 
-		UseItem(Item6, ItemSpec);
+		UseItem(Slot6, ItemSpec);
 	}
 }
 
 void UInventoryComponent::ResetItemConsumableMapping()
 {
-	Item1 = FName();
-	Item2 = FName();
-	Item3 = FName();
+	Slot1 = FName();
+	Slot2 = FName();
+	Slot3 = FName();
 }
 
 void UInventoryComponent::SetItemConsumableMapping(const FName& Name, uint8 Idx)
@@ -302,13 +302,13 @@ void UInventoryComponent::SetItemConsumableMapping(const FName& Name, uint8 Idx)
 	switch (Idx)
 	{
 	case 0:
-		Item1 = Name;
+		Slot1 = Name;
 		break;
 	case 1:
-		Item2 = Name;
+		Slot2 = Name;
 		break;
 	case 2:
-		Item3 = Name;
+		Slot3 = Name;
 		break;
 	}
 }
@@ -378,22 +378,22 @@ bool UInventoryComponent::HasItemInContainer(EItemNumber ItemNum)
 	switch (ItemNum)
 	{
 	case EItemNumber::EIN_1:
-		TargetItem = Item1;
+		TargetItem = Slot1;
 		break;
 	case EItemNumber::EIN_2:
-		TargetItem = Item2;
+		TargetItem = Slot2;
 		break;
 	case EItemNumber::EIN_3:
-		TargetItem = Item3;
+		TargetItem = Slot3;
 		break;
 	case EItemNumber::EIN_4:
-		TargetItem = Item4;
+		TargetItem = Slot4;
 		break;
 	case EItemNumber::EIN_5:
-		TargetItem = Item5;
+		TargetItem = Slot5;
 		break;
 	case EItemNumber::EIN_6:
-		TargetItem = Item6;
+		TargetItem = Slot6;
 		break;
 	}
 

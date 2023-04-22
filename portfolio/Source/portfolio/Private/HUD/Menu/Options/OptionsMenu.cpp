@@ -7,6 +7,7 @@
 #include "Controller/CharacterController.h"
 #include "DefaultCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameInstance/DefaultGameInstance.h"
 
 void UOptionsMenu::NativeConstruct()
 {
@@ -27,18 +28,24 @@ void UOptionsMenu::NativeDestruct()
 {
 	Super::NativeDestruct();
 
-	// 인풋 모드 변경
-	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-	if (CharacterController)
+	UDefaultGameInstance* DefaultGameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+
+	if (DefaultGameInstance && DefaultGameInstance->IsInGame())
 	{
-		CharacterController->SetInputModeToGame();
+		// 인풋 모드 변경
+		ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+		if (CharacterController)
+		{
+			CharacterController->SetInputModeToGame();
+		}
+		// 오픈 상태 변수 변경
+		ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+		if (DefaultCharacter)
+		{
+			DefaultCharacter->SetIsOpenInGameMenu(false);
+		}
 	}
-	// 오픈 상태 변수 변경
-	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	if (DefaultCharacter)
-	{
-		DefaultCharacter->SetIsOpenInGameMenu(false);
-	}
+
 	// 열려있는 자식 위젯 닫기
 	if (SelectedOption)
 	{

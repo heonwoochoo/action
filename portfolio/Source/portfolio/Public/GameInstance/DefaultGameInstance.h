@@ -101,4 +101,7 @@ public:
 	FString GetUserName() const;
 
 	TSoftObjectPtr<UWorld> GetGameStartLevel() const;
+
+	// 월드 안에 들어왔는지 확인
+	bool IsInGame();
 };

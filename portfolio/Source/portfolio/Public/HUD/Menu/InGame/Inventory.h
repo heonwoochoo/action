@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Types/ItemTypes.h"
 #include "Inventory.generated.h"
 
 class UButton;
@@ -128,17 +129,20 @@ protected:
 	void OnClickedExitButton();
 
 public:
+	void SetInGameMenu(UInGameMenu* InInGameMenu);
+
+
+private:
 	void InitInventoryDragButton();
 	void InitEquipmentTabButton();
 	void InitConsumableTabButton();
 	void InitExitButton();
 
+	// 캐릭터가 가지고 있는 아이템 리스트를 보여줍니다
+	void ShowItemList(EItemType ItemType);
+
 	void PlayButtonSound();
 
-	void SetInGameMenu(UInGameMenu* InInGameMenu);
-
-
-private:
 	// 오픈시 저장된 위치 값 불러오기
 	void InitCanvasLocation();
 

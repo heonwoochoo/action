@@ -32,22 +32,22 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TMap<FName, uint8> ItemList;
 
-	// 입력 이벤트와 매핑될 아이템
+	// 퀵슬롯에 등록된 아이템
 	// 1,2,3 : 소모품
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FName Item1;
+	FName Slot1;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FName Item2;
+	FName Slot2;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FName Item3;
+	FName Slot3;
 
 	// 4,5,6 : 장비
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FName Item4;
+	FName Slot4;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FName Item5;
+	FName Slot5;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FName Item6;
+	FName Slot6;
 
 	// 쿨타임 적용을 위한 타이머 핸들
 	FTimerHandle ItemTimerHandle1;
@@ -81,7 +81,7 @@ private:
 	void PlayConsumeSound();
 
 public:
-	const TMap<FName, uint8>& GetItemList() const;
+	TMap<FName, uint8> GetItemList() const;
 
 	uint8 GetItemAmount(const FName& ItemName);
 
@@ -96,13 +96,13 @@ public:
 	// UI 이미지와 수량을 업데이트
 	void UpdateConsumableUI();
 
-	// 아이템 사용 키보드 입력 이벤트 발생시 호출
-	void ItemHandle_1();
-	void ItemHandle_2();
-	void ItemHandle_3();
-	void ItemHandle_4();
-	void ItemHandle_5();
-	void ItemHandle_6();
+	// 퀵슬롯 관련 호출 함수
+	void SlotHandle_1();
+	void SlotHandle_2();
+	void SlotHandle_3();
+	void SlotHandle_4();
+	void SlotHandle_5();
+	void SlotHandle_6();
 
 	// 소모품 아이템 매핑 초기화
 	void ResetItemConsumableMapping();

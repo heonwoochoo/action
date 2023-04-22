@@ -8,7 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "HUD/Overlay/InfoContainer.h"
 #include "HUD/ComboCountWidget.h"
-#include "HUD/OverlappedItemWidget.h"
+#include "HUD/ItemTooltipWidget.h"
 #include "HUD/Menu/InGame/InGameMenu.h"
 #include "Kismet/GameplayStatics.h"
 #include "Controller/CharacterController.h"
@@ -53,18 +53,20 @@ void AHUDBase::InitComboCountWidget()
 	}
 }
 
-void AHUDBase::InitOverlappedItemWidget()
+void AHUDBase::InitItemTooltipWidget()
 {
 	if (OverlappedItemClass)
 	{
-		OverlappedItemWidget = Cast<UOverlappedItemWidget>(CreateWidget(GetOwningPlayerController(), OverlappedItemClass));
-		if (OverlappedItemWidget)
+		ItemTooltipWidget = Cast<UItemTooltipWidget>(CreateWidget(GetOwningPlayerController(), OverlappedItemClass));
+		if (ItemTooltipWidget)
 		{
-			OverlappedItemWidget->AddToViewport();
-			OverlappedItemWidget->SetVisibility(ESlateVisibility::Hidden);
+			ItemTooltipWidget->AddToViewport();
+			ItemTooltipWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 }
+
+
 
 void AHUDBase::ShowDamageOnScreen(ACharacter* Actor, float Damage)
 {
@@ -95,7 +97,7 @@ void AHUDBase::InitScreenOverlay()
 {
 	InitInfoContainer();
 	InitComboCountWidget();
-	InitOverlappedItemWidget();
+	InitItemTooltipWidget();
 }
 
 void AHUDBase::OpenInGameMenu()

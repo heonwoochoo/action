@@ -26,10 +26,11 @@
 #include "Component/InventoryComponent.h"
 #include "HUD/ComboCountWidget.h"
 #include "Items/Potion.h"
-#include "HUD/OverlappedItemWidget.h"
+#include "HUD/ItemTooltipWidget.h"
 #include "GameInstance/DefaultGameInstance.h"
 #include "SaveGame/UserSaveGame.h"
 #include "Items/ItemBase.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
 
 ADefaultCharacter::ADefaultCharacter()
 {
@@ -169,12 +170,12 @@ void ADefaultCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 		EnhancedInputComponent->BindAction(Skill4Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::SkillManagerFour);
 		
 		// Item
-		EnhancedInputComponent->BindAction(Item1Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::ItemManager_1);
-		EnhancedInputComponent->BindAction(Item2Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::ItemManager_2);
-		EnhancedInputComponent->BindAction(Item3Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::ItemManager_3);
-		EnhancedInputComponent->BindAction(Item4Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::ItemManager_4);
-		EnhancedInputComponent->BindAction(Item5Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::ItemManager_5);
-		EnhancedInputComponent->BindAction(Item6Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::ItemManager_6);
+		EnhancedInputComponent->BindAction(Item1Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_1);
+		EnhancedInputComponent->BindAction(Item2Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_2);
+		EnhancedInputComponent->BindAction(Item3Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_3);
+		EnhancedInputComponent->BindAction(Item4Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_4);
+		EnhancedInputComponent->BindAction(Item5Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_5);
+		EnhancedInputComponent->BindAction(Item6Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_6);
 		EnhancedInputComponent->BindAction(PickupAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::PickupItem);
 		
 		// Open widget
@@ -400,57 +401,57 @@ void ADefaultCharacter::SkillManagerFour()
 	}
 }
 
-void ADefaultCharacter::ItemManager_1()
+void ADefaultCharacter::QuickSlotManager_1()
 {
 	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
-		InventoryComponent->ItemHandle_1();
+		InventoryComponent->SlotHandle_1();
 	}
 }
 
-void ADefaultCharacter::ItemManager_2()
+void ADefaultCharacter::QuickSlotManager_2()
 {
 	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
-		InventoryComponent->ItemHandle_2();
+		InventoryComponent->SlotHandle_2();
 	}
 }
 
-void ADefaultCharacter::ItemManager_3()
+void ADefaultCharacter::QuickSlotManager_3()
 {
 	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
-		InventoryComponent->ItemHandle_3();
+		InventoryComponent->SlotHandle_3();
 	}
 }
 
-void ADefaultCharacter::ItemManager_4()
+void ADefaultCharacter::QuickSlotManager_4()
 {
 	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
-		InventoryComponent->ItemHandle_4();
+		InventoryComponent->SlotHandle_4();
 	}
 }
 
-void ADefaultCharacter::ItemManager_5()
+void ADefaultCharacter::QuickSlotManager_5()
 {
 	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
-		InventoryComponent->ItemHandle_5();
+		InventoryComponent->SlotHandle_5();
 	}
 }
 
-void ADefaultCharacter::ItemManager_6()
+void ADefaultCharacter::QuickSlotManager_6()
 {
 	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
-		InventoryComponent->ItemHandle_6();
+		InventoryComponent->SlotHandle_6();
 	}
 }
 
@@ -682,11 +683,21 @@ void ADefaultCharacter::BeginOverlapped(UPrimitiveComponent* OverlappedComponent
 		if (HUDBase)
 		{
 			// 아이템 정보 표시
-			UOverlappedItemWidget* OverlappedItemWidget = HUDBase->GetOverlappedItemWidget();
-			if (OverlappedItemWidget)
+			UItemTooltipWidget* ItemTooltipWidget = HUDBase->GetOverlappedItemWidget();
+			if (ItemTooltipWidget)
 			{
-				OverlappedItemWidget->SetVisibility(ESlateVisibility::Visible);
-				OverlappedItemWidget->UpdateOverlappedItemInfo(OverlappedItem);
+
+				ItemTooltipWidget->SetVisibility(ESlateVisibility::Visible);
+				ItemTooltipWidget->UpdateOverlappedItemInfo(OverlappedItem);
+
+				// 위치 설정
+				const FVector2D& ViewSize = UWidgetLayoutLibrary::GetViewportSize(this);
+				const float ViewScale = UWidgetLayoutLibrary::GetViewportScale(this);
+				const float X = (ViewSize.X * 0.8f)/ViewScale;
+				const float Y = (ViewSize.Y * 0.8f)/ViewScale;
+
+				ItemTooltipWidget->SetCanvasPosition(FVector2D(X, Y));
+
 			}
 		}
 	}
@@ -898,6 +909,10 @@ void ADefaultCharacter::UpdateStamina(EStatUpdateType UpdateType, float AbilityP
 void ADefaultCharacter::SetIsOpenInGameMenu(bool IsOpen)
 {
 	bIsOpenInGameMenu = IsOpen;
+}
+
+void ADefaultCharacter::ShowItemTooltip(const FVector2D& Location)
+{
 }
 
 ECharacterClass ADefaultCharacter::GetCharacterClass()

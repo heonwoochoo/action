@@ -86,12 +86,12 @@ protected:
 	void SkillManagerFour();
 
 	/** 아이템 핸들러 */
-	void ItemManager_1();
-	void ItemManager_2();
-	void ItemManager_3();
-	void ItemManager_4();
-	void ItemManager_5();
-	void ItemManager_6();
+	void QuickSlotManager_1();
+	void QuickSlotManager_2();
+	void QuickSlotManager_3();
+	void QuickSlotManager_4();
+	void QuickSlotManager_5();
+	void QuickSlotManager_6();
 	void PickupItem();
 
 	/** 인게임 메뉴 토글 */
@@ -363,5 +363,7 @@ public:
 	void UpdateStamina(EStatUpdateType UpdateType, float AbilityPoint);
 
 	void SetIsOpenInGameMenu(bool IsOpen);
+
+	void ShowItemTooltip(const FVector2D& Location);
 };
 

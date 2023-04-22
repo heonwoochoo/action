@@ -13,6 +13,8 @@
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/Overlay.h"
+#include "Component/InventoryComponent.h"
+#include "HUD/Menu/InGame/ItemBox.h"
 
 void UInventory::NativeConstruct()
 {
@@ -24,6 +26,8 @@ void UInventory::NativeConstruct()
 	InitExitButton();
 
 	InitCanvasLocation();
+
+	ShowItemList(EItemType::EIT_Consumable);
 }
 
 void UInventory::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -208,6 +212,38 @@ void UInventory::InitExitButton()
 		ExitButton->OnHovered.AddDynamic(this, &UInventory::OnHoveredExitButton);
 		ExitButton->OnUnhovered.AddDynamic(this, &UInventory::OnUnhoveredExitButton);
 		ExitButton->OnClicked.AddDynamic(this, &UInventory::OnClickedExitButton);
+	}
+}
+
+void UInventory::ShowItemList(EItemType ItemType)
+{
+	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (DefaultCharacter)
+	{
+		UInventoryComponent* InventoryComponent = DefaultCharacter->GetInventoryComponent();
+		const auto& ItemList =  InventoryComponent->GetItemList();
+		for (const auto& Item : ItemList)
+		{
+			UDataTable* SpecData = InventoryComponent->GetItemDataTable();
+			if (SpecData)
+			{
+				FName ItemName = Item.Key;
+				FItemSpec* Spec = SpecData->FindRow<FItemSpec>(ItemName, "");
+				if (Spec)
+				{
+					if (ItemRow1->GetChildrenCount() < 4)
+					{
+						UItemBox* ItemBox = Cast<UItemBox>(CreateWidget(this, ItemBoxClass));
+						if (ItemBox)
+						{
+							ItemBox->SetItemImage(Spec->Image);
+							ItemBox->SetItemAmount(Item.Value);
+							ItemRow1->AddChildToHorizontalBox(ItemBox);
+						}
+					}
+				}
+			}
+		}
 	}
 }
 

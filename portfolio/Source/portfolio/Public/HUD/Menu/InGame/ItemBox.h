@@ -10,14 +10,14 @@ class UButton;
 class UImage;
 class UOverlay;
 class UTextBlock;
+class UTexture2D;
 
 UCLASS()
 class PORTFOLIO_API UItemBox : public UUserWidget
 {
 	GENERATED_BODY()
 	
-	protected:
-
+protected:
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
@@ -31,4 +31,9 @@ class PORTFOLIO_API UItemBox : public UUserWidget
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* ItemAmount;
+
+public:
+	void SetItemImage(UTexture2D* Image);
+
+	void SetItemAmount(uint8 Amount);
 };

@@ -46,10 +46,15 @@ void USubMenu::OnClickedBackButton()
 {
 	PlayButtonSound();
 
-	if (IsInGameMode())
+	UDefaultGameInstance* DefaultGameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+	
+	if (DefaultGameInstance)
 	{
-		RemoveFromParent();
-		return;
+		if (DefaultGameInstance->IsInGame())
+		{
+			RemoveFromParent();
+			return;
+		}
 	}
 	
 	if (MainMenuClass)
@@ -82,22 +87,6 @@ void USubMenu::InitBack()
 	{
 		ActiveBackButtonImage->SetOpacity(0.f);
 	}
-}
-
-bool USubMenu::IsInGameMode()
-{
-	UDefaultGameInstance* DefaultGameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (DefaultGameInstance)
-	{
-		TSoftObjectPtr<UWorld> GameStartLevelClass = DefaultGameInstance->GetGameStartLevel();
-		const FString& GameStartLevelName = GameStartLevelClass.GetAssetName();
-		const FString& CurrntLevelName = UGameplayStatics::GetCurrentLevelName(this);
-		if (GameStartLevelName != CurrntLevelName)
-		{
-			return true;
-		}
-	}
-	return false;
 }
 
 void USubMenu::PlayButtonSound()

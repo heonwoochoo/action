@@ -233,3 +233,14 @@ TSoftObjectPtr<UWorld> UDefaultGameInstance::GetGameStartLevel() const
 {
 	return GameStartLevel;
 }
+
+bool UDefaultGameInstance::IsInGame()
+{
+	const FString& GameStartLevelName = GameStartLevel.GetAssetName();
+	const FString& CurrntLevelName = UGameplayStatics::GetCurrentLevelName(this);
+	if (GameStartLevelName != CurrntLevelName)
+	{
+		return true;
+	}
+	return false;
+}
