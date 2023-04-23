@@ -20,12 +20,6 @@ void UItemTooltipWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 }
-
-void UItemTooltipWidget::NativeDestruct()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Item tooltip Destruct"));
-}
-
 void UItemTooltipWidget::UpdateContents(const FName& InItemName)
 {
 	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));

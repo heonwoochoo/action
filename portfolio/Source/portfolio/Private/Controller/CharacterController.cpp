@@ -7,6 +7,7 @@
 ACharacterController::ACharacterController()
 {
 	const FVector2D& ViewportSize = UWidgetLayoutLibrary::GetViewportSize(this);
+	CharacterInfoInitialLocation = ViewportSize;
 	InventoryInitialLocation = ViewportSize;
 	QuestInitialLocation = ViewportSize;
 }

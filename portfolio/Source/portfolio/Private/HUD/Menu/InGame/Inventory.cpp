@@ -21,10 +21,8 @@ void UInventory::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	InitInventoryDragButton();
 	InitEquipmentTabButton();
 	InitConsumableTabButton();
-	InitExitButton();
 
 	InitCanvasLocation();
 
@@ -34,95 +32,22 @@ void UInventory::NativeConstruct()
 void UInventory::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-
-	if (bCanMovable && InventoryCanvas)
-	{
-		UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(InventoryCanvas);
-		if (CanvasPanelSlot)
-		{
-			const FVector2D& MouseLocation = UWidgetLayoutLibrary::GetMousePositionOnViewport(this);
-			const float NewX = MouseLocation.X - OffsetX;
-			const float NewY = MouseLocation.Y - OffsetY;
-			CanvasPanelSlot->SetPosition(FVector2D(NewX, NewY));
-		}
-	}
 }
 
 void UInventory::NativeDestruct()
 {
 	Super::NativeDestruct();
-
-	
-	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-	if (CharacterController)
-	{
-		// 인풋모드 변경
-		CharacterController->SetInputModeToGame();
-
-		// 툴팁 열려있으면 닫기
-		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
-		if (HUDBase)
-		{
-			HUDBase->HideItemTooltip();
-		}
-	}
-
-	// 오픈 상태 변수 변경
-	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	if (DefaultCharacter)
-	{
-		DefaultCharacter->SetIsOpenInGameMenu(false);
-	}
 }
 
-void UInventory::OnHoveredInventoryDragButton()
+void UInventory::OnReleasedTitleDragButton()
 {
-	if (ActivatedBox && InventoryTextImage)
-	{
-		InventoryTextImage->SetBrushFromTexture(ActivatedBox);
-	}
-}
-
-void UInventory::OnUnhoveredInventoryDragButton()
-{
-	if (DeactivatedExitButton && InventoryTextImage)
-	{
-		InventoryTextImage->SetBrushFromTexture(DeactivatedBox);
-	}
-}
-
-void UInventory::OnPressedInventoryDragButton()
-{
-	if (InventoryDragOverlay)
-	{
-		InventoryDragOverlay->SetRenderOpacity(0.5f);
-	}
-
-	bCanMovable = true;
-
-	// 마우스와 캔버스의 간격 저장
-	UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(InventoryCanvas);
-	if (CanvasPanelSlot)
-	{
-		const FVector2D& CanvasLocation = CanvasPanelSlot->GetPosition();
-		const FVector2D& MouseLocation = UWidgetLayoutLibrary::GetMousePositionOnViewport(this);
-		OffsetX = MouseLocation.X - CanvasLocation.X;
-		OffsetY = MouseLocation.Y - CanvasLocation.Y;
-	}
-}
-
-void UInventory::OnReleasedInventoryDragButton()
-{
-	if (InventoryDragOverlay)
-	{
-		InventoryDragOverlay->SetRenderOpacity(1.f);
-	}
+	Super::OnReleasedTitleDragButton();
 
 	// 위치저장
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 	if (CharacterController)
-	{	
-		UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(InventoryCanvas);
+	{
+		UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(InnerCanvas);
 		if (CanvasPanelSlot)
 		{
 			const FVector2D& CurrentLocation = CanvasPanelSlot->GetPosition();
@@ -132,8 +57,6 @@ void UInventory::OnReleasedInventoryDragButton()
 			TooltipLocation = FVector2D(CurrentLocation.X + PanelSlotSizeX + 10.f, CurrentLocation.Y + 30.f);
 		}
 	}
-
-	bCanMovable = false;
 }
 
 void UInventory::OnHoveredEquipmentTabButton()
@@ -161,42 +84,6 @@ void UInventory::OnClickedConsumableTabButton()
 {
 }
 
-void UInventory::OnHoveredExitButton()
-{
-	if (ActivatedExitButton && ExitButtonImage)
-	{
-		ExitButtonImage->SetBrushFromTexture(ActivatedExitButton);
-	}
-}
-
-void UInventory::OnUnhoveredExitButton()
-{
-	if (DeactivatedExitButton && ExitButtonImage)
-	{
-		ExitButtonImage->SetBrushFromTexture(DeactivatedExitButton);
-	}
-}
-
-void UInventory::OnClickedExitButton()
-{
-	PlayButtonSound();
-
-
-
-	RemoveFromParent();
-}
-
-void UInventory::InitInventoryDragButton()
-{
-	if (InventoryDragButton)
-	{
-		InventoryDragButton->OnHovered.AddDynamic(this, &UInventory::OnHoveredInventoryDragButton);
-		InventoryDragButton->OnUnhovered.AddDynamic(this, &UInventory::OnUnhoveredInventoryDragButton);
-		InventoryDragButton->OnPressed.AddDynamic(this, &UInventory::OnPressedInventoryDragButton);
-		InventoryDragButton->OnReleased.AddDynamic(this, &UInventory::OnReleasedInventoryDragButton);
-	}
-}
-
 void UInventory::InitEquipmentTabButton()
 {
 	if (EquipmentTabButton)
@@ -214,16 +101,6 @@ void UInventory::InitConsumableTabButton()
 		ConsumableTabButton->OnHovered.AddDynamic(this, &UInventory::OnHoveredConsumableTabButton);
 		ConsumableTabButton->OnUnhovered.AddDynamic(this, &UInventory::OnUnhoveredConsumableTabButton);
 		ConsumableTabButton->OnClicked.AddDynamic(this, &UInventory::OnClickedConsumableTabButton);
-	}
-}
-
-void UInventory::InitExitButton()
-{
-	if (ExitButton)
-	{
-		ExitButton->OnHovered.AddDynamic(this, &UInventory::OnHoveredExitButton);
-		ExitButton->OnUnhovered.AddDynamic(this, &UInventory::OnUnhoveredExitButton);
-		ExitButton->OnClicked.AddDynamic(this, &UInventory::OnClickedExitButton);
 	}
 }
 
@@ -261,15 +138,6 @@ void UInventory::ShowItemList(EItemType ItemType)
 	}
 }
 
-void UInventory::PlayButtonSound()
-{
-	ADefaultGameMode* DefaultGameMode = Cast<ADefaultGameMode>(UGameplayStatics::GetGameMode(this));
-	if (DefaultGameMode)
-	{
-		DefaultGameMode->PlayCheckButtonClickSound();
-	}
-}
-
 void UInventory::SetInGameMenu(UInGameMenu* InInGameMenu)
 {
 	InGameMenu = InInGameMenu;
@@ -277,10 +145,12 @@ void UInventory::SetInGameMenu(UInGameMenu* InInGameMenu)
 
 void UInventory::InitCanvasLocation()
 {
+	Super::InitCanvasLocation();
+
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-	if (CharacterController && InventoryCanvas)
+	if (CharacterController && InnerCanvas)
 	{
-		UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(InventoryCanvas);
+		UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(InnerCanvas);
 		if (CanvasPanelSlot)
 		{
 			const FVector2D& Location = CharacterController->GetInventoryInitialLocation();

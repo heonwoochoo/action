@@ -23,7 +23,6 @@ class PORTFOLIO_API UItemTooltipWidget : public UUserWidget
 	
 protected:
 	virtual void NativeConstruct() override;
-	virtual void NativeDestruct() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* ItemImage;

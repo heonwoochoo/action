@@ -20,10 +20,21 @@ public:
 private:
 	// 메뉴 창이 열리는 뷰포트 상의 위치
 	// 닫기 전에 값이 저장되어야함
+	FVector2D CharacterInfoInitialLocation;
 	FVector2D InventoryInitialLocation;
 	FVector2D QuestInitialLocation;
 
 public:
+
+	FORCEINLINE const FVector2D& GetCharacterInfoInitialLocation() const {
+		return CharacterInfoInitialLocation;
+	}
+
+	FORCEINLINE void SetCharacterInfoInitialLocation(const FVector2D& NewLocation)
+	{
+		CharacterInfoInitialLocation = NewLocation;
+	}
+
 	FORCEINLINE const FVector2D& GetInventoryInitialLocation() const {
 		return InventoryInitialLocation;
 	}
