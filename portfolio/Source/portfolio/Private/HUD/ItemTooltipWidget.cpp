@@ -20,7 +20,7 @@ void UItemTooltipWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 }
-void UItemTooltipWidget::UpdateContents(const FName& InItemName)
+void UItemTooltipWidget::UpdateContents(const FName& ItemCode)
 {
 	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	if (DefaultCharacter)
@@ -31,11 +31,11 @@ void UItemTooltipWidget::UpdateContents(const FName& InItemName)
 			UDataTable* ItemSpecData = InventoryComponent->GetItemDataTable();
 			if (ItemSpecData)
 			{
-				FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(InItemName, "");
+				FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(ItemCode, "");
 				// 이미지
 				ItemImage->SetBrushFromTexture(Spec->Image);
 				// 이름
-				ItemName->SetText(FText::FromName(InItemName));
+				ItemName->SetText(FText::FromName(Spec->Name));
 				// 정보
 				ItemDescription->SetText(FText::FromName(Spec->Description));
 				// 쿨다운

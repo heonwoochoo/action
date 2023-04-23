@@ -73,7 +73,7 @@ void APotion::EndPickupTimer()
 		UInventoryComponent* InventoryComponent = PlayerCharacter->GetInventoryComponent();
 		if (InventoryComponent)
 		{
-			InventoryComponent->AddItem(Name);
+			InventoryComponent->AddItem(Code);
 		}
 	}
 

@@ -62,7 +62,7 @@ void UInventoryComponent::EndTimerHandle6()
 	bEnableItem6 = true;
 }
 
-void UInventoryComponent::EffectConsumable(const FName& ItemName, const FItemSpec& Spec)
+void UInventoryComponent::EffectConsumable(const FName& ItemCode, const FItemSpec& Spec)
 {
 	EStatTarget Target{};
 
@@ -122,25 +122,25 @@ uint8 UInventoryComponent::GetItemAmount(const FName& ItemName)
 	return 0;
 }
 
-void UInventoryComponent::AddItem(const FName& ItemName)
+void UInventoryComponent::AddItem(const FName& ItemCode)
 {
 	if (!ItemSpecData) return;
 
-	FItemSpec* ItemSpec = ItemSpecData->FindRow<FItemSpec>(ItemName, "");
+	FItemSpec* ItemSpec = ItemSpecData->FindRow<FItemSpec>(ItemCode, "");
 	if (ItemSpec)
 	{
-		if (ItemList.Contains(ItemName))
+		if (ItemList.Contains(ItemCode))
 		{
 			uint8 AmountMax = ItemSpec->AmountMax;
-			if (ItemList[ItemName] < AmountMax)
+			if (ItemList[ItemCode] < AmountMax)
 			{
-				ItemList[ItemName]++;
+				ItemList[ItemCode]++;
 			}
 		}
 		else
 		{
-			ItemList.Add(ItemName);
-			ItemList[ItemName] = 1;
+			ItemList.Add(ItemCode);
+			ItemList[ItemCode] = 1;
 		}
 
 		if (ItemSpec->Type == EItemType::EIT_Consumable)
@@ -150,24 +150,24 @@ void UInventoryComponent::AddItem(const FName& ItemName)
 	}
 }
 
-void UInventoryComponent::UseItem(const FName& ItemName, const FItemSpec& Spec)
+void UInventoryComponent::UseItem(const FName& ItemCode, const FItemSpec& Spec)
 {
-	if (ItemName.IsNone()) return;
+	if (ItemCode.IsNone()) return;
 	
 	EItemType ItemType = Spec.Type;
 	if (ItemType == EItemType::EIT_Consumable)
 	{
 		// 실제 데이터 적용
-		EffectConsumable(ItemName, Spec);
+		EffectConsumable(ItemCode, Spec);
 
 		// 멤버변수의 데이터를 업데이트
-		if (ItemList.Contains(ItemName))
+		if (ItemList.Contains(ItemCode))
 		{
-			if (ItemList[ItemName] == 1)
+			if (ItemList[ItemCode] == 1)
 			{
-				ItemList.Remove(ItemName);
+				ItemList.Remove(ItemCode);
 			}
-			else ItemList[ItemName]--;
+			else ItemList[ItemCode]--;
 
 			UpdateConsumableUI();
 		}

@@ -56,6 +56,9 @@ struct FItemSpec : public FTableRowBase
 	EItemType Type;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	EEquipmentType EquipmentType;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FName Name;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

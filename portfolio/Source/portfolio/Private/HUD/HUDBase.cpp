@@ -78,7 +78,7 @@ void AHUDBase::ShowTargetMark(ACharacter* Enemy, ACharacter* Caster)
 	}
 }
 
-void AHUDBase::ShowItemTooltip(const FName& InItemName, const FVector2D& Location)
+void AHUDBase::ShowItemTooltip(const FName& ItemCode, const FVector2D& Location)
 {
 	if (ItemTooltipWidgetClass)
 	{
@@ -86,7 +86,7 @@ void AHUDBase::ShowItemTooltip(const FName& InItemName, const FVector2D& Locatio
 		if (ItemTooltipWidget)
 		{
 			ItemTooltipWidget->AddToViewport(-1);
-			ItemTooltipWidget->UpdateContents(InItemName);
+			ItemTooltipWidget->UpdateContents(ItemCode);
 			ItemTooltipWidget->SetCanvasPosition(Location);
 		}
 	}

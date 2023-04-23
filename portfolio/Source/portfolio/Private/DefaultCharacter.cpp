@@ -688,7 +688,7 @@ void ADefaultCharacter::BeginOverlapped(UPrimitiveComponent* OverlappedComponent
 			const float X = (ViewSize.X * 0.8f)/ViewScale;
 			const float Y = (ViewSize.Y * 0.8f)/ViewScale;
 
-			HUDBase->ShowItemTooltip(OverlappedItem->GetItemName(), FVector2D(X, Y));
+			HUDBase->ShowItemTooltip(OverlappedItem->GetItemCode(), FVector2D(X, Y));
 		}
 	}
 }

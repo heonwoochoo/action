@@ -41,7 +41,7 @@ protected:
 
 public:
 	// 오버랩 창에 표시될 UI 업데이트
-	void UpdateContents(const FName& InItemName);
+	void UpdateContents(const FName& ItemCode);
 
 	// Canvas의 위치를 조정
 	void SetCanvasPosition(const FVector2D& Location);

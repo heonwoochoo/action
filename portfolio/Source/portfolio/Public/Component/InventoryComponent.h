@@ -72,7 +72,7 @@ private:
 	void EndTimerHandle6();
 
 	// 포션의 데이터 값을 캐릭터에게 적용
-	void EffectConsumable(const FName& ItemName, const FItemSpec& Spec);
+	void EffectConsumable(const FName& ItemCode, const FItemSpec& Spec);
 
 	// 포션 소모시 캐릭터 주위 파티클 생성
 	void SpawnConsumeParticle(UParticleSystem* Particle);
@@ -83,13 +83,13 @@ private:
 public:
 	TMap<FName, uint8> GetItemList() const;
 
-	uint8 GetItemAmount(const FName& ItemName);
+	uint8 GetItemAmount(const FName& ItemCode);
 
 	// 소모품 획득시 아이템 목록 업데이트
-	void AddItem(const FName& ItemName);
+	void AddItem(const FName& ItemCode);
 
 	// 소모품 사용시 아이템 목록 업데이트
-	void UseItem(const FName& ItemName, const FItemSpec& Spec);
+	void UseItem(const FName& ItemCode, const FItemSpec& Spec);
 
 	UDataTable* GetItemDataTable() const;
 
@@ -108,7 +108,7 @@ public:
 	void ResetItemConsumableMapping();
 
 	// 소모품 아이템 매핑, UI가 업데이트 되면서 호출됨
-	void SetItemConsumableMapping(const FName& Name, uint8 Idx);
+	void SetItemConsumableMapping(const FName& ItemCode, uint8 Idx);
 
 	FTimerHandle* GetItemTimerHandle(EItemNumber ItemNum);
 

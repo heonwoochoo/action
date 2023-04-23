@@ -61,7 +61,7 @@ public:
 	void ShowDamageOnScreen(ACharacter* Actor, float Damage);
 	void ShowTargetMark(ACharacter* Enemy, ACharacter* Caster);
 
-	void ShowItemTooltip(const FName& InItemName, const FVector2D& Location);
+	void ShowItemTooltip(const FName& ItemCode, const FVector2D& Location);
 	void HideItemTooltip();
 
 

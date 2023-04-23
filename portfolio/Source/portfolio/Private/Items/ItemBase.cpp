@@ -33,9 +33,9 @@ void AItemBase::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEve
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
-	if (Name.IsValid() && ItemSpecData)
+	if (Code.IsValid() && ItemSpecData)
 	{
-		Spec = *ItemSpecData->FindRow<FItemSpec>(Name, "");
+		Spec = *ItemSpecData->FindRow<FItemSpec>(Code, "");
 
 		if (StaticMesh)
 		{

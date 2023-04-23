@@ -38,7 +38,7 @@ protected:
 	UDataTable* ItemSpecData;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
-	FName Name;
+	FName Code;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	FItemSpec Spec;
@@ -54,6 +54,6 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
-	FORCEINLINE FName GetItemName() const { return Name; }
+	FORCEINLINE FName GetItemCode() const { return Code; }
 	FORCEINLINE FItemSpec GetItemSpec() const { return Spec; }
 };
