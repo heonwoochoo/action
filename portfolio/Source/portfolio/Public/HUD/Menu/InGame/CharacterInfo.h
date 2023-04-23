@@ -112,10 +112,15 @@ protected:
 	virtual void InitCanvasLocation() override;
 
 private:
-	void InitEquipmentSlot();
-
 	FVector2D TooltipLocation;
+
+	void InitEquipmentSlot();
+	void UpdateStats();
+	void UpdateHP(const float& CurrentHP, const float& MaxHP);
+	void UpdateStamina(const float& CurrentStamina, const float& MaxStamina);
 
 public:
 	FORCEINLINE FVector2D GetTooltipLocation() const { return TooltipLocation; };
+
+	
 };

@@ -13,6 +13,7 @@ class UExitBox;
 class USavedNotifyBox;
 class UInventory;
 class UOptionsMenu;
+class UCharacterInfo;
 
 UCLASS()
 class PORTFOLIO_API UInGameMenu : public UUserWidget
@@ -86,6 +87,10 @@ protected:
 	// 옵션 위젯 클래스
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Menu")
 	TSubclassOf<UOptionsMenu> OptionsMenuClass;
+
+	// 캐릭터 정보창 위젯 클래스
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Menu")
+	TSubclassOf<UCharacterInfo> CharacterInfoClass;	
 
 
 

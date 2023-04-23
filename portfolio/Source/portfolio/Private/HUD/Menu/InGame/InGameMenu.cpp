@@ -13,6 +13,7 @@
 #include "HUD/Menu/InGame/Inventory.h"
 #include "HUD/Menu/Options/OptionsMenu.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "HUD/Menu/InGame/CharacterInfo.h"
 
 void UInGameMenu::NativeConstruct()
 {
@@ -55,6 +56,18 @@ void UInGameMenu::OnUnhoveredCharacterButton()
 
 void UInGameMenu::OnClickedCharacterButton()
 {
+	PlayButtonSound();
+	if (InventoryClass)
+	{
+		UCharacterInfo* CharacterInfo = Cast<UCharacterInfo>(CreateWidget(this, CharacterInfoClass));
+		if (CharacterInfo)
+		{
+			CharacterInfo->AddToViewport();
+
+			//인게임 메뉴 닫기
+			PlayHideAnimation();
+		}
+	}
 }
 
 void UInGameMenu::OnHoveredInventoryButton()
@@ -81,7 +94,7 @@ void UInGameMenu::OnClickedInventoryButton()
 		UInventory* Inventory = Cast<UInventory>(CreateWidget(this, InventoryClass));
 		if (Inventory)
 		{
-			Inventory->AddToViewport(0);
+			Inventory->AddToViewport();
 			
 			//인게임 메뉴 닫기
 			PlayHideAnimation();

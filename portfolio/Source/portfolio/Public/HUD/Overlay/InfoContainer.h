@@ -45,29 +45,6 @@ public:
 	//=======================
 	// 플레이어 스탯 정보
 	//=======================
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* ADText;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* ADDefenseText;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* AttackSpeedText;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* CriticalText;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* APText;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* APDefenseText;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* CoolDownText;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* MovementSpeedText;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* HpCurrent;
@@ -218,15 +195,6 @@ public:
 
 
 	void Init();
-
-	void UpdateADText();
-	void UpdateADDefenseText();
-	void UpdateAttackSpeedText();
-	void UpdateCriticalText();
-	void UpdateAPText();
-	void UpdateAPDefenseText();
-	void UpdateCoolDownText();
-	void UpdateMovementSpeedText();
 
 	void UpdateHP();
 	void UpdateStamina();

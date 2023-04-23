@@ -48,14 +48,6 @@ void UInfoContainer::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 void UInfoContainer::Init()
 {
-	UpdateADText();
-	UpdateADDefenseText();
-	UpdateAttackSpeedText();
-	UpdateCriticalText();
-	UpdateAPText();
-	UpdateAPDefenseText();
-	UpdateCoolDownText();
-	UpdateMovementSpeedText();
 	UpdateHP();
 	UpdateStamina();
 	UpdateExp();
@@ -70,46 +62,6 @@ void UInfoContainer::Init()
 	UpdateSkillFourImage();
 
 	RemoveConsumableUI();
-}
-
-void UInfoContainer::UpdateADText()
-{
-	ADText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().AttackDamage)));
-}
-
-void UInfoContainer::UpdateADDefenseText()
-{
-	ADDefenseText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().AttackDamageDefense)));
-}
-
-void UInfoContainer::UpdateAttackSpeedText()
-{
-	AttackSpeedText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().AttackSpeed)));
-}
-
-void UInfoContainer::UpdateCriticalText()
-{
-	CriticalText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().Critical)));
-}
-
-void UInfoContainer::UpdateAPText()
-{
-	APText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().AbilityPower)));
-}
-
-void UInfoContainer::UpdateAPDefenseText()
-{
-	APDefenseText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().AbilityPowerDefense)));
-}
-
-void UInfoContainer::UpdateCoolDownText()
-{
-	CoolDownText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().CoolDown)));
-}
-
-void UInfoContainer::UpdateMovementSpeedText()
-{
-	MovementSpeedText->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().MovementSpeed)));
 }
 
 void UInfoContainer::UpdateHP()
