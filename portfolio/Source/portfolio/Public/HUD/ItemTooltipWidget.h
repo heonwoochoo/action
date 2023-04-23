@@ -23,6 +23,7 @@ class PORTFOLIO_API UItemTooltipWidget : public UUserWidget
 	
 protected:
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* ItemImage;
@@ -41,7 +42,7 @@ protected:
 
 public:
 	// 오버랩 창에 표시될 UI 업데이트
-	void UpdateOverlappedItemInfo(AItemBase* Item);
+	void UpdateContents(const FName& InItemName);
 
 	// Canvas의 위치를 조정
 	void SetCanvasPosition(const FVector2D& Location);

@@ -81,7 +81,7 @@ void UInGameMenu::OnClickedInventoryButton()
 		UInventory* Inventory = Cast<UInventory>(CreateWidget(this, InventoryClass));
 		if (Inventory)
 		{
-			Inventory->AddToViewport();
+			Inventory->AddToViewport(0);
 			
 			//인게임 메뉴 닫기
 			PlayHideAnimation();

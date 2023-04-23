@@ -53,21 +53,6 @@ void AHUDBase::InitComboCountWidget()
 	}
 }
 
-void AHUDBase::InitItemTooltipWidget()
-{
-	if (OverlappedItemClass)
-	{
-		ItemTooltipWidget = Cast<UItemTooltipWidget>(CreateWidget(GetOwningPlayerController(), OverlappedItemClass));
-		if (ItemTooltipWidget)
-		{
-			ItemTooltipWidget->AddToViewport();
-			ItemTooltipWidget->SetVisibility(ESlateVisibility::Hidden);
-		}
-	}
-}
-
-
-
 void AHUDBase::ShowDamageOnScreen(ACharacter* Actor, float Damage)
 {
 	if (DamageTextClass)
@@ -93,11 +78,42 @@ void AHUDBase::ShowTargetMark(ACharacter* Enemy, ACharacter* Caster)
 	}
 }
 
+void AHUDBase::ShowItemTooltip(const FName& InItemName, const FVector2D& Location)
+{
+	if (ItemTooltipWidgetClass)
+	{
+		if (ItemTooltipWidget)
+		{
+			ItemTooltipWidget->SetVisibility(ESlateVisibility::Visible);
+			ItemTooltipWidget->UpdateContents(InItemName);
+			ItemTooltipWidget->SetCanvasPosition(Location);
+		}
+		else
+		{
+			ItemTooltipWidget = Cast<UItemTooltipWidget>(CreateWidget(GetOwningPlayerController(), ItemTooltipWidgetClass));
+			if (ItemTooltipWidget)
+			{
+				ItemTooltipWidget->AddToViewport();
+				ItemTooltipWidget->UpdateContents(InItemName);
+				ItemTooltipWidget->SetCanvasPosition(Location);
+			}
+		}
+
+	}
+}
+
+void AHUDBase::HideItemTooltip()
+{
+	if (ItemTooltipWidget)
+	{
+		ItemTooltipWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
 void AHUDBase::InitScreenOverlay()
 {
 	InitInfoContainer();
 	InitComboCountWidget();
-	InitItemTooltipWidget();
 }
 
 void AHUDBase::OpenInGameMenu()

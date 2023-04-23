@@ -131,6 +131,7 @@ protected:
 public:
 	void SetInGameMenu(UInGameMenu* InInGameMenu);
 
+	FORCEINLINE FVector2D GetTooltipLocation() const { return TooltipLocation; };
 
 private:
 	void InitInventoryDragButton();
@@ -153,4 +154,7 @@ private:
 	// 마우스와 캔버스의 간격
 	float OffsetX;
 	float OffsetY;
+
+	// 툴팁이 뜨는 위치
+	FVector2D TooltipLocation;
 };

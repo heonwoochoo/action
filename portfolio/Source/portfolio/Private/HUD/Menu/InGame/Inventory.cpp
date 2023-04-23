@@ -15,6 +15,7 @@
 #include "Components/Overlay.h"
 #include "Component/InventoryComponent.h"
 #include "HUD/Menu/InGame/ItemBox.h"
+#include "HUD/HUDBase.h"
 
 void UInventory::NativeConstruct()
 {
@@ -51,11 +52,19 @@ void UInventory::NativeDestruct()
 {
 	Super::NativeDestruct();
 
-	// 인풋모드 변경
+	
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 	if (CharacterController)
 	{
+		// 인풋모드 변경
 		CharacterController->SetInputModeToGame();
+
+		// 툴팁 열려있으면 닫기
+		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+		if (HUDBase)
+		{
+			HUDBase->HideItemTooltip();
+		}
 	}
 
 	// 오픈 상태 변수 변경
@@ -118,6 +127,9 @@ void UInventory::OnReleasedInventoryDragButton()
 		{
 			const FVector2D& CurrentLocation = CanvasPanelSlot->GetPosition();
 			CharacterController->SetInventoryInitialLocation(CurrentLocation);
+
+			float PanelSlotSizeX = CanvasPanelSlot->GetSize().X;
+			TooltipLocation = FVector2D(CurrentLocation.X + PanelSlotSizeX + 10.f, CurrentLocation.Y + 30.f);
 		}
 	}
 
@@ -227,7 +239,7 @@ void UInventory::ShowItemList(EItemType ItemType)
 			UDataTable* SpecData = InventoryComponent->GetItemDataTable();
 			if (SpecData)
 			{
-				FName ItemName = Item.Key;
+				const FName& ItemName = Item.Key;
 				FItemSpec* Spec = SpecData->FindRow<FItemSpec>(ItemName, "");
 				if (Spec)
 				{
@@ -236,8 +248,10 @@ void UInventory::ShowItemList(EItemType ItemType)
 						UItemBox* ItemBox = Cast<UItemBox>(CreateWidget(this, ItemBoxClass));
 						if (ItemBox)
 						{
+							ItemBox->SetItemName(ItemName);
 							ItemBox->SetItemImage(Spec->Image);
 							ItemBox->SetItemAmount(Item.Value);
+							ItemBox->SetInventory(this);
 							ItemRow1->AddChildToHorizontalBox(ItemBox);
 						}
 					}
@@ -271,6 +285,9 @@ void UInventory::InitCanvasLocation()
 		{
 			const FVector2D& Location = CharacterController->GetInventoryInitialLocation();
 			CanvasPanelSlot->SetPosition(Location);
+
+			float PanelSlotSizeX = CanvasPanelSlot->GetSize().X;
+			TooltipLocation = FVector2D(Location.X + PanelSlotSizeX + 10.f, Location.Y + 30.f);
 		}
 	}
 }

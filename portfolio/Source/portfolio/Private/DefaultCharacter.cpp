@@ -682,23 +682,13 @@ void ADefaultCharacter::BeginOverlapped(UPrimitiveComponent* OverlappedComponent
 
 		if (HUDBase)
 		{
-			// 아이템 정보 표시
-			UItemTooltipWidget* ItemTooltipWidget = HUDBase->GetOverlappedItemWidget();
-			if (ItemTooltipWidget)
-			{
+			// 위치 설정
+			const FVector2D& ViewSize = UWidgetLayoutLibrary::GetViewportSize(this);
+			const float ViewScale = UWidgetLayoutLibrary::GetViewportScale(this);
+			const float X = (ViewSize.X * 0.8f)/ViewScale;
+			const float Y = (ViewSize.Y * 0.8f)/ViewScale;
 
-				ItemTooltipWidget->SetVisibility(ESlateVisibility::Visible);
-				ItemTooltipWidget->UpdateOverlappedItemInfo(OverlappedItem);
-
-				// 위치 설정
-				const FVector2D& ViewSize = UWidgetLayoutLibrary::GetViewportSize(this);
-				const float ViewScale = UWidgetLayoutLibrary::GetViewportScale(this);
-				const float X = (ViewSize.X * 0.8f)/ViewScale;
-				const float Y = (ViewSize.Y * 0.8f)/ViewScale;
-
-				ItemTooltipWidget->SetCanvasPosition(FVector2D(X, Y));
-
-			}
+			HUDBase->ShowItemTooltip(OverlappedItem->GetItemName(), FVector2D(X, Y));
 		}
 	}
 }
@@ -718,7 +708,7 @@ void ADefaultCharacter::EndOverlapped(UPrimitiveComponent* OverlappedComponent, 
 
 		if (HUDBase)
 		{
-			HUDBase->GetOverlappedItemWidget()->SetVisibility(ESlateVisibility::Hidden);
+			HUDBase->HideItemTooltip();
 		}
 	}
 }
@@ -909,10 +899,6 @@ void ADefaultCharacter::UpdateStamina(EStatUpdateType UpdateType, float AbilityP
 void ADefaultCharacter::SetIsOpenInGameMenu(bool IsOpen)
 {
 	bIsOpenInGameMenu = IsOpen;
-}
-
-void ADefaultCharacter::ShowItemTooltip(const FVector2D& Location)
-{
 }
 
 ECharacterClass ADefaultCharacter::GetCharacterClass()

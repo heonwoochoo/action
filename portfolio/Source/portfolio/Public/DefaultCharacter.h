@@ -364,6 +364,5 @@ public:
 
 	void SetIsOpenInGameMenu(bool IsOpen);
 
-	void ShowItemTooltip(const FVector2D& Location);
 };
 

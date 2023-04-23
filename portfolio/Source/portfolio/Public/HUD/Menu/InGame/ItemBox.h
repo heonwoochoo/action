@@ -11,6 +11,7 @@ class UImage;
 class UOverlay;
 class UTextBlock;
 class UTexture2D;
+class UInventory;
 
 UCLASS()
 class PORTFOLIO_API UItemBox : public UUserWidget
@@ -32,8 +33,34 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* ItemAmount;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Image")
+	UTexture2D* ClickedSlotImage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Image")
+	UTexture2D* NormalSlotImage;
+
+	UFUNCTION()
+	void OnHoveredItemBoxButton();
+
+	UFUNCTION()
+	void OnUnhoveredItemBoxButton();
+
+	UFUNCTION()
+	void OnClickedItemBoxButton();
+
 public:
 	void SetItemImage(UTexture2D* Image);
 
 	void SetItemAmount(uint8 Amount);
+
+	FORCEINLINE void SetItemName(const FName& InItemName) { ItemName = InItemName; }
+	FORCEINLINE void SetInventory(UInventory* InInventory) { Inventory = InInventory; }
+
+private:
+	FName ItemName;
+
+	UInventory* Inventory;
+
+	void InitItemBoxButton();
+
 };
