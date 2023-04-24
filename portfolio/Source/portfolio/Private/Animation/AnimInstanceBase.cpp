@@ -20,15 +20,7 @@ void UAnimInstanceBase::NativeInitializeAnimation()
 		ECharacterClass CharacterClass = Character->GetCharacterClass();
 		if (CharacterClass == ECharacterClass::ECC_Assassin)
 		{
-			DefaultAttackMontage = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->DefaultAttack;
-			DefaultJump = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->DefaultJump;
-			DefaultDoubleJumpMontage = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->DefaultDoubleJump;
-			DefaultWalkRunBlendSpace = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->WalkRunBlendSpace;
-			DefaultEquippedIdle = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->EquippedIdle;
-			DefaultUnequippedIdle = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->UnequippedIdle;
-			DefaultEvadeMontage = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->Evade;
-			DefaultHitReactMontage = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->HitReact;
-			DefaultDead = DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "")->Dead;
+			DefaultAnimations = *DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "");
 		}
 	}
 }
@@ -36,6 +28,7 @@ void UAnimInstanceBase::NativeInitializeAnimation()
 void UAnimInstanceBase::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
+
 	if (Character)
 	{
 		if (UCharacterMovementComponent* CharacterMovementComponent = Character->GetCharacterMovement())
@@ -52,6 +45,11 @@ void UAnimInstanceBase::NativeUpdateAnimation(float DeltaSeconds)
 			GEngine->AddOnScreenDebugMessage(3, -1, FColor::Blue, FString::Printf(TEXT("SideSpeed : %f"), SideSpeed));
 		}
 	}
+}
+
+FName UAnimInstanceBase::GetChangedWeaponItemCode() const
+{
+	return ChangedWeaponItemCode;
 }
 
 float UAnimInstanceBase::GetForwardSpeed() const
@@ -90,29 +88,36 @@ ECharacterClass UAnimInstanceBase::GetCharacterClass() const
 
 UAnimMontage* UAnimInstanceBase::GetDefaultAttackMontage() const
 {
-	return DefaultAttackMontage;
+	return DefaultAnimations.DefaultAttack;
+
 }
 
 UAnimMontage* UAnimInstanceBase::GetDefaultDoubleJumpMontage() const
 {
-	return DefaultDoubleJumpMontage;
+	return DefaultAnimations.DefaultDoubleJump;
 }
 
 UAnimMontage* UAnimInstanceBase::GetDefaultEvadeMontage() const
 {
-	return DefaultEvadeMontage;
+	return DefaultAnimations.Evade;
 }
 
 UAnimMontage* UAnimInstanceBase::GetDefaultHitReactMontage() const
 {
-	return DefaultHitReactMontage;
+	return DefaultAnimations.HitReact;
+}
+
+FCharacterDefaultAnimation UAnimInstanceBase::GetDefaultAnimations() const
+{
+	return DefaultAnimations;
 }
 
 void UAnimInstanceBase::PlayHitReact()
 {
-	if (DefaultHitReactMontage)
+	UAnimMontage* HitReact = DefaultAnimations.HitReact;
+	if (HitReact)
 	{
-		Montage_Play(DefaultHitReactMontage);
+		Montage_Play(HitReact);
 		FName SectionName;
 		const int32 RandNum = FMath::RandRange(0, 1);
 		switch (RandNum)
@@ -126,4 +131,10 @@ void UAnimInstanceBase::PlayHitReact()
 		}
 		Montage_JumpToSection(SectionName);
 	}
+}
+
+void UAnimInstanceBase::PlayEquipWeapon()
+{
+	UAnimMontage* EquipWeapon = DefaultAnimations.EquipWeapon;
+	Montage_Play(EquipWeapon);
 }

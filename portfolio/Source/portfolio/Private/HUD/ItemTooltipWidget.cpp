@@ -108,7 +108,6 @@ void UItemTooltipWidget::SetCanvasPosition(const FVector2D& Location)
 		UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(ItemCanvas);
 		if (CanvasPanelSlot)
 		{
-			//CanvasPanelSlot->SetDesiredPosition(Location);
 			CanvasPanelSlot->SetPosition(Location);
 		}
 	}

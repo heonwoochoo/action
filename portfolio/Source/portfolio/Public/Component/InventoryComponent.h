@@ -7,6 +7,8 @@
 #include "Types/ItemTypes.h"
 #include "InventoryComponent.generated.h"
 
+class AWeapon;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PORTFOLIO_API UInventoryComponent : public UActorComponent
 {
@@ -28,13 +30,20 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Sound", meta = (AllowPrivateAccess = "true"))
 	USoundCue* PotionConsumeSound;
 
-	// 장착한 아이템
+	// 장착한 아이템 상태
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TMap<EEquipmentType, FEquippedItem> EquippedItemList;
 
+	// 장착중인 무기 오브젝트
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	AWeapon* EquippedWeapon;
+	
 	// 저장되어 있는 아이템
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TMap<FName, uint8> ItemList;
+
+	// 장착 예정인 무기, Anim Notify 호출시 EquipItem 함수에 파라미터 전달용
+	FName EquippedItemCode;
 
 	// 퀵슬롯에 등록된 아이템
 	// 1,2,3 : 소모품
@@ -91,6 +100,7 @@ public:
 	TMap<EEquipmentType, FEquippedItem> GetEquippedItemList() const;
 
 	// 장비 장착
+	UFUNCTION(BlueprintCallable)
 	void EquipItem(const FName& ItemCode);
 
 	TMap<FName, uint8> GetItemList() const;
@@ -130,4 +140,9 @@ public:
 
 	// 해당 아이템이 장착되었는지?
 	bool IsEquippedItem(FName ItemCode);
+
+	void SetEquippedItemCode(const FName& ItemCode);
+
+	UFUNCTION(BlueprintCallable)
+	FName GetEquippedItemCode() const;
 };

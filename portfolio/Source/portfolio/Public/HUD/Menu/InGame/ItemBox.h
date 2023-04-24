@@ -55,4 +55,5 @@ private:
 
 	UInventory* Inventory;
 
+	void PlayEquipAnimation();
 };

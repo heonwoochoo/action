@@ -128,6 +128,9 @@ struct FCharacterDefaultAnimation : public FTableRowBase
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UAnimSequence* Dead;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* EquipWeapon;
 };
 
 UENUM(BlueprintType)

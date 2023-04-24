@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Types/CharacterTypes.h"
 #include "AnimInstanceBase.generated.h"
 
 class ADefaultCharacter;
@@ -19,35 +20,6 @@ protected:
 
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
-	
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
-	UAnimMontage* DefaultAttackMontage = nullptr;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
-	UAnimSequence* DefaultJump = nullptr;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
-	UAnimMontage* DefaultDoubleJumpMontage = nullptr;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
-	UBlendSpace* DefaultWalkRunBlendSpace = nullptr;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
-	UAnimSequence* DefaultEquippedIdle = nullptr;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
-	UAnimSequence* DefaultUnequippedIdle = nullptr;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
-	UAnimMontage* DefaultEvadeMontage = nullptr;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
-	UAnimMontage* DefaultHitReactMontage = nullptr;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Animation|Default")
-	UAnimSequence* DefaultDead = nullptr;
-
 private:
 	UPROPERTY(VisibleAnywhere, category = "Character|Movement")
 	float ForwardSpeed = 0.f;
@@ -61,10 +33,18 @@ private:
 	UPROPERTY(VisibleAnywhere, category = "Character")
 	ADefaultCharacter* Character = nullptr;
 
+	UPROPERTY(VisibleAnywhere, category = "Character")
+	FCharacterDefaultAnimation DefaultAnimations;
+
+	FName ChangedWeaponItemCode;
+
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UDataTable* DefaultAnimationDataTable;
 
+	UFUNCTION(BlueprintCallable)
+	FName GetChangedWeaponItemCode() const;
+	
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
 	float GetForwardSpeed() const;
 
@@ -80,6 +60,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
 	ECharacterClass GetCharacterClass() const;
 	
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
+	FCharacterDefaultAnimation GetDefaultAnimations() const;
+
 	UAnimMontage* GetDefaultAttackMontage() const;
 
 	UAnimMontage* GetDefaultDoubleJumpMontage() const;
@@ -89,4 +72,6 @@ public:
 	UAnimMontage* GetDefaultHitReactMontage() const;
 
 	void PlayHitReact();
+
+	void PlayEquipWeapon();
 };

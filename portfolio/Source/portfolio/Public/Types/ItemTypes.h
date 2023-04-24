@@ -7,6 +7,8 @@
 #include "Types/CharacterTypes.h"
 #include "ItemTypes.generated.h"
 
+class AItemBase;
+
 UENUM(BlueprintType)
 enum class EItemNumber : uint8
 {
@@ -87,6 +89,9 @@ struct FItemSpec : public FTableRowBase
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UParticleSystem* EffectParticle;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSubclassOf<AItemBase> ItemClass;
 };
 
 UENUM(BlueprintType)

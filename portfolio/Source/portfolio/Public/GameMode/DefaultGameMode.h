@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+ï»¿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -22,15 +22,15 @@ public:
 	ADefaultGameMode();
 
 private:
-	// ³Ñ±æ ¶§ ¹öÆ° ¼Ò¸®
+	// ë„˜ê¸¸ ë•Œ ë²„íŠ¼ ì†Œë¦¬
 	UPROPERTY(EditDefaultsOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
 	USoundCue* ChangeButtonClickSound;
 
-	// È®ÀÎ ¹öÆ° ¼Ò¸®
+	// í™•ì¸ ë²„íŠ¼ ì†Œë¦¬
 	UPROPERTY(EditDefaultsOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
 	USoundCue* CheckButtonClickSound;
 
-	// ¾ÆÀÌÅÛ Å¬¸¯ ¼Ò¸®
+	// ì•„ì´í…œ í´ë¦­ ì†Œë¦¬
 	UPROPERTY(EditDefaultsOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
 	USoundCue* ItemClickSound;
 

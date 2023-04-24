@@ -8,6 +8,7 @@
 #include "DefaultCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "Sound/SoundCue.h"
+#include "Items/Weapon.h"
 
 UInventoryComponent::UInventoryComponent()
 {
@@ -139,19 +140,24 @@ void UInventoryComponent::EquipItem(const FName& ItemCode)
 		ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(GetOwner());
 		if (DefaultCharacter)
 		{
-			const FCharacterStats& Stats = DefaultCharacter->GetCharacterStats();
-			const int32 CharacterLevel = Stats.Level;
-			const int32 ItemLevel = Spec->Stats.Level;
-			// 레벨 확인
-			if (CharacterLevel >= ItemLevel)
-			{
-				// 장착
-				EEquipmentType EquipmentType = Spec->EquipmentType;
-				EquippedItemList[EquipmentType] = FEquippedItem(EEquippedState::EES_Equipped, ItemCode);
+			// 장착
+			EEquipmentType EquipmentType = Spec->EquipmentType;
+			EquippedItemList[EquipmentType] = FEquippedItem(EEquippedState::EES_Equipped, ItemCode);
 
-				// 무기일 경우 아이템 스폰
-				// 원래있던 장비 제거
-				// 매쉬 장착
+			// 무기일 경우 오브젝트 스폰
+			if (EquipmentType == EEquipmentType::EET_Weapon && Spec->ItemClass)
+			{
+				if (EquippedWeapon)
+				{
+					EquippedWeapon->Destroy();
+				}
+
+				EquippedWeapon = Cast<AWeapon>(GetWorld()->SpawnActor(Spec->ItemClass));
+				if (EquippedWeapon)
+				{
+					USkeletalMeshComponent* Mesh = DefaultCharacter->GetMesh();
+					EquippedWeapon->AttachMeshToSocket(Mesh, TEXT("RightHandSocket"));
+				}
 			}
 		}
 	}
@@ -463,5 +469,15 @@ bool UInventoryComponent::IsEquippedItem(FName ItemCode)
 		}
 	}
 	return false;
+}
+
+void UInventoryComponent::SetEquippedItemCode(const FName& ItemCode)
+{
+	EquippedItemCode = ItemCode;
+}
+
+FName UInventoryComponent::GetEquippedItemCode() const
+{
+	return EquippedItemCode;
 }
 

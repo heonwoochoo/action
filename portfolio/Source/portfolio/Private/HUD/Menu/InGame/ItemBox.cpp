@@ -16,6 +16,7 @@
 #include "DefaultCharacter.h"
 #include "Component/InventoryComponent.h"
 #include "Types/ItemTypes.h"
+#include "Animation/AnimInstanceBase.h"
 
 void UItemBox::NativeConstruct()
 {
@@ -36,19 +37,25 @@ FReply UItemBox::NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, con
 			if (ItemSpecData && ItemCode.IsValid())
 			{
 				FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(ItemCode, "");
-				
-				EItemType ItemType = Spec->Type;
-				
-				switch (ItemType)
+				const FCharacterStats& Stats = DefaultCharacter->GetCharacterStats();
+				const int32 CharacterLevel = Stats.Level;
+				const int32 ItemLevel = Spec->Stats.Level;
+				// 레벨 확인
+				if (CharacterLevel >= ItemLevel)
 				{
-				case EItemType::EIT_Equipment:
-					UE_LOG(LogTemp, Warning, TEXT("장비 장착"));
-					break;
-				case EItemType::EIT_Consumable:
-					UE_LOG(LogTemp, Warning, TEXT("소모품 사용"));
-					InventoryComponent->UseItem(ItemCode);
-					Inventory->UpdateItemList(ItemType);
-					break;
+					EItemType ItemType = Spec->Type;
+
+					switch (ItemType)
+					{
+					case EItemType::EIT_Equipment:
+						InventoryComponent->SetEquippedItemCode(ItemCode);
+						PlayEquipAnimation();
+						break;
+					case EItemType::EIT_Consumable:
+						InventoryComponent->UseItem(ItemCode);
+						Inventory->UpdateItemList(ItemType);
+						break;
+					}
 				}
 			}
 		}
@@ -112,5 +119,22 @@ void UItemBox::SetItemAmount(uint8 Amount)
 	if (ItemAmount && Amount > 0)
 	{
 		ItemAmount->SetText(FText::FromString(FString::FromInt(Amount)));
+	}
+}
+
+void UItemBox::PlayEquipAnimation()
+{
+	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (DefaultCharacter)
+	{
+		USkeletalMeshComponent* Mesh = DefaultCharacter->GetMesh();
+		if (Mesh)
+		{
+			UAnimInstanceBase* AnimInstance = Cast<UAnimInstanceBase>(Mesh->GetAnimInstance());
+			if (AnimInstance)
+			{
+				AnimInstance->PlayEquipWeapon();
+			}
+		}
 	}
 }
