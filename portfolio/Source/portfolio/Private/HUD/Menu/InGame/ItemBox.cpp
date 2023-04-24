@@ -29,10 +29,10 @@ void UItemBox::OnHoveredItemBoxButton()
 	if (CharacterController)
 	{
 		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
-		if (HUDBase && ItemName != FName() && Inventory)
+		if (HUDBase && ItemCode != FName() && Inventory)
 		{
 			const FVector2D& TooltipLocation = Inventory->GetTooltipLocation();
-			HUDBase->ShowItemTooltip(ItemName, TooltipLocation);
+			HUDBase->ShowItemTooltip(ItemCode, TooltipLocation);
 		}
 	}
 }

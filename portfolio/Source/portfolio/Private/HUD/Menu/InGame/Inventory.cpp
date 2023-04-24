@@ -16,6 +16,7 @@
 #include "Component/InventoryComponent.h"
 #include "HUD/Menu/InGame/ItemBox.h"
 #include "HUD/HUDBase.h"
+#include "Components/TextBlock.h"
 
 void UInventory::NativeConstruct()
 {
@@ -23,10 +24,17 @@ void UInventory::NativeConstruct()
 
 	InitEquipmentTabButton();
 	InitConsumableTabButton();
+	
+	// 탭 이미지 초기 설정
+	UncheckTabImage(EItemType::EIT_Equipment);
+	UncheckTabImage(EItemType::EIT_Consumable);
 
 	InitCanvasLocation();
 
-	ShowItemList(EItemType::EIT_Consumable);
+	// 오픈시 처음 보여지는 탭 설정
+	SelectedTap = EItemType::EIT_Equipment;
+	UpdateTabImage(true, EquipmentTabBackground, EquipmentTabText, EquipmentTabUnderline);
+	ShowItemList(SelectedTap);
 }
 
 void UInventory::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -61,27 +69,78 @@ void UInventory::OnReleasedTitleDragButton()
 
 void UInventory::OnHoveredEquipmentTabButton()
 {
+	if (SelectedTap != EItemType::EIT_Equipment)
+	{
+		if (EquipmentTabUnderline)
+		{
+			EquipmentTabUnderline->SetOpacity(1.f);
+		}
+	}
 }
 
 void UInventory::OnUnhoveredEquipmentTabButton()
 {
+	if (SelectedTap != EItemType::EIT_Equipment)
+	{
+		if (EquipmentTabUnderline)
+		{
+			EquipmentTabUnderline->SetOpacity(0.f);
+		}
+	}
 }
 
 void UInventory::OnClickedEquipmentTabButton()
 {
-	
+	if (SelectedTap != EItemType::EIT_Equipment)
+	{
+		UncheckTabImage(SelectedTap);
+
+		UpdateTabImage(true, EquipmentTabBackground, EquipmentTabText, EquipmentTabUnderline);
+
+		SelectedTap = EItemType::EIT_Equipment;
+
+		ClearAllItemBox();
+		
+		ShowItemList(SelectedTap);
+	}
 }
 
 void UInventory::OnHoveredConsumableTabButton()
 {
+	if (SelectedTap != EItemType::EIT_Consumable)
+	{
+		if (ConsumableTabUnderline)
+		{
+			ConsumableTabUnderline->SetOpacity(1.f);
+		}
+	}
 }
 
 void UInventory::OnUnhoveredConsumableTabButton()
 {
+	if (SelectedTap != EItemType::EIT_Consumable)
+	{
+		if (ConsumableTabUnderline)
+		{
+			ConsumableTabUnderline->SetOpacity(0.f);
+		}
+	}
 }
 
 void UInventory::OnClickedConsumableTabButton()
 {
+	if (SelectedTap != EItemType::EIT_Consumable)
+	{
+		UncheckTabImage(SelectedTap);
+
+		UpdateTabImage(true, ConsumableTabBackground, ConsumableTabText, ConsumableTabUnderline);
+
+		SelectedTap = EItemType::EIT_Consumable;
+
+		ClearAllItemBox();
+
+		ShowItemList(SelectedTap);
+	}
 }
 
 void UInventory::InitEquipmentTabButton()
@@ -116,20 +175,29 @@ void UInventory::ShowItemList(EItemType ItemType)
 			UDataTable* SpecData = InventoryComponent->GetItemDataTable();
 			if (SpecData)
 			{
-				const FName& ItemName = Item.Key;
-				FItemSpec* Spec = SpecData->FindRow<FItemSpec>(ItemName, "");
-				if (Spec)
+				const FName& ItemCode = Item.Key;
+				FItemSpec* Spec = SpecData->FindRow<FItemSpec>(ItemCode, "");
+				if (Spec && Spec->Type == ItemType)
 				{
-					if (ItemRow1->GetChildrenCount() < 4)
+					UItemBox* ItemBox = Cast<UItemBox>(CreateWidget(this, ItemBoxClass));
+					if (ItemBox)
 					{
-						UItemBox* ItemBox = Cast<UItemBox>(CreateWidget(this, ItemBoxClass));
-						if (ItemBox)
+						ItemBox->SetItemCode(ItemCode);
+						ItemBox->SetItemImage(Spec->Image);
+						ItemBox->SetItemAmount(Item.Value);
+						ItemBox->SetInventory(this);
+
+						if (ItemRow1->GetChildrenCount() < 4)
 						{
-							ItemBox->SetItemName(ItemName);
-							ItemBox->SetItemImage(Spec->Image);
-							ItemBox->SetItemAmount(Item.Value);
-							ItemBox->SetInventory(this);
 							ItemRow1->AddChildToHorizontalBox(ItemBox);
+						}
+						else if (ItemRow2->GetChildrenCount() < 4)
+						{
+							ItemRow2->AddChildToHorizontalBox(ItemBox);
+						}
+						else if (ItemRow3->GetChildrenCount() < 4)
+						{
+							ItemRow3->AddChildToHorizontalBox(ItemBox);
 						}
 					}
 				}
@@ -137,6 +205,65 @@ void UInventory::ShowItemList(EItemType ItemType)
 		}
 	}
 }
+
+void UInventory::ClearAllItemBox()
+{
+	ItemRow1->ClearChildren();
+	ItemRow2->ClearChildren();
+	ItemRow3->ClearChildren();
+}
+
+void UInventory::UpdateTabImage(bool IsActive, UImage* TabBackground, UTextBlock* TabText, UImage* TabUnderline)
+{
+	if (TabBackground == nullptr || TabText == nullptr || TabUnderline == nullptr) return;
+	if (IsActive)
+	{
+		if (ActivatedTab)
+		{
+			// 배경
+			TabBackground->SetBrushFromTexture(ActivatedTab);
+		}
+		// 글자 투명도
+		TabText->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f));
+
+		// 폰트 크기
+		FSlateFontInfo FontInfo = TabText->GetFont();
+		FontInfo.Size = 15;
+		TabText->SetFont(FontInfo);
+
+		// 밑줄 투명도
+		TabUnderline->SetOpacity(1.f);
+	}
+	else
+	{
+		if (DeactivatedTab)
+		{
+			TabBackground->SetBrushFromTexture(DeactivatedTab);
+		}
+
+		TabText->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.3f));
+
+		FSlateFontInfo FontInfo = TabText->GetFont();
+		FontInfo.Size = 9;
+		TabText->SetFont(FontInfo);
+		
+		TabUnderline->SetOpacity(0.f);
+	}
+}
+
+void UInventory::UncheckTabImage(EItemType TargetTab)
+{
+	switch (TargetTab)
+	{
+	case EItemType::EIT_Equipment:
+		UpdateTabImage(false, EquipmentTabBackground, EquipmentTabText, EquipmentTabUnderline);
+		break;
+	case EItemType::EIT_Consumable:
+		UpdateTabImage(false, ConsumableTabBackground, ConsumableTabText, ConsumableTabUnderline);
+		break;
+	}
+}
+
 
 void UInventory::SetInGameMenu(UInGameMenu* InInGameMenu)
 {

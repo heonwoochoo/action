@@ -53,11 +53,11 @@ public:
 
 	void SetItemAmount(uint8 Amount);
 
-	FORCEINLINE void SetItemName(const FName& InItemName) { ItemName = InItemName; }
+	FORCEINLINE void SetItemCode(const FName& InItemCode) { ItemCode = InItemCode; }
 	FORCEINLINE void SetInventory(UInventory* InInventory) { Inventory = InInventory; }
 
 private:
-	FName ItemName;
+	FName ItemCode;
 
 	UInventory* Inventory;
 
