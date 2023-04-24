@@ -25,7 +25,6 @@
 #include "HUD/Overlay/InfoContainer.h"
 #include "Component/InventoryComponent.h"
 #include "HUD/ComboCountWidget.h"
-#include "Items/Potion.h"
 #include "HUD/ItemTooltipWidget.h"
 #include "GameInstance/DefaultGameInstance.h"
 #include "SaveGame/UserSaveGame.h"
@@ -460,14 +459,10 @@ void ADefaultCharacter::PickupItem()
 	if (ShouldInputActivated()) return;
 	if (OverlappedItem)
 	{
-		if (OverlappedItem->ActorHasTag(FName("Potion")))
+		AItemBase* Item = Cast<AItemBase>(OverlappedItem);
+		if (Item)
 		{
-			APotion* Potion = Cast<APotion>(OverlappedItem);
-			if (Potion)
-			{
-				Potion->HandlePickupPotion(this);
-				
-			}
+			Item->HandlePickupItem(this);		
 		}
 
 		PlaySoundCue(PickupSound);

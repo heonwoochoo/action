@@ -25,6 +25,8 @@ protected:
 
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
+	virtual void Tick(float DeltaTime) override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* CollisionComponent;
 
@@ -51,8 +53,22 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	UCurveFloat* PickupScaleCurve;
 
+private:
+	FTimerHandle PickupTimerHandle;
+
+	// 아이템 획득시 메쉬의 스케일 변화 시간
+	float PickupScaleTime = 1.f;
+
+	// 아이템을 획득한 플레이어
+	AActor* Character;
+
+	void EndPickupTimer();
+
+	// 습득한 캐릭터 쪽으로 이동하는 애니메이션 효과
+	void MoveToCharacter(float DeltaTime);
+
 public:	
-	virtual void Tick(float DeltaTime) override;
+	void HandlePickupItem(AActor* PickupCharacter);
 
 	FORCEINLINE FName GetItemCode() const { return Code; }
 	FORCEINLINE FItemSpec GetItemSpec() const { return Spec; }

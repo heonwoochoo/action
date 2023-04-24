@@ -297,18 +297,18 @@ void UInventoryComponent::ResetItemConsumableMapping()
 	Slot3 = FName();
 }
 
-void UInventoryComponent::SetItemConsumableMapping(const FName& Name, uint8 Idx)
+void UInventoryComponent::SetItemConsumableMapping(const FName& ItemCode, uint8 Idx)
 {
 	switch (Idx)
 	{
 	case 0:
-		Slot1 = Name;
+		Slot1 = ItemCode;
 		break;
 	case 1:
-		Slot2 = Name;
+		Slot2 = ItemCode;
 		break;
 	case 2:
-		Slot3 = Name;
+		Slot3 = ItemCode;
 		break;
 	}
 }

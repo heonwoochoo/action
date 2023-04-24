@@ -158,7 +158,7 @@ void UInfoContainer::UpdateConsumableQuickSlot()
 	}
 }
 
-void UInfoContainer::UpdateConsumableAmount(const FName& Name, UTexture2D* Image, uint8 Amount)
+void UInfoContainer::UpdateConsumableAmount(const FName& ItemCode, UTexture2D* Image, uint8 Amount)
 {
 	if (PotionIdx < 3)
 	{
@@ -167,7 +167,7 @@ void UInfoContainer::UpdateConsumableAmount(const FName& Name, UTexture2D* Image
 		ItemPotions[PotionIdx].Amount->SetText(FText::FromString(FString::FromInt(Amount)));
 
 		// 키보드 매핑 재등록
-		InventoryComponent->SetItemConsumableMapping(Name, PotionIdx);
+		InventoryComponent->SetItemConsumableMapping(ItemCode, PotionIdx);
 
 		// 다음 칸의 UI를 업데이트 하기 위해 인덱스 증가
 		PotionIdx++;
@@ -200,11 +200,14 @@ void UInfoContainer::CheckItemPotionInInventory()
 		const TMap<FName, uint8>& ItemList = InventoryComponent->GetItemList();
 		for (const auto& Item : ItemList)
 		{
-			const FName& ItemName = Item.Key;
+			const FName& ItemCode = Item.Key;
 			const uint8 Amount = Item.Value;
 
-			FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(ItemName, "");
-			UpdateConsumableAmount(ItemName, Spec->Image, Amount);
+			FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(ItemCode, "");
+			if (Spec->Type == EItemType::EIT_Consumable)
+			{
+				UpdateConsumableAmount(ItemCode, Spec->Image, Amount);
+			}
 		}
 	}
 }

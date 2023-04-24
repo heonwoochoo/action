@@ -82,6 +82,8 @@ void AHUDBase::ShowItemTooltip(const FName& ItemCode, const FVector2D& Location)
 {
 	if (ItemTooltipWidgetClass)
 	{
+		HideItemTooltip();
+
 		ItemTooltipWidget = Cast<UItemTooltipWidget>(CreateWidget(GetOwningPlayerController(), ItemTooltipWidgetClass));
 		if (ItemTooltipWidget)
 		{
