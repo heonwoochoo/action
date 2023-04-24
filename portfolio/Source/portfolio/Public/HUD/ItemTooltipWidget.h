@@ -10,6 +10,7 @@ class UImage;
 class UTextBlock;
 class AItemBase;
 class UCanvasPanel;
+class UHorizontalBox;
 
 /**
 * 아이템 툴팁
@@ -37,7 +38,25 @@ protected:
 	UTextBlock* ItemDescription;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ItemTypeText;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ItemRarityText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ItemLevelText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* ItemCoolDown;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UHorizontalBox* EquipmentNotifyBox;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* EquippedStateText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UHorizontalBox* ConsumableNotifyBox;
 
 public:
 	// 오버랩 창에 표시될 UI 업데이트
@@ -47,4 +66,8 @@ public:
 	void SetCanvasPosition(const FVector2D& Location);
 
 	FVector2D GetCanvasSize() const;
+
+private:
+	FText GetEquipmentTypeText(const FName& ItemCode);
+
 };

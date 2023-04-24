@@ -111,6 +111,8 @@ public:
 
 	FORCEINLINE FVector2D GetTooltipLocation() const { return TooltipLocation; };
 
+	void UpdateItemList(EItemType ItemType);
+
 private:
 	void InitEquipmentTabButton();
 	void InitConsumableTabButton();
@@ -132,4 +134,7 @@ private:
 
 	// 탭 이미지를 비활성화 상태로 만듦
 	void UncheckTabImage(EItemType TargetTab);
+
+	// 탭 변경시 소리 재생
+	void PlayChangeButtonSound();
 };

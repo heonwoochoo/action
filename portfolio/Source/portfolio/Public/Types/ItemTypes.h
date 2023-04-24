@@ -88,3 +88,27 @@ struct FItemSpec : public FTableRowBase
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UParticleSystem* EffectParticle;
 };
+
+UENUM(BlueprintType)
+enum class EEquippedState : uint8
+{
+	EES_Equipped UMETA(DisplayName = "Equipped"),
+	EES_Unequipped UMETA(DisplayName = "Unequipped"),
+};
+
+USTRUCT(BlueprintType)
+struct FEquippedItem
+{
+	GENERATED_USTRUCT_BODY()
+
+	FEquippedItem(EEquippedState InState = EEquippedState::EES_Unequipped, FName InItemCode = FName())
+		: State(InState), ItemCode(InItemCode)
+	{
+	}
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	EEquippedState State;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName ItemCode;
+};

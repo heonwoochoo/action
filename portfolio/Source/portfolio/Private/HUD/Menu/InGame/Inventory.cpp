@@ -99,9 +99,9 @@ void UInventory::OnClickedEquipmentTabButton()
 
 		SelectedTap = EItemType::EIT_Equipment;
 
-		ClearAllItemBox();
-		
-		ShowItemList(SelectedTap);
+		UpdateItemList(SelectedTap);
+
+		PlayChangeButtonSound();
 	}
 }
 
@@ -134,13 +134,20 @@ void UInventory::OnClickedConsumableTabButton()
 		UncheckTabImage(SelectedTap);
 
 		UpdateTabImage(true, ConsumableTabBackground, ConsumableTabText, ConsumableTabUnderline);
-
+		
 		SelectedTap = EItemType::EIT_Consumable;
-
-		ClearAllItemBox();
-
-		ShowItemList(SelectedTap);
+		
+		UpdateItemList(SelectedTap);
+		
+		PlayChangeButtonSound();
 	}
+}
+
+void UInventory::UpdateItemList(EItemType ItemType)
+{
+	ClearAllItemBox();
+
+	ShowItemList(ItemType);
 }
 
 void UInventory::InitEquipmentTabButton()
@@ -262,6 +269,15 @@ void UInventory::UncheckTabImage(EItemType TargetTab)
 		UpdateTabImage(false, ConsumableTabBackground, ConsumableTabText, ConsumableTabUnderline);
 		break;
 	}
+}
+
+void UInventory::PlayChangeButtonSound()
+{
+	 ADefaultGameMode* DefaultGameMode = Cast<ADefaultGameMode>(UGameplayStatics::GetGameMode(this));
+	 if (DefaultGameMode)
+	 {
+		 DefaultGameMode->PlayChangeButtonClickSound();
+	 }
 }
 
 

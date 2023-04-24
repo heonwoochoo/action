@@ -14,6 +14,7 @@ UInventoryComponent::UInventoryComponent()
 
 	PrimaryComponentTick.bCanEverTick = false;
 
+	InitEquippedItemList();
 }
 
 
@@ -62,11 +63,14 @@ void UInventoryComponent::EndTimerHandle6()
 	bEnableItem6 = true;
 }
 
-void UInventoryComponent::EffectConsumable(const FName& ItemCode, const FItemSpec& Spec)
+void UInventoryComponent::EffectConsumable(const FName& ItemCode)
 {
+	FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(ItemCode, "");
+
 	EStatTarget Target{};
 
-	const FCharacterStats& Stats = Spec.Stats;
+	const FCharacterStats& Stats = Spec->Stats;
+
 	float AbilityPoint{};
 
 	if (Stats.HP > 0)
@@ -105,6 +109,51 @@ void UInventoryComponent::PlayConsumeSound()
 	if (PotionConsumeSound)
 	{
 		UGameplayStatics::PlaySound2D(this, PotionConsumeSound);
+	}
+}
+
+void UInventoryComponent::InitEquippedItemList()
+{
+	EquippedItemList.Add({ EEquipmentType::EET_Weapon, FEquippedItem() });
+	EquippedItemList.Add({ EEquipmentType::EET_SubWeapon, FEquippedItem() });
+	EquippedItemList.Add({ EEquipmentType::EET_Shoes,FEquippedItem() });
+	EquippedItemList.Add({ EEquipmentType::EET_Shield, FEquippedItem() });
+	EquippedItemList.Add({ EEquipmentType::EET_Helmet, FEquippedItem() });
+	EquippedItemList.Add({ EEquipmentType::EET_Armour, FEquippedItem() });
+	EquippedItemList.Add({ EEquipmentType::EET_Accessory, FEquippedItem() });
+}
+
+TMap<EEquipmentType, FEquippedItem> UInventoryComponent::GetEquippedItemList() const
+{
+	return EquippedItemList;
+}
+
+void UInventoryComponent::EquipItem(const FName& ItemCode)
+{
+	// 인벤토리에 존재하는지 확인
+	const bool Exist = ItemList.Contains(ItemCode);
+	if (Exist)
+	{
+		FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(ItemCode, "");
+		
+		ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(GetOwner());
+		if (DefaultCharacter)
+		{
+			const FCharacterStats& Stats = DefaultCharacter->GetCharacterStats();
+			const int32 CharacterLevel = Stats.Level;
+			const int32 ItemLevel = Spec->Stats.Level;
+			// 레벨 확인
+			if (CharacterLevel >= ItemLevel)
+			{
+				// 장착
+				EEquipmentType EquipmentType = Spec->EquipmentType;
+				EquippedItemList[EquipmentType] = FEquippedItem(EEquippedState::EES_Equipped, ItemCode);
+
+				// 무기일 경우 아이템 스폰
+				// 원래있던 장비 제거
+				// 매쉬 장착
+			}
+		}
 	}
 }
 
@@ -150,15 +199,16 @@ void UInventoryComponent::AddItem(const FName& ItemCode)
 	}
 }
 
-void UInventoryComponent::UseItem(const FName& ItemCode, const FItemSpec& Spec)
+void UInventoryComponent::UseItem(const FName& ItemCode)
 {
-	if (ItemCode.IsNone()) return;
+	if (ItemCode.IsNone() || ItemSpecData == nullptr) return;
 	
-	EItemType ItemType = Spec.Type;
+	FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(ItemCode, "");
+	EItemType ItemType = Spec->Type;
 	if (ItemType == EItemType::EIT_Consumable)
 	{
 		// 실제 데이터 적용
-		EffectConsumable(ItemCode, Spec);
+		EffectConsumable(ItemCode);
 
 		// 멤버변수의 데이터를 업데이트
 		if (ItemList.Contains(ItemCode))
@@ -172,7 +222,7 @@ void UInventoryComponent::UseItem(const FName& ItemCode, const FItemSpec& Spec)
 			UpdateConsumableUI();
 		}
 
-		SpawnConsumeParticle(Spec.EffectParticle);
+		SpawnConsumeParticle(Spec->EffectParticle);
 
 		PlayConsumeSound();
 	}
@@ -211,7 +261,7 @@ void UInventoryComponent::SlotHandle_1()
 
 		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle1, this, &UInventoryComponent::EndTimerHandle1, CoolDown);
 		
-		UseItem(Slot1, ItemSpec);
+		UseItem(Slot1);
 	}
 }
 
@@ -226,7 +276,7 @@ void UInventoryComponent::SlotHandle_2()
 
 		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle2, this, &UInventoryComponent::EndTimerHandle2, CoolDown);
 
-		UseItem(Slot2, ItemSpec);
+		UseItem(Slot2);
 	}
 }
 
@@ -241,7 +291,7 @@ void UInventoryComponent::SlotHandle_3()
 
 		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle3, this, &UInventoryComponent::EndTimerHandle3, CoolDown);
 
-		UseItem(Slot3, ItemSpec);
+		UseItem(Slot3);
 	}
 }
 
@@ -256,7 +306,7 @@ void UInventoryComponent::SlotHandle_4()
 
 		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle4, this, &UInventoryComponent::EndTimerHandle4, CoolDown);
 
-		UseItem(Slot4, ItemSpec);
+		UseItem(Slot4);
 	}
 }
 
@@ -271,7 +321,7 @@ void UInventoryComponent::SlotHandle_5()
 
 		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle5, this, &UInventoryComponent::EndTimerHandle5, CoolDown);
 
-		UseItem(Slot5, ItemSpec);
+		UseItem(Slot5);
 	}
 }
 
@@ -286,7 +336,7 @@ void UInventoryComponent::SlotHandle_6()
 
 		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle6, this, &UInventoryComponent::EndTimerHandle6, CoolDown);
 
-		UseItem(Slot6, ItemSpec);
+		UseItem(Slot6);
 	}
 }
 
@@ -398,5 +448,20 @@ bool UInventoryComponent::HasItemInContainer(EItemNumber ItemNum)
 	}
 
 	return TargetItem != FName();
+}
+
+bool UInventoryComponent::IsEquippedItem(FName ItemCode)
+{
+	for (const auto& EquippedItemMap : EquippedItemList)
+	{
+		const FEquippedItem& EquippedItem = EquippedItemMap.Value;
+		const EEquippedState State = EquippedItem.State;
+		const FName Code = EquippedItem.ItemCode;
+		if (State == EEquippedState::EES_Equipped && Code == ItemCode)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 

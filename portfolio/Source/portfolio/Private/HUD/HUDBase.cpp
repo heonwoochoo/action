@@ -84,13 +84,17 @@ void AHUDBase::ShowItemTooltip(const FName& ItemCode, const FVector2D& Location)
 	{
 		HideItemTooltip();
 
-		ItemTooltipWidget = Cast<UItemTooltipWidget>(CreateWidget(GetOwningPlayerController(), ItemTooltipWidgetClass));
 		if (ItemTooltipWidget)
 		{
-			ItemTooltipWidget->AddToViewport(-1);
-			ItemTooltipWidget->UpdateContents(ItemCode);
-			ItemTooltipWidget->SetCanvasPosition(Location);
+			ItemTooltipWidget->SetVisibility(ESlateVisibility::Visible);
 		}
+		else
+		{
+			ItemTooltipWidget = Cast<UItemTooltipWidget>(CreateWidget(GetOwningPlayerController(), ItemTooltipWidgetClass));
+			ItemTooltipWidget->AddToViewport(-1);
+		}
+		ItemTooltipWidget->UpdateContents(ItemCode);
+		ItemTooltipWidget->SetCanvasPosition(Location);
 	}
 }
 
@@ -98,7 +102,7 @@ void AHUDBase::HideItemTooltip()
 {
 	if (ItemTooltipWidget)
 	{
-		ItemTooltipWidget->RemoveFromParent();
+		ItemTooltipWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 

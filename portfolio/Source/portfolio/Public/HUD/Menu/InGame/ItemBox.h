@@ -21,11 +21,12 @@ class PORTFOLIO_API UItemBox : public UUserWidget
 protected:
 	virtual void NativeConstruct() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UImage* ItemSlotImage;
+	virtual FReply NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent);
+	virtual void NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent);
+	virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UButton* ItemBoxButton;
+	UImage* ItemSlotImage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* ItemImage;
@@ -39,14 +40,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Image")
 	UTexture2D* NormalSlotImage;
 
-	UFUNCTION()
-	void OnHoveredItemBoxButton();
 
-	UFUNCTION()
-	void OnUnhoveredItemBoxButton();
-
-	UFUNCTION()
-	void OnClickedItemBoxButton();
 
 public:
 	void SetItemImage(UTexture2D* Image);
@@ -60,7 +54,5 @@ private:
 	FName ItemCode;
 
 	UInventory* Inventory;
-
-	void InitItemBoxButton();
 
 };

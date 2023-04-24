@@ -30,9 +30,14 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
 	USoundCue* CheckButtonClickSound;
 
+	// 아이템 클릭 소리
+	UPROPERTY(EditDefaultsOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
+	USoundCue* ItemClickSound;
+
 public:
 	void PlayChangeButtonClickSound();
 	void PlayCheckButtonClickSound();
+	void PlayItemClickSound();
 };
 
 

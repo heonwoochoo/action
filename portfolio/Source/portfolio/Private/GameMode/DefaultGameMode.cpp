@@ -12,6 +12,17 @@ ADefaultGameMode::ADefaultGameMode()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
+void ADefaultGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+}
+
+void ADefaultGameMode::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
 void ADefaultGameMode::PlayChangeButtonClickSound()
 {
 	if (ChangeButtonClickSound)
@@ -28,13 +39,11 @@ void ADefaultGameMode::PlayCheckButtonClickSound()
 	}
 }
 
-void ADefaultGameMode::BeginPlay()
+void ADefaultGameMode::PlayItemClickSound()
 {
-	Super::BeginPlay();
-
+	if (ItemClickSound)
+	{
+		UGameplayStatics::PlaySound2D(this, ItemClickSound);
+	}
 }
 
-void ADefaultGameMode::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}

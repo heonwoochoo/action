@@ -28,6 +28,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Sound", meta = (AllowPrivateAccess = "true"))
 	USoundCue* PotionConsumeSound;
 
+	// 장착한 아이템
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TMap<EEquipmentType, FEquippedItem> EquippedItemList;
+
 	// 저장되어 있는 아이템
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TMap<FName, uint8> ItemList;
@@ -72,7 +76,7 @@ private:
 	void EndTimerHandle6();
 
 	// 포션의 데이터 값을 캐릭터에게 적용
-	void EffectConsumable(const FName& ItemCode, const FItemSpec& Spec);
+	void EffectConsumable(const FName& ItemCode);
 
 	// 포션 소모시 캐릭터 주위 파티클 생성
 	void SpawnConsumeParticle(UParticleSystem* Particle);
@@ -80,7 +84,15 @@ private:
 	// 포션 소모시 재생되는 사운드
 	void PlayConsumeSound();
 
+	void InitEquippedItemList();
+
 public:
+
+	TMap<EEquipmentType, FEquippedItem> GetEquippedItemList() const;
+
+	// 장비 장착
+	void EquipItem(const FName& ItemCode);
+
 	TMap<FName, uint8> GetItemList() const;
 
 	uint8 GetItemAmount(const FName& ItemCode);
@@ -89,7 +101,7 @@ public:
 	void AddItem(const FName& ItemCode);
 
 	// 소모품 사용시 아이템 목록 업데이트
-	void UseItem(const FName& ItemCode, const FItemSpec& Spec);
+	void UseItem(const FName& ItemCode);
 
 	UDataTable* GetItemDataTable() const;
 
@@ -115,4 +127,7 @@ public:
 	bool GetEnableItem(EItemNumber ItemNum);
 
 	bool HasItemInContainer(EItemNumber ItemNum);
+
+	// 해당 아이템이 장착되었는지?
+	bool IsEquippedItem(FName ItemCode);
 };

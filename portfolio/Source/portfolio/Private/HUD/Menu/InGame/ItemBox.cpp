@@ -12,14 +12,56 @@
 #include "HUD/ItemTooltipWidget.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "HUD/Menu/InGame/Inventory.h"
+#include "GameMode/DefaultGameMode.h"
+#include "DefaultCharacter.h"
+#include "Component/InventoryComponent.h"
+#include "Types/ItemTypes.h"
 
 void UItemBox::NativeConstruct()
 {
-	InitItemBoxButton();
+
 }
 
-void UItemBox::OnHoveredItemBoxButton()
+FReply UItemBox::NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
+	Super::NativeOnMouseButtonDoubleClick(InGeometry, InMouseEvent);
+
+	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (DefaultCharacter)
+	{
+		UInventoryComponent* InventoryComponent = DefaultCharacter->GetInventoryComponent();
+		if (InventoryComponent)
+		{
+			UDataTable* ItemSpecData = InventoryComponent->GetItemDataTable();
+			if (ItemSpecData && ItemCode.IsValid())
+			{
+				FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(ItemCode, "");
+				
+				EItemType ItemType = Spec->Type;
+				
+				switch (ItemType)
+				{
+				case EItemType::EIT_Equipment:
+					UE_LOG(LogTemp, Warning, TEXT("장비 장착"));
+					break;
+				case EItemType::EIT_Consumable:
+					UE_LOG(LogTemp, Warning, TEXT("소모품 사용"));
+					InventoryComponent->UseItem(ItemCode);
+					Inventory->UpdateItemList(ItemType);
+					break;
+				}
+			}
+		}
+	}
+
+	return FReply::Handled();
+}
+
+void UItemBox::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	Super::NativeOnMouseEnter(InGeometry, InMouseEvent);
+
+
 	if (ItemSlotImage)
 	{
 		ItemSlotImage->SetBrushTintColor(FLinearColor(0.1f, 0.1f, 0.1f));
@@ -37,9 +79,10 @@ void UItemBox::OnHoveredItemBoxButton()
 	}
 }
 
-void UItemBox::OnUnhoveredItemBoxButton()
+void UItemBox::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
 {
-	
+	Super::NativeOnMouseLeave(InMouseEvent);
+
 	if (ItemSlotImage)
 	{
 		ItemSlotImage->SetBrushTintColor(FLinearColor(1.f, 1.f, 1.f));
@@ -56,10 +99,6 @@ void UItemBox::OnUnhoveredItemBoxButton()
 	}
 }
 
-void UItemBox::OnClickedItemBoxButton()
-{
-}
-
 void UItemBox::SetItemImage(UTexture2D* Image)
 {
 	if (Image && ItemImage)
@@ -73,15 +112,5 @@ void UItemBox::SetItemAmount(uint8 Amount)
 	if (ItemAmount && Amount > 0)
 	{
 		ItemAmount->SetText(FText::FromString(FString::FromInt(Amount)));
-	}
-}
-
-void UItemBox::InitItemBoxButton()
-{
-	if (ItemBoxButton)
-	{
-		ItemBoxButton->OnHovered.AddDynamic(this, &UItemBox::OnHoveredItemBoxButton);
-		ItemBoxButton->OnUnhovered.AddDynamic(this, &UItemBox::OnUnhoveredItemBoxButton);
-		ItemBoxButton->OnClicked.AddDynamic(this, &UItemBox::OnClickedItemBoxButton);
 	}
 }
