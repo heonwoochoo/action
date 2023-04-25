@@ -4,6 +4,9 @@
 #include "HUD/Menu/InGame/EquipmentSlot.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
+#include "DefaultCharacter.h"
+#include "Component/InventoryComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 void UEquipmentSlot::NativeConstruct()
 {
@@ -51,6 +54,36 @@ void UEquipmentSlot::InitByType(EEquipmentType Type)
 		case EEquipmentType::EET_Weapon:
 			EquipmentImage->SetBrushFromTexture(WeaponIcon);
 			break;
+		}
+	}
+}
+
+void UEquipmentSlot::UpdateSlot()
+{
+	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (DefaultCharacter && EquipmentSlotImage && EquipmentImage)
+	{
+		UInventoryComponent* InventoryComponent = DefaultCharacter->GetInventoryComponent();
+		const TMap<EEquipmentType, FEquippedItem>& EquippedItemList = InventoryComponent->GetEquippedItemList();
+		for (const auto& EquippedItem : EquippedItemList)
+		{
+			const EEquipmentType TargetEquipmentType = EquippedItem.Key;
+			const EEquippedState TargetEquippedState = EquippedItem.Value.State;
+			if (TargetEquipmentType == EquipmentType && TargetEquippedState == EEquippedState::EES_Equipped)
+			{
+				ItemCode = EquippedItem.Value.ItemCode;
+
+				UDataTable* ItemSpecData = InventoryComponent->GetItemDataTable();
+				if (ItemSpecData)
+				{
+					FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(ItemCode, "");
+					if (Spec)
+					{
+						EquipmentSlotImage->SetBrushFromTexture(EquippedSlot);
+						EquipmentImage->SetBrushFromTexture(Spec->Image);
+					}
+				}
+			}
 		}
 	}
 }

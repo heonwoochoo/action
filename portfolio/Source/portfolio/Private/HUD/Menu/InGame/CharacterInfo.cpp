@@ -93,12 +93,25 @@ void UCharacterInfo::InitEquipmentSlot()
 	if (HelmetSlot && ArmourSlot && WeaponSlot && SubWeaponSlot && ShieldSlot && AccessorySlot && ShoesSlot)
 	{
 		HelmetSlot->InitByType(EEquipmentType::EET_Helmet);
+		HelmetSlot->UpdateSlot();
+
 		ArmourSlot->InitByType(EEquipmentType::EET_Armour);
+		ArmourSlot->UpdateSlot();
+
 		WeaponSlot->InitByType(EEquipmentType::EET_Weapon);
+		WeaponSlot->UpdateSlot();
+
 		SubWeaponSlot->InitByType(EEquipmentType::EET_SubWeapon);
+		SubWeaponSlot->UpdateSlot();
+
 		ShieldSlot->InitByType(EEquipmentType::EET_Shield);
+		ShieldSlot->UpdateSlot();
+
 		AccessorySlot->InitByType(EEquipmentType::EET_Accessory);
+		AccessorySlot->UpdateSlot();
+
 		ShoesSlot->InitByType(EEquipmentType::EET_Shoes);
+		ShoesSlot->UpdateSlot();
 	}
 }
 

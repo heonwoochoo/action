@@ -838,6 +838,47 @@ void ADefaultCharacter::UpdateStatManager(EStatTarget Stat, EStatUpdateType Upda
 	}
 }
 
+void ADefaultCharacter::UpdateEquipmentStat()
+{
+	const TMap<EEquipmentType, FEquippedItem>& EquippedItemList = InventoryComponent->GetEquippedItemList();
+	UDataTable* ItemSpecData = InventoryComponent->GetItemDataTable();
+	if (ItemSpecData)
+	{
+		FCharacterStats NewCharacterStats = *StatsDataTable->FindRow<FCharacterStats>(FName("Default"), "");
+		for (const auto& EquippedItem : EquippedItemList)
+		{
+			const FEquippedItem& Item = EquippedItem.Value;
+			if (Item.State == EEquippedState::EES_Equipped)
+			{
+				const FName& ItemCode = Item.ItemCode;
+				FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(ItemCode, "");
+				const FCharacterStats& ItemStats = Spec->Stats;
+
+				NewCharacterStats = GetAppliedEquipmentStats(NewCharacterStats, ItemStats);
+			}
+		}
+		DefaultStats = NewCharacterStats;
+	}
+}
+
+FCharacterStats ADefaultCharacter::GetAppliedEquipmentStats(const FCharacterStats& TargetStats, const FCharacterStats& ItemStats)
+{
+	FCharacterStats ResultStats = DefaultStats;
+
+	ResultStats.AbilityPower = FMath::Max(0,TargetStats.AbilityPower + ItemStats.AbilityPower);
+	ResultStats.AbilityPowerDefense = FMath::Max(0, TargetStats.AbilityPowerDefense + ItemStats.AbilityPowerDefense);
+	ResultStats.AttackDamage = FMath::Max(0, TargetStats.AttackDamage + ItemStats.AttackDamage);
+	ResultStats.AttackDamageDefense = FMath::Max(0, TargetStats.AttackDamageDefense + ItemStats.AttackDamageDefense);
+	ResultStats.AttackSpeed = FMath::Max(0, TargetStats.AttackSpeed + ItemStats.AttackSpeed);
+	ResultStats.CoolDown = FMath::Clamp(TargetStats.CoolDown + ItemStats.CoolDown, 0, 100);
+	ResultStats.Critical = FMath::Clamp(TargetStats.Critical + ItemStats.Critical, 0 ,100);
+	ResultStats.MovementSpeed = FMath::Max(0, TargetStats.MovementSpeed + ItemStats.MovementSpeed);
+	ResultStats.HPMax = FMath::Max(0, TargetStats.HPMax + ItemStats.HPMax);
+	ResultStats.Stamina = FMath::Max(0, TargetStats.StaminaMax + ItemStats.StaminaMax);
+
+	return ResultStats;
+}
+
 void ADefaultCharacter::UpdateHealth(EStatUpdateType UpdateType, float AbilityPoint)
 {
 	float NewHP = 0.f;

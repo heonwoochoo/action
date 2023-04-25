@@ -60,14 +60,15 @@ protected:
 private:
 	EEquipmentType EquipmentType;
 
-	FName ItemName;
+	FName ItemCode;
 
 public:
 	FORCEINLINE EEquipmentType GetEquipmentType() const { return EquipmentType; }
 	FORCEINLINE void SetEquipmentType(const EEquipmentType& Type) { EquipmentType = Type; }
 	
-	FORCEINLINE FName GetItemName() const { return ItemName; }
-	FORCEINLINE void SetItemName(const FName& InName) { ItemName = InName; }
+	FORCEINLINE FName GetItemCode() const { return ItemCode; }
+	FORCEINLINE void SetItemCode(const FName& InItemCode) { ItemCode = InItemCode; }
 
 	void InitByType(EEquipmentType Type);
+	void UpdateSlot();
 };

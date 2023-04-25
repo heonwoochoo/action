@@ -143,6 +143,7 @@ void UInventoryComponent::EquipItem(const FName& ItemCode)
 			// 장착
 			EEquipmentType EquipmentType = Spec->EquipmentType;
 			EquippedItemList[EquipmentType] = FEquippedItem(EEquippedState::EES_Equipped, ItemCode);
+			DefaultCharacter->UpdateEquipmentStat();
 
 			// 무기일 경우 오브젝트 스폰
 			if (EquipmentType == EEquipmentType::EET_Weapon && Spec->ItemClass)

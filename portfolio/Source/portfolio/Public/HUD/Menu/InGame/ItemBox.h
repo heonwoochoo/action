@@ -56,4 +56,7 @@ private:
 	UInventory* Inventory;
 
 	void PlayEquipAnimation();
+
+	// 장착된 아이템인지 확인
+	bool IsEquipped(const FName& TargetItemCode);
 };

@@ -359,10 +359,17 @@ public:
 	// 캐릭터의 스탯을 업데이트 (체력, 기력, 공격력, ...)
 	void UpdateStatManager(EStatTarget Stat, EStatUpdateType UpdateType,float AbilityPoint);
 	
+	// 장착된 장비에 따른 스탯 업데이트
+	void UpdateEquipmentStat();
+
+	// 장비 스탯 적용
+	FCharacterStats GetAppliedEquipmentStats(const FCharacterStats& TargetStats, const FCharacterStats& ItemStats);
+
 	void UpdateHealth(EStatUpdateType UpdateType, float AbilityPoint);
 	void UpdateStamina(EStatUpdateType UpdateType, float AbilityPoint);
 
 	void SetIsOpenInGameMenu(bool IsOpen);
 
+	
 };
 

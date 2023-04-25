@@ -48,8 +48,16 @@ FReply UItemBox::NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, con
 					switch (ItemType)
 					{
 					case EItemType::EIT_Equipment:
-						InventoryComponent->SetEquippedItemCode(ItemCode);
-						PlayEquipAnimation();
+						if (IsEquipped(ItemCode))
+						{
+							// 이미 장착 중입니다.
+							UE_LOG(LogTemp, Warning, TEXT("이미 장착중입니다."));
+						}
+						else
+						{
+							InventoryComponent->SetEquippedItemCode(ItemCode);
+							PlayEquipAnimation();
+						}
 						break;
 					case EItemType::EIT_Consumable:
 						InventoryComponent->UseItem(ItemCode);
@@ -137,4 +145,27 @@ void UItemBox::PlayEquipAnimation()
 			}
 		}
 	}
+}
+
+bool UItemBox::IsEquipped(const FName& TargetItemCode)
+{
+	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (DefaultCharacter)
+	{
+		UInventoryComponent* InventoryComponent = DefaultCharacter->GetInventoryComponent();
+		if (InventoryComponent)
+		{
+			const TMap<EEquipmentType, FEquippedItem>& EquippedItemList = InventoryComponent->GetEquippedItemList();
+			for (const auto& EquippedItem : EquippedItemList)
+			{
+				const FEquippedItem& Item = EquippedItem.Value;
+				const FName& EquippedItemCode = Item.ItemCode;
+				if (EquippedItemCode == TargetItemCode)
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
