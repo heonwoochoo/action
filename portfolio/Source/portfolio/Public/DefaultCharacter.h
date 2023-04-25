@@ -264,6 +264,8 @@ private:
 	AItemBase* OverlappedItem;
 	AItemBase* PrevOverlappedItem;
 
+
+
 	void DoubleJump();
 
 	void FinishEvade();
@@ -370,6 +372,7 @@ public:
 
 	void SetIsOpenInGameMenu(bool IsOpen);
 
-	
+	// 아이템을 획득할 수 있는 상태인지 체크
+	bool CanPickupItem(AItemBase* Item);
 };
 

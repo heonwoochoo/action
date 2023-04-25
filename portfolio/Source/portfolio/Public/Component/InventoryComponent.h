@@ -45,6 +45,10 @@ private:
 	// 장착 예정인 무기, Anim Notify 호출시 EquipItem 함수에 파라미터 전달용
 	FName EquippedItemCode;
 
+	// 인벤토리 슬롯 개수
+	int32 InventoryEquipmentSlotNumber = 12;
+	int32 InventoryConsumableSlotNumber = 12;
+
 	// 퀵슬롯에 등록된 아이템
 	// 1,2,3 : 소모품
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -114,6 +118,9 @@ public:
 	void UseItem(const FName& ItemCode);
 
 	UDataTable* GetItemDataTable() const;
+
+	// 인벤토리 슬롯의 개수를 반환
+	int32 GetInventorySlotNumber(const EItemType& Type);
 
 	// UI 이미지와 수량을 업데이트
 	void UpdateConsumableUI();

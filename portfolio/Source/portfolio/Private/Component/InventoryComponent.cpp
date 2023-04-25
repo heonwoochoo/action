@@ -187,11 +187,7 @@ void UInventoryComponent::AddItem(const FName& ItemCode)
 	{
 		if (ItemList.Contains(ItemCode))
 		{
-			uint8 AmountMax = ItemSpec->AmountMax;
-			if (ItemList[ItemCode] < AmountMax)
-			{
-				ItemList[ItemCode]++;
-			}
+			ItemList[ItemCode]++;
 		}
 		else
 		{
@@ -238,6 +234,19 @@ void UInventoryComponent::UseItem(const FName& ItemCode)
 UDataTable* UInventoryComponent::GetItemDataTable() const
 {
 	return ItemSpecData;
+}
+
+int32 UInventoryComponent::GetInventorySlotNumber(const EItemType& Type)
+{
+	switch (Type)
+	{
+	case EItemType::EIT_Equipment:
+		return InventoryEquipmentSlotNumber;
+	case EItemType::EIT_Consumable:
+		return InventoryConsumableSlotNumber;
+	}
+
+	return 0;
 }
 
 void UInventoryComponent::UpdateConsumableUI()

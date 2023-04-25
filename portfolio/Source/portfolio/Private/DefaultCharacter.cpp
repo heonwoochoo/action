@@ -460,12 +460,15 @@ void ADefaultCharacter::PickupItem()
 	if (OverlappedItem)
 	{
 		AItemBase* Item = Cast<AItemBase>(OverlappedItem);
-		if (Item)
+		if (Item && CanPickupItem(Item))
 		{
-			Item->HandlePickupItem(this);		
+			Item->HandlePickupItem(this);
+			PlaySoundCue(PickupSound);
 		}
-
-		PlaySoundCue(PickupSound);
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("아이템을 획득할 수 없습니다."));
+		}
 	}
 }
 
@@ -935,6 +938,54 @@ void ADefaultCharacter::UpdateStamina(EStatUpdateType UpdateType, float AbilityP
 void ADefaultCharacter::SetIsOpenInGameMenu(bool IsOpen)
 {
 	bIsOpenInGameMenu = IsOpen;
+}
+
+bool ADefaultCharacter::CanPickupItem(AItemBase* Item)
+{
+	const FName& ItemCode = Item->GetItemCode();
+
+	UDataTable* ItemSpecData = InventoryComponent->GetItemDataTable();
+	const TMap<FName, uint8>& ItemList = InventoryComponent->GetItemList();
+
+	if (ItemSpecData)
+	{
+		FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(ItemCode, "");
+		if (Spec)
+		{
+			EItemType Type = Spec->Type;
+			const int32 SlotNumber = InventoryComponent->GetInventorySlotNumber(Type);
+			int32 RemainingSlotNumber = SlotNumber;
+
+			for (const auto& OwnedItem : ItemList)
+			{
+				const FName& OwnedItemName = OwnedItem.Key;
+				FItemSpec* OwnedItemSpec = ItemSpecData->FindRow<FItemSpec>(OwnedItemName, "");
+				if (OwnedItemSpec)
+				{
+					// 순회하는 아이템 타입과 획득하려는 아이템 타입이 같을 경우 빈 슬롯있는지 체크
+					if (OwnedItemSpec->Type == Type)
+					{
+						
+						int32 EntireAmount = OwnedItem.Value;
+						int32 MaxAmountPerSlot = OwnedItemSpec->AmountMax;
+
+						// 해당 아이템이 인벤토리에서 차지하는 슬롯의 개수
+						int32 RequiredSlotNumber =
+							EntireAmount % MaxAmountPerSlot ? (EntireAmount / MaxAmountPerSlot) + 1 : (EntireAmount / MaxAmountPerSlot);
+
+						RemainingSlotNumber -= RequiredSlotNumber;
+					}
+				}
+			}
+			if (RemainingSlotNumber >= 1)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("남은 슬롯의 개수는 %d 개 입니다."), RemainingSlotNumber);
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
 
 ECharacterClass ADefaultCharacter::GetCharacterClass()

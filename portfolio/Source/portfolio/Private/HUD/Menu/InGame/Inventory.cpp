@@ -186,25 +186,43 @@ void UInventory::ShowItemList(EItemType ItemType)
 				FItemSpec* Spec = SpecData->FindRow<FItemSpec>(ItemCode, "");
 				if (Spec && Spec->Type == ItemType)
 				{
-					UItemBox* ItemBox = Cast<UItemBox>(CreateWidget(this, ItemBoxClass));
-					if (ItemBox)
-					{
-						ItemBox->SetItemCode(ItemCode);
-						ItemBox->SetItemImage(Spec->Image);
-						ItemBox->SetItemAmount(Item.Value);
-						ItemBox->SetInventory(this);
+					const int32 EntireAmount = Item.Value;
+					const int32 MaxAmount = Spec->AmountMax;
+					const int32 RequiredSlotNumber =
+						EntireAmount % MaxAmount ? (EntireAmount / MaxAmount) + 1 : (EntireAmount / MaxAmount);
 
-						if (ItemRow1->GetChildrenCount() < 4)
+					for (int32 i = 0; i < RequiredSlotNumber; ++i)
+					{
+						int32 Amount;
+						if (i == RequiredSlotNumber - 1)
 						{
-							ItemRow1->AddChildToHorizontalBox(ItemBox);
+							Amount = EntireAmount % MaxAmount;
 						}
-						else if (ItemRow2->GetChildrenCount() < 4)
+						else
 						{
-							ItemRow2->AddChildToHorizontalBox(ItemBox);
+							Amount = MaxAmount;
 						}
-						else if (ItemRow3->GetChildrenCount() < 4)
+
+						UItemBox* ItemBox = Cast<UItemBox>(CreateWidget(this, ItemBoxClass));
+						if (ItemBox)
 						{
-							ItemRow3->AddChildToHorizontalBox(ItemBox);
+							ItemBox->SetItemCode(ItemCode);
+							ItemBox->SetItemImage(Spec->Image);
+							ItemBox->SetItemAmount(Amount);
+							ItemBox->SetInventory(this);
+
+							if (ItemRow1->GetChildrenCount() < 4)
+							{
+								ItemRow1->AddChildToHorizontalBox(ItemBox);
+							}
+							else if (ItemRow2->GetChildrenCount() < 4)
+							{
+								ItemRow2->AddChildToHorizontalBox(ItemBox);
+							}
+							else if (ItemRow3->GetChildrenCount() < 4)
+							{
+								ItemRow3->AddChildToHorizontalBox(ItemBox);
+							}
 						}
 					}
 				}
