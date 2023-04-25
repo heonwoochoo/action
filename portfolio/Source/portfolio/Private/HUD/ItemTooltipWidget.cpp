@@ -33,6 +33,7 @@ void UItemTooltipWidget::UpdateContents(const FName& ItemCode)
 			if (ItemSpecData)
 			{
 				FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(ItemCode, "");
+				if (Spec == nullptr) return;
 				// 이미지
 				ItemImage->SetBrushFromTexture(Spec->Image);
 				

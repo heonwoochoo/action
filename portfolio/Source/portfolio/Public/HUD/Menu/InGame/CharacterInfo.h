@@ -19,6 +19,7 @@ class PORTFOLIO_API UCharacterInfo : public UMovableWidget
 {
 	GENERATED_BODY()
 	
+
 protected:
 	virtual void NativeConstruct() override;
 
@@ -112,6 +113,8 @@ protected:
 	virtual void InitCanvasLocation() override;
 
 private:
+	TArray<UEquipmentSlot*> EquipmentSlots;
+
 	FVector2D TooltipLocation;
 
 	void InitEquipmentSlot();
@@ -122,5 +125,6 @@ private:
 public:
 	FORCEINLINE FVector2D GetTooltipLocation() const { return TooltipLocation; };
 
-	
+	void OnHoveredSlot(const FName& ItemCode);
+	void OnUnhoveredSlot();
 };

@@ -12,6 +12,7 @@
 #include "HUD/Menu/InGame/InGameMenu.h"
 #include "Kismet/GameplayStatics.h"
 #include "Controller/CharacterController.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 AHUDBase::AHUDBase()
 {
@@ -49,6 +50,22 @@ void AHUDBase::InitComboCountWidget()
 		{
 			ComboCountWidget->AddToViewport();
 			ComboCountWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+}
+
+void AHUDBase::CloseAllInGameChildWidget()
+{
+	for (const auto& WidgetClass : InGameMenuChildWidgetClasses)
+	{
+		TArray<UUserWidget*> FoundWidget;
+		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundWidget, WidgetClass);
+		if (FoundWidget.Num() >= 1)
+		{
+			for (auto Widget : FoundWidget)
+			{
+				Widget->RemoveFromParent();
+			}
 		}
 	}
 }
@@ -144,9 +161,15 @@ void AHUDBase::CloseInGameMenu()
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 	if (CharacterController)
 	{
+		CloseAllInGameChildWidget();
 		CharacterController->SetShowMouseCursor(false);
 		CharacterController->SetInputMode(FInputModeGameOnly());
 		CharacterController->ResetIgnoreLookInput();
 		CharacterController->ResetIgnoreMoveInput();
 	}
+}
+
+void AHUDBase::SetInGameMenuChildWidgetClasses(const TArray<TSubclassOf<UUserWidget>>& Classes)
+{
+	InGameMenuChildWidgetClasses = Classes;
 }

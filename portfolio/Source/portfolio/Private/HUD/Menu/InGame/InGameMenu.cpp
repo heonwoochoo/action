@@ -14,6 +14,8 @@
 #include "HUD/Menu/Options/OptionsMenu.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "HUD/Menu/InGame/CharacterInfo.h"
+#include "HUD/HUDBase.h"
+#include "Controller/CharacterController.h"
 
 void UInGameMenu::NativeConstruct()
 {
@@ -31,6 +33,17 @@ void UInGameMenu::NativeConstruct()
 	if (AnimHideMenu)
 	{
 		BindToAnimationFinished(AnimHideMenu, EndAnimationEvent);
+	}
+
+	AllChildWidgetClasses = { ExitBoxClass, SavedNotifyBoxClass, InventoryClass, OptionsMenuClass, CharacterInfoClass };
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+		if (HUDBase)
+		{
+			HUDBase->SetInGameMenuChildWidgetClasses(AllChildWidgetClasses);
+		}
 	}
 
 	PlayShowAnimation();
@@ -342,9 +355,7 @@ void UInGameMenu::PlayButtonSound()
 
 void UInGameMenu::RemoveOpenedWidget()
 {
-	TArray<TSubclassOf<UUserWidget>> AllWidgetClass = { ExitBoxClass, SavedNotifyBoxClass, InventoryClass, OptionsMenuClass };
-
-	for (const auto& WidgetClass : AllWidgetClass)
+	for (const auto& WidgetClass : AllChildWidgetClasses)
 	{
 		TArray<UUserWidget*> FoundWidget;
 		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundWidget, WidgetClass);

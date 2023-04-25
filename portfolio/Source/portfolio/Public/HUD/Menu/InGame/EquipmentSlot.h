@@ -10,7 +10,7 @@
 class UImage;
 class UButton;
 class UTexture2D;
-
+class UCharacterInfo;
 
 UCLASS()
 class PORTFOLIO_API UEquipmentSlot : public UUserWidget
@@ -57,10 +57,21 @@ protected:
 	UTexture2D* UnequippedSlot;
 
 
+	UFUNCTION()
+	void OnHoveredEquipmentButton();
+
+	UFUNCTION()
+	void OnUnhoveredEquipmentButton();
+
 private:
+	// 해당 슬롯이 위치한 캐릭터 인포 창
+	UCharacterInfo* CharacterInfo;
+	
 	EEquipmentType EquipmentType;
 
 	FName ItemCode;
+
+	void InitEquipmentButton();
 
 public:
 	FORCEINLINE EEquipmentType GetEquipmentType() const { return EquipmentType; }
@@ -69,6 +80,11 @@ public:
 	FORCEINLINE FName GetItemCode() const { return ItemCode; }
 	FORCEINLINE void SetItemCode(const FName& InItemCode) { ItemCode = InItemCode; }
 
+	// 슬롯의 장비 타입 설정
 	void InitByType(EEquipmentType Type);
+
+	// 캐릭터의 장비 착용 상태를 참조하여 슬롯에 이미지 적용
 	void UpdateSlot();
+
+	FORCEINLINE void SetCharacterInfo(UCharacterInfo* InCharacterInfo) { CharacterInfo = InCharacterInfo; }
 };

@@ -12,10 +12,15 @@
 #include "GameInstance/DefaultGameInstance.h"
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
+#include "HUD/HUDBase.h"
+
+
 
 void UCharacterInfo::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	EquipmentSlots = { HelmetSlot, ArmourSlot, WeaponSlot, SubWeaponSlot, ShieldSlot, AccessorySlot, ShoesSlot };
 
 	InitEquipmentSlot();
 	InitCanvasLocation();
@@ -45,9 +50,8 @@ void UCharacterInfo::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 void UCharacterInfo::NativeDestruct()
 {
 	Super::NativeDestruct();
+	OnUnhoveredSlot();
 }
-
-
 
 void UCharacterInfo::OnReleasedTitleDragButton()
 {
@@ -93,25 +97,18 @@ void UCharacterInfo::InitEquipmentSlot()
 	if (HelmetSlot && ArmourSlot && WeaponSlot && SubWeaponSlot && ShieldSlot && AccessorySlot && ShoesSlot)
 	{
 		HelmetSlot->InitByType(EEquipmentType::EET_Helmet);
-		HelmetSlot->UpdateSlot();
-
 		ArmourSlot->InitByType(EEquipmentType::EET_Armour);
-		ArmourSlot->UpdateSlot();
-
 		WeaponSlot->InitByType(EEquipmentType::EET_Weapon);
-		WeaponSlot->UpdateSlot();
-
 		SubWeaponSlot->InitByType(EEquipmentType::EET_SubWeapon);
-		SubWeaponSlot->UpdateSlot();
-
 		ShieldSlot->InitByType(EEquipmentType::EET_Shield);
-		ShieldSlot->UpdateSlot();
-
 		AccessorySlot->InitByType(EEquipmentType::EET_Accessory);
-		AccessorySlot->UpdateSlot();
-
 		ShoesSlot->InitByType(EEquipmentType::EET_Shoes);
-		ShoesSlot->UpdateSlot();
+
+		for (UEquipmentSlot* EquipmentSlot : EquipmentSlots)
+		{
+			EquipmentSlot->UpdateSlot();
+			EquipmentSlot->SetCharacterInfo(this);
+		}
 	}
 }
 
@@ -266,6 +263,32 @@ void UCharacterInfo::UpdateStamina(const float& CurrentStamina, const float& Max
 		else
 		{
 			StaminaProgressBar->SetPercent(0.f);
+		}
+	}
+}
+
+void UCharacterInfo::OnHoveredSlot(const FName& ItemCode)
+{
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+		if (HUDBase)
+		{
+			HUDBase->ShowItemTooltip(ItemCode, TooltipLocation);
+		}
+	}
+}
+
+void UCharacterInfo::OnUnhoveredSlot()
+{
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+		if (HUDBase)
+		{
+			HUDBase->HideItemTooltip();
 		}
 	}
 }

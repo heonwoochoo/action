@@ -7,14 +7,42 @@
 #include "DefaultCharacter.h"
 #include "Component/InventoryComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "HUD/Menu/InGame/CharacterInfo.h"
 
 void UEquipmentSlot::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	InitEquipmentButton();
+
 	if (EquipmentSlotImage)
 	{
 		EquipmentSlotImage->SetBrushFromTexture(UnequippedSlot);
+	}
+}
+
+void UEquipmentSlot::OnHoveredEquipmentButton()
+{
+	if (CharacterInfo && ItemCode != FName())
+	{
+		CharacterInfo->OnHoveredSlot(ItemCode);
+	}
+}
+
+void UEquipmentSlot::OnUnhoveredEquipmentButton()
+{
+	if (CharacterInfo && ItemCode != FName())
+	{
+		CharacterInfo->OnUnhoveredSlot();
+	}
+}
+
+void UEquipmentSlot::InitEquipmentButton()
+{
+	if (EquipmentButton)
+	{
+		EquipmentButton->OnHovered.AddDynamic(this, &UEquipmentSlot::OnHoveredEquipmentButton);
+		EquipmentButton->OnUnhovered.AddDynamic(this, &UEquipmentSlot::OnUnhoveredEquipmentButton);
 	}
 }
 

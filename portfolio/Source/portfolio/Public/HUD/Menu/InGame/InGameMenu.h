@@ -92,7 +92,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Menu")
 	TSubclassOf<UCharacterInfo> CharacterInfoClass;	
 
-
+	TArray<TSubclassOf<UUserWidget>> AllChildWidgetClasses;
 
 	//====================
 	// 이벤트 발생시 호출

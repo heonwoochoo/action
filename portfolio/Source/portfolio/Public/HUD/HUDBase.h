@@ -54,8 +54,13 @@ private:
 
 	UInGameMenu* InGameMenuWidget;
 
+	TArray<TSubclassOf<UUserWidget>> InGameMenuChildWidgetClasses;
+
 	void InitInfoContainer();
 	void InitComboCountWidget();
+
+	// 열려있는 인게임 자식 메뉴창이 있으면 닫기 
+	void CloseAllInGameChildWidget();
 
 public:
 	void ShowDamageOnScreen(ACharacter* Actor, float Damage);
@@ -74,4 +79,6 @@ public:
 
 	void OpenInGameMenu();
 	void CloseInGameMenu();
+
+	void SetInGameMenuChildWidgetClasses(const TArray<TSubclassOf<UUserWidget>>& Classes);
 };
