@@ -23,6 +23,8 @@ void UAnimInstanceBase::NativeInitializeAnimation()
 			DefaultAnimations = *DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "");
 		}
 	}
+
+	OnMontageEnded.AddDynamic(this, &UAnimInstanceBase::OnEndMontage);
 }
 
 void UAnimInstanceBase::NativeUpdateAnimation(float DeltaSeconds)
@@ -43,6 +45,18 @@ void UAnimInstanceBase::NativeUpdateAnimation(float DeltaSeconds)
 			GEngine->AddOnScreenDebugMessage(1, -1, FColor::Red, FString::Printf(TEXT("Velocity : %f"), Velocity.Size()));
 			GEngine->AddOnScreenDebugMessage(2, -1, FColor::Cyan, FString::Printf(TEXT("ForwardSpeed : %f"), ForwardSpeed));
 			GEngine->AddOnScreenDebugMessage(3, -1, FColor::Blue, FString::Printf(TEXT("SideSpeed : %f"), SideSpeed));
+		}
+	}
+}
+
+void UAnimInstanceBase::OnEndMontage(UAnimMontage* AnimMontage, bool bInterrupted)
+{
+	UAnimMontage* HitReact = DefaultAnimations.HitReact;
+	if (AnimMontage == HitReact)
+	{
+		if (Character)
+		{
+			Character->SetCharacterActionState(ECharacterActionState::ECAS_Unoccupied);
 		}
 	}
 }

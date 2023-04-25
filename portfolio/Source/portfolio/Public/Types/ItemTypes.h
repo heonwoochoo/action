@@ -117,3 +117,4 @@ struct FEquippedItem
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FName ItemCode;
 };
+

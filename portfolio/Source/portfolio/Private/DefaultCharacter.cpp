@@ -467,7 +467,11 @@ void ADefaultCharacter::PickupItem()
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("아이템을 획득할 수 없습니다."));
+			if (HUDBase)
+			{
+				const FText Message = FText::FromString(TEXT("아이템을 획득할 수 없습니다."));
+				HUDBase->NotifyScreenMessage(Message);
+			}
 		}
 	}
 }
@@ -633,6 +637,11 @@ void ADefaultCharacter::LoadDataFromSaveGame()
 				const FTransform& SavedTransform = InGameInfo.Transform;
 				if (SavedTransform.IsValid())
 				{
+					if (HUDBase)
+					{
+						const FText Message = FText::FromString(TEXT("저장된 데이터를 불러왔습니다."));
+						HUDBase->NotifyScreenMessage(Message);
+					}
 					SetActorTransform(SavedTransform);
 				}
 			}
@@ -979,7 +988,6 @@ bool ADefaultCharacter::CanPickupItem(AItemBase* Item)
 			}
 			if (RemainingSlotNumber >= 1)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("남은 슬롯의 개수는 %d 개 입니다."), RemainingSlotNumber);
 				return true;
 			}
 		}

@@ -50,8 +50,7 @@ FReply UItemBox::NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, con
 					case EItemType::EIT_Equipment:
 						if (IsEquipped(ItemCode))
 						{
-							// 이미 장착 중입니다.
-							UE_LOG(LogTemp, Warning, TEXT("이미 장착중입니다."));
+							// 이미 장착 중
 						}
 						else
 						{
@@ -63,6 +62,20 @@ FReply UItemBox::NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, con
 						InventoryComponent->UseItem(ItemCode);
 						Inventory->UpdateItemList(ItemType);
 						break;
+					}
+				}
+				else
+				{
+					// 유저 메세지 출력
+					ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+					if (CharacterController)
+					{
+						AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+						if (HUDBase)
+						{
+							const FText Message = FText::FromString(TEXT("유저의 레벨이 낮아 해당 장비를 착용할 수 없습니다."));
+							HUDBase->NotifyScreenMessage(Message);
+						}
 					}
 				}
 			}
@@ -162,10 +175,22 @@ bool UItemBox::IsEquipped(const FName& TargetItemCode)
 				const FName& EquippedItemCode = Item.ItemCode;
 				if (EquippedItemCode == TargetItemCode)
 				{
+					// 유저 메세지 출력
+					ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+					if (CharacterController)
+					{
+						AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+						if (HUDBase)
+						{
+							const FText Message = FText::FromString(TEXT("이미 장착 중인 아이템입니다."));
+							HUDBase->NotifyScreenMessage(Message);
+						}
+					}
 					return true;
 				}
 			}
 		}
 	}
+
 	return false;
 }

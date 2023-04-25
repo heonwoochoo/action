@@ -20,6 +20,9 @@ protected:
 
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
+	UFUNCTION()
+	void OnEndMontage(UAnimMontage* AnimMontage, bool bInterrupted);
+
 private:
 	UPROPERTY(VisibleAnywhere, category = "Character|Movement")
 	float ForwardSpeed = 0.f;

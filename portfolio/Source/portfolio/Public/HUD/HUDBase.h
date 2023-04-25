@@ -14,6 +14,7 @@ class UInfoContainer;
 class UComboCountWidget;
 class UItemTooltipWidget;
 class UInGameMenu;
+class UUserMessage;
 
 UCLASS()
 class PORTFOLIO_API AHUDBase : public AHUD
@@ -46,6 +47,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Overlay", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UInGameMenu> InGameMenuClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Overlay", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UUserMessage> UserMessageClass;
+
 	UInfoContainer* InfoContainer;
 
 	UComboCountWidget* ComboCountWidget;
@@ -54,10 +58,13 @@ private:
 
 	UInGameMenu* InGameMenuWidget;
 
+	UUserMessage* UserMessageWidget;
+
 	TArray<TSubclassOf<UUserWidget>> InGameMenuChildWidgetClasses;
 
 	void InitInfoContainer();
 	void InitComboCountWidget();
+	void InitUserMessage();
 
 	// 열려있는 인게임 자식 메뉴창이 있으면 닫기 
 	void CloseAllInGameChildWidget();
@@ -81,4 +88,7 @@ public:
 	void CloseInGameMenu();
 
 	void SetInGameMenuChildWidgetClasses(const TArray<TSubclassOf<UUserWidget>>& Classes);
+
+	//화면 중앙 상단에 유저 알림 메세지 출력
+	void NotifyScreenMessage(const FText& Message);
 };

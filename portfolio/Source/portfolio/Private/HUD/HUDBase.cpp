@@ -13,6 +13,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Controller/CharacterController.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "HUD/Overlay/UserMessage.h"
 
 AHUDBase::AHUDBase()
 {
@@ -50,6 +51,18 @@ void AHUDBase::InitComboCountWidget()
 		{
 			ComboCountWidget->AddToViewport();
 			ComboCountWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+}
+
+void AHUDBase::InitUserMessage()
+{
+	if (UserMessageClass)
+	{
+		UserMessageWidget = Cast<UUserMessage>(CreateWidget(GetOwningPlayerController(), UserMessageClass));
+		if (UserMessageWidget)
+		{
+			UserMessageWidget->AddToViewport();
 		}
 	}
 }
@@ -127,6 +140,7 @@ void AHUDBase::InitScreenOverlay()
 {
 	InitInfoContainer();
 	InitComboCountWidget();
+	InitUserMessage();
 }
 
 void AHUDBase::OpenInGameMenu()
@@ -172,4 +186,12 @@ void AHUDBase::CloseInGameMenu()
 void AHUDBase::SetInGameMenuChildWidgetClasses(const TArray<TSubclassOf<UUserWidget>>& Classes)
 {
 	InGameMenuChildWidgetClasses = Classes;
+}
+
+void AHUDBase::NotifyScreenMessage(const FText& Message)
+{
+	if (UserMessageWidget)
+	{
+		UserMessageWidget->NotifyMessageToUser(Message);
+	}
 }
