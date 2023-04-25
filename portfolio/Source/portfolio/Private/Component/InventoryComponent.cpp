@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Sound/SoundCue.h"
 #include "Items/Weapon.h"
+#include "Controller/CharacterController.h"
 
 UInventoryComponent::UInventoryComponent()
 {
@@ -228,6 +229,18 @@ void UInventoryComponent::UseItem(const FName& ItemCode)
 		SpawnConsumeParticle(Spec->EffectParticle);
 
 		PlayConsumeSound();
+
+		// 메세지 출력
+		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+		if (PlayerController)
+		{
+			AHUDBase* HUDBase = Cast<AHUDBase>(PlayerController->GetHUD());
+			if (HUDBase)
+			{
+				const FText& Message = FText::FromString(TEXT("소모품을 사용하였습니다."));
+				HUDBase->HandleMessageOnChat(Message, FColor::Silver);
+			}
+		}
 	}
 }
 

@@ -14,6 +14,7 @@
 #include "Controller/CharacterController.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "HUD/Overlay/UserMessage.h"
+#include "HUD/Overlay/ChatBox.h"
 
 AHUDBase::AHUDBase()
 {
@@ -63,6 +64,18 @@ void AHUDBase::InitUserMessage()
 		if (UserMessageWidget)
 		{
 			UserMessageWidget->AddToViewport();
+		}
+	}
+}
+
+void AHUDBase::InitChatBox()
+{
+	if (ChatBoxClass)
+	{
+		ChatBoxWidget = Cast<UChatBox>(CreateWidget(GetOwningPlayerController(), ChatBoxClass));
+		if (ChatBoxWidget)
+		{
+			ChatBoxWidget->AddToViewport();
 		}
 	}
 }
@@ -141,6 +154,7 @@ void AHUDBase::InitScreenOverlay()
 	InitInfoContainer();
 	InitComboCountWidget();
 	InitUserMessage();
+	InitChatBox();
 }
 
 void AHUDBase::OpenInGameMenu()
@@ -193,5 +207,13 @@ void AHUDBase::NotifyScreenMessage(const FText& Message)
 	if (UserMessageWidget)
 	{
 		UserMessageWidget->NotifyMessageToUser(Message);
+	}
+}
+
+void AHUDBase::HandleMessageOnChat(const FText& Message, const FColor& Color)
+{
+	if (ChatBoxWidget)
+	{
+		ChatBoxWidget->PrintMessageOnChat(Message, Color);
 	}
 }
