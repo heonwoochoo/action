@@ -30,6 +30,7 @@
 #include "SaveGame/UserSaveGame.h"
 #include "Items/ItemBase.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "Particles/ParticleSystemComponent.h"
 
 ADefaultCharacter::ADefaultCharacter()
 {
@@ -55,28 +56,31 @@ ADefaultCharacter::ADefaultCharacter()
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
-	// Create a camera boom (pulls in towards the player if there is a collision)
+	// 카메라 붐 생성
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 800.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 
-	// Create a follow camera
+	// 카메라 생성
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	// Create AbilityComponent
+	// 어빌리티 컴포넌트 생성
 	AbilityComponent = CreateDefaultSubobject<UAbilityComponent>(TEXT("AbilityComponent"));
 
-	// Create MotionWarpingComponent;
+	// 모션 매핑 컴포넌트 생성
 	CharacterMWComponent = CreateDefaultSubobject<UCharacterMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 
-	// Create InventoryComponent
+	// 인벤토리 컴포넌트 생성
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 
 	EmitterComponent = CreateDefaultSubobject<USceneComponent>(TEXT("EmitterComponent"));
 	EmitterComponent->SetupAttachment(GetRootComponent());
+
+	ParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ParticleSystemComponent"));
+	ParticleComponent->SetupAttachment(GetRootComponent());
 
 	InitialRelativeLocationZ = 0.f;
 
@@ -654,6 +658,26 @@ void ADefaultCharacter::LoadDataFromSaveGame()
 	}
 }
 
+void ADefaultCharacter::LevelUp()
+{
+	// 스탯 변화
+	DefaultStats.Level++;
+	DefaultStats.Exp = 0.f;
+	
+	// 이펙트 생성
+	if (ParticleComponent)
+	{
+		UGameplayStatics::SpawnEmitterAttached(LevelUpParticle, ParticleComponent);
+	}
+
+	// 메세지 표시
+	if (HUDBase)
+	{
+		const FString Message =  FString(TEXT("캐릭터가 ")) + FString::FromInt(DefaultStats.Level) + FString(TEXT("레벨이 되었습니다."));
+		HUDBase->HandleMessageOnChat(FText::FromString(Message), FColor::Yellow);
+	}
+}
+
 void ADefaultCharacter::HandleComboCount()
 {
 	// 카운트 증가
@@ -842,15 +866,18 @@ void ADefaultCharacter::PlayCameraLensEffect(TSubclassOf<AEmitterCameraLensEffec
 	}
 }
 
-void ADefaultCharacter::UpdateStatManager(EStatTarget Stat, EStatUpdateType UpdateType, float AbilityPoint)
+void ADefaultCharacter::UpdateStatManager(EStatTarget Stat, EStatUpdateType UpdateType, float Value)
 {
 	switch (Stat)
 	{
 	case EStatTarget::EST_Health:
-		UpdateHealth(UpdateType, AbilityPoint);
+		UpdateHealth(UpdateType, Value);
 		break;
 	case EStatTarget::EST_Stamina:
-		UpdateStamina(UpdateType, AbilityPoint);
+		UpdateStamina(UpdateType, Value);
+		break;
+	case EStatTarget::EST_Exp:
+		UpdateExp(UpdateType, Value);
 		break;
 	}
 }
@@ -896,7 +923,7 @@ FCharacterStats ADefaultCharacter::GetAppliedEquipmentStats(const FCharacterStat
 	return ResultStats;
 }
 
-void ADefaultCharacter::UpdateHealth(EStatUpdateType UpdateType, float AbilityPoint)
+void ADefaultCharacter::UpdateHealth(EStatUpdateType UpdateType, float Value)
 {
 	float NewHP = 0.f;
 
@@ -904,10 +931,10 @@ void ADefaultCharacter::UpdateHealth(EStatUpdateType UpdateType, float AbilityPo
 	switch (UpdateType)
 	{
 	case EStatUpdateType::ESUT_Plus:
-		NewHP = DefaultStats.HP + AbilityPoint;
+		NewHP = DefaultStats.HP + Value;
 		break;
 	case EStatUpdateType::ESUT_Minus:
-		NewHP = DefaultStats.HP - AbilityPoint;
+		NewHP = DefaultStats.HP - Value;
 		break;
 	}
 
@@ -926,17 +953,17 @@ void ADefaultCharacter::UpdateHealth(EStatUpdateType UpdateType, float AbilityPo
 	}
 }
 
-void ADefaultCharacter::UpdateStamina(EStatUpdateType UpdateType, float AbilityPoint)
+void ADefaultCharacter::UpdateStamina(EStatUpdateType UpdateType, float Value)
 {
 	float NewStamina = 0.f;
 
 	switch (UpdateType)
 	{
 	case EStatUpdateType::ESUT_Plus:
-		NewStamina = DefaultStats.Stamina + AbilityPoint;
+		NewStamina = DefaultStats.Stamina + Value;
 		break;
 	case EStatUpdateType::ESUT_Minus:
-		NewStamina = DefaultStats.Stamina - AbilityPoint;
+		NewStamina = DefaultStats.Stamina - Value;
 		break;
 	}
 
@@ -946,6 +973,27 @@ void ADefaultCharacter::UpdateStamina(EStatUpdateType UpdateType, float AbilityP
 	if (HUDBase)
 	{
 		HUDBase->GetInfoContainer()->UpdateStamina();
+	}
+}
+
+void ADefaultCharacter::UpdateExp(EStatUpdateType UpdateType, float Value)
+{
+	const float CurrentExp = DefaultStats.Exp;
+	const float MaxExp = DefaultStats.ExpMax;
+
+	if (CurrentExp + Value >= MaxExp)
+	{
+		// 레벨업
+		LevelUp();
+	}
+	else
+	{
+		DefaultStats.Exp = CurrentExp + Value;
+	}
+	// UI 업데이트
+	if (HUDBase)
+	{
+		HUDBase->GetInfoContainer()->UpdateExp();
 	}
 }
 

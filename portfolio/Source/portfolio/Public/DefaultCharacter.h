@@ -24,6 +24,7 @@ class UInventoryComponent;
 class UParticleSystem;
 class AHUDBase;
 class AItemBase;
+class UParticleSystemComponent;
 
 UCLASS(config=Game)
 class ADefaultCharacter : public ACharacter
@@ -52,6 +53,10 @@ protected:
 	/** 피격시 카메라 렌즈효과*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Camera")
 	TSubclassOf<AEmitterCameraLensEffectBase> HitReactCameraLens;
+
+	/** 레벨업시 재생되는 이펙트 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
+	UParticleSystem* LevelUpParticle;
 
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -115,15 +120,13 @@ protected:
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
+
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-
-
-
-	
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Particle, meta = (AllowPrivateAccess = "true"))
@@ -136,6 +139,9 @@ private:
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Particle, meta = (AllowPrivateAccess = "true"))
+	UParticleSystemComponent* ParticleComponent;
 
 	UEnhancedInputComponent* EnhancedInputComponent;
 
@@ -302,6 +308,9 @@ private:
 	// 게임 시작 시 저장된 캐릭터의 데이터 불러오기
 	void LoadDataFromSaveGame();
 
+	// 경험치가 Max에 도달시 레벨 업
+	void LevelUp();
+
 public:
 	void HandleComboCount();
 
@@ -360,7 +369,7 @@ public:
 	void PlayCameraLensEffect(TSubclassOf<AEmitterCameraLensEffectBase> CameraLensEffectClass);
 
 	// 캐릭터의 스탯을 업데이트 (체력, 기력, 공격력, ...)
-	void UpdateStatManager(EStatTarget Stat, EStatUpdateType UpdateType,float AbilityPoint);
+	void UpdateStatManager(EStatTarget Stat, EStatUpdateType UpdateType,float Value);
 	
 	// 장착된 장비에 따른 스탯 업데이트
 	void UpdateEquipmentStat();
@@ -368,8 +377,9 @@ public:
 	// 장비 스탯 적용
 	FCharacterStats GetAppliedEquipmentStats(const FCharacterStats& TargetStats, const FCharacterStats& ItemStats);
 
-	void UpdateHealth(EStatUpdateType UpdateType, float AbilityPoint);
-	void UpdateStamina(EStatUpdateType UpdateType, float AbilityPoint);
+	void UpdateHealth(EStatUpdateType UpdateType, float Value);
+	void UpdateStamina(EStatUpdateType UpdateType, float Value);
+	void UpdateExp(EStatUpdateType UpdateType, float Value);
 
 	void SetIsMouseShowing(bool bShowing);
 

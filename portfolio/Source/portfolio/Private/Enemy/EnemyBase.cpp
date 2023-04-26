@@ -347,6 +347,16 @@ void AEnemyBase::Die()
 {
 	State = EEnemyState::EES_Dead;
 
+	if (CombatTarget)
+	{
+		ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(CombatTarget);
+		if (DefaultCharacter)
+		{
+			// À¯Àú°¡ °æÇèÄ¡¸¦ È¹µæ
+			DefaultCharacter->UpdateStatManager(EStatTarget::EST_Exp, EStatUpdateType::ESUT_Plus, Stats.Exp);
+		}
+	}
+
 	HPBarWidgetComponent->SetVisibility(false);
 
 	MotionWarpingComponent->Deactivate();
