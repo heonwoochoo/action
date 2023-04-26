@@ -15,6 +15,7 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "HUD/Overlay/UserMessage.h"
 #include "HUD/Overlay/ChatBox.h"
+#include "HUD/Overlay/InGameMenuToggleButton.h"
 
 AHUDBase::AHUDBase()
 {
@@ -77,6 +78,15 @@ void AHUDBase::InitChatBox()
 		{
 			ChatBoxWidget->AddToViewport();
 		}
+	}
+}
+
+void AHUDBase::CreateInGameMenuToggleButton()
+{
+	if (InGameMenuToggleButtonClass)
+	{
+		InGameMenuToggleWidget = Cast<UInGameMenuToggleButton>(CreateWidget(GetOwningPlayerController(), InGameMenuToggleButtonClass));
+		InGameMenuToggleWidget->AddToViewport();
 	}
 }
 
@@ -165,15 +175,6 @@ void AHUDBase::OpenInGameMenu()
 		if (InGameMenuWidget)
 		{
 			InGameMenuWidget->AddToViewport();
-
-			ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-			if (CharacterController)
-			{
-				CharacterController->SetShowMouseCursor(true);
-				CharacterController->SetInputMode(FInputModeGameAndUI());
-				CharacterController->SetIgnoreLookInput(true);
-				CharacterController->SetIgnoreMoveInput(true);
-			}
 		}
 	}
 }
@@ -190,10 +191,7 @@ void AHUDBase::CloseInGameMenu()
 	if (CharacterController)
 	{
 		CloseAllInGameChildWidget();
-		CharacterController->SetShowMouseCursor(false);
-		CharacterController->SetInputMode(FInputModeGameOnly());
-		CharacterController->ResetIgnoreLookInput();
-		CharacterController->ResetIgnoreMoveInput();
+		CharacterController->SetInputModeToGame();
 	}
 }
 

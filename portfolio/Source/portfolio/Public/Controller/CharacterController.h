@@ -55,4 +55,5 @@ public:
 
 	// 인풋모드 상태 전환
 	void SetInputModeToGame();
+	void SetInputModeToUI();
 };

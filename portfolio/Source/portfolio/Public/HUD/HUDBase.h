@@ -16,6 +16,7 @@ class UItemTooltipWidget;
 class UInGameMenu;
 class UUserMessage;
 class UChatBox;
+class UInGameMenuToggleButton;
 
 UCLASS()
 class PORTFOLIO_API AHUDBase : public AHUD
@@ -54,6 +55,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Overlay", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UChatBox> ChatBoxClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Overlay", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UInGameMenuToggleButton> InGameMenuToggleButtonClass;
+
 	UInfoContainer* InfoContainer;
 
 	UComboCountWidget* ComboCountWidget;
@@ -65,6 +69,8 @@ private:
 	UUserMessage* UserMessageWidget;
 
 	UChatBox* ChatBoxWidget;
+
+	UInGameMenuToggleButton* InGameMenuToggleWidget;
 
 	TArray<TSubclassOf<UUserWidget>> InGameMenuChildWidgetClasses;
 
@@ -83,6 +89,8 @@ public:
 	void ShowItemTooltip(const FName& ItemCode, const FVector2D& Location);
 	void HideItemTooltip();
 
+	// 캐릭터 컨트롤 모드 -> UI모드 전환시에 항상 호출되어야함
+	void CreateInGameMenuToggleButton();
 
 	FORCEINLINE UInfoContainer* GetInfoContainer() { return InfoContainer; }
 	FORCEINLINE UComboCountWidget* GetComboCountWidget() { return ComboCountWidget; }

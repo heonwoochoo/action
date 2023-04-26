@@ -178,7 +178,7 @@ void ADefaultCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 		EnhancedInputComponent->BindAction(PickupAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::PickupItem);
 		
 		// Open widget
-		EnhancedInputComponent->BindAction(InGameMenuAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::HandleInGameMenu);
+		EnhancedInputComponent->BindAction(InGameMenuAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::HandleShowMouse);
 	}
 }
 
@@ -476,20 +476,25 @@ void ADefaultCharacter::PickupItem()
 	}
 }
 
-void ADefaultCharacter::HandleInGameMenu()
+void ADefaultCharacter::HandleShowMouse()
 {
 	if (HUDBase)
 	{
-		if (!bIsOpenInGameMenu)
+		if (!bIsMouseShowing)
 		{
-			// 메뉴 열기
-			bIsOpenInGameMenu = true;
-			HUDBase->OpenInGameMenu();
+			// UI 선택 모드로 전환
+			bIsMouseShowing = true;
+
+			ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
+			if (CharacterController)
+			{
+				CharacterController->SetInputModeToUI();
+			}
 		}
 		else
 		{
-			// 메뉴 닫기
-			bIsOpenInGameMenu = false;
+			// 캐릭터 컨트롤 모드로 전환
+			bIsMouseShowing = false;
 			HUDBase->CloseInGameMenu();
 		}
 	}
@@ -616,7 +621,7 @@ void ADefaultCharacter::RegenerateStamina()
 
 bool ADefaultCharacter::ShouldInputActivated()
 {
-	return IsPlayerDead() || bIsOpenInGameMenu;
+	return IsPlayerDead() || bIsMouseShowing;
 }
 
 void ADefaultCharacter::LoadDataFromSaveGame()
@@ -944,9 +949,9 @@ void ADefaultCharacter::UpdateStamina(EStatUpdateType UpdateType, float AbilityP
 	}
 }
 
-void ADefaultCharacter::SetIsOpenInGameMenu(bool IsOpen)
+void ADefaultCharacter::SetIsMouseShowing(bool bShowing)
 {
-	bIsOpenInGameMenu = IsOpen;
+	bIsMouseShowing = bShowing;
 }
 
 bool ADefaultCharacter::CanPickupItem(AItemBase* Item)

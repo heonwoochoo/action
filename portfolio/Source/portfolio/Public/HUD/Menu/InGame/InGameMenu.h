@@ -23,11 +23,11 @@ class PORTFOLIO_API UInGameMenu : public UUserWidget
 protected:
 	virtual void NativeConstruct() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UWidgetAnimation* AnimShowMenu;
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* ShowMenu;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UWidgetAnimation* AnimHideMenu;
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* HideMenu;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UImage* BackgroundImage;

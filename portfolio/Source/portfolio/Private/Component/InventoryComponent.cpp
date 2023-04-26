@@ -146,6 +146,19 @@ void UInventoryComponent::EquipItem(const FName& ItemCode)
 			EquippedItemList[EquipmentType] = FEquippedItem(EEquippedState::EES_Equipped, ItemCode);
 			DefaultCharacter->UpdateEquipmentStat();
 
+			// 메세지 출력
+			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+			if (PlayerController)
+			{
+				AHUDBase* HUDBase = Cast<AHUDBase>(PlayerController->GetHUD());
+				if (HUDBase)
+				{
+					const FString& ItemName = Spec->Name.ToString();
+					const FString FormatText = ItemName + FString(TEXT(" 장비를 착용하였습니다."));
+					HUDBase->HandleMessageOnChat(FText::FromString(FormatText), FColor::Silver);
+				}
+			}
+
 			// 무기일 경우 오브젝트 스폰
 			if (EquipmentType == EEquipmentType::EET_Weapon && Spec->ItemClass)
 			{
@@ -196,6 +209,19 @@ void UInventoryComponent::AddItem(const FName& ItemCode)
 			ItemList[ItemCode] = 1;
 		}
 
+		// 메세지 출력
+		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+		if (PlayerController)
+		{
+			AHUDBase* HUDBase = Cast<AHUDBase>(PlayerController->GetHUD());
+			if (HUDBase)
+			{
+				const FString& ItemName = ItemSpec->Name.ToString();
+				const FString FormatText = ItemName + FString(TEXT(" 아이템을 획득하였습니다."));
+				HUDBase->HandleMessageOnChat(FText::FromString(FormatText), FColor::Yellow);
+			}
+		}
+
 		if (ItemSpec->Type == EItemType::EIT_Consumable)
 		{
 			UpdateConsumableUI();
@@ -237,8 +263,9 @@ void UInventoryComponent::UseItem(const FName& ItemCode)
 			AHUDBase* HUDBase = Cast<AHUDBase>(PlayerController->GetHUD());
 			if (HUDBase)
 			{
-				const FText& Message = FText::FromString(TEXT("소모품을 사용하였습니다."));
-				HUDBase->HandleMessageOnChat(Message, FColor::Silver);
+				const FString& ItemName = Spec->Name.ToString();
+				const FString FormatText = ItemName + FString(TEXT(" 소모품을 사용하였습니다."));
+				HUDBase->HandleMessageOnChat(FText::FromString(FormatText), FColor::Silver);
 			}
 		}
 	}

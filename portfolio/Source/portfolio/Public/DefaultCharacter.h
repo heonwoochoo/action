@@ -94,8 +94,8 @@ protected:
 	void QuickSlotManager_6();
 	void PickupItem();
 
-	/** 인게임 메뉴 토글 */
-	void HandleInGameMenu();
+	/** 마우스 토글 */
+	void HandleShowMouse();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackForwardDistance = 50.f;
@@ -213,8 +213,9 @@ private:
 	
 	AHUDBase* HUDBase;
 
-	// 인게임 메뉴창 오픈 여부
-	bool bIsOpenInGameMenu = false;
+	// 마우스가 화면에 보이는 상태인지?
+	// true -> UI 선택모드 / false -> 캐릭터 컨트롤
+	bool bIsMouseShowing = false;
 
 	bool bCanAttack = true;
 
@@ -370,7 +371,7 @@ public:
 	void UpdateHealth(EStatUpdateType UpdateType, float AbilityPoint);
 	void UpdateStamina(EStatUpdateType UpdateType, float AbilityPoint);
 
-	void SetIsOpenInGameMenu(bool IsOpen);
+	void SetIsMouseShowing(bool bShowing);
 
 	// 아이템을 획득할 수 있는 상태인지 체크
 	bool CanPickupItem(AItemBase* Item);

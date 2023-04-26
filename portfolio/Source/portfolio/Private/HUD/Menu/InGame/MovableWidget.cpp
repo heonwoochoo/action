@@ -65,7 +65,7 @@ void UMovableWidget::NativeDestruct()
 	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	if (DefaultCharacter)
 	{
-		DefaultCharacter->SetIsOpenInGameMenu(false);
+		DefaultCharacter->SetIsMouseShowing(false);
 	}
 }
 

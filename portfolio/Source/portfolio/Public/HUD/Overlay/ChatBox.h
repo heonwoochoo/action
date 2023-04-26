@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -42,7 +42,7 @@ protected:
 	void OnReleasedMovingBar();
 
 private:
-	// ÃÖ´ë ÀúÀåÇÒ ¶óÀÎ ¼ö
+	// ìµœëŒ€ ì €ì¥í•  ë¼ì¸ ìˆ˜
 	int32 MaxLineNumber = 50;
 
 	void InitMovingBar();

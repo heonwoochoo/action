@@ -3,6 +3,7 @@
 
 #include "Controller/CharacterController.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "HUD/HUDBase.h"
 
 ACharacterController::ACharacterController()
 {
@@ -18,4 +19,18 @@ void ACharacterController::SetInputModeToGame()
 	SetInputMode(FInputModeGameOnly());
 	ResetIgnoreLookInput();
 	ResetIgnoreMoveInput();
+}
+
+void ACharacterController::SetInputModeToUI()
+{
+	SetShowMouseCursor(true);
+	SetInputMode(FInputModeGameAndUI());
+	SetIgnoreLookInput(true);
+	SetIgnoreMoveInput(true);
+
+	AHUDBase* HUDBase = Cast<AHUDBase>(GetHUD());
+	if (HUDBase)
+	{
+		HUDBase->CreateInGameMenuToggleButton();
+	}
 }

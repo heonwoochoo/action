@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "HUD/Overlay/ChatBoxMessage.h"
@@ -7,7 +7,7 @@
 
 void UChatBoxMessage::NativeConstruct()
 {
-	// Ãâ·Â½Ã°£Àº ÇöÀç ÄÄÇ»ÅÍ ½Ã°£À¸·Î ¼³Á¤
+	// ì¶œë ¥ì‹œê°„ì€ í˜„ì¬ ì»´í“¨í„° ì‹œê°„ìœ¼ë¡œ ì„¤ì •
 	const FText& FormatText = GetFormatTimeText(UKismetMathLibrary::Now());
 	if (TimeText)
 	{
@@ -27,7 +27,7 @@ FText UChatBoxMessage::GetFormatTimeText(const FDateTime& Time)
 	const FString Seconds =
 		Time.GetSecond() < 10 ? FString(TEXT("0")) + FString::FromInt(Time.GetSecond()) : FString::FromInt(Time.GetSecond());
 
-	const FString CompleteText = FString(TEXT("[")) + Hours + FString(TEXT(":")) + Minutes + FString(TEXT(":")) + Seconds + FString(TEXT("]"));
+	const FString CompleteText = FString(TEXT("[")) + Hours + FString(TEXT(":")) + Minutes + FString(TEXT(":")) + Seconds + FString(TEXT("] "));
 
 	return FText::FromString(CompleteText);
 }

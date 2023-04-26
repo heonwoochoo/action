@@ -30,9 +30,9 @@ void UInGameMenu::NativeConstruct()
 
 	EndAnimationEvent.BindDynamic(this, &UInGameMenu::OnEndHideAnimation);
 
-	if (AnimHideMenu)
+	if (HideMenu)
 	{
-		BindToAnimationFinished(AnimHideMenu, EndAnimationEvent);
+		BindToAnimationFinished(HideMenu, EndAnimationEvent);
 	}
 
 	AllChildWidgetClasses = { ExitBoxClass, SavedNotifyBoxClass, InventoryClass, OptionsMenuClass, CharacterInfoClass };
@@ -324,23 +324,22 @@ void UInGameMenu::InitExitButton()
 
 void UInGameMenu::PlayShowAnimation()
 {
-	if (AnimShowMenu)
+	if (ShowMenu)
 	{
-		PlayAnimationForward(AnimShowMenu);
+		PlayAnimationForward(ShowMenu);
 	}
 }
 
 void UInGameMenu::PlayHideAnimation()
 {
-	if (AnimHideMenu)
+	if (HideMenu)
 	{
-		PlayAnimationForward(AnimHideMenu);
+		PlayAnimationForward(HideMenu);
 	}
 }
 
 void UInGameMenu::OnEndHideAnimation()
 {
-
 	RemoveFromParent();
 }
 
