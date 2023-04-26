@@ -6,15 +6,42 @@
 #include "HUD/Overlay/ChatBoxMessage.h"
 #include "Components/Image.h"
 #include "Components/Button.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "Components/CanvasPanelSlot.h"
 
 void UChatBox::NativeConstruct()
 {
+	Super::NativeConstruct();
+
 	InitMovingBar();
 
 	if (ChatBackground && ChatMovingBar)
 	{
 		ChatBackground->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.5f));
 		ChatMovingBar->SetBackgroundColor(FLinearColor(1.f, 1.f, 1.f, 0.f));
+	}
+}
+
+void UChatBox::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	// MovingBar 드래그 시 위치 조정
+	if (bCanMovable && ChatBackground && ChatScrollBox && ChatMovingBar)
+	{
+		UCanvasPanelSlot* BackgroundSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(ChatBackground);
+		UCanvasPanelSlot* ScrollBoxSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(ChatScrollBox);
+		UCanvasPanelSlot* MovingBarSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(ChatMovingBar);
+		if (BackgroundSlot && ScrollBoxSlot && MovingBarSlot)
+		{
+			const FVector2D& MouseLocation = UWidgetLayoutLibrary::GetMousePositionOnViewport(this);
+			const float NewX = MouseLocation.X - OffsetX;
+			const float NewY = MouseLocation.Y - OffsetY;
+			
+			BackgroundSlot->SetPosition(FVector2D(NewX, NewY));
+			ScrollBoxSlot->SetPosition(FVector2D(NewX, NewY));
+			MovingBarSlot->SetPosition(FVector2D(NewX, NewY));
+		}
 	}
 }
 
@@ -46,6 +73,19 @@ void UChatBox::OnPressedMovingBar()
 	{
 		ChatMovingBar->SetBackgroundColor(FLinearColor(0.3f, 0.3f, 0.3f, 1.f));
 	}
+
+	bCanMovable = true;
+
+	// 마우스와 캔버스의 간격 저장
+	UCanvasPanelSlot* MovingBarPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(ChatMovingBar);
+	if (MovingBarPanelSlot)
+	{
+		const FVector2D& CanvasLocation = MovingBarPanelSlot->GetPosition();
+		const FVector2D& MouseLocation = UWidgetLayoutLibrary::GetMousePositionOnViewport(this);
+		OffsetX = MouseLocation.X - CanvasLocation.X;
+		OffsetY = MouseLocation.Y - CanvasLocation.Y;
+	}
+
 }
 
 void UChatBox::OnReleasedMovingBar()
@@ -54,6 +94,7 @@ void UChatBox::OnReleasedMovingBar()
 	{
 		ChatMovingBar->SetBackgroundColor(FLinearColor(1.f, 1.f, 1.f, 1.f));
 	}
+	bCanMovable = false;
 }
 
 void UChatBox::InitMovingBar()

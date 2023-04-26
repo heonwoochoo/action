@@ -19,6 +19,8 @@ class PORTFOLIO_API UChatBox : public UUserWidget
 protected:
 	virtual void NativeConstruct() override;
 
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
 	virtual void NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent);
 	
 	virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent);
@@ -34,6 +36,14 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget Class")
 	TSubclassOf<UChatBoxMessage> ChatBoxMessageClass;
+
+	// 버튼 Press,Release 이벤트로 토글
+	// true시 인벤토리 창이 마우스 따라 이동
+	bool bCanMovable = false;
+
+	// 마우스와 캔버스의 간격
+	float OffsetX;
+	float OffsetY;
 
 	UFUNCTION()
 	void OnPressedMovingBar();

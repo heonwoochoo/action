@@ -187,6 +187,11 @@ void AHUDBase::CloseInGameMenu()
 		InGameMenuWidget->PlayHideAnimation();
 	}
 
+	if (InGameMenuToggleWidget)
+	{
+		InGameMenuToggleWidget->RemoveFromParent();
+	}
+
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 	if (CharacterController)
 	{
