@@ -19,6 +19,13 @@ void ACharacterController::SetInputModeToGame()
 	SetInputMode(FInputModeGameOnly());
 	ResetIgnoreLookInput();
 	ResetIgnoreMoveInput();
+
+	// 가이드 메세지 숨김 처리
+	AHUDBase* HUDBase = Cast<AHUDBase>(GetHUD());
+	if (HUDBase)
+	{
+		HUDBase->HideGuideMessage();
+	}
 }
 
 void ACharacterController::SetInputModeToUI()
@@ -28,6 +35,7 @@ void ACharacterController::SetInputModeToUI()
 	SetIgnoreLookInput(true);
 	SetIgnoreMoveInput(true);
 
+	// 인게임 메뉴 토글버튼 생성
 	AHUDBase* HUDBase = Cast<AHUDBase>(GetHUD());
 	if (HUDBase)
 	{

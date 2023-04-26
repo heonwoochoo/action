@@ -27,6 +27,18 @@ void UInGameMenuToggleButton::OnHoveredToggleButton()
 	{
 		ToggleButtonImage->SetBrushFromTexture(ActivatedRightArrow);
 	}
+
+	// 가이드 메세지 나타남
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+		if (HUDBase)
+		{
+			const FText& Message = FText::FromString(TEXT("클릭 시 메뉴가 나타납니다."));
+			HUDBase->ShowGuideMessage(Message);
+		}
+	}
 }
 
 void UInGameMenuToggleButton::OnUnhoveredToggleButton()
@@ -34,6 +46,17 @@ void UInGameMenuToggleButton::OnUnhoveredToggleButton()
 	if (ToggleButtonImage && DeactivatedRightArrow)
 	{
 		ToggleButtonImage->SetBrushFromTexture(DeactivatedRightArrow);
+	}
+
+	// 가이드 메세지 숨김
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+		if (HUDBase)
+		{
+			HUDBase->HideGuideMessage();
+		}
 	}
 }
 

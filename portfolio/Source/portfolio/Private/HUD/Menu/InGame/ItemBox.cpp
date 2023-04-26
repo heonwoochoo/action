@@ -74,7 +74,7 @@ FReply UItemBox::NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, con
 						if (HUDBase)
 						{
 							const FText Message = FText::FromString(TEXT("유저의 레벨이 낮아 해당 장비를 착용할 수 없습니다."));
-							HUDBase->NotifyScreenMessage(Message);
+							HUDBase->NotifyMessageToUser(Message);
 						}
 					}
 				}
@@ -183,7 +183,7 @@ bool UItemBox::IsEquipped(const FName& TargetItemCode)
 						if (HUDBase)
 						{
 							const FText Message = FText::FromString(TEXT("이미 장착 중인 아이템입니다."));
-							HUDBase->NotifyScreenMessage(Message);
+							HUDBase->NotifyMessageToUser(Message);
 						}
 					}
 					return true;

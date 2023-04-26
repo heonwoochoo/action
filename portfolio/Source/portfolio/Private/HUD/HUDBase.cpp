@@ -16,6 +16,7 @@
 #include "HUD/Overlay/UserMessage.h"
 #include "HUD/Overlay/ChatBox.h"
 #include "HUD/Overlay/InGameMenuToggleButton.h"
+#include "HUD/Overlay/GuideMessage.h"
 
 AHUDBase::AHUDBase()
 {
@@ -77,6 +78,18 @@ void AHUDBase::InitChatBox()
 		if (ChatBoxWidget)
 		{
 			ChatBoxWidget->AddToViewport();
+		}
+	}
+}
+
+void AHUDBase::InitGuideMessage()
+{
+	if (GuideMessageClass)
+	{
+		GuideMessageWidget = Cast<UGuideMessage>(CreateWidget(GetOwningPlayerController(), GuideMessageClass));
+		if (GuideMessageWidget)
+		{
+			GuideMessageWidget->AddToViewport();
 		}
 	}
 }
@@ -165,6 +178,7 @@ void AHUDBase::InitScreenOverlay()
 	InitComboCountWidget();
 	InitUserMessage();
 	InitChatBox();
+	InitGuideMessage();
 }
 
 void AHUDBase::OpenInGameMenu()
@@ -205,7 +219,7 @@ void AHUDBase::SetInGameMenuChildWidgetClasses(const TArray<TSubclassOf<UUserWid
 	InGameMenuChildWidgetClasses = Classes;
 }
 
-void AHUDBase::NotifyScreenMessage(const FText& Message)
+void AHUDBase::NotifyMessageToUser(const FText& Message)
 {
 	if (UserMessageWidget)
 	{
@@ -218,5 +232,21 @@ void AHUDBase::HandleMessageOnChat(const FText& Message, const FColor& Color)
 	if (ChatBoxWidget)
 	{
 		ChatBoxWidget->PrintMessageOnChat(Message, Color);
+	}
+}
+
+void AHUDBase::ShowGuideMessage(const FText& Message)
+{
+	if (GuideMessageWidget)
+	{
+		GuideMessageWidget->ShowGuideMessage(Message);
+	}
+}
+
+void AHUDBase::HideGuideMessage()
+{
+	if (GuideMessageWidget)
+	{
+		GuideMessageWidget->HideGuideMessage();
 	}
 }

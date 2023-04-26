@@ -49,6 +49,13 @@ void UInGameMenu::NativeConstruct()
 	PlayShowAnimation();
 }
 
+void UInGameMenu::NativeDestruct()
+{
+	Super::NativeDestruct();
+
+	HideGuideMessage();
+}
+
 
 
 void UInGameMenu::OnHoveredCharacterButton()
@@ -57,6 +64,9 @@ void UInGameMenu::OnHoveredCharacterButton()
 	{
 		CharacterButtonImage->SetOpacity(1.f);
 	}
+
+	const FText Message = FText::FromString(TEXT("캐릭터의 스탯과 착용한 장비를 확인합니다."));
+	ShowGuideMessage(Message);
 }
 
 void UInGameMenu::OnUnhoveredCharacterButton()
@@ -65,6 +75,7 @@ void UInGameMenu::OnUnhoveredCharacterButton()
 	{
 		CharacterButtonImage->SetOpacity(0.3f);
 	}
+	HideGuideMessage();
 }
 
 void UInGameMenu::OnClickedCharacterButton()
@@ -76,6 +87,8 @@ void UInGameMenu::OnClickedCharacterButton()
 		if (CharacterInfo)
 		{
 			CharacterInfo->AddToViewport();
+
+			HideGuideMessage();
 
 			//인게임 메뉴 닫기
 			PlayHideAnimation();
@@ -89,6 +102,8 @@ void UInGameMenu::OnHoveredInventoryButton()
 	{
 		InventoryButtonImage->SetOpacity(1.f);
 	}
+	const FText Message = FText::FromString(TEXT("인벤토리를 열어 현재 가지고 있는 아이템을 확인합니다."));
+	ShowGuideMessage(Message);
 }
 
 void UInGameMenu::OnUnhoveredInventoryButton()
@@ -97,6 +112,7 @@ void UInGameMenu::OnUnhoveredInventoryButton()
 	{
 		InventoryButtonImage->SetOpacity(0.3f);
 	}
+	HideGuideMessage();
 }
 
 void UInGameMenu::OnClickedInventoryButton()
@@ -109,6 +125,8 @@ void UInGameMenu::OnClickedInventoryButton()
 		{
 			Inventory->AddToViewport();
 			
+			HideGuideMessage();
+
 			//인게임 메뉴 닫기
 			PlayHideAnimation();
 		}
@@ -121,6 +139,8 @@ void UInGameMenu::OnHoveredQuestButton()
 	{
 		QuestButtonImage->SetOpacity(1.f);
 	}
+	const FText Message = FText::FromString(TEXT("퀘스트 목록을 확인합니다."));
+	ShowGuideMessage(Message);
 }
 
 void UInGameMenu::OnUnhoveredQuestButton()
@@ -129,10 +149,12 @@ void UInGameMenu::OnUnhoveredQuestButton()
 	{
 		QuestButtonImage->SetOpacity(0.3f);
 	}
+	HideGuideMessage();
 }
 
 void UInGameMenu::OnClickedQuestButton()
 {
+	HideGuideMessage();
 }
 
 void UInGameMenu::OnHoveredSettingsButton()
@@ -141,6 +163,8 @@ void UInGameMenu::OnHoveredSettingsButton()
 	{
 		SettingsButtonImage->SetOpacity(1.f);
 	}
+	const FText Message = FText::FromString(TEXT("그래픽 성능과 음향을 조절할 수 있습니다."));
+	ShowGuideMessage(Message);
 }
 
 void UInGameMenu::OnUnhoveredSettingsButton()
@@ -149,6 +173,7 @@ void UInGameMenu::OnUnhoveredSettingsButton()
 	{
 		SettingsButtonImage->SetOpacity(0.3f);
 	}
+	HideGuideMessage();
 }
 
 void UInGameMenu::OnClickedSettingsButton()
@@ -163,6 +188,8 @@ void UInGameMenu::OnClickedSettingsButton()
 			OptionsMenu->AddToViewport();
 			OptionsMenu->HideBackgroundImage();
 
+			HideGuideMessage();
+
 			//인게임 메뉴 닫기
 			PlayHideAnimation();
 		}
@@ -175,6 +202,8 @@ void UInGameMenu::OnHoveredSaveButton()
 	{
 		SaveButtonImage->SetOpacity(1.f);
 	}
+	const FText Message = FText::FromString(TEXT("현재까지의 게임 상태를 저장할 수 있습니다."));
+	ShowGuideMessage(Message);
 }
 
 void UInGameMenu::OnUnhoveredSaveButton()
@@ -183,6 +212,7 @@ void UInGameMenu::OnUnhoveredSaveButton()
 	{
 		SaveButtonImage->SetOpacity(0.3f);
 	}
+	HideGuideMessage();
 }
 
 void UInGameMenu::OnClickedSaveButton()
@@ -205,6 +235,7 @@ void UInGameMenu::OnClickedSaveButton()
 			}
 		}
 	}
+	HideGuideMessage();
 	PlayButtonSound();
 }
 
@@ -214,6 +245,8 @@ void UInGameMenu::OnHoveredExitButton()
 	{
 		ExitButtonImage->SetOpacity(1.f);
 	}
+	const FText Message = FText::FromString(TEXT("게임을 종료하거나 시작 메뉴로 돌아갑니다."));
+	ShowGuideMessage(Message);
 }
 
 void UInGameMenu::OnUnhoveredExitButton()
@@ -222,6 +255,7 @@ void UInGameMenu::OnUnhoveredExitButton()
 	{
 		ExitButtonImage->SetOpacity(0.3f);
 	}
+	HideGuideMessage();
 }
 
 void UInGameMenu::OnClickedExitButton()
@@ -319,6 +353,32 @@ void UInGameMenu::InitExitButton()
 	if (ExitButtonImage)
 	{
 		ExitButtonImage->SetOpacity(0.3f);
+	}
+}
+
+void UInGameMenu::ShowGuideMessage(const FText& Message)
+{
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+		if (HUDBase)
+		{
+			HUDBase->ShowGuideMessage(Message);
+		}
+	}
+}
+
+void UInGameMenu::HideGuideMessage()
+{
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+		if (HUDBase)
+		{
+			HUDBase->HideGuideMessage();
+		}
 	}
 }
 

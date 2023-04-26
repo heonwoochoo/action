@@ -470,7 +470,7 @@ void ADefaultCharacter::PickupItem()
 			if (HUDBase)
 			{
 				const FText Message = FText::FromString(TEXT("아이템을 획득할 수 없습니다."));
-				HUDBase->NotifyScreenMessage(Message);
+				HUDBase->NotifyMessageToUser(Message);
 			}
 		}
 	}
@@ -645,7 +645,7 @@ void ADefaultCharacter::LoadDataFromSaveGame()
 					if (HUDBase)
 					{
 						const FText Message = FText::FromString(TEXT("저장된 데이터를 불러왔습니다."));
-						HUDBase->NotifyScreenMessage(Message);
+						HUDBase->NotifyMessageToUser(Message);
 					}
 					SetActorTransform(SavedTransform);
 				}

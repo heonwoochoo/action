@@ -23,6 +23,8 @@ class PORTFOLIO_API UInGameMenu : public UUserWidget
 protected:
 	virtual void NativeConstruct() override;
 
+	virtual void NativeDestruct() override;
+
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	UWidgetAnimation* ShowMenu;
 
@@ -159,6 +161,10 @@ private:
 	void InitSettingsButton();
 	void InitSaveButton();
 	void InitExitButton();
+
+	// 가이드 메세지 토글 함수
+	void ShowGuideMessage(const FText& Message);
+	void HideGuideMessage();
 
 public:
 	void PlayShowAnimation();

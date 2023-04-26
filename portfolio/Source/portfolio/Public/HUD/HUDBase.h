@@ -17,6 +17,7 @@ class UInGameMenu;
 class UUserMessage;
 class UChatBox;
 class UInGameMenuToggleButton;
+class UGuideMessage;
 
 UCLASS()
 class PORTFOLIO_API AHUDBase : public AHUD
@@ -58,6 +59,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Overlay", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UInGameMenuToggleButton> InGameMenuToggleButtonClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Overlay", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UGuideMessage> GuideMessageClass;
+
 	UInfoContainer* InfoContainer;
 
 	UComboCountWidget* ComboCountWidget;
@@ -72,12 +76,15 @@ private:
 
 	UInGameMenuToggleButton* InGameMenuToggleWidget;
 
+	UGuideMessage* GuideMessageWidget;
+
 	TArray<TSubclassOf<UUserWidget>> InGameMenuChildWidgetClasses;
 
 	void InitInfoContainer();
 	void InitComboCountWidget();
 	void InitUserMessage();
 	void InitChatBox();
+	void InitGuideMessage();
 
 	// 열려있는 인게임 자식 메뉴창이 있으면 닫기 
 	void CloseAllInGameChildWidget();
@@ -105,8 +112,12 @@ public:
 	void SetInGameMenuChildWidgetClasses(const TArray<TSubclassOf<UUserWidget>>& Classes);
 
 	//화면 중앙 상단에 유저 알림 메세지 출력
-	void NotifyScreenMessage(const FText& Message);
+	void NotifyMessageToUser(const FText& Message);
 
 	//채팅창에 메세지 출력
 	void HandleMessageOnChat(const FText& Message, const FColor& Color);
+
+	// 가이드 메세지 토글
+	void ShowGuideMessage(const FText& Message);
+	void HideGuideMessage();
 };

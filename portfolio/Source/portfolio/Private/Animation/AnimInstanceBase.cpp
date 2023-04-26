@@ -56,7 +56,11 @@ void UAnimInstanceBase::OnEndMontage(UAnimMontage* AnimMontage, bool bInterrupte
 	{
 		if (Character)
 		{
-			Character->SetCharacterActionState(ECharacterActionState::ECAS_Unoccupied);
+			const ECharacterActionState CurrentState = Character->GetCharacterActionState();
+			if (CurrentState != ECharacterActionState::ECAS_Dead)
+			{
+				Character->SetCharacterActionState(ECharacterActionState::ECAS_Unoccupied);
+			}
 		}
 	}
 }
