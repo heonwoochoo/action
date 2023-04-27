@@ -678,12 +678,27 @@ void ADefaultCharacter::LevelUp()
 		UGameplayStatics::SpawnEmitterAttached(LevelUpParticle, ParticleComponent);
 	}
 	
+	// 사운드 재생
+	if (LevelUpSound)
+	{
+		UGameplayStatics::PlaySound2D(this, LevelUpSound);
+	}
+
 	if (HUDBase)
 	{
 		// UI 업데이트
 		HUDBase->GetInfoContainer()->UpdateLevel();
 
 		// 메세지 표시
+		UHeadUpWidget* HeadUpWidget = Cast<UHeadUpWidget>(HeadUpWidgetComonent->GetUserWidgetObject());
+		if (HeadUpWidget)
+		{
+			// 헤드업
+			const FText HeadUpText = FText::FromString(TEXT("레벨 업 !"));
+			HeadUpWidget->HandleHeadUpText(HeadUpText, FColor::Yellow);
+		}
+
+		// 채팅
 		const FString Message =  FString(TEXT("캐릭터가 ")) + FString::FromInt(DefaultStats.Level) + FString(TEXT("레벨이 되었습니다."));
 		HUDBase->HandleMessageOnChat(FText::FromString(Message), FColor::Yellow);
 	}

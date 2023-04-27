@@ -255,6 +255,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect|Sound", meta = (AllowPrivateAccess = "true"))
 	USoundCue* PickupSound;
 
+	// 레벨업 사운드
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect|Sound", meta = (AllowPrivateAccess = "true"))
+	USoundCue* LevelUpSound;
+
 	// 공격시 콤보 증가
 	int32 ComboCount = 0;
 
