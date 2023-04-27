@@ -337,7 +337,8 @@ void AEnemyBase::DropItem()
 	if (FMath::FRand() < ItemDropRate && DropItemList.Num() > 0)
 	{
 		int32 RandNum = FMath::RandRange(0, DropItemList.Num() - 1);
-		const FVector Location{ GetActorLocation() };
+		
+		const FVector Location{ GetMesh()->GetComponentLocation() };
 		const FRotator Rotation{ GetActorRotation() };
 		GetWorld()->SpawnActor<AActor>(DropItemList[RandNum], Location, Rotation);
 	};

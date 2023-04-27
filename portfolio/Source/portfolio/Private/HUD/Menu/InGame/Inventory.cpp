@@ -35,6 +35,9 @@ void UInventory::NativeConstruct()
 	SelectedTap = EItemType::EIT_Equipment;
 	UpdateTabImage(true, EquipmentTabBackground, EquipmentTabText, EquipmentTabUnderline);
 	ShowItemList(SelectedTap);
+
+	// 골드 동기화
+	UpdateGold();
 }
 
 void UInventory::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -298,6 +301,16 @@ void UInventory::PlayChangeButtonSound()
 	 }
 }
 
+void UInventory::UpdateGold()
+{
+	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (DefaultCharacter && GoldText)
+	{
+		const FCharacterStats& Stats = DefaultCharacter->GetCharacterStats();
+		const int32 CurrentGold = Stats.Gold;
+		GoldText->SetText(FText::FromString(FString::FromInt(CurrentGold)));
+	}
+}
 
 void UInventory::SetInGameMenu(UInGameMenu* InInGameMenu)
 {

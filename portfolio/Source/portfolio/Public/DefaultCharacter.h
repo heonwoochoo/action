@@ -251,13 +251,17 @@ private:
 
 	float InitialRelativeLocationZ;
 
-	// 픽업 사운드
+	// 아이템 픽업 사운드
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect|Sound", meta = (AllowPrivateAccess = "true"))
-	USoundCue* PickupSound;
+	USoundCue* ItemPickupSound;
 
 	// 레벨업 사운드
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect|Sound", meta = (AllowPrivateAccess = "true"))
 	USoundCue* LevelUpSound;
+
+	// 골드 픽업 사운드
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect|Sound", meta = (AllowPrivateAccess = "true"))
+	USoundCue* GoldPickupSound;
 
 	// 공격시 콤보 증가
 	int32 ComboCount = 0;
@@ -397,10 +401,12 @@ public:
 	void UpdateHealth(EStatUpdateType UpdateType, float Value);
 	void UpdateStamina(EStatUpdateType UpdateType, float Value);
 	void UpdateExp(EStatUpdateType UpdateType, float Value);
+	void UpdateGold(EStatUpdateType UpdateType, float Value);
 
 	void SetIsMouseShowing(bool bShowing);
 
 	// 아이템을 획득할 수 있는 상태인지 체크
 	bool CanPickupItem(AItemBase* Item);
+
 };
 

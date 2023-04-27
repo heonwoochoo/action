@@ -33,6 +33,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "HUD/Combat/HeadUpWidgetComponent.h"
 #include "HUD/Combat/HeadUpWidget.h"
+#include "Items/Gold.h"
 
 ADefaultCharacter::ADefaultCharacter()
 {
@@ -475,7 +476,7 @@ void ADefaultCharacter::PickupItem()
 		if (Item && CanPickupItem(Item))
 		{
 			Item->HandlePickupItem(this);
-			PlaySoundCue(PickupSound);
+			PlaySoundCue(ItemPickupSound);
 		}
 		else
 		{
@@ -753,6 +754,19 @@ void ADefaultCharacter::BeginOverlapped(UPrimitiveComponent* OverlappedComponent
 			HUDBase->ShowItemTooltip(OverlappedItem->GetItemCode(), FVector2D(X, Y));
 		}
 	}
+
+	if (OtherActor->ActorHasTag(FName("Gold")))
+	{
+		// 골드 추가
+		AGold* Gold = Cast<AGold>(OtherActor);
+		const int32 Value = Gold->GetValue();
+		UpdateStatManager(EStatTarget::EST_Gold, EStatUpdateType::ESUT_Plus, Value);
+
+		// 픽업 사운드 재생
+		UGameplayStatics::PlaySound2D(this, GoldPickupSound);
+
+		OtherActor->Destroy();
+	}
 }
 
 void ADefaultCharacter::EndOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -905,6 +919,9 @@ void ADefaultCharacter::UpdateStatManager(EStatTarget Stat, EStatUpdateType Upda
 	case EStatTarget::EST_Exp:
 		UpdateExp(UpdateType, Value);
 		break;
+	case EStatTarget::EST_Gold:
+		UpdateGold(UpdateType, Value);
+		break;
 	}
 }
 
@@ -1037,6 +1054,38 @@ void ADefaultCharacter::UpdateExp(EStatUpdateType UpdateType, float Value)
 	}
 }
 
+void ADefaultCharacter::UpdateGold(EStatUpdateType UpdateType, float Value)
+{
+	if (HUDBase)
+	{
+		// 헤드업 텍스트 출력
+		if (HeadUpWidgetComonent)
+		{
+			UHeadUpWidget* HeadUpWidget = Cast<UHeadUpWidget>(HeadUpWidgetComonent->GetUserWidgetObject());
+			if (HeadUpWidget)
+			{
+				if (UpdateType == EStatUpdateType::ESUT_Plus)
+				{
+					DefaultStats.Gold += Value;
+					const FString FormatString = FString(TEXT("+")) + FString::FromInt(Value) + FString(TEXT(" Gold"));
+					const FText FormatText = FText::FromString(FormatString);
+
+					HeadUpWidget->HandleHeadUpText(FormatText, FColor::Yellow);
+					
+				}
+				else if (UpdateType == EStatUpdateType::ESUT_Minus)
+				{
+					DefaultStats.Gold = FMath::Max(0, DefaultStats.Gold - Value);
+					const FString FormatString = FString(TEXT("-")) + FString::FromInt(Value) + FString(TEXT(" Gold"));
+					const FText FormatText = FText::FromString(FormatString);
+
+					HeadUpWidget->HandleHeadUpText(FormatText, FColor::Red);
+				}
+			}
+		}
+	}
+}
+
 void ADefaultCharacter::SetIsMouseShowing(bool bShowing)
 {
 	bIsMouseShowing = bShowing;
@@ -1067,7 +1116,6 @@ bool ADefaultCharacter::CanPickupItem(AItemBase* Item)
 					// 순회하는 아이템 타입과 획득하려는 아이템 타입이 같을 경우 빈 슬롯있는지 체크
 					if (OwnedItemSpec->Type == Type)
 					{
-						
 						int32 EntireAmount = OwnedItem.Value;
 						int32 MaxAmountPerSlot = OwnedItemSpec->AmountMax;
 
@@ -1085,7 +1133,6 @@ bool ADefaultCharacter::CanPickupItem(AItemBase* Item)
 			}
 		}
 	}
-
 	return false;
 }
 

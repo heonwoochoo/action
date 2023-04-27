@@ -137,4 +137,7 @@ private:
 
 	// 탭 변경시 소리 재생
 	void PlayChangeButtonSound();
+
+	// 가지고 있는 골드를 보여줌
+	void UpdateGold();
 };

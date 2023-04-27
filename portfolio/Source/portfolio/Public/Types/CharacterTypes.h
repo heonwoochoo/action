@@ -272,6 +272,7 @@ enum class EStatTarget : uint8
 	EST_Health UMETA(DisplayName = "Health"),
 	EST_Stamina UMETA(DisplayName = "Stamina"),
 	EST_Exp UMETA(DisplayName = "Exp"),
+	EST_Gold UMETA(DisplayName = "Gold"),
 };
 
 UENUM(BlueprintType)
