@@ -1,5 +1,5 @@
-#include "HUD/TargetMark.h"
-#include "HUD/TargetWidgetComponent.h"
+#include "HUD/Combat/TargetMark.h"
+#include "HUD/Combat/TargetWidgetComponent.h"
 #include "DefaultCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Enemy/EnemyBase.h"

@@ -24,13 +24,15 @@
 #include "HUD/HUDBase.h"
 #include "HUD/Overlay/InfoContainer.h"
 #include "Component/InventoryComponent.h"
-#include "HUD/ComboCountWidget.h"
+#include "HUD/Combat/ComboCountWidget.h"
 #include "HUD/ItemTooltipWidget.h"
 #include "GameInstance/DefaultGameInstance.h"
 #include "SaveGame/UserSaveGame.h"
 #include "Items/ItemBase.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "HUD/Combat/HeadUpWidgetComponent.h"
+#include "HUD/Combat/HeadUpWidget.h"
 
 ADefaultCharacter::ADefaultCharacter()
 {
@@ -76,11 +78,17 @@ ADefaultCharacter::ADefaultCharacter()
 	// 인벤토리 컴포넌트 생성
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 
+	// 이미터 컴포넌트 생성
 	EmitterComponent = CreateDefaultSubobject<USceneComponent>(TEXT("EmitterComponent"));
 	EmitterComponent->SetupAttachment(GetRootComponent());
 
+	// 파티클 컴포넌트 생성
 	ParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ParticleSystemComponent"));
 	ParticleComponent->SetupAttachment(GetRootComponent());
+
+	// 헤드업 텍스트 컴포넌트 생성
+	HeadUpWidgetComonent = CreateDefaultSubobject<UHeadUpWidgetComponent>(TEXT("HeadUpWidgetComponent"));
+	HeadUpWidgetComonent->SetupAttachment(GetRootComponent());
 
 	InitialRelativeLocationZ = 0.f;
 
@@ -669,10 +677,13 @@ void ADefaultCharacter::LevelUp()
 	{
 		UGameplayStatics::SpawnEmitterAttached(LevelUpParticle, ParticleComponent);
 	}
-
-	// 메세지 표시
+	
 	if (HUDBase)
 	{
+		// UI 업데이트
+		HUDBase->GetInfoContainer()->UpdateLevel();
+
+		// 메세지 표시
 		const FString Message =  FString(TEXT("캐릭터가 ")) + FString::FromInt(DefaultStats.Level) + FString(TEXT("레벨이 되었습니다."));
 		HUDBase->HandleMessageOnChat(FText::FromString(Message), FColor::Yellow);
 	}
@@ -993,7 +1004,21 @@ void ADefaultCharacter::UpdateExp(EStatUpdateType UpdateType, float Value)
 	// UI 업데이트
 	if (HUDBase)
 	{
+		// 경험치 Progress Bar 업데이트
 		HUDBase->GetInfoContainer()->UpdateExp();
+
+		// 헤드업 텍스트 출력
+		if (HeadUpWidgetComonent)
+		{
+			UHeadUpWidget* HeadUpWidget = Cast<UHeadUpWidget>(HeadUpWidgetComonent->GetUserWidgetObject());
+			if (HeadUpWidget)
+			{
+				const FString FormatString = FString(TEXT("+")) + FString::FromInt(Value) + FString(TEXT(" Exp"));
+				const FText FormatText = FText::FromString(FormatString);
+
+				HeadUpWidget->HandleHeadUpText(FormatText, FColor::White);
+			}
+		}
 	}
 }
 

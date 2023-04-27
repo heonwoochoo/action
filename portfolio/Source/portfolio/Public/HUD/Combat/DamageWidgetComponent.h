@@ -16,7 +16,7 @@ class PORTFOLIO_API UDamageWidgetComponent : public UWidgetComponent
 public:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UDamageTextWidget* DamageTextWidget;
 
 

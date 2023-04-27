@@ -3,11 +3,11 @@
 
 #include "HUD/HUDBase.h"
 #include "GameFramework/Character.h"
-#include "HUD/DamageText.h"
-#include "HUD/TargetMark.h"
+#include "HUD/Combat/DamageText.h"
+#include "HUD/Combat/TargetMark.h"
 #include "Components/CapsuleComponent.h"
 #include "HUD/Overlay/InfoContainer.h"
-#include "HUD/ComboCountWidget.h"
+#include "HUD/Combat/ComboCountWidget.h"
 #include "HUD/ItemTooltipWidget.h"
 #include "HUD/Menu/InGame/InGameMenu.h"
 #include "Kismet/GameplayStatics.h"
@@ -17,6 +17,7 @@
 #include "HUD/Overlay/ChatBox.h"
 #include "HUD/Overlay/InGameMenuToggleButton.h"
 #include "HUD/Overlay/GuideMessage.h"
+#include "HUD/Combat/HeadUpText.h"
 
 AHUDBase::AHUDBase()
 {

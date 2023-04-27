@@ -25,6 +25,7 @@ class UParticleSystem;
 class AHUDBase;
 class AItemBase;
 class UParticleSystemComponent;
+class UHeadUpWidgetComponent;
 
 UCLASS(config=Game)
 class ADefaultCharacter : public ACharacter
@@ -140,8 +141,19 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 
+	/**  
+	* 캐릭터의 발밑에 부착된 컴포넌트
+	* ex) 레벨업 시 생기는 파티클, 버프 등
+	*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Particle, meta = (AllowPrivateAccess = "true"))
 	UParticleSystemComponent* ParticleComponent;
+
+	/**
+	* 캐릭터 머리 위에 생성되는 텍스트
+	* ex) 경험치 획득, 골드 회득, 피격 등
+	*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Particle, meta = (AllowPrivateAccess = "true"))
+	UHeadUpWidgetComponent* HeadUpWidgetComonent;
 
 	UEnhancedInputComponent* EnhancedInputComponent;
 
@@ -320,6 +332,7 @@ public:
 	UInventoryComponent* GetInventoryComponent() const;
 
 	FORCEINLINE USceneComponent* GetEmitterComponent() const { return EmitterComponent; }
+	FORCEINLINE UHeadUpWidgetComponent* GetHeadUpWidgetComponent() const { return HeadUpWidgetComonent; }
 
 	UFUNCTION()
 	void BeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

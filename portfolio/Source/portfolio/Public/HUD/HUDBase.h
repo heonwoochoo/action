@@ -18,6 +18,7 @@ class UUserMessage;
 class UChatBox;
 class UInGameMenuToggleButton;
 class UGuideMessage;
+class AHeadUpText;
 
 UCLASS()
 class PORTFOLIO_API AHUDBase : public AHUD
@@ -38,11 +39,11 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Combat", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<ATargetMark> TargetMarkClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Overlay", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<UUserWidget> InfoContainerClass;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Combat", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UComboCountWidget> ComboCountClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Overlay", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UUserWidget> InfoContainerClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Item", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UItemTooltipWidget> ItemTooltipWidgetClass;
@@ -61,6 +62,8 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Overlay", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UGuideMessage> GuideMessageClass;
+
+
 
 	UInfoContainer* InfoContainer;
 
@@ -91,6 +94,7 @@ private:
 
 public:
 	void ShowDamageOnScreen(ACharacter* Actor, float Damage);
+
 	void ShowTargetMark(ACharacter* Enemy, ACharacter* Caster);
 
 	void ShowItemTooltip(const FName& ItemCode, const FVector2D& Location);

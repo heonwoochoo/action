@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HUD/DamageText.h"
-#include "HUD/DamageWidgetComponent.h"
+#include "HUD/Combat/DamageText.h"
+#include "HUD/Combat/DamageWidgetComponent.h"
 
 // Sets default values
 ADamageText::ADamageText()

@@ -1,21 +1,21 @@
-// Fill out your copyright notice in the DescrUKismetiption page of Project Settings.
+Ôªø// Fill out your copyright notice in the DescrUKismetiption page of Project Settings.
 
 
 #include "Enemy/EnemyBase.h"
-#include "HUD/TargetWidgetComponent.h"
+#include "HUD/Combat/TargetWidgetComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "DefaultCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Items/KnifeProjectile.h"
-#include "HUD/EnemyHPBarWidgetComponent.h"
+#include "HUD/Combat/EnemyHPBarWidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Animation/EnemyAnimInstance.h"
 #include "MotionWarpingComponent.h"
 #include "HUD/HUDBase.h"
 #include "Controller/CharacterController.h"
-#include "HUD/DamageText.h"
-#include "HUD/TargetMark.h"
+#include "HUD/Combat/DamageText.h"
+#include "HUD/Combat/TargetMark.h"
 #include "Types/EnemyTypes.h"
 #include "Perception/PawnSensingComponent.h"
 #include "AIController.h"
@@ -176,7 +176,7 @@ void AEnemyBase::DamageToPlayer(ADefaultCharacter* Character)
 	UGameplayStatics::ApplyDamage(Character, Stats.Damage, EnemyController, this, DamageType);
 }
 
-// AIController∞° target¿∏∑Œ ¿Ãµø
+// AIControllerÍ∞Ä targetÏúºÎ°ú Ïù¥Îèô
 void AEnemyBase::MoveToTarget(AActor* Target)
 {
 	if (EnemyController == nullptr || Target == nullptr || State == EEnemyState::EES_Dead) return;
@@ -216,7 +216,7 @@ void AEnemyBase::CheckPatrolTarget()
 	}
 }
 
-// EnemyøÕ ≈∏∞Ÿ¿« ∞≈∏Æ∞° Radius ¿Ã«œ∏È TRUE∏¶ π›»Ø
+// EnemyÏôÄ ÌÉÄÍ≤üÏùò Í±∞Î¶¨Í∞Ä Radius Ïù¥ÌïòÎ©¥ TRUEÎ•º Î∞òÌôò
 bool AEnemyBase::InTargetRange(AActor* Target, double Radius)
 {
 	if (Target == nullptr) return false;
@@ -352,7 +352,7 @@ void AEnemyBase::Die()
 		ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(CombatTarget);
 		if (DefaultCharacter)
 		{
-			// ¿Ø¿˙∞° ∞Ê«Ëƒ°∏¶ »πµÊ
+			// Ïú†Ï†ÄÍ∞Ä Í≤ΩÌóòÏπòÎ•º ÌöçÎìù
 			DefaultCharacter->UpdateStatManager(EStatTarget::EST_Exp, EStatUpdateType::ESUT_Plus, Stats.Exp);
 		}
 	}

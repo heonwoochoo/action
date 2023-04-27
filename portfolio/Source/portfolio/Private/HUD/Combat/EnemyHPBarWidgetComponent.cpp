@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HUD/EnemyHPBarWidgetComponent.h"
-#include "HUD/EnemyHPBarWidget.h"
+#include "HUD/Combat/EnemyHPBarWidgetComponent.h"
+#include "HUD/Combat/EnemyHPBarWidget.h"
 #include "Components/ProgressBar.h"
 
 void UEnemyHPBarWidgetComponent::BeginPlay()

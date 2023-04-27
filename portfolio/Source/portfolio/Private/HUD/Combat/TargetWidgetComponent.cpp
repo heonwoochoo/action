@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HUD/TargetWidgetComponent.h"
-#include "HUD/TargetWidget.h"
+#include "HUD/Combat/TargetWidgetComponent.h"
+#include "HUD/Combat/TargetWidget.h"
 
 void UTargetWidgetComponent::BeginPlay()
 {
