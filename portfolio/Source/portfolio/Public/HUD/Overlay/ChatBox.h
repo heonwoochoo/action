@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Types/ItemTypes.h"
 #include "ChatBox.generated.h"
 
 class UButton;
@@ -58,5 +59,17 @@ private:
 	void InitMovingBar();
 
 public:
+	UFUNCTION()
+	void ShowLevelUpText(const int32& NewLevel);
+
+	UFUNCTION()
+	void ShowItemUsed(const FName& ItemCode, const FItemSpec& Spec);
+
+	UFUNCTION()
+	void ShowItemAdded(const FName& ItemCode, const FItemSpec& Spec);
+
+	UFUNCTION()
+	void ShowItemEquipped(const FName& ItemCode, const FItemSpec& Spec);
+
 	void PrintMessageOnChat(const FText& Message, const FColor& Color);
 };

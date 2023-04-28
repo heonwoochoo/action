@@ -23,6 +23,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UHeadUpText> ShowingTextClass;
 
+	UFUNCTION()
+	void ShowGottenGold(const int32& Value);
+
+	UFUNCTION()
+	void ShowLevelUpText(const int32& NewLevel);
+
 public:
 	// 텍스트 블록 생성
 	void HandleHeadUpText(const FText& InText, const FColor& Color);

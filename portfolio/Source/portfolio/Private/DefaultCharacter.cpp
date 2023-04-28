@@ -182,12 +182,12 @@ void ADefaultCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 		EnhancedInputComponent->BindAction(Skill4Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::SkillManagerFour);
 		
 		// Item
-		EnhancedInputComponent->BindAction(Item1Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_1);
-		EnhancedInputComponent->BindAction(Item2Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_2);
-		EnhancedInputComponent->BindAction(Item3Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_3);
-		EnhancedInputComponent->BindAction(Item4Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_4);
-		EnhancedInputComponent->BindAction(Item5Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_5);
-		EnhancedInputComponent->BindAction(Item6Action, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_6);
+		EnhancedInputComponent->BindAction(ItemSlotOneAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_1);
+		EnhancedInputComponent->BindAction(ItemSlotTwoAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_2);
+		EnhancedInputComponent->BindAction(ItemSlotThreeAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_3);
+		EnhancedInputComponent->BindAction(ItemSlotFourAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_4);
+		EnhancedInputComponent->BindAction(ItemSlotFiveAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_5);
+		EnhancedInputComponent->BindAction(ItemSlotSixAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_6);
 		EnhancedInputComponent->BindAction(PickupAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::PickupItem);
 		
 		// Open widget
@@ -418,7 +418,7 @@ void ADefaultCharacter::QuickSlotManager_1()
 	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
-		InventoryComponent->SlotHandle_1();
+		InventoryComponent->HandleSlotOne();
 	}
 }
 
@@ -427,7 +427,7 @@ void ADefaultCharacter::QuickSlotManager_2()
 	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
-		InventoryComponent->SlotHandle_2();
+		InventoryComponent->HandleSlotTwo();
 	}
 }
 
@@ -436,7 +436,7 @@ void ADefaultCharacter::QuickSlotManager_3()
 	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
-		InventoryComponent->SlotHandle_3();
+		InventoryComponent->HandleSlotThree();
 	}
 }
 
@@ -445,7 +445,7 @@ void ADefaultCharacter::QuickSlotManager_4()
 	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
-		InventoryComponent->SlotHandle_4();
+		InventoryComponent->HandleSlotFour();
 	}
 }
 
@@ -454,7 +454,7 @@ void ADefaultCharacter::QuickSlotManager_5()
 	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
-		InventoryComponent->SlotHandle_5();
+		InventoryComponent->HandleSlotFive();
 	}
 }
 
@@ -463,7 +463,7 @@ void ADefaultCharacter::QuickSlotManager_6()
 	if (ShouldInputActivated()) return;
 	if (InventoryComponent)
 	{
-		InventoryComponent->SlotHandle_6();
+		InventoryComponent->HandleSlotSix();
 	}
 }
 
@@ -669,9 +669,7 @@ void ADefaultCharacter::LoadDataFromSaveGame()
 
 void ADefaultCharacter::LevelUp()
 {
-	// 스탯 변화
 	DefaultStats.Level++;
-	DefaultStats.Exp = 0.f;
 	
 	// 이펙트 생성
 	if (ParticleComponent)
@@ -685,24 +683,8 @@ void ADefaultCharacter::LevelUp()
 		UGameplayStatics::PlaySound2D(this, LevelUpSound);
 	}
 
-	if (HUDBase)
-	{
-		// UI 업데이트
-		HUDBase->GetInfoContainer()->UpdateLevel();
-
-		// 메세지 표시
-		UHeadUpWidget* HeadUpWidget = Cast<UHeadUpWidget>(HeadUpWidgetComonent->GetUserWidgetObject());
-		if (HeadUpWidget)
-		{
-			// 헤드업
-			const FText HeadUpText = FText::FromString(TEXT("레벨 업 !"));
-			HeadUpWidget->HandleHeadUpText(HeadUpText, FColor::Yellow);
-		}
-
-		// 채팅
-		const FString Message =  FString(TEXT("캐릭터가 ")) + FString::FromInt(DefaultStats.Level) + FString(TEXT("레벨이 되었습니다."));
-		HUDBase->HandleMessageOnChat(FText::FromString(Message), FColor::Yellow);
-	}
+	// 알림
+	OnChangedLevel.Broadcast(DefaultStats.Level);
 }
 
 void ADefaultCharacter::HandleComboCount()
@@ -989,11 +971,8 @@ void ADefaultCharacter::UpdateHealth(EStatUpdateType UpdateType, float Value)
 		Die();
 	}
 
-	// UI 업데이트
-	if (HUDBase)
-	{
-		HUDBase->GetInfoContainer()->UpdateHP();
-	}
+	// 알림
+	OnChangedHealth.Broadcast(DefaultStats.HP, DefaultStats.HPMax);
 }
 
 void ADefaultCharacter::UpdateStamina(EStatUpdateType UpdateType, float Value)
@@ -1012,11 +991,8 @@ void ADefaultCharacter::UpdateStamina(EStatUpdateType UpdateType, float Value)
 
 	DefaultStats.Stamina = FMath::Clamp(NewStamina, 0.f, DefaultStats.StaminaMax);
 
-	// UI 업데이트
-	if (HUDBase)
-	{
-		HUDBase->GetInfoContainer()->UpdateStamina();
-	}
+	// 알림
+	OnChangedStamina.Broadcast(DefaultStats.Stamina, DefaultStats.StaminaMax);
 }
 
 void ADefaultCharacter::UpdateExp(EStatUpdateType UpdateType, float Value)
@@ -1026,63 +1002,42 @@ void ADefaultCharacter::UpdateExp(EStatUpdateType UpdateType, float Value)
 
 	if (CurrentExp + Value >= MaxExp)
 	{
-		// 레벨업
+		// 레벨업 -> 경험치 초기화
 		LevelUp();
+		DefaultStats.Exp = 0.f;
 	}
 	else
 	{
+		// 경험치 획득
 		DefaultStats.Exp = CurrentExp + Value;
 	}
-	// UI 업데이트
-	if (HUDBase)
+
+	// 헤드업 텍스트 출력
+	if (HeadUpWidgetComonent)
 	{
-		// 경험치 Progress Bar 업데이트
-		HUDBase->GetInfoContainer()->UpdateExp();
-
-		// 헤드업 텍스트 출력
-		if (HeadUpWidgetComonent)
+		UHeadUpWidget* HeadUpWidget = Cast<UHeadUpWidget>(HeadUpWidgetComonent->GetUserWidgetObject());
+		if (HeadUpWidget)
 		{
-			UHeadUpWidget* HeadUpWidget = Cast<UHeadUpWidget>(HeadUpWidgetComonent->GetUserWidgetObject());
-			if (HeadUpWidget)
-			{
-				const FString FormatString = FString(TEXT("+")) + FString::FromInt(Value) + FString(TEXT(" Exp"));
-				const FText FormatText = FText::FromString(FormatString);
+			const FString FormatString = FString(TEXT("+")) + FString::FromInt(Value) + FString(TEXT(" Exp"));
+			const FText FormatText = FText::FromString(FormatString);
 
-				HeadUpWidget->HandleHeadUpText(FormatText, FColor::White);
-			}
+			HeadUpWidget->HandleHeadUpText(FormatText, FColor::White);
 		}
 	}
+	// 알림
+	OnChangedExp.Broadcast(DefaultStats.Exp, DefaultStats.ExpMax);
 }
 
-void ADefaultCharacter::UpdateGold(EStatUpdateType UpdateType, float Value)
+void ADefaultCharacter::UpdateGold(EStatUpdateType UpdateType, const int32& Value)
 {
-	if (HUDBase)
+	if (UpdateType == EStatUpdateType::ESUT_Plus)
 	{
-		// 헤드업 텍스트 출력
-		if (HeadUpWidgetComonent)
-		{
-			UHeadUpWidget* HeadUpWidget = Cast<UHeadUpWidget>(HeadUpWidgetComonent->GetUserWidgetObject());
-			if (HeadUpWidget)
-			{
-				if (UpdateType == EStatUpdateType::ESUT_Plus)
-				{
-					DefaultStats.Gold += Value;
-					const FString FormatString = FString(TEXT("+")) + FString::FromInt(Value) + FString(TEXT(" Gold"));
-					const FText FormatText = FText::FromString(FormatString);
-
-					HeadUpWidget->HandleHeadUpText(FormatText, FColor::Yellow);
-					
-				}
-				else if (UpdateType == EStatUpdateType::ESUT_Minus)
-				{
-					DefaultStats.Gold = FMath::Max(0, DefaultStats.Gold - Value);
-					const FString FormatString = FString(TEXT("-")) + FString::FromInt(Value) + FString(TEXT(" Gold"));
-					const FText FormatText = FText::FromString(FormatString);
-
-					HeadUpWidget->HandleHeadUpText(FormatText, FColor::Red);
-				}
-			}
-		}
+		DefaultStats.Gold += Value;
+		OnGetGold.Broadcast(Value);
+	}
+	else if (UpdateType == EStatUpdateType::ESUT_Minus)
+	{
+		DefaultStats.Gold = FMath::Max(0, DefaultStats.Gold - Value);
 	}
 }
 

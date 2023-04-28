@@ -37,21 +37,17 @@ void UInfoContainer::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	UpdateSkillTwo();
 	UpdateSkillThree();
 	UpdateSkillFour();
-
-	UpdateItemCoolDown1();
-	UpdateItemCoolDown2();
-	UpdateItemCoolDown3();
-	UpdateItemCoolDown4();
-	UpdateItemCoolDown5();
-	UpdateItemCoolDown6();
 }
 
 void UInfoContainer::Init()
 {
-	UpdateHP();
-	UpdateStamina();
-	UpdateExp();
-	UpdateLevel();
+	const FCharacterStats& Stats = Character->GetCharacterStats();
+
+	UpdateHealth(Stats.HP, Stats.HPMax);
+	UpdateStamina(Stats.Stamina, Stats.StaminaMax);
+	UpdateExp(Stats.Exp, Stats.ExpMax);
+	UpdateLevel(Stats.Level);
+
 	UpdateSkillOne();
 	UpdateSkillOneImage();
 	UpdateSkillTwo();
@@ -62,30 +58,6 @@ void UInfoContainer::Init()
 	UpdateSkillFourImage();
 
 	RemoveConsumableUI();
-}
-
-void UInfoContainer::UpdateHP()
-{
-	HpCurrent->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().HP)));
-	HpMax->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().HPMax)));
-	HPProgressBar->SetPercent(Character->GetCharacterStats().HP / Character->GetCharacterStats().HPMax);	
-}
-
-void UInfoContainer::UpdateStamina()
-{
-	StaminaCurrent->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().Stamina)));
-	StaminaMax->SetText(FText::FromString(FString::FromInt((int32)Character->GetCharacterStats().StaminaMax)));
-	StaminaProgressBar->SetPercent(Character->GetCharacterStats().Stamina / Character->GetCharacterStats().StaminaMax);
-}
-
-void UInfoContainer::UpdateExp()
-{
-	ExpProgressBar->SetPercent(Character->GetCharacterStats().Exp / Character->GetCharacterStats().ExpMax);
-}
-
-void UInfoContainer::UpdateLevel()
-{
-	LevelText->SetText(FText::FromString(FString::FromInt(Character->GetCharacterStats().Level)));
 }
 
 void UInfoContainer::UpdateSkillOne()
@@ -133,6 +105,30 @@ void UInfoContainer::UpdateSkillThreeImage()
 	SkillThreeImage->SetBrushFromTexture(AbilityComponent->GetSkillThree().Image);
 }
 
+void UInfoContainer::UpdateHealth(const float& CurrentHp, const float& MaxHp)
+{
+	HpCurrent->SetText(FText::FromString(FString::FromInt((int32)CurrentHp)));
+	HpMax->SetText(FText::FromString(FString::FromInt((int32)MaxHp)));
+	HPProgressBar->SetPercent(Character->GetCharacterStats().HP / Character->GetCharacterStats().HPMax);
+}
+
+void UInfoContainer::UpdateStamina(const float& CurrentSp, const float& MaxSp)
+{
+	StaminaCurrent->SetText(FText::FromString(FString::FromInt((int32)CurrentSp)));
+	StaminaMax->SetText(FText::FromString(FString::FromInt((int32)MaxSp)));
+	StaminaProgressBar->SetPercent(Character->GetCharacterStats().Stamina / Character->GetCharacterStats().StaminaMax);
+}
+
+void UInfoContainer::UpdateExp(const float& CurrentExp, const float& MaxExp)
+{
+	ExpProgressBar->SetPercent(CurrentExp / MaxExp);
+}
+
+void UInfoContainer::UpdateLevel(const int32& NewLevel)
+{
+	LevelText->SetText(FText::FromString(FString::FromInt(NewLevel)));
+}
+
 void UInfoContainer::UpdateSkillFour()
 {
 	if (AbilityComponent)
@@ -156,6 +152,11 @@ void UInfoContainer::UpdateConsumableQuickSlot()
 
 		CheckItemPotionInInventory();
 	}
+}
+
+void UInfoContainer::OnChangedQuickSlot(const FName& ItemCode, const FItemSpec& Spec)
+{
+	UpdateConsumableQuickSlot();
 }
 
 void UInfoContainer::UpdateConsumableAmount(const FName& ItemCode, UTexture2D* Image, uint8 Amount)
@@ -187,9 +188,99 @@ void UInfoContainer::RemoveConsumableUI()
 
 void UInfoContainer::InitItemPotions()
 {
-	ItemPotions.Add({ ItemImage1 ,Item1_Amount });
-	ItemPotions.Add({ ItemImage2 ,Item2_Amount });
-	ItemPotions.Add({ ItemImage3 ,Item3_Amount });
+	ItemPotions.Add({ ItemImageOne ,ItemSlotOne_Amount });
+	ItemPotions.Add({ ItemImageTwo ,ItemSlotTwo_Amount });
+	ItemPotions.Add({ ItemImageThree ,ItemSlotThree_Amount });
+}
+
+void UInfoContainer::UpdateCoolDownSlotOne(const float& Remaining, const float& Rate)
+{
+	if (Remaining != -1)
+	{
+		ItemCoolDownTextOne->SetText(FText::FromString(FString::FromInt((FMath::RoundToInt(Remaining)))));
+		ItemCoolDownProgressBarOne->SetPercent(Remaining / Rate);
+	}
+}
+
+void UInfoContainer::ResetCoolDownSlotOne()
+{
+	ItemCoolDownTextOne->SetText(FText::GetEmpty());
+	ItemCoolDownProgressBarOne->SetPercent(0.f);
+}
+
+void UInfoContainer::UpdateCoolDownSlotTwo(const float& Remaining, const float& Rate)
+{
+	if (Remaining != -1)
+	{
+		ItemCoolDownTextTwo->SetText(FText::FromString(FString::FromInt((FMath::RoundToInt(Remaining)))));
+		ItemCoolDownProgressBarTwo->SetPercent(Remaining / Rate);
+	}
+}
+
+void UInfoContainer::ResetCoolDownSlotTwo()
+{
+	ItemCoolDownTextTwo->SetText(FText::GetEmpty());
+	ItemCoolDownProgressBarTwo->SetPercent(0.f);
+}
+
+void UInfoContainer::UpdateCoolDownSlotThree(const float& Remaining, const float& Rate)
+{
+	if (Remaining != -1)
+	{
+		ItemCoolDownTextThree->SetText(FText::FromString(FString::FromInt((FMath::RoundToInt(Remaining)))));
+		ItemCoolDownProgressBarThree->SetPercent(Remaining / Rate);
+	}
+}
+
+void UInfoContainer::ResetCoolDownSlotThree()
+{
+	ItemCoolDownTextThree->SetText(FText::GetEmpty());
+	ItemCoolDownProgressBarThree->SetPercent(0.f);
+}
+
+void UInfoContainer::UpdateCoolDownSlotFour(const float& Remaining, const float& Rate)
+{
+	if (Remaining != -1)
+	{
+		ItemCoolDownTextFour->SetText(FText::FromString(FString::FromInt((FMath::RoundToInt(Remaining)))));
+		ItemCoolDownProgressBarFour->SetPercent(Remaining / Rate);
+	}
+}
+
+void UInfoContainer::ResetCoolDownSlotFour()
+{
+	ItemCoolDownTextFour->SetText(FText::GetEmpty());
+	ItemCoolDownProgressBarFour->SetPercent(0.f);
+}
+
+void UInfoContainer::UpdateCoolDownSlotFive(const float& Remaining, const float& Rate)
+{
+	if (Remaining != -1)
+	{
+		ItemCoolDownTextFive->SetText(FText::FromString(FString::FromInt((FMath::RoundToInt(Remaining)))));
+		ItemCoolDownProgressBarFive->SetPercent(Remaining / Rate);
+	}
+}
+
+void UInfoContainer::ResetCoolDownSlotFive()
+{
+	ItemCoolDownTextFive->SetText(FText::GetEmpty());
+	ItemCoolDownProgressBarFive->SetPercent(0.f);
+}
+
+void UInfoContainer::UpdateCoolDownSlotSix(const float& Remaining, const float& Rate)
+{
+	if (Remaining != -1)
+	{
+		ItemCoolDownTextSix->SetText(FText::FromString(FString::FromInt((FMath::RoundToInt(Remaining)))));
+		ItemCoolDownProgressBarSix->SetPercent(Remaining / Rate);
+	}
+}
+
+void UInfoContainer::ResetCoolDownSlotSix()
+{
+	ItemCoolDownTextSix->SetText(FText::GetEmpty());
+	ItemCoolDownProgressBarSix->SetPercent(0.f);
 }
 
 void UInfoContainer::CheckItemPotionInInventory()
@@ -209,66 +300,6 @@ void UInfoContainer::CheckItemPotionInInventory()
 				UpdateConsumableAmount(ItemCode, Spec->Image, Amount);
 			}
 		}
-	}
-}
-
-void UInfoContainer::UpdateItemCoolDown1()
-{
-	if (InventoryComponent && InventoryComponent->HasItemInContainer(EItemNumber::EIN_1))
-	{	
-		FTimerHandle* TimerHandle = InventoryComponent->GetItemTimerHandle(EItemNumber::EIN_1);
-		bool IsEnable = InventoryComponent->GetEnableItem(EItemNumber::EIN_1);
-		UpdateCoolDownUI(TimerHandle, ItemCoolDownText1, ItemCoolDownProgressBar1, IsEnable);
-	}
-}
-
-void UInfoContainer::UpdateItemCoolDown2()
-{
-	if (InventoryComponent && InventoryComponent->HasItemInContainer(EItemNumber::EIN_2))
-	{
-		FTimerHandle* TimerHandle = InventoryComponent->GetItemTimerHandle(EItemNumber::EIN_2);
-		bool IsEnable = InventoryComponent->GetEnableItem(EItemNumber::EIN_2);
-		UpdateCoolDownUI(TimerHandle, ItemCoolDownText2, ItemCoolDownProgressBar2, IsEnable);
-	}
-}
-
-void UInfoContainer::UpdateItemCoolDown3()
-{
-	if (InventoryComponent && InventoryComponent->HasItemInContainer(EItemNumber::EIN_3))
-	{
-		FTimerHandle* TimerHandle = InventoryComponent->GetItemTimerHandle(EItemNumber::EIN_3);
-		bool IsEnable = InventoryComponent->GetEnableItem(EItemNumber::EIN_3);
-		UpdateCoolDownUI(TimerHandle, ItemCoolDownText3, ItemCoolDownProgressBar3, IsEnable);
-	}
-}
-
-void UInfoContainer::UpdateItemCoolDown4()
-{
-	if (InventoryComponent && InventoryComponent->HasItemInContainer(EItemNumber::EIN_4))
-	{
-		FTimerHandle* TimerHandle = InventoryComponent->GetItemTimerHandle(EItemNumber::EIN_4);
-		bool IsEnable = InventoryComponent->GetEnableItem(EItemNumber::EIN_4);
-		UpdateCoolDownUI(TimerHandle, ItemCoolDownText4, ItemCoolDownProgressBar4, IsEnable);
-	}
-}
-
-void UInfoContainer::UpdateItemCoolDown5()
-{
-	if (InventoryComponent && InventoryComponent->HasItemInContainer(EItemNumber::EIN_5))
-	{
-		FTimerHandle* TimerHandle = InventoryComponent->GetItemTimerHandle(EItemNumber::EIN_5);
-		bool IsEnable = InventoryComponent->GetEnableItem(EItemNumber::EIN_5);
-		UpdateCoolDownUI(TimerHandle, ItemCoolDownText5, ItemCoolDownProgressBar5, IsEnable);
-	}
-}
-
-void UInfoContainer::UpdateItemCoolDown6()
-{
-	if (InventoryComponent && InventoryComponent->HasItemInContainer(EItemNumber::EIN_6))
-	{	
-		FTimerHandle* TimerHandle = InventoryComponent->GetItemTimerHandle(EItemNumber::EIN_6);
-		bool IsEnable = InventoryComponent->GetEnableItem(EItemNumber::EIN_6);
-		UpdateCoolDownUI(TimerHandle, ItemCoolDownText6, ItemCoolDownProgressBar6, IsEnable);
 	}
 }
 

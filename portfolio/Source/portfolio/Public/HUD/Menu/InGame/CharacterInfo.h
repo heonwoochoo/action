@@ -112,6 +112,12 @@ protected:
 
 	virtual void InitCanvasLocation() override;
 
+	UFUNCTION()
+	void UpdateHealth(const float& CurrentHp, const float& MaxHp);
+
+	UFUNCTION()
+	void UpdateStamina(const float& CurrentSp, const float& MaxSp);
+
 private:
 	TArray<UEquipmentSlot*> EquipmentSlots;
 
@@ -119,8 +125,7 @@ private:
 
 	void InitEquipmentSlot();
 	void UpdateStats();
-	void UpdateHP(const float& CurrentHP, const float& MaxHP);
-	void UpdateStamina(const float& CurrentStamina, const float& MaxStamina);
+
 
 public:
 	FORCEINLINE FVector2D GetTooltipLocation() const { return TooltipLocation; };

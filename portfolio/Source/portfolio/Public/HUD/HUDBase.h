@@ -118,9 +118,6 @@ public:
 	//화면 중앙 상단에 유저 알림 메세지 출력
 	void NotifyMessageToUser(const FText& Message);
 
-	//채팅창에 메세지 출력
-	void HandleMessageOnChat(const FText& Message, const FColor& Color);
-
 	// 가이드 메세지 토글
 	void ShowGuideMessage(const FText& Message);
 	void HideGuideMessage();

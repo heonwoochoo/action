@@ -14,11 +14,20 @@
 UInventoryComponent::UInventoryComponent()
 {
 
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
 	InitEquippedItemList();
 }
 
+
+void UInventoryComponent::NotifyCoolDown(const FTimerHandle& TimerHandle, const FOnProgressCoolDownSignature& Delegate)
+{
+	const FTimerManager& TimerManager = GetWorld()->GetTimerManager();
+	const float& Remaining = TimerManager.GetTimerRemaining(TimerHandle);
+	const float& Rate = TimerManager.GetTimerRate(TimerHandle);
+
+	Delegate.Broadcast(Remaining, Rate);
+}
 
 void UInventoryComponent::BeginPlay()
 {
@@ -32,37 +41,43 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	
+	HandleItemSlotCoolDown();
 }
 
-void UInventoryComponent::EndTimerHandle1()
+void UInventoryComponent::EndSlotOneTimerHandle()
 {
-	bEnableItem1 = true;
+	bEnableItemSlotOne = true;
+	OnEndCoolDownSlotOne.Broadcast();
 }
 
-void UInventoryComponent::EndTimerHandle2()
+void UInventoryComponent::EndSlotTwoTimerHandle()
 {
-	bEnableItem2 = true;
+	bEnableItemSlotTwo = true;
+	OnEndCoolDownSlotTwo.Broadcast();
 }
 
-void UInventoryComponent::EndTimerHandle3()
+void UInventoryComponent::EndSlotThreeTimerHandle()
 {
-	bEnableItem3 = true;
+	bEnableItemSlotThree = true;
+	OnEndCoolDownSlotThree.Broadcast();
 }
 
-void UInventoryComponent::EndTimerHandle4()
+void UInventoryComponent::EndSlotFourTimerHandle()
 {
-	bEnableItem4 = true;
+	bEnableItemSlotFour = true;
+	OnEndCoolDownSlotFour.Broadcast();
 }
 
-void UInventoryComponent::EndTimerHandle5()
+void UInventoryComponent::EndSlotFiveTimerHandle()
 {
-	bEnableItem5 = true;
+	bEnableItemSlotFive = true;
+	OnEndCoolDownSlotFive.Broadcast();
 }
 
-void UInventoryComponent::EndTimerHandle6()
+void UInventoryComponent::EndSlotSixTimerHandle()
 {
-	bEnableItem6 = true;
+	bEnableItemSlotSix = true;
+	OnEndCoolDownSlotSix.Broadcast();
 }
 
 void UInventoryComponent::EffectConsumable(const FName& ItemCode)
@@ -85,8 +100,8 @@ void UInventoryComponent::EffectConsumable(const FName& ItemCode)
 		Target = EStatTarget::EST_Stamina;
 		AbilityPoint = Stats.Stamina;
 	}
-
-	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	
+	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(GetOwner());
 	if (DefaultCharacter)
 	{
 		DefaultCharacter->UpdateStatManager(Target, EStatUpdateType::ESUT_Plus, AbilityPoint);
@@ -125,6 +140,34 @@ void UInventoryComponent::InitEquippedItemList()
 	EquippedItemList.Add({ EEquipmentType::EET_Accessory, FEquippedItem() });
 }
 
+void UInventoryComponent::HandleItemSlotCoolDown()
+{
+	if (!bEnableItemSlotOne)
+	{
+		NotifyCoolDown(ItemSlotOneTimerHandle, OnProgressCoolDownSlotOne);
+	}
+	if (!bEnableItemSlotTwo)
+	{
+		NotifyCoolDown(ItemSlotTwoTimerHandle, OnProgressCoolDownSlotTwo);
+	}
+	if (!bEnableItemSlotThree)
+	{
+		NotifyCoolDown(ItemSlotThreeTimerHandle, OnProgressCoolDownSlotThree);
+	}
+	if (!bEnableItemSlotFour)
+	{
+		NotifyCoolDown(ItemSlotFourTimerHandle, OnProgressCoolDownSlotFour);
+	}
+	if (!bEnableItemSlotFive)
+	{
+		NotifyCoolDown(ItemSlotFiveTimerHandle, OnProgressCoolDownSlotFive);
+	}
+	if (!bEnableItemSlotSix)
+	{
+		NotifyCoolDown(ItemSlotSixTimerHandle, OnProgressCoolDownSlotSix);
+	}
+}
+
 TMap<EEquipmentType, FEquippedItem> UInventoryComponent::GetEquippedItemList() const
 {
 	return EquippedItemList;
@@ -146,19 +189,6 @@ void UInventoryComponent::EquipItem(const FName& ItemCode)
 			EquippedItemList[EquipmentType] = FEquippedItem(EEquippedState::EES_Equipped, ItemCode);
 			DefaultCharacter->UpdateEquipmentStat();
 
-			// 메세지 출력
-			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
-			if (PlayerController)
-			{
-				AHUDBase* HUDBase = Cast<AHUDBase>(PlayerController->GetHUD());
-				if (HUDBase)
-				{
-					const FString& ItemName = Spec->Name.ToString();
-					const FString FormatText = ItemName + FString(TEXT(" 장비를 착용하였습니다."));
-					HUDBase->HandleMessageOnChat(FText::FromString(FormatText), FColor::Silver);
-				}
-			}
-
 			// 무기일 경우 오브젝트 스폰
 			if (EquipmentType == EEquipmentType::EET_Weapon && Spec->ItemClass)
 			{
@@ -174,6 +204,8 @@ void UInventoryComponent::EquipItem(const FName& ItemCode)
 					EquippedWeapon->AttachMeshToSocket(Mesh, TEXT("RightHandSocket"));
 				}
 			}
+
+			OnEquipped.Broadcast(ItemCode, *Spec);
 		}
 	}
 }
@@ -209,23 +241,12 @@ void UInventoryComponent::AddItem(const FName& ItemCode)
 			ItemList[ItemCode] = 1;
 		}
 
-		// 메세지 출력
-		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
-		if (PlayerController)
-		{
-			AHUDBase* HUDBase = Cast<AHUDBase>(PlayerController->GetHUD());
-			if (HUDBase)
-			{
-				const FString& ItemName = ItemSpec->Name.ToString();
-				const FString FormatText = ItemName + FString(TEXT(" 아이템을 획득하였습니다."));
-				HUDBase->HandleMessageOnChat(FText::FromString(FormatText), FColor::Yellow);
-			}
-		}
-
 		if (ItemSpec->Type == EItemType::EIT_Consumable)
 		{
-			UpdateConsumableUI();
+			ResetItemConsumableMapping();
 		}
+
+		OnAdded.Broadcast(ItemCode, *ItemSpec);
 	}
 }
 
@@ -237,36 +258,25 @@ void UInventoryComponent::UseItem(const FName& ItemCode)
 	EItemType ItemType = Spec->Type;
 	if (ItemType == EItemType::EIT_Consumable)
 	{
-		// 실제 데이터 적용
-		EffectConsumable(ItemCode);
-
-		// 멤버변수의 데이터를 업데이트
 		if (ItemList.Contains(ItemCode))
-		{
+		{	
+			// 데이터 업데이트
 			if (ItemList[ItemCode] == 1)
 			{
 				ItemList.Remove(ItemCode);
 			}
 			else ItemList[ItemCode]--;
 
-			UpdateConsumableUI();
-		}
+			// 실제 데이터 적용
+			EffectConsumable(ItemCode);
 
-		SpawnConsumeParticle(Spec->EffectParticle);
+			ResetItemConsumableMapping();
 
-		PlayConsumeSound();
+			OnUsed.Broadcast(ItemCode, *Spec);
 
-		// 메세지 출력
-		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
-		if (PlayerController)
-		{
-			AHUDBase* HUDBase = Cast<AHUDBase>(PlayerController->GetHUD());
-			if (HUDBase)
-			{
-				const FString& ItemName = Spec->Name.ToString();
-				const FString FormatText = ItemName + FString(TEXT(" 소모품을 사용하였습니다."));
-				HUDBase->HandleMessageOnChat(FText::FromString(FormatText), FColor::Silver);
-			}
+			SpawnConsumeParticle(Spec->EffectParticle);
+
+			PlayConsumeSound();
 		}
 	}
 }
@@ -289,118 +299,101 @@ int32 UInventoryComponent::GetInventorySlotNumber(const EItemType& Type)
 	return 0;
 }
 
-void UInventoryComponent::UpdateConsumableUI()
+void UInventoryComponent::HandleSlotOne()
 {
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
-	if (PlayerController)
+	if (bEnableItemSlotOne && ItemSpecData && SlotOne != FName())
 	{
-		AHUDBase* HUD = Cast<AHUDBase>(PlayerController->GetHUD());
-		UInfoContainer* InfoContainer = HUD->GetInfoContainer();
-		if (InfoContainer)
-		{
-			// 순서도 바뀔 수 있으니 업데이트 시켜야함
-			ResetItemConsumableMapping();
+		bEnableItemSlotOne = false;
 
-			InfoContainer->UpdateConsumableQuickSlot();
-		}
-	}
-}
-
-void UInventoryComponent::SlotHandle_1()
-{
-	if (bEnableItem1 && ItemSpecData && Slot1 != FName())
-	{
-		bEnableItem1 = false;
-
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Slot1, "");
+		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(SlotOne, "");
 		const float CoolDown = ItemSpec.Stats.CoolDown;
 
-		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle1, this, &UInventoryComponent::EndTimerHandle1, CoolDown);
+		GetWorld()->GetTimerManager().SetTimer(ItemSlotOneTimerHandle, this, &UInventoryComponent::EndSlotOneTimerHandle, CoolDown);
 		
-		UseItem(Slot1);
+		UseItem(SlotOne);
 	}
 }
 
-void UInventoryComponent::SlotHandle_2()
+void UInventoryComponent::HandleSlotTwo()
 {
-	if (bEnableItem2 && ItemSpecData && HasItemInContainer(EItemNumber::EIN_2))
+	if (bEnableItemSlotTwo && ItemSpecData && HasItemInContainer(EItemNumber::EIN_2))
 	{
-		bEnableItem2 = false;
+		bEnableItemSlotTwo = false;
 
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Slot2, "");
+		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(SlotTwo, "");
 		const float CoolDown = ItemSpec.Stats.CoolDown;
 
-		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle2, this, &UInventoryComponent::EndTimerHandle2, CoolDown);
+		GetWorld()->GetTimerManager().SetTimer(ItemSlotTwoTimerHandle, this, &UInventoryComponent::EndSlotTwoTimerHandle, CoolDown);
 
-		UseItem(Slot2);
+		UseItem(SlotTwo);
 	}
 }
 
-void UInventoryComponent::SlotHandle_3()
+void UInventoryComponent::HandleSlotThree()
 {
-	if (bEnableItem3 && ItemSpecData && HasItemInContainer(EItemNumber::EIN_3))
+	if (bEnableItemSlotThree && ItemSpecData && HasItemInContainer(EItemNumber::EIN_3))
 	{
-		bEnableItem3 = false;
+		bEnableItemSlotThree = false;
 
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Slot3, "");
+		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(SlotThree, "");
 		const float CoolDown = ItemSpec.Stats.CoolDown;
 
-		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle3, this, &UInventoryComponent::EndTimerHandle3, CoolDown);
+		GetWorld()->GetTimerManager().SetTimer(ItemSlotThreeTimerHandle, this, &UInventoryComponent::EndSlotThreeTimerHandle, CoolDown);
 
-		UseItem(Slot3);
+		UseItem(SlotThree);
 	}
 }
 
-void UInventoryComponent::SlotHandle_4()
+void UInventoryComponent::HandleSlotFour()
 {
-	if (bEnableItem4 && ItemSpecData && HasItemInContainer(EItemNumber::EIN_4))
+	if (bEnableItemSlotFour && ItemSpecData && HasItemInContainer(EItemNumber::EIN_4))
 	{
-		bEnableItem4 = false;
+		bEnableItemSlotFour = false;
 
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Slot4, "");
+		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(SlotFour, "");
 		const float CoolDown = ItemSpec.Stats.CoolDown;
 
-		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle4, this, &UInventoryComponent::EndTimerHandle4, CoolDown);
+		GetWorld()->GetTimerManager().SetTimer(ItemSlotFourTimerHandle, this, &UInventoryComponent::EndSlotFourTimerHandle, CoolDown);
 
-		UseItem(Slot4);
+		UseItem(SlotFour);
 	}
 }
 
-void UInventoryComponent::SlotHandle_5()
+void UInventoryComponent::HandleSlotFive()
 {
-	if (bEnableItem5 && ItemSpecData && HasItemInContainer(EItemNumber::EIN_5))
+	if (bEnableItemSlotFive && ItemSpecData && HasItemInContainer(EItemNumber::EIN_5))
 	{
-		bEnableItem5 = false;
+		bEnableItemSlotFive = false;
 
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Slot5, "");
+		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(SlotFive, "");
 		const float CoolDown = ItemSpec.Stats.CoolDown;
 
-		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle5, this, &UInventoryComponent::EndTimerHandle5, CoolDown);
+		GetWorld()->GetTimerManager().SetTimer(ItemSlotFiveTimerHandle, this, &UInventoryComponent::EndSlotFiveTimerHandle, CoolDown);
 
-		UseItem(Slot5);
+		UseItem(SlotFive);
 	}
 }
 
-void UInventoryComponent::SlotHandle_6()
+void UInventoryComponent::HandleSlotSix()
 {
-	if (bEnableItem6 && ItemSpecData && HasItemInContainer(EItemNumber::EIN_6))
+	if (bEnableItemSlotSix && ItemSpecData && HasItemInContainer(EItemNumber::EIN_6))
 	{
-		bEnableItem6 = false;
+		bEnableItemSlotSix = false;
 
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(Slot6, "");
+		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(SlotSix, "");
 		const float CoolDown = ItemSpec.Stats.CoolDown;
 
-		GetWorld()->GetTimerManager().SetTimer(ItemTimerHandle6, this, &UInventoryComponent::EndTimerHandle6, CoolDown);
+		GetWorld()->GetTimerManager().SetTimer(ItemSlotSixTimerHandle, this, &UInventoryComponent::EndSlotSixTimerHandle, CoolDown);
 
-		UseItem(Slot6);
+		UseItem(SlotSix);
 	}
 }
 
 void UInventoryComponent::ResetItemConsumableMapping()
 {
-	Slot1 = FName();
-	Slot2 = FName();
-	Slot3 = FName();
+	SlotOne = FName();
+	SlotTwo = FName();
+	SlotThree = FName();
 }
 
 void UInventoryComponent::SetItemConsumableMapping(const FName& ItemCode, uint8 Idx)
@@ -408,13 +401,13 @@ void UInventoryComponent::SetItemConsumableMapping(const FName& ItemCode, uint8 
 	switch (Idx)
 	{
 	case 0:
-		Slot1 = ItemCode;
+		SlotOne = ItemCode;
 		break;
 	case 1:
-		Slot2 = ItemCode;
+		SlotTwo = ItemCode;
 		break;
 	case 2:
-		Slot3 = ItemCode;
+		SlotThree = ItemCode;
 		break;
 	}
 }
@@ -426,22 +419,22 @@ FTimerHandle* UInventoryComponent::GetItemTimerHandle(EItemNumber ItemNum)
 	switch (ItemNum)
 	{
 	case EItemNumber::EIN_1:
-		TimerHandle = &ItemTimerHandle1;
+		TimerHandle = &ItemSlotOneTimerHandle;
 		break;
 	case EItemNumber::EIN_2:
-		TimerHandle = &ItemTimerHandle2;
+		TimerHandle = &ItemSlotTwoTimerHandle;
 		break;
 	case EItemNumber::EIN_3:
-		TimerHandle = &ItemTimerHandle3;
+		TimerHandle = &ItemSlotThreeTimerHandle;
 		break;
 	case EItemNumber::EIN_4:
-		TimerHandle = &ItemTimerHandle4;
+		TimerHandle = &ItemSlotFourTimerHandle;
 		break;
 	case EItemNumber::EIN_5:
-		TimerHandle = &ItemTimerHandle5;
+		TimerHandle = &ItemSlotFiveTimerHandle;
 		break;
 	case EItemNumber::EIN_6:
-		TimerHandle = &ItemTimerHandle6;
+		TimerHandle = &ItemSlotSixTimerHandle;
 		break;
 	}
 
@@ -455,22 +448,22 @@ bool UInventoryComponent::GetEnableItem(EItemNumber ItemNum)
 	switch (ItemNum)
 	{
 	case EItemNumber::EIN_1:
-		EnableItem = bEnableItem1;
+		EnableItem = bEnableItemSlotOne;
 		break;
 	case EItemNumber::EIN_2:
-		EnableItem = bEnableItem2;
+		EnableItem = bEnableItemSlotTwo;
 		break;
 	case EItemNumber::EIN_3:
-		EnableItem = bEnableItem3;
+		EnableItem = bEnableItemSlotThree;
 		break;
 	case EItemNumber::EIN_4:
-		EnableItem = bEnableItem4;
+		EnableItem = bEnableItemSlotFour;
 		break;
 	case EItemNumber::EIN_5:
-		EnableItem = bEnableItem5;
+		EnableItem = bEnableItemSlotFive;
 		break;
 	case EItemNumber::EIN_6:
-		EnableItem = bEnableItem6;
+		EnableItem = bEnableItemSlotSix;
 		break;
 	}
 
@@ -484,22 +477,22 @@ bool UInventoryComponent::HasItemInContainer(EItemNumber ItemNum)
 	switch (ItemNum)
 	{
 	case EItemNumber::EIN_1:
-		TargetItem = Slot1;
+		TargetItem = SlotOne;
 		break;
 	case EItemNumber::EIN_2:
-		TargetItem = Slot2;
+		TargetItem = SlotTwo;
 		break;
 	case EItemNumber::EIN_3:
-		TargetItem = Slot3;
+		TargetItem = SlotThree;
 		break;
 	case EItemNumber::EIN_4:
-		TargetItem = Slot4;
+		TargetItem = SlotFour;
 		break;
 	case EItemNumber::EIN_5:
-		TargetItem = Slot5;
+		TargetItem = SlotFive;
 		break;
 	case EItemNumber::EIN_6:
-		TargetItem = Slot6;
+		TargetItem = SlotSix;
 		break;
 	}
 

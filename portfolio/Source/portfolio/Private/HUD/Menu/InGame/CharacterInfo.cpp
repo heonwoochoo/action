@@ -33,18 +33,6 @@ void UCharacterInfo::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	
-	if (DefaultCharacter)
-	{
-		const FCharacterStats& Stats = DefaultCharacter->GetCharacterStats();
-		if (Stats.HP != Stats.HPMax)
-		{
-			UpdateHP(Stats.HP, Stats.HPMax);
-		}
-		if (Stats.Stamina != Stats.StaminaMax)
-		{
-			UpdateStamina(Stats.Stamina, Stats.StaminaMax);
-		}
-	}
 }
 
 void UCharacterInfo::NativeDestruct()
@@ -148,12 +136,14 @@ void UCharacterInfo::UpdateStats()
 		// 체력
 		const float CharacterHp = Stats.HP;
 		const float CharacterHpMax = Stats.HPMax;
-		UpdateHP(CharacterHp, CharacterHpMax);
+		UpdateHealth(CharacterHp, CharacterHpMax);
+		DefaultCharacter->OnChangedHealth.AddDynamic(this, &UCharacterInfo::UpdateHealth);
 
 		// 스태미너
 		const float CharacterStamina = Stats.Stamina;
 		const float CharacterStaminaMax = Stats.StaminaMax;
 		UpdateStamina(CharacterStamina, CharacterStaminaMax);
+		DefaultCharacter->OnChangedStamina.AddDynamic(this, &UCharacterInfo::UpdateStamina);
 
 		// 경험치
 		const float CharacterExp = Stats.Exp;
@@ -231,16 +221,16 @@ void UCharacterInfo::UpdateStats()
 	}
 }
 
-void UCharacterInfo::UpdateHP(const float& CurrentHP, const float& MaxHP)
+void UCharacterInfo::UpdateHealth(const float& CurrentHp, const float& MaxHp)
 {
 	if (HpCurrent && HpMax && HPProgressBar)
 	{
-		HpCurrent->SetText(FText::FromString(FString::FromInt(CurrentHP)));
-		HpMax->SetText(FText::FromString(FString::FromInt(MaxHP)));
+		HpCurrent->SetText(FText::FromString(FString::FromInt(CurrentHp)));
+		HpMax->SetText(FText::FromString(FString::FromInt(MaxHp)));
 
-		if (CurrentHP != 0.f)
+		if (CurrentHp != 0.f)
 		{
-			HPProgressBar->SetPercent(CurrentHP / MaxHP);
+			HPProgressBar->SetPercent(CurrentHp / MaxHp);
 		}
 		else
 		{
@@ -249,16 +239,16 @@ void UCharacterInfo::UpdateHP(const float& CurrentHP, const float& MaxHP)
 	}
 }
 
-void UCharacterInfo::UpdateStamina(const float& CurrentStamina, const float& MaxStamina)
+void UCharacterInfo::UpdateStamina(const float& CurrentSp, const float& MaxSp)
 {
 	if (StaminaCurrent && StaminaMax && StaminaProgressBar)
 	{
-		StaminaCurrent->SetText(FText::FromString(FString::FromInt(CurrentStamina)));
-		StaminaMax->SetText(FText::FromString(FString::FromInt(MaxStamina)));
+		StaminaCurrent->SetText(FText::FromString(FString::FromInt(CurrentSp)));
+		StaminaMax->SetText(FText::FromString(FString::FromInt(MaxSp)));
 
-		if (CurrentStamina != 0.f)
+		if (CurrentSp != 0.f)
 		{
-			StaminaProgressBar->SetPercent(CurrentStamina / MaxStamina);
+			StaminaProgressBar->SetPercent(CurrentSp / MaxSp);
 		}
 		else
 		{

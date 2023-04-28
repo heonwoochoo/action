@@ -8,6 +8,8 @@
 #include "Components/Button.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/CanvasPanelSlot.h"
+#include "Kismet/GameplayStatics.h"
+#include "DefaultCharacter.h"
 
 void UChatBox::NativeConstruct()
 {
@@ -95,6 +97,33 @@ void UChatBox::OnReleasedMovingBar()
 		ChatMovingBar->SetBackgroundColor(FLinearColor(1.f, 1.f, 1.f, 1.f));
 	}
 	bCanMovable = false;
+}
+
+void UChatBox::ShowLevelUpText(const int32& NewLevel)
+{
+	const FString Message = FString(TEXT("캐릭터가 ")) + FString::FromInt(NewLevel) + FString(TEXT("레벨이 되었습니다."));
+	PrintMessageOnChat(FText::FromString(Message), FColor::Yellow);
+}
+
+void UChatBox::ShowItemUsed(const FName& ItemCode, const FItemSpec& Spec)
+{
+	const FString& ItemName = Spec.Name.ToString();
+	const FString Message = ItemName + FString(TEXT(" 소모품을 사용하였습니다."));
+	PrintMessageOnChat(FText::FromString(Message), FColor::Silver);
+}
+
+void UChatBox::ShowItemAdded(const FName& ItemCode, const FItemSpec& Spec)
+{
+	const FString& ItemName = Spec.Name.ToString();
+	const FString Message = ItemName + FString(TEXT(" 아이템을 획득하였습니다."));
+	PrintMessageOnChat(FText::FromString(Message), FColor::Yellow);
+}
+
+void UChatBox::ShowItemEquipped(const FName& ItemCode, const FItemSpec& Spec)
+{
+	const FString& ItemName = Spec.Name.ToString();
+	const FString Message = ItemName + FString(TEXT(" 장비를 착용하였습니다."));
+	PrintMessageOnChat(FText::FromString(Message), FColor::Silver);
 }
 
 void UChatBox::InitMovingBar()

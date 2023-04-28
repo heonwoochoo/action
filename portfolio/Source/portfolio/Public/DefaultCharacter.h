@@ -27,6 +27,13 @@ class AItemBase;
 class UParticleSystemComponent;
 class UHeadUpWidgetComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangedHealthSignature, const float&, CurrentHp, const float&, MaxHp);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangedStaminaSignature, const float&, CurrentSp, const float&, MaxSp);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangedExpSignature, const float&, CurrentExp, const float&, MaxExp);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangedLevelSignature, const int32&, NewLevel);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangedGoldSignature, const int32&, Value);
+
+
 UCLASS(config=Game)
 class ADefaultCharacter : public ACharacter
 {
@@ -37,6 +44,12 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 			
+	FOnChangedHealthSignature OnChangedHealth;
+	FOnChangedStaminaSignature OnChangedStamina;
+	FOnChangedExpSignature OnChangedExp;
+	FOnChangedLevelSignature OnChangedLevel;
+	FOnChangedGoldSignature OnGetGold;
+
 
 protected:
 	/** 캐릭터의 기본 스탯 */
@@ -195,22 +208,22 @@ private:
 	UInputAction* Skill4Action;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* Item1Action;
+	UInputAction* ItemSlotOneAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* Item2Action;
+	UInputAction* ItemSlotTwoAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* Item3Action;
+	UInputAction* ItemSlotThreeAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* Item4Action;
+	UInputAction* ItemSlotFourAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* Item5Action;
+	UInputAction* ItemSlotFiveAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* Item6Action;
+	UInputAction* ItemSlotSixAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PickupAction;
@@ -401,7 +414,7 @@ public:
 	void UpdateHealth(EStatUpdateType UpdateType, float Value);
 	void UpdateStamina(EStatUpdateType UpdateType, float Value);
 	void UpdateExp(EStatUpdateType UpdateType, float Value);
-	void UpdateGold(EStatUpdateType UpdateType, float Value);
+	void UpdateGold(EStatUpdateType UpdateType, const int32& Value);
 
 	void SetIsMouseShowing(bool bShowing);
 

@@ -116,91 +116,94 @@ public:
 	//===========================
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* Item1_Amount;
+	UTextBlock* ItemSlotOne_Amount;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UImage* ItemImage1;
+	UImage* ItemImageOne;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UProgressBar* ItemCoolDownProgressBar1;
+	UProgressBar* ItemCoolDownProgressBarOne;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* ItemCoolDownText1;
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* Item2_Amount;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UImage* ItemImage2;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UProgressBar* ItemCoolDownProgressBar2;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* ItemCoolDownText2;
+	UTextBlock* ItemCoolDownTextOne;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* Item3_Amount;
+	UTextBlock* ItemSlotTwo_Amount;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UImage* ItemImage3;
+	UImage* ItemImageTwo;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UProgressBar* ItemCoolDownProgressBar3;
+	UProgressBar* ItemCoolDownProgressBarTwo;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* ItemCoolDownText3;
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* Item4_Amount;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UImage* ItemImage4;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UProgressBar* ItemCoolDownProgressBar4;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* ItemCoolDownText4;
+	UTextBlock* ItemCoolDownTextTwo;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* Item5_Amount;
+	UTextBlock* ItemSlotThree_Amount;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UImage* ItemImage5;
+	UImage* ItemImageThree;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UProgressBar* ItemCoolDownProgressBar5;
+	UProgressBar* ItemCoolDownProgressBarThree;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* ItemCoolDownText5;
+	UTextBlock* ItemCoolDownTextThree;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* Item6_Amount;
+	UTextBlock* ItemSlotFour_Amount;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UImage* ItemImage6;
+	UImage* ItemImageFour;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UProgressBar* ItemCoolDownProgressBar6;
+	UProgressBar* ItemCoolDownProgressBarFour;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UTextBlock* ItemCoolDownText6;
+	UTextBlock* ItemCoolDownTextFour;
 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ItemSlotFive_Amount;
 
-	void Init();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* ItemImageFive;
 
-	void UpdateHP();
-	void UpdateStamina();
-	void UpdateExp();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UProgressBar* ItemCoolDownProgressBarFive;
 
-	void UpdateLevel();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ItemCoolDownTextFive;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ItemSlotSix_Amount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UImage* ItemImageSix;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UProgressBar* ItemCoolDownProgressBarSix;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* ItemCoolDownTextSix;
+
+
+	UFUNCTION()
+	void UpdateHealth(const float& CurrentHp, const float& MaxHp);
+
+	UFUNCTION()
+	void UpdateStamina(const float& CurrentSp, const float& MaxSp);
+
+	UFUNCTION()
+	void UpdateExp(const float& CurrentExp, const float& MaxExp);
+
+	UFUNCTION()
+	void UpdateLevel(const int32& NewLevel);
 
 	void UpdateSkillOne();
 	void UpdateSkillOneImage();
@@ -216,19 +219,47 @@ public:
 
 	void UpdateConsumableQuickSlot();
 	void UpdateConsumableAmount(const FName& Name, UTexture2D* Image, uint8 Amount);
+	
+	UFUNCTION()
+	void OnChangedQuickSlot(const FName& ItemCode, const FItemSpec& Spec);
 
 	void InitItemPotions();
 
-	void UpdateItemCoolDown1();
-	void UpdateItemCoolDown2();
-	void UpdateItemCoolDown3();
-	void UpdateItemCoolDown4();
-	void UpdateItemCoolDown5();
-	void UpdateItemCoolDown6();
+	UFUNCTION()
+	void UpdateCoolDownSlotOne(const float& Remaining, const float& Rate);
+	UFUNCTION()
+	void ResetCoolDownSlotOne();
+
+	UFUNCTION()
+	void UpdateCoolDownSlotTwo(const float& Remaining, const float& Rate);
+	UFUNCTION()
+	void ResetCoolDownSlotTwo();
+
+	UFUNCTION()
+	void UpdateCoolDownSlotThree(const float& Remaining, const float& Rate);
+	UFUNCTION()
+	void ResetCoolDownSlotThree();
+
+	UFUNCTION()
+	void UpdateCoolDownSlotFour(const float& Remaining, const float& Rate);
+	UFUNCTION()
+	void ResetCoolDownSlotFour();
+
+	UFUNCTION()
+	void UpdateCoolDownSlotFive(const float& Remaining, const float& Rate);
+	UFUNCTION()
+	void ResetCoolDownSlotFive();
+
+	UFUNCTION()
+	void UpdateCoolDownSlotSix(const float& Remaining, const float& Rate);
+	UFUNCTION()
+	void ResetCoolDownSlotSix();
 
 	void UpdateCoolDownUI(FTimerHandle* TimerHandle, UTextBlock* Text, UProgressBar* ProgressBar, bool IsEnable);
 
 private:
+	void Init();
+
 	// 아이템의 첫 번째 칸부터 순차적으로 이미지를 적용하기 위한 Index
 	uint8 PotionIdx = 0;
 

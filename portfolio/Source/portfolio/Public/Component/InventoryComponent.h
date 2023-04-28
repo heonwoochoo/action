@@ -9,6 +9,11 @@
 
 class AWeapon;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FItemSignature, const FName&, ItemCode, const FItemSpec&, Spec);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnProgressCoolDownSignature, const float&, Remaining, const float&, Rate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEndCoolDownSignature);
+
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PORTFOLIO_API UInventoryComponent : public UActorComponent
 {
@@ -16,6 +21,31 @@ class PORTFOLIO_API UInventoryComponent : public UActorComponent
 
 public:	
 	UInventoryComponent();
+
+	FItemSignature OnUsed;
+	FItemSignature OnAdded;
+	FItemSignature OnEquipped;
+	FItemSignature OnUnEquipped;
+
+	FOnProgressCoolDownSignature OnProgressCoolDownSlotOne;
+	FOnEndCoolDownSignature OnEndCoolDownSlotOne;
+
+	FOnProgressCoolDownSignature OnProgressCoolDownSlotTwo;
+	FOnEndCoolDownSignature OnEndCoolDownSlotTwo;
+
+	FOnProgressCoolDownSignature OnProgressCoolDownSlotThree;
+	FOnEndCoolDownSignature OnEndCoolDownSlotThree;
+
+	FOnProgressCoolDownSignature OnProgressCoolDownSlotFour;
+	FOnEndCoolDownSignature OnEndCoolDownSlotFour;
+
+	FOnProgressCoolDownSignature OnProgressCoolDownSlotFive;
+	FOnEndCoolDownSignature OnEndCoolDownSlotFive;
+
+	FOnProgressCoolDownSignature OnProgressCoolDownSlotSix;
+	FOnEndCoolDownSignature OnEndCoolDownSlotSix;
+
+	void NotifyCoolDown(const FTimerHandle& TimerHandle, const FOnProgressCoolDownSignature& Delegate);
 
 protected:
 	virtual void BeginPlay() override;
@@ -52,41 +82,41 @@ private:
 	// 퀵슬롯에 등록된 아이템
 	// 1,2,3 : 소모품
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FName Slot1;
+	FName SlotOne;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FName Slot2;
+	FName SlotTwo;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FName Slot3;
+	FName SlotThree;
 
 	// 4,5,6 : 장비
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FName Slot4;
+	FName SlotFour;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FName Slot5;
+	FName SlotFive;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FName Slot6;
+	FName SlotSix;
 
 	// 쿨타임 적용을 위한 타이머 핸들
-	FTimerHandle ItemTimerHandle1;
-	FTimerHandle ItemTimerHandle2;
-	FTimerHandle ItemTimerHandle3;
-	FTimerHandle ItemTimerHandle4;
-	FTimerHandle ItemTimerHandle5;
-	FTimerHandle ItemTimerHandle6;
+	FTimerHandle ItemSlotOneTimerHandle;
+	FTimerHandle ItemSlotTwoTimerHandle;
+	FTimerHandle ItemSlotThreeTimerHandle;
+	FTimerHandle ItemSlotFourTimerHandle;
+	FTimerHandle ItemSlotFiveTimerHandle;
+	FTimerHandle ItemSlotSixTimerHandle;
 
-	bool bEnableItem1 = true;
-	bool bEnableItem2 = true;
-	bool bEnableItem3 = true;
-	bool bEnableItem4 = true;
-	bool bEnableItem5 = true;
-	bool bEnableItem6 = true;
+	bool bEnableItemSlotOne = true;
+	bool bEnableItemSlotTwo = true;
+	bool bEnableItemSlotThree = true;
+	bool bEnableItemSlotFour = true;
+	bool bEnableItemSlotFive = true;
+	bool bEnableItemSlotSix = true;
 
-	void EndTimerHandle1();
-	void EndTimerHandle2();
-	void EndTimerHandle3();
-	void EndTimerHandle4();
-	void EndTimerHandle5();
-	void EndTimerHandle6();
+	void EndSlotOneTimerHandle();
+	void EndSlotTwoTimerHandle();
+	void EndSlotThreeTimerHandle();
+	void EndSlotFourTimerHandle();
+	void EndSlotFiveTimerHandle();
+	void EndSlotSixTimerHandle();
 
 	// 포션의 데이터 값을 캐릭터에게 적용
 	void EffectConsumable(const FName& ItemCode);
@@ -98,6 +128,9 @@ private:
 	void PlayConsumeSound();
 
 	void InitEquippedItemList();
+
+	// 아이템 사용시 슬롯의 쿨다운을 알림
+	void HandleItemSlotCoolDown();
 
 public:
 
@@ -122,16 +155,13 @@ public:
 	// 인벤토리 슬롯의 개수를 반환
 	int32 GetInventorySlotNumber(const EItemType& Type);
 
-	// UI 이미지와 수량을 업데이트
-	void UpdateConsumableUI();
-
 	// 퀵슬롯 관련 호출 함수
-	void SlotHandle_1();
-	void SlotHandle_2();
-	void SlotHandle_3();
-	void SlotHandle_4();
-	void SlotHandle_5();
-	void SlotHandle_6();
+	void HandleSlotOne();
+	void HandleSlotTwo();
+	void HandleSlotThree();
+	void HandleSlotFour();
+	void HandleSlotFive();
+	void HandleSlotSix();
 
 	// 소모품 아이템 매핑 초기화
 	void ResetItemConsumableMapping();
