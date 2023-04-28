@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -89,7 +89,7 @@ private:
 	void InitChatBox();
 	void InitGuideMessage();
 
-	// ¿­·ÁÀÖ´Â ÀÎ°ÔÀÓ ÀÚ½Ä ¸Ş´ºÃ¢ÀÌ ÀÖÀ¸¸é ´İ±â 
+	// ì—´ë ¤ìˆëŠ” ì¸ê²Œì„ ìì‹ ë©”ë‰´ì°½ì´ ìˆìœ¼ë©´ ë‹«ê¸° 
 	void CloseAllInGameChildWidget();
 
 public:
@@ -100,7 +100,7 @@ public:
 	void ShowItemTooltip(const FName& ItemCode, const FVector2D& Location);
 	void HideItemTooltip();
 
-	// Ä³¸¯ÅÍ ÄÁÆ®·Ñ ¸ğµå -> UI¸ğµå ÀüÈ¯½Ã¿¡ Ç×»ó È£ÃâµÇ¾î¾ßÇÔ
+	// ìºë¦­í„° ì»¨íŠ¸ë¡¤ ëª¨ë“œ -> UIëª¨ë“œ ì „í™˜ì‹œì— í•­ìƒ í˜¸ì¶œë˜ì–´ì•¼í•¨
 	void CreateInGameMenuToggleButton();
 
 	FORCEINLINE UInfoContainer* GetInfoContainer() { return InfoContainer; }
@@ -115,10 +115,10 @@ public:
 
 	void SetInGameMenuChildWidgetClasses(const TArray<TSubclassOf<UUserWidget>>& Classes);
 
-	//È­¸é Áß¾Ó »ó´Ü¿¡ À¯Àú ¾Ë¸² ¸Ş¼¼Áö Ãâ·Â
+	//í™”ë©´ ì¤‘ì•™ ìƒë‹¨ì— ìœ ì € ì•Œë¦¼ ë©”ì„¸ì§€ ì¶œë ¥
 	void NotifyMessageToUser(const FText& Message);
 
-	// °¡ÀÌµå ¸Ş¼¼Áö Åä±Û
+	// ê°€ì´ë“œ ë©”ì„¸ì§€ í† ê¸€
 	void ShowGuideMessage(const FText& Message);
 	void HideGuideMessage();
 };

@@ -172,8 +172,11 @@ enum class ESkillNumber : uint8
 	ESN_One UMETA(DisplayName = "One"),
 	ESN_Two UMETA(DisplayName = "Two"),
 	ESN_Three UMETA(DisplayName = "Three"),
-	ESN_Four UMETA(DisplayName = "Four")
+	ESN_Four UMETA(DisplayName = "Four"),
+	ESN_None UMETA(DisplayName = "None")
 };
+ENUM_RANGE_BY_FIRST_AND_LAST(ESkillNumber, ESkillNumber::ESN_One, ESkillNumber::ESN_Four);
+
 
 USTRUCT(BlueprintType)
 struct FCharacterSkill : public FTableRowBase

@@ -13,7 +13,6 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FItemSignature, const FName&, ItemC
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnProgressCoolDownSignature, const float&, Remaining, const float&, Rate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEndCoolDownSignature);
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PORTFOLIO_API UInventoryComponent : public UActorComponent
 {
@@ -147,7 +146,7 @@ public:
 	// 소모품 획득시 아이템 목록 업데이트
 	void AddItem(const FName& ItemCode);
 
-	// 소모품 사용시 아이템 목록 업데이트
+	// 소모품 사용
 	void UseItem(const FName& ItemCode);
 
 	UDataTable* GetItemDataTable() const;
@@ -163,11 +162,13 @@ public:
 	void HandleSlotFive();
 	void HandleSlotSix();
 
-	// 소모품 아이템 매핑 초기화
-	void ResetItemConsumableMapping();
+	const TArray<FName> GetItemSlots() const;
+
+	// 해당 아이템 코드를 가지고있는 슬롯을 찾아 초기화
+	void RemoveItemSlot(const FName& ItemCode);
 
 	// 소모품 아이템 매핑, UI가 업데이트 되면서 호출됨
-	void SetItemConsumableMapping(const FName& ItemCode, uint8 Idx);
+	void SetItemSlotMapping(const FName& ItemCode, uint8 Idx);
 
 	FTimerHandle* GetItemTimerHandle(EItemNumber ItemNum);
 

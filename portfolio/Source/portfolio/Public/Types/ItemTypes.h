@@ -18,7 +18,10 @@ enum class EItemNumber : uint8
 	EIN_4 UMETA(DisplayName = "ItemSlotFour"),
 	EIN_5 UMETA(DisplayName = "ItemSlotFive"),
 	EIN_6 UMETA(DisplayName = "ItemSlotSix"),
+	EIN_NONE UMETA(DisplayName = "NONE"),
 };
+
+ENUM_RANGE_BY_FIRST_AND_LAST(EItemNumber, EItemNumber::EIN_1, EItemNumber::EIN_6);
 
 UENUM(BlueprintType)
 enum class EEquipmentType : uint8

@@ -19,7 +19,6 @@ UInventoryComponent::UInventoryComponent()
 	InitEquippedItemList();
 }
 
-
 void UInventoryComponent::NotifyCoolDown(const FTimerHandle& TimerHandle, const FOnProgressCoolDownSignature& Delegate)
 {
 	const FTimerManager& TimerManager = GetWorld()->GetTimerManager();
@@ -33,7 +32,6 @@ void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ResetItemConsumableMapping();
 }
 
 
@@ -83,28 +81,30 @@ void UInventoryComponent::EndSlotSixTimerHandle()
 void UInventoryComponent::EffectConsumable(const FName& ItemCode)
 {
 	FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(ItemCode, "");
-
-	EStatTarget Target{};
-
-	const FCharacterStats& Stats = Spec->Stats;
-
-	float AbilityPoint{};
-
-	if (Stats.HP > 0)
+	if (Spec)
 	{
-		Target = EStatTarget::EST_Health;
-		AbilityPoint = Stats.HP;
-	}
-	else if (Stats.Stamina > 0)
-	{
-		Target = EStatTarget::EST_Stamina;
-		AbilityPoint = Stats.Stamina;
-	}
-	
-	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(GetOwner());
-	if (DefaultCharacter)
-	{
-		DefaultCharacter->UpdateStatManager(Target, EStatUpdateType::ESUT_Plus, AbilityPoint);
+		EStatTarget Target{};
+
+		const FCharacterStats& Stats = Spec->Stats;
+
+		float AbilityPoint{};
+
+		if (Stats.HP > 0)
+		{
+			Target = EStatTarget::EST_Health;
+			AbilityPoint = Stats.HP;
+		}
+		else if (Stats.Stamina > 0)
+		{
+			Target = EStatTarget::EST_Stamina;
+			AbilityPoint = Stats.Stamina;
+		}
+
+		ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(GetOwner());
+		if (DefaultCharacter)
+		{
+			DefaultCharacter->UpdateStatManager(Target, EStatUpdateType::ESUT_Plus, AbilityPoint);
+		}
 	}
 }
 
@@ -239,13 +239,35 @@ void UInventoryComponent::AddItem(const FName& ItemCode)
 		{
 			ItemList.Add(ItemCode);
 			ItemList[ItemCode] = 1;
-		}
 
-		if (ItemSpec->Type == EItemType::EIT_Consumable)
-		{
-			ResetItemConsumableMapping();
+			if (ItemSpec->Type == EItemType::EIT_Consumable)
+			{
+				if (SlotOne.IsNone())
+				{
+					SlotOne = ItemCode;
+				}
+				else if (SlotTwo.IsNone())
+				{
+					SlotTwo = ItemCode;
+				}
+				else if (SlotThree.IsNone())
+				{
+					SlotThree = ItemCode;
+				}
+				else if (SlotFour.IsNone())
+				{
+					SlotFour = ItemCode;
+				}
+				else if (SlotFive.IsNone())
+				{
+					SlotFive = ItemCode;
+				}
+				else if (SlotSix.IsNone())
+				{
+					SlotSix = ItemCode;
+				}
+			}
 		}
-
 		OnAdded.Broadcast(ItemCode, *ItemSpec);
 	}
 }
@@ -253,30 +275,36 @@ void UInventoryComponent::AddItem(const FName& ItemCode)
 void UInventoryComponent::UseItem(const FName& ItemCode)
 {
 	if (ItemCode.IsNone() || ItemSpecData == nullptr) return;
-	
+
 	FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(ItemCode, "");
-	EItemType ItemType = Spec->Type;
-	if (ItemType == EItemType::EIT_Consumable)
+	if (Spec)
 	{
-		if (ItemList.Contains(ItemCode))
-		{	
-			// 데이터 업데이트
-			if (ItemList[ItemCode] == 1)
+		EItemType ItemType = Spec->Type;
+		if (ItemType == EItemType::EIT_Consumable)
+		{
+			if (ItemList.Contains(ItemCode))
 			{
-				ItemList.Remove(ItemCode);
+				const FName CopyItemCode = ItemCode;
+				// 데이터 업데이트
+				if (ItemList[ItemCode] == 1)
+				{
+					ItemList.Remove(ItemCode);
+					RemoveItemSlot(ItemCode);
+				}
+				else
+				{
+					ItemList[ItemCode]--;
+				}
+
+				OnUsed.Broadcast(CopyItemCode, *Spec);
+
+				// 실제 데이터 적용
+				EffectConsumable(CopyItemCode);
+
+				SpawnConsumeParticle(Spec->EffectParticle);
+
+				PlayConsumeSound();
 			}
-			else ItemList[ItemCode]--;
-
-			// 실제 데이터 적용
-			EffectConsumable(ItemCode);
-
-			ResetItemConsumableMapping();
-
-			OnUsed.Broadcast(ItemCode, *Spec);
-
-			SpawnConsumeParticle(Spec->EffectParticle);
-
-			PlayConsumeSound();
 		}
 	}
 }
@@ -305,12 +333,15 @@ void UInventoryComponent::HandleSlotOne()
 	{
 		bEnableItemSlotOne = false;
 
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(SlotOne, "");
-		const float CoolDown = ItemSpec.Stats.CoolDown;
+		FItemSpec* ItemSpec = ItemSpecData->FindRow<FItemSpec>(SlotOne, "");
+		if (ItemSpec)
+		{
+			const float& CoolDown = ItemSpec->Stats.CoolDown;
 
-		GetWorld()->GetTimerManager().SetTimer(ItemSlotOneTimerHandle, this, &UInventoryComponent::EndSlotOneTimerHandle, CoolDown);
-		
-		UseItem(SlotOne);
+			GetWorld()->GetTimerManager().SetTimer(ItemSlotOneTimerHandle, this, &UInventoryComponent::EndSlotOneTimerHandle, CoolDown);
+
+			UseItem(SlotOne);
+		}
 	}
 }
 
@@ -320,12 +351,15 @@ void UInventoryComponent::HandleSlotTwo()
 	{
 		bEnableItemSlotTwo = false;
 
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(SlotTwo, "");
-		const float CoolDown = ItemSpec.Stats.CoolDown;
+		FItemSpec* ItemSpec = ItemSpecData->FindRow<FItemSpec>(SlotTwo, "");
+		if (ItemSpec)
+		{
+			const float& CoolDown = ItemSpec->Stats.CoolDown;
 
-		GetWorld()->GetTimerManager().SetTimer(ItemSlotTwoTimerHandle, this, &UInventoryComponent::EndSlotTwoTimerHandle, CoolDown);
+			GetWorld()->GetTimerManager().SetTimer(ItemSlotTwoTimerHandle, this, &UInventoryComponent::EndSlotTwoTimerHandle, CoolDown);
 
-		UseItem(SlotTwo);
+			UseItem(SlotTwo);
+		}
 	}
 }
 
@@ -335,12 +369,15 @@ void UInventoryComponent::HandleSlotThree()
 	{
 		bEnableItemSlotThree = false;
 
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(SlotThree, "");
-		const float CoolDown = ItemSpec.Stats.CoolDown;
+		FItemSpec* ItemSpec = ItemSpecData->FindRow<FItemSpec>(SlotThree, "");
+		if (ItemSpec)
+		{
+			const float& CoolDown = ItemSpec->Stats.CoolDown;
 
-		GetWorld()->GetTimerManager().SetTimer(ItemSlotThreeTimerHandle, this, &UInventoryComponent::EndSlotThreeTimerHandle, CoolDown);
+			GetWorld()->GetTimerManager().SetTimer(ItemSlotThreeTimerHandle, this, &UInventoryComponent::EndSlotThreeTimerHandle, CoolDown);
 
-		UseItem(SlotThree);
+			UseItem(SlotThree);
+		}
 	}
 }
 
@@ -350,12 +387,15 @@ void UInventoryComponent::HandleSlotFour()
 	{
 		bEnableItemSlotFour = false;
 
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(SlotFour, "");
-		const float CoolDown = ItemSpec.Stats.CoolDown;
+		FItemSpec* ItemSpec = ItemSpecData->FindRow<FItemSpec>(SlotFour, "");
+		if (ItemSpec)
+		{
+			const float& CoolDown = ItemSpec->Stats.CoolDown;
 
-		GetWorld()->GetTimerManager().SetTimer(ItemSlotFourTimerHandle, this, &UInventoryComponent::EndSlotFourTimerHandle, CoolDown);
+			GetWorld()->GetTimerManager().SetTimer(ItemSlotFourTimerHandle, this, &UInventoryComponent::EndSlotFourTimerHandle, CoolDown);
 
-		UseItem(SlotFour);
+			UseItem(SlotFour);
+		}
 	}
 }
 
@@ -365,12 +405,15 @@ void UInventoryComponent::HandleSlotFive()
 	{
 		bEnableItemSlotFive = false;
 
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(SlotFive, "");
-		const float CoolDown = ItemSpec.Stats.CoolDown;
+		FItemSpec* ItemSpec = ItemSpecData->FindRow<FItemSpec>(SlotFive, "");
+		if (ItemSpec)
+		{
+			const float& CoolDown = ItemSpec->Stats.CoolDown;
 
-		GetWorld()->GetTimerManager().SetTimer(ItemSlotFiveTimerHandle, this, &UInventoryComponent::EndSlotFiveTimerHandle, CoolDown);
+			GetWorld()->GetTimerManager().SetTimer(ItemSlotFiveTimerHandle, this, &UInventoryComponent::EndSlotFiveTimerHandle, CoolDown);
 
-		UseItem(SlotFive);
+			UseItem(SlotFive);
+		}
 	}
 }
 
@@ -380,23 +423,53 @@ void UInventoryComponent::HandleSlotSix()
 	{
 		bEnableItemSlotSix = false;
 
-		const FItemSpec& ItemSpec = *ItemSpecData->FindRow<FItemSpec>(SlotSix, "");
-		const float CoolDown = ItemSpec.Stats.CoolDown;
+		FItemSpec* ItemSpec = ItemSpecData->FindRow<FItemSpec>(SlotSix, "");
+		if (ItemSpec)
+		{
+			const float& CoolDown = ItemSpec->Stats.CoolDown;
 
-		GetWorld()->GetTimerManager().SetTimer(ItemSlotSixTimerHandle, this, &UInventoryComponent::EndSlotSixTimerHandle, CoolDown);
+			GetWorld()->GetTimerManager().SetTimer(ItemSlotSixTimerHandle, this, &UInventoryComponent::EndSlotSixTimerHandle, CoolDown);
 
-		UseItem(SlotSix);
+			UseItem(SlotSix);
+		}
 	}
 }
 
-void UInventoryComponent::ResetItemConsumableMapping()
+const TArray<FName> UInventoryComponent::GetItemSlots() const
 {
-	SlotOne = FName();
-	SlotTwo = FName();
-	SlotThree = FName();
+	const TArray<FName> SlotArray = { SlotOne, SlotTwo, SlotThree, SlotFour, SlotFive, SlotSix };
+	return SlotArray;
 }
 
-void UInventoryComponent::SetItemConsumableMapping(const FName& ItemCode, uint8 Idx)
+void UInventoryComponent::RemoveItemSlot(const FName& ItemCode)
+{
+	if (SlotOne == ItemCode)
+	{
+		SlotOne = FName();
+	}
+	else if (SlotTwo == ItemCode)
+	{
+		SlotTwo = FName();
+	}
+	else if (SlotThree == ItemCode)
+	{
+		SlotThree = FName();
+	}
+	else if (SlotFour == ItemCode)
+	{
+		SlotFour = FName();
+	}
+	else if (SlotFive == ItemCode)
+	{
+		SlotFive = FName();
+	}
+	else if (SlotSix == ItemCode)
+	{
+		SlotSix = FName();
+	}
+}
+
+void UInventoryComponent::SetItemSlotMapping(const FName& ItemCode, uint8 Idx)
 {
 	switch (Idx)
 	{
@@ -408,6 +481,15 @@ void UInventoryComponent::SetItemConsumableMapping(const FName& ItemCode, uint8 
 		break;
 	case 2:
 		SlotThree = ItemCode;
+		break;
+	case 3:
+		SlotFour = ItemCode;
+		break;
+	case 4:
+		SlotFive = ItemCode;
+		break;
+	case 5:
+		SlotSix = ItemCode;
 		break;
 	}
 }

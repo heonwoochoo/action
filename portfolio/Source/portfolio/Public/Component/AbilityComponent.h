@@ -5,16 +5,12 @@
 #include "Types/CharacterTypes.h"
 #include "AbilityComponent.generated.h"
 
-class UCharacterDataAsset;
-class ADefaultCharacter;
-class UAnimMontage;
-class UCharacterSkillAsset;
 class UAnimInstanceBase;
-class AKnifeProjectile;
-class AAssassin_SkillOne;
-class AEnemyBase;
-class USoundCue;
 class UDataTable;
+class ADefaultCharacter;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnProgressSkillCoolDownSignature, const float&, Remaining, const float&, Rate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEndSkillCoolDownSignature);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PORTFOLIO_API UAbilityComponent : public UActorComponent
@@ -26,6 +22,17 @@ public:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	FOnProgressSkillCoolDownSignature OnProgressSkillOne;
+	FOnEndSkillCoolDownSignature OnEndSkillOne;
+
+	FOnProgressSkillCoolDownSignature OnProgressSkillTwo;
+	FOnEndSkillCoolDownSignature OnEndSkillTwo;
+
+	FOnProgressSkillCoolDownSignature OnProgressSkillThree;
+	FOnEndSkillCoolDownSignature OnEndSkillThree;
+
+	FOnProgressSkillCoolDownSignature OnProgressSkillFour;
+	FOnEndSkillCoolDownSignature OnEndSkillFour;
 
 protected:
 	virtual void BeginPlay() override;
@@ -114,4 +121,7 @@ public:
 
 	// 캐릭터의 직업에 따른 RowName을 얻음
 	FName GetRowClassName();
+
+	// 쿨다운일 경우 알림
+	void NotifyCoolDown(const FTimerHandle& TimerHandle, const FOnProgressSkillCoolDownSignature& Delegate);
 };

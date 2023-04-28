@@ -10,6 +10,7 @@ class UCameraShakeBase;
 class AEnemyBase;
 class UNiagaraSystem;
 class UParticleSystem;
+class AKnifeProjectile;
 
 UCLASS()
 class PORTFOLIO_API UAssassinComponent : public UAbilityComponent

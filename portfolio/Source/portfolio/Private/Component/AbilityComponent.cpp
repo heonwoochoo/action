@@ -46,6 +46,7 @@ void UAbilityComponent::InitializeComponent()
 void UAbilityComponent::EndSkillOneTimer()
 {
 	bCanSkillOne = true;
+	OnEndSkillOne.Broadcast();
 }
 
 void UAbilityComponent::SetSkillOneTimer()
@@ -56,6 +57,7 @@ void UAbilityComponent::SetSkillOneTimer()
 void UAbilityComponent::EndSkillTwoTimer()
 {
 	bCanSkillTwo = true;
+	OnEndSkillTwo.Broadcast();
 }
 
 void UAbilityComponent::SetSkillTwoTimer()
@@ -66,6 +68,7 @@ void UAbilityComponent::SetSkillTwoTimer()
 void UAbilityComponent::EndSkillThreeTimer()
 {
 	bCanSkillThree = true;
+	OnEndSkillThree.Broadcast();
 }
 
 void UAbilityComponent::SetSkillThreeTimer()
@@ -76,6 +79,7 @@ void UAbilityComponent::SetSkillThreeTimer()
 void UAbilityComponent::EndSkillFourTimer()
 {
 	bCanSkillFour = true;
+	OnEndSkillFour.Broadcast();
 }
 
 void UAbilityComponent::SetSkillFourTimer()
@@ -85,30 +89,22 @@ void UAbilityComponent::SetSkillFourTimer()
 
 void UAbilityComponent::HandleSkillOne()
 {
-
-		SetSkillOneTimer();
-	
+	SetSkillOneTimer();
 }
 
 void UAbilityComponent::HandleSkillTwo()
 {
-
-		SetSkillTwoTimer();
-	
+	SetSkillTwoTimer();
 }
 
 void UAbilityComponent::HandleSkillThree()
 {
-
-		SetSkillThreeTimer();
-	
+	SetSkillThreeTimer();
 }
 
 void UAbilityComponent::HandleSkillFour()
 {
-
-		SetSkillFourTimer();
-	
+	SetSkillFourTimer();
 }
 
 void UAbilityComponent::SpawnParticleEffect(UParticleSystem* Particle)
@@ -191,9 +187,35 @@ FName UAbilityComponent::GetRowClassName()
 	return RowClassName;
 }
 
+void UAbilityComponent::NotifyCoolDown(const FTimerHandle& TimerHandle, const FOnProgressSkillCoolDownSignature& Delegate)
+{
+	const FTimerManager& TimerManager = GetWorld()->GetTimerManager();
+	const float& Remaining = TimerManager.GetTimerRemaining(TimerHandle);
+	const float& Rate = TimerManager.GetTimerRate(TimerHandle);
+
+	Delegate.Broadcast(Remaining, Rate);
+}
+
 // Called every frame
 void UAbilityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (!bCanSkillOne)
+	{
+		NotifyCoolDown(SkillOneHandle, OnProgressSkillOne);
+	}
+	if (!bCanSkillTwo)
+	{
+		NotifyCoolDown(SkillTwoHandle, OnProgressSkillTwo);
+	}
+	if (!bCanSkillThree)
+	{
+		NotifyCoolDown(SkillThreeHandle, OnProgressSkillThree);
+	}
+	if (!bCanSkillFour)
+	{
+		NotifyCoolDown(SkillFourHandle, OnProgressSkillFour);
+	}
 }
 
