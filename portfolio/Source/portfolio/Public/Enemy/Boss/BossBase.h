@@ -51,6 +51,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
 	AActor* CombatTarget;
 
+	// 해당 거리 이내로 타겟이 들어오면 이동을 멈춤
+	float AcceptanceRadius = 1000.f;
+	
+
 
 public:
 	FORCEINLINE const FName& GetCode() const { return BossCode; }
@@ -60,17 +64,25 @@ public:
 	FORCEINLINE void SetState(const EBossState& NewState) { State = NewState; }
 
 
-	// 플레이어 체크
+	// 범위 내 플레이어를 찾아 타겟으로 저장
 	void FindTarget();
+
+	// 범위 내 타겟이 있는지 체크
+	bool IsTargetInRange(const float& Radius, AActor* Target);
+
+	// 몸체의 Z축을 타겟 방향으로 천천히 회전시킴
+	void RotateBodyToCombatTarget(float DeltaTime);
 
 	// 타겟을 향해 이동
 	void ChaseTarget();
 
-	
-
-
 	// 스킬 구현
+	virtual void Attack();
+	virtual void HandleSkillOne();
+	virtual void HandleSkillTwo();
+	virtual void HandleSkillThree();
 
+	
 
 private:
 	// 데이터 테이블로부터 스탯 데이터를 불러와 저장

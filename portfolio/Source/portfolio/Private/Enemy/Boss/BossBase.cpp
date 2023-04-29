@@ -1,13 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Enemy/BossBase.h"
+#include "Enemy/Boss/BossBase.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "DefaultCharacter.h"
 #include "AIController.h"
 #include "Animation/BossAnimInstance.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 ABossBase::ABossBase()
@@ -46,6 +47,13 @@ void ABossBase::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEve
 	LoadStats();
 }
 
+void ABossBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+
+
 float ABossBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
@@ -57,7 +65,7 @@ void ABossBase::FindTarget()
 	const TArray<TEnumAsByte<EObjectTypeQuery>>& ObjectTypes = { UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn)};
 	const TArray<AActor*> ActorsToIgnore = {this};
 	TArray<AActor*> OutActors;
-	bool Exist = UKismetSystemLibrary::SphereOverlapActors(this, GetActorLocation(), 1000.f, ObjectTypes, TSubclassOf<AActor>(), ActorsToIgnore, OutActors);
+	bool Exist = UKismetSystemLibrary::SphereOverlapActors(this, GetActorLocation(), 3000.f, ObjectTypes, TSubclassOf<AActor>(), ActorsToIgnore, OutActors);
 
 	if (Exist && OutActors.Num() > 0)
 	{
@@ -71,15 +79,63 @@ void ABossBase::FindTarget()
 	}
 }
 
+bool ABossBase::IsTargetInRange(const float& Radius, AActor* Target)
+{
+	const float Distance = (Target->GetActorLocation() - GetActorLocation()).Length();
+
+	if (Distance < Radius)
+	{
+		return true;
+	}
+	return false;
+}
+
+void ABossBase::RotateBodyToCombatTarget(float DeltaTime)
+{
+	const FVector& StartLocation = GetActorLocation();
+	const FVector& TargetLocation = CombatTarget->GetActorLocation();
+
+	const double& LookAtYaw = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation).Yaw;
+	const double& CurrentYaw = GetActorRotation().Yaw;
+
+	const double& NewYaw = FMath::FInterpTo(CurrentYaw, LookAtYaw, DeltaTime, 5.f);
+
+	FRotator CurrentRotator = GetActorRotation();
+	CurrentRotator.Yaw = NewYaw;
+	SetActorRotation(CurrentRotator);
+}
+
 void ABossBase::ChaseTarget()
 {
 	if (CombatTarget && BossController)
 	{
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 		FAIMoveRequest AIMoveRequest;
-		AIMoveRequest.SetAcceptanceRadius(50.f);
+		AIMoveRequest.SetAcceptanceRadius(AcceptanceRadius);
 		AIMoveRequest.SetGoalActor(CombatTarget);
 		BossController->MoveTo(AIMoveRequest);
+		SetState(EBossState::EES_Chasing);
 	}
+}
+
+void ABossBase::Attack()
+{
+	SetState(EBossState::EES_Attacking);
+}
+
+void ABossBase::HandleSkillOne()
+{
+	SetState(EBossState::EES_Casting);
+}
+
+void ABossBase::HandleSkillTwo()
+{
+	SetState(EBossState::EES_Casting);
+}
+
+void ABossBase::HandleSkillThree()
+{
+	SetState(EBossState::EES_Casting);
 }
 
 void ABossBase::LoadStats()
@@ -98,8 +154,3 @@ void ABossBase::LoadStats()
 	}
 }
 
-void ABossBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}

@@ -60,11 +60,6 @@ void AMan::AttackCharacter()
 		ADefaultCharacter* Character = Cast<ADefaultCharacter>(Actor);
 		if (Character)
 		{
-			UAnimInstanceBase* AnimInstance = Cast<UAnimInstanceBase>(Character->GetMesh()->GetAnimInstance());
-			if (AnimInstance)
-			{
-				AnimInstance->PlayHitReact();
-			}
 			DamageToPlayer(Character);
 		}
 	}

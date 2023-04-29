@@ -27,6 +27,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly);
 	float Speed = 0.f;
 
+	FTimerHandle EndAttackTimer;
+	float AttackTimerRate = 2.f;
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
@@ -36,4 +38,11 @@ public:
 	virtual void OnEndMontage(UAnimMontage* Montage, bool bInterrupted);
 
 	void PlayOpeningAnimation();
+	void PlayAttackAnimation();
+	void PlaySkillOneAnimation();
+	void PlaySkillTwoAnimation();
+	void PlaySkillThreeAnimation();
+
+	// 타이머가 끝나고 호출되는 코드
+	void OnEndAttackTimer();
 };

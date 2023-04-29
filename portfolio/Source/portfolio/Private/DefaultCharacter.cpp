@@ -540,6 +540,12 @@ float ADefaultCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+	// 애니메이션
+	if (AnimInstance)
+	{
+		AnimInstance->PlayHitReact();
+	}
+
 	// 체력 업데이트
 	UpdateStatManager(EStatTarget::EST_Health, EStatUpdateType::ESUT_Minus, DamageAmount);
 	
