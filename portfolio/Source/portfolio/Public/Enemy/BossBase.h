@@ -59,7 +59,16 @@ public:
 	FORCEINLINE const EBossState& GetState() const { return State; }
 	FORCEINLINE void SetState(const EBossState& NewState) { State = NewState; }
 
+
 	// 플레이어 체크
+	void FindTarget();
+
+	// 타겟을 향해 이동
+	void ChaseTarget();
+
+	
+
+
 	// 스킬 구현
 
 

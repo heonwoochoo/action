@@ -23,5 +23,17 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
 	UDataTable* AnimDataTable;
 	
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly);
+	float Speed = 0.f;
 
+
+public:
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
+	FBossAnimation GetAnimation();
+
+	UFUNCTION()
+	virtual void OnEndMontage(UAnimMontage* Montage, bool bInterrupted);
+
+	void PlayOpeningAnimation();
 };
