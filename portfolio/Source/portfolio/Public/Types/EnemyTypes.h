@@ -77,3 +77,73 @@ struct FEnemyDefaultAnimation : public FTableRowBase
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UAnimMontage* Attack;
 };
+
+USTRUCT(BlueprintType)
+struct FBossStats : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName Name;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int32 Level;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Damage;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float MaxHp;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Hp;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Exp;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USkeletalMesh* SkeletalMesh;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSubclassOf<UAnimInstance> AnimationClass;
+};
+
+USTRUCT(BlueprintType)
+struct FBossAnimation : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* HitReact;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UBlendSpace1D* IdleWalkRun;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* Dead;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* Attack;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* SkillOne;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* SkillTwo;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* SkillThree;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* Opening;
+};
+
+UENUM(BlueprintType)
+enum class EBossState : uint8
+{
+	EES_NoState UMETA(DisplayName = "NoState"),
+	EES_Dead UMETA(DisplayName = "Dead"),
+	EES_Casting UMETA(DisplayName = "Patrolling"),
+	EES_Chasing UMETA(DisplayName = "Chasing"),
+	EES_Attacking UMETA(DisplayName = "Attacking"),
+};
