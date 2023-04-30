@@ -141,4 +141,9 @@ void UBossAnimInstance::OnEndMontage(UAnimMontage* Montage, bool bInterrupted)
 		Boss->SetState(EBossState::EBS_Resting);
 		GetWorld()->GetTimerManager().SetTimer(EndAttackTimer, this, &UBossAnimInstance::OnEndAttackTimer, AttackTimerRate, false);
 	}
+	else if (Montage == Animations.SkillTwo)
+	{
+		Boss->SetState(EBossState::EBS_Resting);
+		GetWorld()->GetTimerManager().SetTimer(EndAttackTimer, this, &UBossAnimInstance::OnEndAttackTimer, AttackTimerRate, false);
+	}
 }

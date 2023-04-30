@@ -7,6 +7,7 @@
 #include "Enemy/Boss/Gideon/DarkStone.h"
 #include "MotionWarpingComponent.h"
 #include "Enemy/Boss/Gideon/DarkWave.h"
+#include "Enemy/Boss/Gideon/DarkSword.h"
 
 ABossGideon::ABossGideon()
 {
@@ -30,7 +31,8 @@ void ABossGideon::Tick(float DeltaTime)
 	if (State == EBossState::EBS_Chasing && GetVelocity().Length() == 0.f)
 	{
 		//Attack();
-		HandleSkillOne();
+		//HandleSkillOne();
+		HandleSkillTwo();
 	}
 }
 
@@ -84,6 +86,15 @@ void ABossGideon::HandleSkillOne()
 void ABossGideon::HandleSkillTwo()
 {
 	Super::HandleSkillTwo();
+	SetState(EBossState::EBS_Attacking);
+
+	SetMotionWarpRotationToTarget();
+
+	UBossAnimInstance* AnimInstance = Cast<UBossAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance)
+	{
+		AnimInstance->PlaySkillTwoAnimation();
+	}
 }
 
 void ABossGideon::HandleSkillThree()
@@ -117,6 +128,21 @@ void ABossGideon::SpawnDarkWave()
 			DarkWave->AttachToComponent(GetMesh(), AttachmentRules, SocketName);
 			DarkWave->SetOwner(this);
 			DarkWave->SetDamage(Stats.Damage * 0.3f);
+		}
+	}
+}
+
+void ABossGideon::SpawnDarkSword()
+{
+	if (CombatTarget)
+	{
+		const FVector& SpawnLocation = GetActorLocation() + GetActorUpVector() * 500.f;
+
+		ADarkSword* DarkSword = GetWorld()->SpawnActor<ADarkSword>(DarkSwordClass, SpawnLocation, GetActorRotation());
+		if (DarkSword)
+		{
+			DarkSword->SetTarget(CombatTarget);
+			DarkSword->SetDamage(Stats.Damage);
 		}
 	}
 }

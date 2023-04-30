@@ -25,58 +25,45 @@ void ADarkWave::BeginPlay()
 	
 	if (BoxComponent)
 	{
-		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ADarkWave::OnOverlapped);
-		BoxComponent->SetGenerateOverlapEvents(false);
+		BoxComponent->SetGenerateOverlapEvents(true);
 	}
 	
 	// 오버랩 타이머 설정
-	GetWorld()->GetTimerManager().SetTimer(OverlapActivateTimerHandle, this, &ADarkWave::ActivateOverlap, OverlapStartTime, false);
-	GetWorld()->GetTimerManager().SetTimer(OverlapDeactivateTimerHandle, this, &ADarkWave::ActivateOverlap, OverlapEndTime, false);
+	GetWorld()->GetTimerManager().SetTimer(OverlapTimerHandle, this, &ADarkWave::CheckOverlapping, OverlapRate, false);
 
 	SetLifeSpan(3.f);
 }
 
-void ADarkWave::ActivateOverlap()
+void ADarkWave::CheckOverlapping()
 {
 	if (BoxComponent)
 	{
-		BoxComponent->SetGenerateOverlapEvents(true);
-	}
-}
+		TArray<AActor*> OverlappingActors;
+		BoxComponent->GetOverlappingActors(OverlappingActors);
 
-void ADarkWave::DeactivateOverlap()
-{
-	if (BoxComponent)
-	{
-		BoxComponent->SetGenerateOverlapEvents(false);
-	}
-}
-
-void ADarkWave::OnOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-
-	const bool IsPlayer = OtherActor->ActorHasTag(FName("Player"));
-	const bool IsDead = OtherActor->ActorHasTag(FName("Dead"));
-
-	if (IsPlayer && !IsDead)
-	{
-		const FVector& HitLocation = OtherActor->GetActorLocation();
-
-		// 데미지 적용
-		UGameplayStatics::ApplyDamage(OtherActor, Damage, nullptr, Owner, TSubclassOf<UDamageType>());
-		
-		// 파티클 생성
-		if (HitImpactParticle)
+		for (auto Actor : OverlappingActors)
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitImpactParticle, HitLocation);
-		}
-		// 소리 재생
-		if (HitSound)
-		{
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSound, HitLocation);
-		}
+			const bool IsPlayer = Actor->ActorHasTag(FName("Player"));
+			const bool IsDead = Actor->ActorHasTag(FName("Dead"));
 
-		// 오버랩 비활성화
-		BoxComponent->SetGenerateOverlapEvents(false);
+			if (IsPlayer && !IsDead)
+			{
+				const FVector& HitLocation = Actor->GetActorLocation();
+
+				// 데미지 적용
+				UGameplayStatics::ApplyDamage(Actor, Damage, nullptr, Owner, TSubclassOf<UDamageType>());
+
+				// 파티클 생성
+				if (HitImpactParticle)
+				{
+					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitImpactParticle, HitLocation);
+				}
+				// 소리 재생
+				if (HitSound)
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSound, HitLocation);
+				}
+			}
+		}
 	}
 }

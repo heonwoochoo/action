@@ -8,6 +8,7 @@
 
 class ADarkStone;
 class ADarkWave;
+class ADarkSword;
 
 /**
  * < 공격 패턴 >
@@ -36,6 +37,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
 	TSubclassOf<ADarkWave> DarkWaveClass;
 
+	// 스킬 2 사용시 생성될 오브젝트의 클래스
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
+	TSubclassOf<ADarkSword> DarkSwordClass;
+
 public:
 	// 스킬 구현
 	virtual void Attack() override;
@@ -52,4 +57,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SpawnDarkWave();
 
+	// 스킬 2번 : 투검 생성
+	UFUNCTION(BlueprintCallable)
+	void SpawnDarkSword();
 };
