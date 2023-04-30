@@ -87,12 +87,32 @@ void UBossAnimInstance::PlaySkillThreeAnimation()
 	}
 }
 
+void UBossAnimInstance::PlayVictoryAnimation()
+{
+	const FBossAnimation& Animations = GetAnimation();
+	UAnimMontage* Montage = Animations.Victory;
+	if (Montage)
+	{
+		Montage_Play(Montage);
+	}
+}
+
+void UBossAnimInstance::PlayBackStepAnimation()
+{
+	const FBossAnimation& Animations = GetAnimation();
+	UAnimMontage* Montage = Animations.BackStep;
+	if (Montage)
+	{
+		Montage_Play(Montage);
+	}
+}
+
 void UBossAnimInstance::OnEndAttackTimer()
 {
 	ABossBase* Boss = Cast<ABossBase>(TryGetPawnOwner());
-	if (Boss)
+	if (Boss && Boss->HasTarget())
 	{
-		Boss->ChaseTarget();
+		Boss->BackStep();
 	};
 }
 
@@ -109,7 +129,16 @@ void UBossAnimInstance::OnEndMontage(UAnimMontage* Montage, bool bInterrupted)
 	}
 	else if (Montage == Animations.Attack)
 	{
-		Boss->SetState(EBossState::EES_Resting);
+		Boss->SetState(EBossState::EBS_Resting);
 		GetWorld()->GetTimerManager().SetTimer(EndAttackTimer,this, &UBossAnimInstance::OnEndAttackTimer, AttackTimerRate, false);
+	}
+	else if (Montage == Animations.BackStep)
+	{
+		Boss->ChaseTarget();
+	}
+	else if (Montage == Animations.SkillOne)
+	{
+		Boss->SetState(EBossState::EBS_Resting);
+		GetWorld()->GetTimerManager().SetTimer(EndAttackTimer, this, &UBossAnimInstance::OnEndAttackTimer, AttackTimerRate, false);
 	}
 }

@@ -7,6 +7,7 @@
 #include "BossGideon.generated.h"
 
 class ADarkStone;
+class ADarkWave;
 
 /**
  * < 공격 패턴 >
@@ -27,12 +28,18 @@ protected:
 
 	virtual void Tick(float DeltaTime) override;
 
+	// 기본 공격시 생성될 오브젝트의 클래스
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
 	TSubclassOf<ADarkStone> DarkStoneClass;
+
+	// 스킬 1 사용시 생성될 오브젝트의 클래스
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
+	TSubclassOf<ADarkWave> DarkWaveClass;
 
 public:
 	// 스킬 구현
 	virtual void Attack() override;
+	virtual void BackStep() override;
 	virtual void HandleSkillOne() override;
 	virtual void HandleSkillTwo() override;
 	virtual void HandleSkillThree() override;
@@ -40,4 +47,9 @@ public:
 	// 기본 공격 : 다크 스톤을 생성하여 날림
 	UFUNCTION(BlueprintCallable)
 	void SpawnDarkStone();
+
+	// 스킬 1번 : 바닥에서 분출되는 빔을 3갈래로 생성
+	UFUNCTION(BlueprintCallable)
+	void SpawnDarkWave();
+
 };

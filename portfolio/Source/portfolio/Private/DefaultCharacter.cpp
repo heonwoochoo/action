@@ -100,8 +100,11 @@ void ADefaultCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	RegenerateHealth();
-	RegenerateStamina();
+	if (!IsPlayerDead())
+	{
+		RegenerateHealth();
+		RegenerateStamina();
+	}
 }
 
 void ADefaultCharacter::BeginPlay()
@@ -197,7 +200,7 @@ void ADefaultCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 
 void ADefaultCharacter::Move(const FInputActionValue& Value)
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -238,7 +241,7 @@ void ADefaultCharacter::Move(const FInputActionValue& Value)
 
 void ADefaultCharacter::MoveEnd()
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 }
 
@@ -257,7 +260,7 @@ void ADefaultCharacter::Look(const FInputActionValue& Value)
 
 void ADefaultCharacter::Jump()
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	CharacterActionState = ECharacterActionState::ECAS_Jump;
 	if (!bCanDoubleJump)
 	{
@@ -271,7 +274,7 @@ void ADefaultCharacter::Jump()
 
 void ADefaultCharacter::DefaultAttack(const FInputActionValue& Value)
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	if (CharacterActionState == ECharacterActionState::ECAS_Unoccupied
 		|| CharacterActionState == ECharacterActionState::ECAS_AttackCombo
 		|| CharacterActionState == ECharacterActionState::ECAS_MoveForward
@@ -314,7 +317,7 @@ void ADefaultCharacter::DefaultAttack(const FInputActionValue& Value)
 
 void ADefaultCharacter::OnSprint()
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	if (GetVelocity().Size() > 0.f)
 	{
 		if (CharacterActionState != ECharacterActionState::ECAS_Jump)
@@ -330,7 +333,7 @@ void ADefaultCharacter::OnSprint()
 
 void ADefaultCharacter::OffSprint()
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	if (CharacterActionState != ECharacterActionState::ECAS_Jump)
 	{
 		CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
@@ -342,7 +345,7 @@ void ADefaultCharacter::OffSprint()
 
 void ADefaultCharacter::OnEvade()
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	if (AnimInstance && GetVelocity().Size() 
 		&& !GetCharacterMovement()->IsFalling()
 		&& CharacterActionState != ECharacterActionState::ECAS_Evade
@@ -378,7 +381,7 @@ void ADefaultCharacter::OnEvade()
 
 void ADefaultCharacter::SkillManagerOne()
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		
@@ -388,7 +391,7 @@ void ADefaultCharacter::SkillManagerOne()
 
 void ADefaultCharacter::SkillManagerTwo()
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillTwo();
@@ -397,7 +400,7 @@ void ADefaultCharacter::SkillManagerTwo()
 
 void ADefaultCharacter::SkillManagerThree()
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillThree();
@@ -406,7 +409,7 @@ void ADefaultCharacter::SkillManagerThree()
 
 void ADefaultCharacter::SkillManagerFour()
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillFour();
@@ -415,7 +418,7 @@ void ADefaultCharacter::SkillManagerFour()
 
 void ADefaultCharacter::QuickSlotManager_1()
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->HandleSlotOne();
@@ -424,7 +427,7 @@ void ADefaultCharacter::QuickSlotManager_1()
 
 void ADefaultCharacter::QuickSlotManager_2()
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->HandleSlotTwo();
@@ -433,7 +436,7 @@ void ADefaultCharacter::QuickSlotManager_2()
 
 void ADefaultCharacter::QuickSlotManager_3()
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->HandleSlotThree();
@@ -442,7 +445,7 @@ void ADefaultCharacter::QuickSlotManager_3()
 
 void ADefaultCharacter::QuickSlotManager_4()
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->HandleSlotFour();
@@ -451,7 +454,7 @@ void ADefaultCharacter::QuickSlotManager_4()
 
 void ADefaultCharacter::QuickSlotManager_5()
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->HandleSlotFive();
@@ -460,7 +463,7 @@ void ADefaultCharacter::QuickSlotManager_5()
 
 void ADefaultCharacter::QuickSlotManager_6()
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	if (InventoryComponent)
 	{
 		InventoryComponent->HandleSlotSix();
@@ -469,7 +472,7 @@ void ADefaultCharacter::QuickSlotManager_6()
 
 void ADefaultCharacter::PickupItem()
 {
-	if (ShouldInputActivated()) return;
+	if (IsBlockedMove()) return;
 	if (OverlappedItem)
 	{
 		AItemBase* Item = Cast<AItemBase>(OverlappedItem);
@@ -620,7 +623,7 @@ bool ADefaultCharacter::IsPlayerDead()
 
 void ADefaultCharacter::RegenerateHealth()
 {
-	if (DefaultStats.HP < DefaultStats.HPMax && EnableRegenerateHealth && !IsPlayerDead())
+	if (DefaultStats.HP < DefaultStats.HPMax && EnableRegenerateHealth)
 	{
 		UpdateStatManager(EStatTarget::EST_Health, EStatUpdateType::ESUT_Plus, RegenerateHealthRate);
 		EnableRegenerateHealth = false;
@@ -630,7 +633,7 @@ void ADefaultCharacter::RegenerateHealth()
 
 void ADefaultCharacter::RegenerateStamina()
 {
-	if (DefaultStats.Stamina < DefaultStats.StaminaMax && EnableRegenerateStamina && !IsPlayerDead())
+	if (DefaultStats.Stamina < DefaultStats.StaminaMax && EnableRegenerateStamina)
 	{
 		UpdateStatManager(EStatTarget::EST_Stamina, EStatUpdateType::ESUT_Plus, RegenerateStaminaRate);
 		EnableRegenerateStamina = false;
@@ -638,7 +641,7 @@ void ADefaultCharacter::RegenerateStamina()
 	}
 }
 
-bool ADefaultCharacter::ShouldInputActivated()
+bool ADefaultCharacter::IsBlockedMove()
 {
 	return IsPlayerDead() || bIsMouseShowing;
 }
@@ -865,7 +868,7 @@ void ADefaultCharacter::Die()
 	DefaultStats.HP = 0;
 	CharacterActionState = ECharacterActionState::ECAS_Dead;
 	Tags.Add(FName("Dead"));
-	UE_LOG(LogTemp, Warning, TEXT("Player dead"));
+	OnDead.Broadcast();
 }
 
 void ADefaultCharacter::PlaySoundCue(USoundCue* SoundAsset)

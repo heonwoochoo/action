@@ -8,6 +8,7 @@
 #include "BossBase.generated.h"
 
 class AAIController;
+class UMotionWarpingComponent;
 
 
 UCLASS()
@@ -31,6 +32,10 @@ protected:
 	UPROPERTY()
 	AAIController* BossController;
 
+	// 모션 워핑
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UMotionWarpingComponent* MotionWarpingComponent;
+
 	// 기본 스탯이 저장된 데이터 테이블
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	UDataTable* BossStatsDataTable;
@@ -45,7 +50,7 @@ protected:
 
 	// 움직임 상태
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
-	EBossState State = EBossState::EES_NoState;
+	EBossState State = EBossState::EBS_NoState;
 
 	// 목표 타겟 (전투하는 플레이어)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
@@ -70,19 +75,29 @@ public:
 	// 범위 내 타겟이 있는지 체크
 	bool IsTargetInRange(const float& Radius, AActor* Target);
 
-	// 몸체의 Z축을 타겟 방향으로 천천히 회전시킴
+	// 타겟이 존재하는지
+	bool HasTarget();
+
+	// 몸체의 Z축을 타겟 방향으로 회전시킴
 	void RotateBodyToCombatTarget(float DeltaTime);
+	void RotateBodyToCombatTarget();
+
+	// 모션워핑 상태에서 회전할 방향을 타겟으로 설정
+	void SetMotionWarpRotationToTarget();
 
 	// 타겟을 향해 이동
 	void ChaseTarget();
 
 	// 스킬 구현
 	virtual void Attack();
+	virtual void BackStep();
 	virtual void HandleSkillOne();
 	virtual void HandleSkillTwo();
 	virtual void HandleSkillThree();
 
-	
+	// 타겟을 죽였을 때 호출됨, 타겟 해제함
+	UFUNCTION()
+	void OnCombatTargetDead();
 
 private:
 	// 데이터 테이블로부터 스탯 데이터를 불러와 저장

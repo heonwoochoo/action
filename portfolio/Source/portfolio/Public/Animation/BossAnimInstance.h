@@ -42,7 +42,9 @@ public:
 	void PlaySkillOneAnimation();
 	void PlaySkillTwoAnimation();
 	void PlaySkillThreeAnimation();
+	void PlayVictoryAnimation();
+	void PlayBackStepAnimation();
 
-	// 타이머가 끝나고 호출되는 코드
+	// 공격 타이머가 끝나고 호출되는 코드
 	void OnEndAttackTimer();
 };

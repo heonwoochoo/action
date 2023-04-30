@@ -9,6 +9,7 @@
 #include "AIController.h"
 #include "Animation/BossAnimInstance.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "MotionWarpingComponent.h"
 
 // Sets default values
 ABossBase::ABossBase()
@@ -21,6 +22,9 @@ ABossBase::ABossBase()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 	
+	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarp"));
+	MotionWarpingComponent->SetActive(true);
+
 	LoadStats();
 }
 
@@ -73,7 +77,15 @@ void ABossBase::FindTarget()
 		{
 			if (Actor->ActorHasTag(FName("Player")))
 			{
+				// 타겟 설정
 				CombatTarget = Actor;
+
+				// 타겟이 죽었을 때를 구독
+				ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(CombatTarget);
+				if (DefaultCharacter)
+				{
+					DefaultCharacter->OnDead.AddDynamic(this, &ABossBase::OnCombatTargetDead);
+				}
 			}
 		}
 	}
@@ -90,6 +102,15 @@ bool ABossBase::IsTargetInRange(const float& Radius, AActor* Target)
 	return false;
 }
 
+bool ABossBase::HasTarget()
+{
+	if (CombatTarget != nullptr)
+	{
+		return true;
+	}
+	return false;
+}
+
 void ABossBase::RotateBodyToCombatTarget(float DeltaTime)
 {
 	const FVector& StartLocation = GetActorLocation();
@@ -97,12 +118,35 @@ void ABossBase::RotateBodyToCombatTarget(float DeltaTime)
 
 	const double& LookAtYaw = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation).Yaw;
 	const double& CurrentYaw = GetActorRotation().Yaw;
-
+	
 	const double& NewYaw = FMath::FInterpTo(CurrentYaw, LookAtYaw, DeltaTime, 5.f);
 
 	FRotator CurrentRotator = GetActorRotation();
 	CurrentRotator.Yaw = NewYaw;
 	SetActorRotation(CurrentRotator);
+}
+
+void ABossBase::RotateBodyToCombatTarget()
+{
+	const FVector& StartLocation = GetActorLocation();
+	const FVector& TargetLocation = CombatTarget->GetActorLocation();
+
+	const double& LookAtYaw = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation).Yaw;
+
+	FRotator CurrentRotator = GetActorRotation();
+	CurrentRotator.Yaw = LookAtYaw;
+
+	SetActorRotation(CurrentRotator);
+}
+
+void ABossBase::SetMotionWarpRotationToTarget()
+{
+	if (CombatTarget)
+	{
+		// 모션워핑 업데이트
+		const FVector& TargetLocation = CombatTarget->GetActorLocation();
+		MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("RotateToTarget"), TargetLocation);
+	}
 }
 
 void ABossBase::ChaseTarget()
@@ -114,28 +158,44 @@ void ABossBase::ChaseTarget()
 		AIMoveRequest.SetAcceptanceRadius(AcceptanceRadius);
 		AIMoveRequest.SetGoalActor(CombatTarget);
 		BossController->MoveTo(AIMoveRequest);
-		SetState(EBossState::EES_Chasing);
+		SetState(EBossState::EBS_Chasing);
 	}
 }
 
 void ABossBase::Attack()
 {
-	SetState(EBossState::EES_Attacking);
+}
+
+void ABossBase::BackStep()
+{
 }
 
 void ABossBase::HandleSkillOne()
 {
-	SetState(EBossState::EES_Casting);
 }
 
 void ABossBase::HandleSkillTwo()
 {
-	SetState(EBossState::EES_Casting);
 }
 
 void ABossBase::HandleSkillThree()
 {
-	SetState(EBossState::EES_Casting);
+}
+
+void ABossBase::OnCombatTargetDead()
+{
+	RotateBodyToCombatTarget();
+
+	CombatTarget = nullptr;
+
+	State = EBossState::EBS_NoState;
+
+	// 애니메이션 재생
+	UBossAnimInstance* AnimInstance = Cast<UBossAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance)
+	{
+		AnimInstance->PlayVictoryAnimation();
+	}
 }
 
 void ABossBase::LoadStats()

@@ -32,7 +32,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangedStaminaSignature, const f
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangedExpSignature, const float&, CurrentExp, const float&, MaxExp);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangedLevelSignature, const int32&, NewLevel);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangedGoldSignature, const int32&, Value);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeadSignature);
 
 UCLASS(config=Game)
 class ADefaultCharacter : public ACharacter
@@ -49,7 +49,7 @@ public:
 	FOnChangedExpSignature OnChangedExp;
 	FOnChangedLevelSignature OnChangedLevel;
 	FOnChangedGoldSignature OnGetGold;
-
+	FOnDeadSignature OnDead;
 
 protected:
 	/** 캐릭터의 기본 스탯 */
@@ -336,7 +336,7 @@ private:
 	* true 반환시 플레이어의 움직임을 제한합니다.
 	* ex) 사망, 인게임 메뉴 열기
 	*/
-	bool ShouldInputActivated();
+	bool IsBlockedMove();
 
 	// 게임 시작 시 저장된 캐릭터의 데이터 불러오기
 	void LoadDataFromSaveGame();

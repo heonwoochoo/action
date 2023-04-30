@@ -126,6 +126,9 @@ struct FBossAnimation : public FTableRowBase
 	UAnimMontage* Attack;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* BackStep;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UAnimMontage* SkillOne;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -136,15 +139,18 @@ struct FBossAnimation : public FTableRowBase
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UAnimMontage* Opening;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimMontage* Victory;
 };
 
 UENUM(BlueprintType)
 enum class EBossState : uint8
 {
-	EES_NoState UMETA(DisplayName = "NoState"),
-	EES_Dead UMETA(DisplayName = "Dead"),
-	EES_Casting UMETA(DisplayName = "Patrolling"),
-	EES_Chasing UMETA(DisplayName = "Chasing"),
-	EES_Attacking UMETA(DisplayName = "Attacking"),
-	EES_Resting UMETA(DisplayName = "Resting"),
+	EBS_NoState UMETA(DisplayName = "NoState"),
+	EBS_Dead UMETA(DisplayName = "Dead"),
+	EBS_Casting UMETA(DisplayName = "Patrolling"),
+	EBS_Chasing UMETA(DisplayName = "Chasing"),
+	EBS_Attacking UMETA(DisplayName = "Attacking"),
+	EBS_Resting UMETA(DisplayName = "Resting"),
 };
