@@ -41,6 +41,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
 	TSubclassOf<ADarkSword> DarkSwordClass;
 
+	// 스킬 2 오브젝트가 캐릭터 머리 위로 생성될 높이
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
+	float DarkSwordSpawnHeight = 200.f;
+
 public:
 	// 스킬 구현
 	virtual void Attack() override;

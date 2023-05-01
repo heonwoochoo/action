@@ -136,7 +136,7 @@ void ABossGideon::SpawnDarkSword()
 {
 	if (CombatTarget)
 	{
-		const FVector& SpawnLocation = GetActorLocation() + GetActorUpVector() * 500.f;
+		const FVector& SpawnLocation = GetActorLocation() + GetActorUpVector() * DarkSwordSpawnHeight;
 
 		ADarkSword* DarkSword = GetWorld()->SpawnActor<ADarkSword>(DarkSwordClass, SpawnLocation, GetActorRotation());
 		if (DarkSword)

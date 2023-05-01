@@ -27,15 +27,13 @@ protected:
 
 	virtual void Tick(float DeltaTime) override;
 
-	// 물체에 막히는 충돌체
+	// 루트로 설정될 충돌체
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* SphereCollision;
 
-	// 오버랩되어 데미지가 들어갈 메쉬
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* StaticMeshComponent;
 
-	// 투사체의 속성을 설정
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
@@ -62,9 +60,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UCurveFloat* MaskCurveFloat;
 
-	// 타겟을 향해 회전시 참조되는 Lerp()의 알파값
+	// 땅에 박힌 후 머티리얼 Threshold의 변화값
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UCurveFloat* AlphaCurveFloat;
+
+	// 룬의 투명도 변화값
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UCurveFloat* RuneOpacityCurveFloat;
 
 	// 타격 소리
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -74,6 +76,22 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USoundCue* ThrowSound;
 
+	// 검이 날라가는 속도
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
+	float MoveSpeed = 2000.f;
+
+	// 룬이 생성된 후 날라가기까지의 딜레이
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
+	float MoveDelayRate = 0.5f;
+
+	// 충돌을 검사
+	UFUNCTION()
+	void OnHitCollision(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	// 메쉬와의 오버랩을 검사
+	UFUNCTION()
+	void OnOverlappedMesh(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 private:
 	// 객체를 스폰한 소유자
 	AActor* Owner;
@@ -81,8 +99,14 @@ private:
 	// 목표 타겟
 	AActor* Target;
 
-	// 목표 위치
-	FVector ProjectileTargetLocation;
+	// 날라갈 방향 벡터
+	FVector ProjectileDirection;
+
+	// 방향 설정 후 바닥에 생성된 룬
+	UParticleSystemComponent* MagicCircle;
+
+	// 룬의 투명도를 변화시킬 머티리얼
+	UMaterialInstanceDynamic* CircleMaterialInstance;
 
 	float Damage = 0.f;
 
@@ -95,9 +119,47 @@ private:
 	// 목표 타겟으로 회전이 끝났는지
 	bool bIsRotationEnd = false;
 
+	// ThresHold 알파값이 변화해도 되는 조건인지
+	bool bCanChangeAlpha = false;
+
+	FTimerHandle MoveTimerHandle;
+
+	FTimerHandle AlphaTimerHandle;
+
+	FTimerHandle RuneOpacityTimerHandle;
+
+	// 투사체에 속도를 부여
+	void ActivateProjectile();
+
+	// 알파값의 변화가 끝나고 호출
+	void OnEndThresHoldChange();
+
+	// 룬의 투명도 변화가 끝나고 호출
+	void OnEndRuneOpacityChange();
+
+
+
 public:
 	FORCEINLINE void SetTarget(AActor* InTarget) { Target = InTarget; }
 	FORCEINLINE void SetDamage(const float& InDamage) { Damage = InDamage; }
 	FORCEINLINE void SetOwner(AActor* NewOwner) { Owner = NewOwner; }
+
+	// 투사체의 움직임에 관한 설정
+	void MoveToTarget();
+
+	// 타겟의 바닥에 룬 생성
+	void SpawnCircleRune(const FVector& Location);
+
+	// 메쉬의 마스크 변화 (최초 생성 직후)
+	void ChangeMeshMask();
+
+	// 타겟을 향해 회전
+	void RotateMesh(float DeltaTime);
+
+	// 충돌체에 블락된 후 Fade out 효과
+	void ChangeMeshThresHold();
+
+	// 룬 생성 직후 투명도 변화
+	void ChangeRuneOpacity();
 
 };
