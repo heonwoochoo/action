@@ -61,6 +61,29 @@ void ABossBase::Tick(float DeltaTime)
 float ABossBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	// State가 Rest일 때만 hitreact 애니메이션 적용
+
+	if (DamageCauser->ActorHasTag(FName(TEXT("Player"))))
+	{
+		if (State == EBossState::EBS_Resting || State == EBossState::EBS_NoState)
+		{
+			Stats.Hp = FMath::Clamp(Stats.Hp - DamageAmount, 0, Stats.MaxHp);
+			if (Stats.Hp == 0)
+			{
+				Die();
+			}
+			else
+			{
+				UBossAnimInstance* AnimInstance = Cast<UBossAnimInstance>(GetMesh()->GetAnimInstance());
+				if (AnimInstance)
+				{
+					SetMotionWarpRotationToTarget();
+					AnimInstance->PlayHitReactAnimation();
+				}
+			}
+		}
+	}
 	return 0.0f;
 }
 
@@ -162,26 +185,6 @@ void ABossBase::ChaseTarget()
 	}
 }
 
-void ABossBase::Attack()
-{
-}
-
-void ABossBase::BackStep()
-{
-}
-
-void ABossBase::HandleSkillOne()
-{
-}
-
-void ABossBase::HandleSkillTwo()
-{
-}
-
-void ABossBase::HandleSkillThree()
-{
-}
-
 void ABossBase::OnCombatTargetDead()
 {
 	RotateBodyToCombatTarget();
@@ -196,6 +199,11 @@ void ABossBase::OnCombatTargetDead()
 	{
 		AnimInstance->PlayVictoryAnimation();
 	}
+}
+
+void ABossBase::Die()
+{
+
 }
 
 void ABossBase::LoadStats()

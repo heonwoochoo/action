@@ -803,15 +803,14 @@ void ADefaultCharacter::CheckEnemyInRange(const FVector Location, const float Ra
 
 	for (AActor* Actor : OutActors)
 	{
-		AEnemyBase* Enemy = Cast<AEnemyBase>(Actor);
-		if (Enemy && Enemy->ActorHasTag(FName("Enemy")) && Enemy->GetState() != EEnemyState::EES_Dead)
+		if (Actor->ActorHasTag(FName("Enemy")) && !Actor->ActorHasTag(FName("Dead")))
 		{
-			DamageToEnemy(Enemy, Damage);
+			DamageToEnemy(Actor, Damage);
 			
 			if (AbilityComponent)
 			{
-				const FVector& EnemyLocation = Enemy->GetActorLocation();
-				const FRotator& EnemyRotation = Enemy->GetActorRotation();
+				const FVector& EnemyLocation = Actor->GetActorLocation();
+				const FRotator& EnemyRotation = Actor->GetActorRotation();
 				AbilityComponent->PlayHitSound(HitType, EnemyLocation);
 				AbilityComponent->SpawnHitParticle(HitType, EnemyLocation, EnemyRotation);
 			}
@@ -854,7 +853,7 @@ UCharacterMotionWarpingComponent* ADefaultCharacter::GetMotionWarpingComponent()
 	return CharacterMWComponent;
 }
 
-void ADefaultCharacter::DamageToEnemy(AEnemyBase* Enemy, float Damage)
+void ADefaultCharacter::DamageToEnemy(AActor* Enemy, float Damage)
 {
 	TSubclassOf<UDamageType> DamageType;
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));

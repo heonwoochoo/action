@@ -392,7 +392,7 @@ public:
 
 	FORCEINLINE FCharacterStats GetCharacterStats() const { return DefaultStats; }
 	
-	void DamageToEnemy(AEnemyBase* Enemy, float Damage);
+	void DamageToEnemy(AActor* Enemy, float Damage);
 
 	void Die();
 

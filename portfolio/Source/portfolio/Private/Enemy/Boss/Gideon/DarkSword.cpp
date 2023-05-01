@@ -208,7 +208,6 @@ void ADarkSword::RotateMesh(float DeltaTime)
 		// 루트 컴포넌트의 회전
 		const FVector& StartLocation = GetActorLocation();
 		FVector TargetLocation = Target->GetActorLocation();
-		TargetLocation.Z -= 30.f;	// 높이 보정
 
 		const FRotator& FoundRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
 		const FRotator& CurrentRotation = GetActorRotation();

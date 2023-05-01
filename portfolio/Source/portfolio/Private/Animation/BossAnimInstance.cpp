@@ -2,7 +2,8 @@
 
 
 #include "Animation/BossAnimInstance.h"
-#include "Enemy/Boss/BossBase.h"
+#include "Enemy/Boss/Gideon/BossGideon.h"
+#include "Component/BossAbilityComponent.h"
 
 void UBossAnimInstance::NativeInitializeAnimation()
 {
@@ -107,13 +108,55 @@ void UBossAnimInstance::PlayBackStepAnimation()
 	}
 }
 
+void UBossAnimInstance::PlayHitReactAnimation()
+{
+	const FBossAnimation& Animations = GetAnimation();
+	UAnimMontage* Montage = Animations.HitReact;
+	if (Montage)
+	{
+		Montage_Play(Montage);
+	}
+}
+
+void UBossAnimInstance::PlayDeadAnimation()
+{
+	const FBossAnimation& Animations = GetAnimation();
+	UAnimMontage* Montage = Animations.Dead;
+	if (Montage)
+	{
+		Montage_Play(Montage);
+	}
+}
+
 void UBossAnimInstance::OnEndAttackTimer()
 {
-	ABossBase* Boss = Cast<ABossBase>(TryGetPawnOwner());
+	ABossGideon* Boss = Cast<ABossGideon>(TryGetPawnOwner());
 	if (Boss && Boss->HasTarget())
 	{
-		Boss->BackStep();
-	};
+		UBossAbilityComponent* AbilityComponent =Boss->GetAbilityComponent();
+		if (AbilityComponent)
+		{
+			AbilityComponent->BackStep();
+		}
+	}
+}
+
+void UBossAnimInstance::OnEndHitReactTimer()
+{
+	ABossGideon* Boss = Cast<ABossGideon>(TryGetPawnOwner());
+	if (Boss && Boss->HasTarget())
+	{
+		UBossAbilityComponent* AbilityComponent = Boss->GetAbilityComponent();
+		if (AbilityComponent)
+		{
+			AbilityComponent->BackStep();
+		}
+	}
+}
+
+void UBossAnimInstance::ClearTimerHandle()
+{
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 }
 
 void UBossAnimInstance::OnEndMontage(UAnimMontage* Montage, bool bInterrupted)
@@ -145,5 +188,10 @@ void UBossAnimInstance::OnEndMontage(UAnimMontage* Montage, bool bInterrupted)
 	{
 		Boss->SetState(EBossState::EBS_Resting);
 		GetWorld()->GetTimerManager().SetTimer(EndAttackTimer, this, &UBossAnimInstance::OnEndAttackTimer, AttackTimerRate, false);
+	}
+	else if (Montage == Animations.HitReact)
+	{
+		Boss->SetState(EBossState::EBS_Resting);
+		GetWorld()->GetTimerManager().SetTimer(EndHitReactTimer, this, &UBossAnimInstance::OnEndHitReactTimer, HitReactTimerRate, false);
 	}
 }

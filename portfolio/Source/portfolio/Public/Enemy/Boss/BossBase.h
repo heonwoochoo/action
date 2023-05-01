@@ -68,6 +68,9 @@ public:
 	FORCEINLINE const EBossState& GetState() const { return State; }
 	FORCEINLINE void SetState(const EBossState& NewState) { State = NewState; }
 
+	FORCEINLINE AActor* GetCombatTarget() const { return CombatTarget; }
+
+	FORCEINLINE UMotionWarpingComponent* GetMotionWarpingComponent() const { return MotionWarpingComponent; }
 
 	// 범위 내 플레이어를 찾아 타겟으로 저장
 	void FindTarget();
@@ -88,16 +91,12 @@ public:
 	// 타겟을 향해 이동
 	void ChaseTarget();
 
-	// 스킬 구현
-	virtual void Attack();
-	virtual void BackStep();
-	virtual void HandleSkillOne();
-	virtual void HandleSkillTwo();
-	virtual void HandleSkillThree();
-
 	// 타겟을 죽였을 때 호출됨, 타겟 해제함
 	UFUNCTION()
 	void OnCombatTargetDead();
+
+	// 체력이 0이 되면 호출
+	virtual void Die();
 
 private:
 	// 데이터 테이블로부터 스탯 데이터를 불러와 저장

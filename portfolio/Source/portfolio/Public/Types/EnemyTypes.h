@@ -153,4 +153,6 @@ enum class EBossState : uint8
 	EBS_Chasing UMETA(DisplayName = "Chasing"),
 	EBS_Attacking UMETA(DisplayName = "Attacking"),
 	EBS_Resting UMETA(DisplayName = "Resting"),
+	EBS_SuperArmour UMETA(DisplayName = "SuperArmour"),
+	EBS_Evade UMETA(DisplayName = "Evade"),
 };

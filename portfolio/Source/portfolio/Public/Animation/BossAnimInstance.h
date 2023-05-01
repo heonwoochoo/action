@@ -30,6 +30,9 @@ protected:
 	FTimerHandle EndAttackTimer;
 	float AttackTimerRate = 2.f;
 
+	FTimerHandle EndHitReactTimer;
+	float HitReactTimerRate = 1.f;
+
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
 	FBossAnimation GetAnimation();
@@ -44,7 +47,14 @@ public:
 	void PlaySkillThreeAnimation();
 	void PlayVictoryAnimation();
 	void PlayBackStepAnimation();
+	void PlayHitReactAnimation();
+	void PlayDeadAnimation();
 
 	// 공격 타이머가 끝나고 호출되는 코드
 	void OnEndAttackTimer();
+
+	// 피격 타이머가 끝나고 호출되는 코드
+	void OnEndHitReactTimer();
+
+	void ClearTimerHandle();
 };

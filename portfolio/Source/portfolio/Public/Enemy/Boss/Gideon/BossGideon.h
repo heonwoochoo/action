@@ -9,6 +9,7 @@
 class ADarkStone;
 class ADarkWave;
 class ADarkSword;
+class UBossAbilityComponent;
 
 /**
  * < 공격 패턴 >
@@ -29,39 +30,15 @@ protected:
 
 	virtual void Tick(float DeltaTime) override;
 
-	// 기본 공격시 생성될 오브젝트의 클래스
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
-	TSubclassOf<ADarkStone> DarkStoneClass;
+	// 스킬이 구현되어있는 컴포넌트
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UBossAbilityComponent* AbilityComponent;
 
-	// 스킬 1 사용시 생성될 오브젝트의 클래스
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
-	TSubclassOf<ADarkWave> DarkWaveClass;
 
-	// 스킬 2 사용시 생성될 오브젝트의 클래스
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
-	TSubclassOf<ADarkSword> DarkSwordClass;
-
-	// 스킬 2 오브젝트가 캐릭터 머리 위로 생성될 높이
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
-	float DarkSwordSpawnHeight = 200.f;
 
 public:
-	// 스킬 구현
-	virtual void Attack() override;
-	virtual void BackStep() override;
-	virtual void HandleSkillOne() override;
-	virtual void HandleSkillTwo() override;
-	virtual void HandleSkillThree() override;
-
-	// 기본 공격 : 다크 스톤을 생성하여 날림
 	UFUNCTION(BlueprintCallable)
-	void SpawnDarkStone();
+	FORCEINLINE UBossAbilityComponent* GetAbilityComponent() const { return AbilityComponent; };
 
-	// 스킬 1번 : 바닥에서 분출되는 빔을 3갈래로 생성
-	UFUNCTION(BlueprintCallable)
-	void SpawnDarkWave();
-
-	// 스킬 2번 : 투검 생성
-	UFUNCTION(BlueprintCallable)
-	void SpawnDarkSword();
+	virtual void Die() override;
 };

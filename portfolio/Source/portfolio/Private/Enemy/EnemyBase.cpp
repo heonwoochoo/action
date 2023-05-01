@@ -124,8 +124,12 @@ bool AEnemyBase::CanAttack()
 void AEnemyBase::InitPatrolTarget()
 {
 	UGameplayStatics::GetAllActorsWithTag(this, FName("Patrol"), PatrolTargets);
-	const int32 RandIdx = FMath::RandRange(0, PatrolTargets.Num() - 1);
-	PatrolTarget = PatrolTargets[RandIdx];
+
+	if (PatrolTargets.Num() > 1)
+	{
+		const int32 RandIdx = FMath::RandRange(0, PatrolTargets.Num() - 1);
+		PatrolTarget = PatrolTargets[RandIdx];
+	}
 }
 
 void AEnemyBase::PatrolTimerFinished()
@@ -347,6 +351,7 @@ void AEnemyBase::DropItem()
 void AEnemyBase::Die()
 {
 	State = EEnemyState::EES_Dead;
+	Tags.Add(FName("Dead"));
 
 	if (CombatTarget)
 	{
