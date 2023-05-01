@@ -11,6 +11,9 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Components/BoxComponent.h"
+#include "Camera/CameraShakeBase.h"
+#include "Enemy/Boss/Gideon/BossGideon.h"
 
 ADarkSword::ADarkSword()
 {
@@ -21,6 +24,9 @@ ADarkSword::ADarkSword()
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	StaticMeshComponent->SetupAttachment(GetRootComponent());
+
+	DamageBox = CreateDefaultSubobject<UBoxComponent>(TEXT("DamageBox"));
+	DamageBox->SetupAttachment(StaticMeshComponent);
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile"));
 	ProjectileMovementComponent->ProjectileGravityScale = 0.f;
@@ -36,10 +42,12 @@ void ADarkSword::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (SphereCollision && StaticMeshComponent)
+	if (SphereCollision && DamageBox)
 	{
 		SphereCollision->OnComponentHit.AddDynamic(this, &ADarkSword::OnHitCollision);
-		StaticMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &ADarkSword::OnOverlappedMesh);
+		DamageBox->OnComponentBeginOverlap.AddDynamic(this, &ADarkSword::OnOverlappedDamageBox);
+
+		DamageBox->SetGenerateOverlapEvents(false);
 	}
 }
 
@@ -73,20 +81,46 @@ void ADarkSword::OnHitCollision(UPrimitiveComponent* HitComponent, AActor* Other
 	{
 		const float& ChangedRate = 2.f;
 		GetWorld()->GetTimerManager().SetTimer(AlphaTimerHandle, this, &ADarkSword::OnEndThresHoldChange, ChangedRate, false);
+		
+		if (HitBlockedParticle)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(this, HitBlockedParticle, Hit.ImpactPoint);
+		}
+
+		// 카메라 쉐이크
+		ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(Target);
+		if (DefaultCharacter)
+		{
+			DefaultCharacter->PlayCameraShake(HitGroundImapctCameraShake);
+		}
+
+		// 데미지 오버랩 해제
+		DamageBox->SetGenerateOverlapEvents(false);
 	}
 }
 
-void ADarkSword::OnOverlappedMesh(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ADarkSword::OnOverlappedDamageBox(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
+	const bool& IsPlayer = OtherActor->ActorHasTag(FName(TEXT("Player")));
+	const bool& IsDead = OtherActor->ActorHasTag(FName(TEXT("Dead")));
+
+	if (IsPlayer && !IsDead && DamageBox)
+	{
+		UGameplayStatics::ApplyDamage(OtherActor, Damage, nullptr, Owner, TSubclassOf<UDamageType>());	
+		
+		if (HitImpactParticle)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(this, HitImpactParticle, OtherActor->GetActorLocation());
+		}
+
+		// 데미지 오버랩 해제
+		DamageBox->SetGenerateOverlapEvents(false);
+	}
 }
 
 void ADarkSword::ActivateProjectile()
 {
-	if (SphereCollision && StaticMeshComponent)
-	{
-	}
-
+	DamageBox->SetGenerateOverlapEvents(true);
 	ProjectileMovementComponent->Velocity = ProjectileDirection * MoveSpeed;
 }
 
@@ -186,6 +220,16 @@ void ADarkSword::RotateMesh(float DeltaTime)
 		const FRotator& NewRotation = FRotator(Pitch, Yaw, Roll);
 
 		SetActorRotation(NewRotation);
+
+		// 캐스팅 동안 시전자의 시선은 타겟을 바라보게 모션워핑을 업데이트
+		if (Owner)
+		{
+			ABossGideon* Caster = Cast<ABossGideon>(Owner);
+			if (Caster)
+			{
+				Caster->SetMotionWarpRotationToTarget();
+			}
+		}
 
 		if (ElapsedTime > 2.5f)
 		{

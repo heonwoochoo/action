@@ -141,6 +141,7 @@ void ABossGideon::SpawnDarkSword()
 		ADarkSword* DarkSword = GetWorld()->SpawnActor<ADarkSword>(DarkSwordClass, SpawnLocation, GetActorRotation());
 		if (DarkSword)
 		{
+			DarkSword->SetOwner(this);
 			DarkSword->SetTarget(CombatTarget);
 			DarkSword->SetDamage(Stats.Damage);
 		}

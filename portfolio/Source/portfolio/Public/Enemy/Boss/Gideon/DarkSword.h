@@ -12,7 +12,8 @@ class UParticleSystemComponent;
 class UParticleSystem;
 class USoundCue;
 class UCurveFloat;
-
+class UBoxComponent;
+class UCameraShakeBase;
 
 UCLASS()
 class PORTFOLIO_API ADarkSword : public AActor
@@ -31,6 +32,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* SphereCollision;
 
+	// 데미지를 적용시킬 충돌체
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UBoxComponent* DamageBox;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* StaticMeshComponent;
 
@@ -44,9 +49,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UParticleSystem* HitImpactParticle;
 
-	// 벽에 막혔을 때 생성될 파티클
+	// World Static에 막혔을 때 생성되는 파티클
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UParticleSystem* NoHitParticle;
+	UParticleSystem* HitBlockedParticle;
 
 	// 투사체 꼬리의 트레일
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -76,6 +81,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USoundCue* ThrowSound;
 
+	// 땅에 박혔을 때 카메라 효과
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UCameraShakeBase> HitGroundImapctCameraShake;
+
 	// 검이 날라가는 속도
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
 	float MoveSpeed = 2000.f;
@@ -88,9 +97,9 @@ protected:
 	UFUNCTION()
 	void OnHitCollision(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
-	// 메쉬와의 오버랩을 검사
+	// 데미지 박스와의 오버랩을 검사
 	UFUNCTION()
-	void OnOverlappedMesh(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnOverlappedDamageBox(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 private:
 	// 객체를 스폰한 소유자
