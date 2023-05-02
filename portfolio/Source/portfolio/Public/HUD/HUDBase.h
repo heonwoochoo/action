@@ -35,8 +35,7 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Combat", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<ADamageText> DamageTextClass;
+
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Combat", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<ATargetMark> TargetMarkClass;
@@ -98,7 +97,6 @@ private:
 	void CloseAllInGameChildWidget();
 
 public:
-	void ShowDamageOnScreen(ACharacter* Actor, float Damage);
 
 	void ShowTargetMark(ACharacter* Enemy, ACharacter* Caster);
 

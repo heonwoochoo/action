@@ -12,9 +12,14 @@ UCLASS()
 class PORTFOLIO_API UEnemyHPBarWidget : public UUserWidget
 {
 	GENERATED_BODY()
-public:
+	
+protected:
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UProgressBar* HPBar;
+
+public:
+	UFUNCTION()
+	void OnChangedEnemyHP(const float& CurrentHp, const float& MaxHp);
 };

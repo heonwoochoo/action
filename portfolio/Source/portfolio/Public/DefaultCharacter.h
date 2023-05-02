@@ -304,21 +304,15 @@ private:
 	AItemBase* OverlappedItem;
 	AItemBase* PrevOverlappedItem;
 
-
-
-	void DoubleJump();
-
-	void FinishEvade();
-
-	void DownSizeCapsule(float DeltaTime);
-
-	void UpSizeCapsule(float DeltaTime);
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
 	FCharacterStats DefaultStats;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
 	ECharacterClass DefaultClass;
+
+	void DoubleJump();
+
+	void FinishEvade();
 
 	// 캐릭터의 사망 상태 확인, 이벤트의 실행을 막음
 	bool IsPlayerDead();

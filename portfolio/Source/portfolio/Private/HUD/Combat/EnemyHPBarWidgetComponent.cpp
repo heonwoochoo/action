@@ -4,26 +4,17 @@
 #include "HUD/Combat/EnemyHPBarWidgetComponent.h"
 #include "HUD/Combat/EnemyHPBarWidget.h"
 #include "Components/ProgressBar.h"
+#include "Enemy/EnemyBase.h"
 
 void UEnemyHPBarWidgetComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
 	HPBarWidget = Cast<UEnemyHPBarWidget>(GetUserWidgetObject());
-}
+	AEnemyBase* EnemyBase = Cast<AEnemyBase>(GetOwner());
 
-void UEnemyHPBarWidgetComponent::SetHPBar(float Percent)
-{
-	if (HPBarWidget)
+	if (HPBarWidget && EnemyBase)
 	{
-		HPBarWidget->HPBar->SetPercent(Percent);
+		EnemyBase->OnChangedHp.AddDynamic(HPBarWidget, &UEnemyHPBarWidget::OnChangedEnemyHP);
 	}
-}
-
-float UEnemyHPBarWidgetComponent::GetHPBar() const
-{
-	if (HPBarWidget)
-	{
-		 return HPBarWidget->HPBar->GetPercent();
-	}
-	return 0.0f;
 }

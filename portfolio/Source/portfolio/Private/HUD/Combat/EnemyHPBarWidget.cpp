@@ -13,3 +13,16 @@ void UEnemyHPBarWidget::NativeConstruct()
 		HPBar->SetPercent(1.0f);
 	}
 }
+
+void UEnemyHPBarWidget::OnChangedEnemyHP(const float& CurrentHp, const float& MaxHp)
+{
+	if (!HPBar) return;
+	if (CurrentHp != 0.f)
+	{
+		HPBar->SetPercent(CurrentHp / MaxHp);
+	}
+	else
+	{
+		HPBar->SetPercent(0.f);
+	}
+}

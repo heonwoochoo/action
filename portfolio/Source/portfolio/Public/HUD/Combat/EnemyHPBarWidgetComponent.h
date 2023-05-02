@@ -17,10 +17,5 @@ protected:
 	UEnemyHPBarWidget* HPBarWidget;
 
 public:
-
 	virtual void BeginPlay() override;
-
-
-	void SetHPBar(float Percent);
-	float GetHPBar() const;
 };

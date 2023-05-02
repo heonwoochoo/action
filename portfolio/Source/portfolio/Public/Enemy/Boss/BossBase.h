@@ -11,7 +11,7 @@ class AAIController;
 class UMotionWarpingComponent;
 class UMaterialInstance;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangedEnemyHealthSignature, const float&, CurrentHp, const float&, MaxHp);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangedBossHealthSignature, const float&, CurrentHp, const float&, MaxHp);
 
 UCLASS()
 class PORTFOLIO_API ABossBase : public ACharacter
@@ -21,7 +21,7 @@ class PORTFOLIO_API ABossBase : public ACharacter
 public:
 	ABossBase();
 
-	FOnChangedEnemyHealthSignature OnChanged;
+	FOnChangedBossHealthSignature OnChanged;
 
 protected:
 	virtual void BeginPlay() override;
@@ -70,6 +70,9 @@ protected:
 	// 히트 오버레이 해제 타이머
 	FTimerHandle HitOverlayTimerHandle;
 
+	// 피격시 생기는 외형선이 지속되는 시간
+	float HitOutlineDurationTime = 5.f;
+
 public:
 	FORCEINLINE const FName& GetCode() const { return BossCode; }
 	FORCEINLINE const FBossStats& GetStats() const { return Stats; }
@@ -112,6 +115,15 @@ public:
 
 	// 히트 오버레이 타이머 경과 -> 메쉬에 적용된 것을 해제
 	void OnEndHitOveralyTimer();
+
+	// 피격시 메쉬의 아웃라인을 빨간색으로 표시
+	void ChangeMeshOutline();
+
+	// 아웃라인 제거
+	// 일정 시간동안 피격 없을 경우 또는 사망시 호출
+	void RemoveMeshOutline();
+
+	FTimerHandle MeshOutlineTimerHandle;
 
 private:
 	// 데이터 테이블로부터 스탯 데이터를 불러와 저장

@@ -72,4 +72,12 @@ public:
 
 	FORCEINLINE FName GetItemCode() const { return Code; }
 	FORCEINLINE FItemSpec GetItemSpec() const { return Spec; }
+
+	// 플레이어가 근접시 아웃라인을 노란색으로 표시
+	void ChangeMeshOutline();
+
+	// 아웃라인 제거
+	// 아이템 획득 또는 오버랩을 빠져나갈 경우
+	void RemoveMeshOutline();
+
 };

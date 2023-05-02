@@ -134,3 +134,29 @@ void AItemBase::HandlePickupItem(AActor* PickupCharacter)
 	GetWorld()->GetTimerManager().SetTimer(PickupTimerHandle, this, &AItemBase::EndPickupTimer, PickupScaleTime);
 }
 
+void AItemBase::ChangeMeshOutline()
+{
+	if (StaticMesh)
+	{
+		StaticMesh->SetRenderCustomDepth(true);
+		StaticMesh->SetCustomDepthStencilValue(0);
+	}
+	if (SkeletalMesh)
+	{
+		SkeletalMesh->SetRenderCustomDepth(true);
+		SkeletalMesh->SetCustomDepthStencilValue(0);
+	}
+}
+
+void AItemBase::RemoveMeshOutline()
+{
+	if (StaticMesh)
+	{
+		StaticMesh->SetRenderCustomDepth(false);
+	}
+	if (SkeletalMesh)
+	{
+		SkeletalMesh->SetRenderCustomDepth(false);
+	}
+}
+

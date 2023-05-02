@@ -732,7 +732,13 @@ void ADefaultCharacter::BeginOverlapped(UPrimitiveComponent* OverlappedComponent
 	if (OtherActor->ActorHasTag(FName("Item")))
 	{
 		PrevOverlappedItem = OverlappedItem;
+		if (PrevOverlappedItem)
+		{
+			PrevOverlappedItem->RemoveMeshOutline();
+		}
+
 		OverlappedItem = Cast<AItemBase>(OtherActor);
+		OverlappedItem->ChangeMeshOutline();
 
 		if (HUDBase)
 		{
@@ -766,6 +772,9 @@ void ADefaultCharacter::EndOverlapped(UPrimitiveComponent* OverlappedComponent, 
 	{
 		if (OtherActor == OverlappedItem)
 		{
+			AItemBase* Item = Cast<AItemBase>(OtherActor);
+			Item->RemoveMeshOutline();
+
 			OverlappedItem = nullptr;
 		}
 		else if (OtherActor == PrevOverlappedItem)
@@ -1103,18 +1112,4 @@ ECharacterClass ADefaultCharacter::GetCharacterClass()
 {
 	return DefaultClass;
 }
-void ADefaultCharacter::DownSizeCapsule(float DeltaTime)
-{
-	if (GetCapsuleComponent() && GetMesh())
-	{
-		GetCapsuleComponent()->SetCapsuleHalfHeight(FMath::FInterpTo(GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), CapsuleDefaultHalfHeight / 2.f, DeltaTime, 30.f));
-	}
-}
 
-void ADefaultCharacter::UpSizeCapsule(float DeltaTime)
-{
-	if (GetCapsuleComponent() && GetMesh())
-	{
-		GetCapsuleComponent()->SetCapsuleHalfHeight(FMath::FInterpTo(GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), CapsuleDefaultHalfHeight, DeltaTime, 30.f));
-	}
-}

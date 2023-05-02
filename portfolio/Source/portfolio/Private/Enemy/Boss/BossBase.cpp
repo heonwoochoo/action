@@ -72,6 +72,8 @@ float ABossBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 	{
 		ApplyHitOverlayMaterial();
 
+		ChangeMeshOutline();
+
 		if (State == EBossState::EBS_Resting || State == EBossState::EBS_NoState)
 		{
 			UBossAnimInstance* AnimInstance = Cast<UBossAnimInstance>(GetMesh()->GetAnimInstance());
@@ -156,30 +158,36 @@ bool ABossBase::HasTarget()
 
 void ABossBase::RotateBodyToCombatTarget(float DeltaTime)
 {
-	const FVector& StartLocation = GetActorLocation();
-	const FVector& TargetLocation = CombatTarget->GetActorLocation();
+	if (CombatTarget)
+	{
+		const FVector& StartLocation = GetActorLocation();
+		const FVector& TargetLocation = CombatTarget->GetActorLocation();
 
-	const double& LookAtYaw = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation).Yaw;
-	const double& CurrentYaw = GetActorRotation().Yaw;
-	
-	const double& NewYaw = FMath::FInterpTo(CurrentYaw, LookAtYaw, DeltaTime, 5.f);
+		const double& LookAtYaw = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation).Yaw;
+		const double& CurrentYaw = GetActorRotation().Yaw;
 
-	FRotator CurrentRotator = GetActorRotation();
-	CurrentRotator.Yaw = NewYaw;
-	SetActorRotation(CurrentRotator);
+		const double& NewYaw = FMath::FInterpTo(CurrentYaw, LookAtYaw, DeltaTime, 5.f);
+
+		FRotator CurrentRotator = GetActorRotation();
+		CurrentRotator.Yaw = NewYaw;
+		SetActorRotation(CurrentRotator);
+	}
 }
 
 void ABossBase::RotateBodyToCombatTarget()
 {
-	const FVector& StartLocation = GetActorLocation();
-	const FVector& TargetLocation = CombatTarget->GetActorLocation();
+	if (CombatTarget)
+	{
+		const FVector& StartLocation = GetActorLocation();
+		const FVector& TargetLocation = CombatTarget->GetActorLocation();
 
-	const double& LookAtYaw = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation).Yaw;
+		const double& LookAtYaw = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation).Yaw;
 
-	FRotator CurrentRotator = GetActorRotation();
-	CurrentRotator.Yaw = LookAtYaw;
+		FRotator CurrentRotator = GetActorRotation();
+		CurrentRotator.Yaw = LookAtYaw;
 
-	SetActorRotation(CurrentRotator);
+		SetActorRotation(CurrentRotator);
+	}
 }
 
 void ABossBase::SetMotionWarpRotationToTarget()
@@ -224,6 +232,7 @@ void ABossBase::OnCombatTargetDead()
 void ABossBase::Die()
 {
 	CombatTarget = nullptr;
+	RemoveMeshOutline();
 }
 
 void ABossBase::ApplyHitOverlayMaterial()
@@ -238,6 +247,22 @@ void ABossBase::ApplyHitOverlayMaterial()
 void ABossBase::OnEndHitOveralyTimer()
 {
 	GetMesh()->SetOverlayMaterial(nullptr);
+}
+
+void ABossBase::ChangeMeshOutline()
+{
+	// 월드에 배치된 포스트 프로세싱에 영향을 받음
+	// 외형선을 빨강으로 나타냄
+	GetMesh()->SetRenderCustomDepth(true);
+	GetMesh()->SetCustomDepthStencilValue(1);
+
+	GetWorld()->GetTimerManager().ClearTimer(MeshOutlineTimerHandle);
+	GetWorld()->GetTimerManager().SetTimer(MeshOutlineTimerHandle, this, &ABossBase::RemoveMeshOutline, HitOutlineDurationTime, false);
+}
+
+void ABossBase::RemoveMeshOutline()
+{
+	GetMesh()->SetRenderCustomDepth(false);
 }
 
 void ABossBase::LoadStats()

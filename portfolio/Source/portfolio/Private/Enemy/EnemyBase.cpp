@@ -288,11 +288,25 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 
 	ApplyHitOverlayMaterial();
 
+	ChangeMeshOutline();
+
 	HandleDamage(DamageCauser, DamageAmount);
 
 	HandleAttackTarget(EventInstigator);
 
 	return DamageAmount;
+}
+
+void AEnemyBase::ShowDamageText(const float& DamageAmount)
+{
+	if (DamageTextClass)
+	{
+		const FVector Location = GetActorLocation() + GetActorUpVector() * GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+		const FRotator Rotation = GetActorRotation();
+		FActorSpawnParameters SpawnInfo;
+		ADamageText* DamageText = GetWorld()->SpawnActor<ADamageText>(DamageTextClass, Location, Rotation, SpawnInfo);
+		DamageText->Initialize(DamageAmount);
+	}
 }
 
 void AEnemyBase::HandleAttackTarget(AController* EventInstigator)
@@ -312,14 +326,11 @@ void AEnemyBase::HandleAttackTarget(AController* EventInstigator)
 void AEnemyBase::HandleDamage(AActor* DamageCauser, float DamageAmount)
 {
 	DamageCauserActor = DamageCauser;
-	Stats.Hp -= DamageAmount;
+	Stats.Hp = FMath::Clamp(Stats.Hp - DamageAmount, 0.f, Stats.MaxHp);
 
-	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-	if (CharacterController)
-	{
-		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
-		if (HUDBase) HUDBase->ShowDamageOnScreen(this, DamageAmount);
-	}
+	OnChangedHp.Broadcast(Stats.Hp, Stats.MaxHp);
+
+	ShowDamageText(DamageAmount);
 
 	if (Stats.Hp <= 0.f)
 	{
@@ -327,7 +338,6 @@ void AEnemyBase::HandleDamage(AActor* DamageCauser, float DamageAmount)
 	}
 	else
 	{
-		UpdateHPBar();
 		PlayHitAnimNextTick();
 	}
 }
@@ -364,6 +374,8 @@ void AEnemyBase::Die()
 			DefaultCharacter->UpdateStatManager(EStatTarget::EST_Exp, EStatUpdateType::ESUT_Plus, Stats.Exp);
 		}
 	}
+
+	RemoveMeshOutline();
 
 	HPBarWidgetComponent->SetVisibility(false);
 
@@ -415,7 +427,6 @@ void AEnemyBase::OnEndHitOveralyTimer()
 	GetMesh()->SetOverlayMaterial(nullptr);
 }
 
-
 EEnemyState AEnemyBase::GetState() const
 {
 	return State;
@@ -458,13 +469,6 @@ void AEnemyBase::HitRotationEnd()
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("HitReactLocation"), GetActorLocation() - GetActorForwardVector() * KnockBackDistance);
 }
 
-void AEnemyBase::UpdateHPBar()
-{
-	const float CurrentHP = GetEnemyStats().Hp;
-	const float MaxHP = GetEnemyStats().MaxHp;
-	HPBarWidgetComponent->SetHPBar(CurrentHP / MaxHP);
-}
-
 void AEnemyBase::SetHeadUpMark(AActor* NewMark)
 {
 	HeadUpMark = NewMark;
@@ -482,4 +486,20 @@ void AEnemyBase::ApplyHitOverlayMaterial()
 		GetMesh()->SetOverlayMaterial(HitMaterialInstance);
 		GetWorld()->GetTimerManager().SetTimer(HitOverlayTimerHandle, this, &AEnemyBase::OnEndHitOveralyTimer,0.1f, false);
 	}
+}
+
+void AEnemyBase::ChangeMeshOutline()
+{
+	// 월드에 배치된 포스트 프로세싱에 영향을 받음
+	// 외형선을 빨강으로 나타냄
+	GetMesh()->SetRenderCustomDepth(true);
+	GetMesh()->SetCustomDepthStencilValue(1);
+
+	GetWorld()->GetTimerManager().ClearTimer(MeshOutlineTimerHandle);
+	GetWorld()->GetTimerManager().SetTimer(MeshOutlineTimerHandle, this, &AEnemyBase::RemoveMeshOutline, HitOutlineDurationTime, false);
+}
+
+void AEnemyBase::RemoveMeshOutline()
+{
+	GetMesh()->SetRenderCustomDepth(false);
 }

@@ -17,6 +17,8 @@ class AAIController;
 class ADefaultCharacter;
 class UMaterialInstance;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangedEnemyHealthSignature, const float&, CurrentHp, const float&, MaxHp);
+
 UCLASS()
 class PORTFOLIO_API AEnemyBase : public ACharacter
 {
@@ -26,6 +28,8 @@ public:
 	AEnemyBase();
 	virtual void Tick(float DeltaTime) override;
 
+	FOnChangedEnemyHealthSignature OnChangedHp;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -34,6 +38,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	UMaterialInstance* HitMaterialInstance;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Combat", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<ADamageText> DamageTextClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
 	FEnemyStats Stats;
@@ -129,6 +136,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Item)
 	float ItemDropRate = 0.3f;
 
+	// 피격시 생기는 외형선이 지속되는 시간
+	float HitOutlineDurationTime = 5.f;
+
 	// 공격 애니메이션 재생
 	void PlayAttackAnim();
 
@@ -174,6 +184,9 @@ protected:
 	UMotionWarpingComponent* MotionWarpingComponent;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+	// 액터 머리 위에 받은 데미지 텍스트를 출력
+	void ShowDamageText(const float& DamageAmount);
 
 	void HandleAttackTarget(AController* EventInstigator);
 
@@ -223,11 +236,19 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void HitRotationEnd();
 
-	void UpdateHPBar();
-
 	void SetHeadUpMark(AActor* NewMark);
 	void RemoveMark();
 
 	// 피격시 머리티얼 적용
 	void ApplyHitOverlayMaterial();
+
+	// 피격시 메쉬의 아웃라인을 빨간색으로 표시
+	void ChangeMeshOutline();
+	
+	// 아웃라인 제거
+	// 일정 시간동안 피격 없을 경우 또는 사망시 호출
+	void RemoveMeshOutline();
+
+	FTimerHandle MeshOutlineTimerHandle;
+
 };
