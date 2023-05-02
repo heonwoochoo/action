@@ -15,6 +15,7 @@ class ADamageText;
 class UPawnSensingComponent;
 class AAIController;
 class ADefaultCharacter;
+class UMaterialInstance;
 
 UCLASS()
 class PORTFOLIO_API AEnemyBase : public ACharacter
@@ -30,7 +31,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	UDataTable* EnemyStatsDataTable;
-	 
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+	UMaterialInstance* HitMaterialInstance;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
 	FEnemyStats Stats;
 
@@ -191,11 +195,16 @@ private:
 
 	FTimerHandle TakeDamageHandle;
 
+	FTimerHandle HitOverlayTimerHandle;
+
 	AActor* DamageCauserActor;
 
 	void PlayHitAnimNextTick();
 	void PlayHitAnim();
 	void PlayDeadAnim();
+
+	// 히트 오버레이 타이머 경과 -> 메쉬에 적용된 것을 해제
+	void OnEndHitOveralyTimer();
 
 public:
 	FORCEINLINE FEnemyStats GetEnemyStats() const { return Stats; }
@@ -218,4 +227,7 @@ public:
 
 	void SetHeadUpMark(AActor* NewMark);
 	void RemoveMark();
+
+	// 피격시 머리티얼 적용
+	void ApplyHitOverlayMaterial();
 };

@@ -20,7 +20,7 @@ protected:
 
 public:
 	ADefaultGameMode();
-
+	
 private:
 	// 넘길 때 버튼 소리
 	UPROPERTY(EditDefaultsOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))

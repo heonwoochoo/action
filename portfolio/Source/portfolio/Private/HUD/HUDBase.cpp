@@ -20,6 +20,8 @@
 #include "HUD/Combat/HeadUpText.h"
 #include "DefaultCharacter.h"
 #include "Component/InventoryComponent.h"
+#include "HUD/Combat/BossHPBar.h"
+#include "Enemy/Boss/BossBase.h"
 
 AHUDBase::AHUDBase()
 {
@@ -257,5 +259,24 @@ void AHUDBase::HideGuideMessage()
 	if (GuideMessageWidget)
 	{
 		GuideMessageWidget->HideGuideMessage();
+	}
+}
+
+void AHUDBase::CreateBossHPBar(ABossBase* BossActor)
+{
+	if (BossHPBarClass)
+	{
+		// 위젯 생성
+		BossHpBar = Cast<UBossHPBar>(CreateWidget(GetOwningPlayerController(), BossHPBarClass));
+		if (BossHpBar && BossActor)
+		{
+			const FBossStats& Stats = BossActor->GetStats();
+			const FText& BossName = FText::FromName(Stats.Name);
+
+			BossHpBar->SetName(BossName);
+			BossActor->OnChanged.AddDynamic(BossHpBar, &UBossHPBar::OnChangedHP);
+
+			BossHpBar->AddToViewport();
+		}
 	}
 }

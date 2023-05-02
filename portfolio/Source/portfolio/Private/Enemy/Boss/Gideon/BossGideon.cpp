@@ -53,14 +53,15 @@ void ABossGideon::Tick(float DeltaTime)
 	}
 }
 
+float ABossGideon::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	return 0.0f;
+}
+
 void ABossGideon::Die()
 {
 	Super::Die();
-
-	if (AbilityComponent)
-	{
-		AbilityComponent->ClearTimerHandle();
-	}
 
 	State = EBossState::EBS_Dead;
 	Tags.Add(FName("Dead"));

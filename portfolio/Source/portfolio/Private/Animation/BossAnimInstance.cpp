@@ -110,6 +110,7 @@ void UBossAnimInstance::PlayBackStepAnimation()
 
 void UBossAnimInstance::PlayHitReactAnimation()
 {
+	ClearTimerHandle();
 	const FBossAnimation& Animations = GetAnimation();
 	UAnimMontage* Montage = Animations.HitReact;
 	if (Montage)
@@ -120,6 +121,7 @@ void UBossAnimInstance::PlayHitReactAnimation()
 
 void UBossAnimInstance::PlayDeadAnimation()
 {
+	ClearTimerHandle();
 	const FBossAnimation& Animations = GetAnimation();
 	UAnimMontage* Montage = Animations.Dead;
 	if (Montage)
@@ -133,7 +135,7 @@ void UBossAnimInstance::OnEndAttackTimer()
 	ABossGideon* Boss = Cast<ABossGideon>(TryGetPawnOwner());
 	if (Boss && Boss->HasTarget())
 	{
-		UBossAbilityComponent* AbilityComponent =Boss->GetAbilityComponent();
+		UBossAbilityComponent* AbilityComponent = Boss->GetAbilityComponent();
 		if (AbilityComponent)
 		{
 			AbilityComponent->BackStep();
@@ -156,7 +158,8 @@ void UBossAnimInstance::OnEndHitReactTimer()
 
 void UBossAnimInstance::ClearTimerHandle()
 {
-	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+	GetWorld()->GetTimerManager().ClearTimer(EndAttackTimer);
+	GetWorld()->GetTimerManager().ClearTimer(EndHitReactTimer);
 }
 
 void UBossAnimInstance::OnEndMontage(UAnimMontage* Montage, bool bInterrupted)
@@ -170,7 +173,7 @@ void UBossAnimInstance::OnEndMontage(UAnimMontage* Montage, bool bInterrupted)
 		Boss->FindTarget();
 		Boss->ChaseTarget();
 	}
-	else if (Montage == Animations.Attack)
+	else if (Montage == Animations.Attack && !bInterrupted && Boss->GetState() != EBossState::EBS_Dead)
 	{
 		Boss->SetState(EBossState::EBS_Resting);
 		GetWorld()->GetTimerManager().SetTimer(EndAttackTimer,this, &UBossAnimInstance::OnEndAttackTimer, AttackTimerRate, false);
@@ -179,17 +182,17 @@ void UBossAnimInstance::OnEndMontage(UAnimMontage* Montage, bool bInterrupted)
 	{
 		Boss->ChaseTarget();
 	}
-	else if (Montage == Animations.SkillOne)
+	else if (Montage == Animations.SkillOne && !bInterrupted && Boss->GetState() != EBossState::EBS_Dead)
 	{
 		Boss->SetState(EBossState::EBS_Resting);
 		GetWorld()->GetTimerManager().SetTimer(EndAttackTimer, this, &UBossAnimInstance::OnEndAttackTimer, AttackTimerRate, false);
 	}
-	else if (Montage == Animations.SkillTwo)
+	else if (Montage == Animations.SkillTwo && !bInterrupted && Boss->GetState() != EBossState::EBS_Dead)
 	{
 		Boss->SetState(EBossState::EBS_Resting);
 		GetWorld()->GetTimerManager().SetTimer(EndAttackTimer, this, &UBossAnimInstance::OnEndAttackTimer, AttackTimerRate, false);
 	}
-	else if (Montage == Animations.HitReact)
+	else if (Montage == Animations.HitReact && Boss->GetState() != EBossState::EBS_Dead)
 	{
 		Boss->SetState(EBossState::EBS_Resting);
 		GetWorld()->GetTimerManager().SetTimer(EndHitReactTimer, this, &UBossAnimInstance::OnEndHitReactTimer, HitReactTimerRate, false);

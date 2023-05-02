@@ -10,6 +10,9 @@
 #include "Animation/BossAnimInstance.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "MotionWarpingComponent.h"
+#include "HUD/Combat/BossHPBar.h"
+#include "Controller/CharacterController.h"
+#include "HUD/HUDBase.h"
 
 // Sets default values
 ABossBase::ABossBase()
@@ -42,6 +45,7 @@ void ABossBase::BeginPlay()
 	{
 		AnimInstance->PlayOpeningAnimation();
 	}
+	
 }
 
 void ABossBase::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
@@ -66,17 +70,21 @@ float ABossBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 
 	if (DamageCauser->ActorHasTag(FName(TEXT("Player"))))
 	{
+		ApplyHitOverlayMaterial();
+
 		if (State == EBossState::EBS_Resting || State == EBossState::EBS_NoState)
 		{
-			Stats.Hp = FMath::Clamp(Stats.Hp - DamageAmount, 0, Stats.MaxHp);
-			if (Stats.Hp == 0)
+			UBossAnimInstance* AnimInstance = Cast<UBossAnimInstance>(GetMesh()->GetAnimInstance());
+			if (AnimInstance)
 			{
-				Die();
-			}
-			else
-			{
-				UBossAnimInstance* AnimInstance = Cast<UBossAnimInstance>(GetMesh()->GetAnimInstance());
-				if (AnimInstance)
+				Stats.Hp = FMath::Clamp(Stats.Hp - DamageAmount, 0, Stats.MaxHp);
+				OnChanged.Broadcast(Stats.Hp, Stats.MaxHp);
+
+				if (Stats.Hp == 0)
+				{
+					Die();
+				}
+				else
 				{
 					SetMotionWarpRotationToTarget();
 					AnimInstance->PlayHitReactAnimation();
@@ -103,11 +111,23 @@ void ABossBase::FindTarget()
 				// 타겟 설정
 				CombatTarget = Actor;
 
-				// 타겟이 죽었을 때를 구독
+				
 				ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(CombatTarget);
 				if (DefaultCharacter)
 				{
+					// 타겟이 죽었을 때를 구독
 					DefaultCharacter->OnDead.AddDynamic(this, &ABossBase::OnCombatTargetDead);
+
+					// 유저 화면에 HP Bar 생성
+					ACharacterController* TargetController = Cast<ACharacterController>(DefaultCharacter->GetController());
+					if (TargetController)
+					{
+						AHUDBase* HUD = Cast<AHUDBase>(TargetController->GetHUD());
+						if (HUD)
+						{
+							HUD->CreateBossHPBar(this);
+						}
+					}
 				}
 			}
 		}
@@ -174,7 +194,7 @@ void ABossBase::SetMotionWarpRotationToTarget()
 
 void ABossBase::ChaseTarget()
 {
-	if (CombatTarget && BossController)
+	if (CombatTarget && BossController && State != EBossState::EBS_Dead)
 	{
 		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 		FAIMoveRequest AIMoveRequest;
@@ -203,7 +223,21 @@ void ABossBase::OnCombatTargetDead()
 
 void ABossBase::Die()
 {
+	CombatTarget = nullptr;
+}
 
+void ABossBase::ApplyHitOverlayMaterial()
+{
+	if (GetMesh() && HitMaterialInstance)
+	{
+		GetMesh()->SetOverlayMaterial(HitMaterialInstance);
+		GetWorld()->GetTimerManager().SetTimer(HitOverlayTimerHandle, this, &ABossBase::OnEndHitOveralyTimer, 0.1f, false);
+	}
+}
+
+void ABossBase::OnEndHitOveralyTimer()
+{
+	GetMesh()->SetOverlayMaterial(nullptr);
 }
 
 void ABossBase::LoadStats()

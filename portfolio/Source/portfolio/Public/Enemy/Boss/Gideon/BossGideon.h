@@ -30,6 +30,8 @@ protected:
 
 	virtual void Tick(float DeltaTime) override;
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
 	// 스킬이 구현되어있는 컴포넌트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBossAbilityComponent* AbilityComponent;

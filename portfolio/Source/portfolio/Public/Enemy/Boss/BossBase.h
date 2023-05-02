@@ -9,7 +9,9 @@
 
 class AAIController;
 class UMotionWarpingComponent;
+class UMaterialInstance;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangedEnemyHealthSignature, const float&, CurrentHp, const float&, MaxHp);
 
 UCLASS()
 class PORTFOLIO_API ABossBase : public ACharacter
@@ -18,6 +20,8 @@ class PORTFOLIO_API ABossBase : public ACharacter
 
 public:
 	ABossBase();
+
+	FOnChangedEnemyHealthSignature OnChanged;
 
 protected:
 	virtual void BeginPlay() override;
@@ -48,6 +52,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	FBossStats Stats;
 
+	// 피격시 적용될 오버레이 머티리얼
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+	UMaterialInstance* HitMaterialInstance;
+
 	// 움직임 상태
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
 	EBossState State = EBossState::EBS_NoState;
@@ -58,8 +66,9 @@ protected:
 
 	// 해당 거리 이내로 타겟이 들어오면 이동을 멈춤
 	float AcceptanceRadius = 1000.f;
-	
 
+	// 히트 오버레이 해제 타이머
+	FTimerHandle HitOverlayTimerHandle;
 
 public:
 	FORCEINLINE const FName& GetCode() const { return BossCode; }
@@ -97,6 +106,12 @@ public:
 
 	// 체력이 0이 되면 호출
 	virtual void Die();
+
+	// 피격시 오버레이 머리티얼 적용
+	void ApplyHitOverlayMaterial();
+
+	// 히트 오버레이 타이머 경과 -> 메쉬에 적용된 것을 해제
+	void OnEndHitOveralyTimer();
 
 private:
 	// 데이터 테이블로부터 스탯 데이터를 불러와 저장

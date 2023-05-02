@@ -74,7 +74,4 @@ public:
 	// 스킬 2번 : 투검 생성
 	UFUNCTION(BlueprintCallable)
 	void SpawnDarkSword();
-
-	// 타이머 핸들 초기화
-	void ClearTimerHandle();
 };

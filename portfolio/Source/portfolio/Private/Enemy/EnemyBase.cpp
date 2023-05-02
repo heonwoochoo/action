@@ -286,6 +286,8 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+	ApplyHitOverlayMaterial();
+
 	HandleDamage(DamageCauser, DamageAmount);
 
 	HandleAttackTarget(EventInstigator);
@@ -408,6 +410,11 @@ void AEnemyBase::PlayDeadAnim()
 	}
 }
 
+void AEnemyBase::OnEndHitOveralyTimer()
+{
+	GetMesh()->SetOverlayMaterial(nullptr);
+}
+
 
 EEnemyState AEnemyBase::GetState() const
 {
@@ -466,4 +473,13 @@ void AEnemyBase::SetHeadUpMark(AActor* NewMark)
 void AEnemyBase::RemoveMark()
 {
 	if (HeadUpMark) HeadUpMark->Destroy();
+}
+
+void AEnemyBase::ApplyHitOverlayMaterial()
+{
+	if (GetMesh() && HitMaterialInstance)
+	{
+		GetMesh()->SetOverlayMaterial(HitMaterialInstance);
+		GetWorld()->GetTimerManager().SetTimer(HitOverlayTimerHandle, this, &AEnemyBase::OnEndHitOveralyTimer,0.1f, false);
+	}
 }

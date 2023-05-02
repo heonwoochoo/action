@@ -30,7 +30,7 @@ void UBossAbilityComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 void UBossAbilityComponent::Attack()
 {
-	if (BossGideon)
+	if (BossGideon && BossGideon->GetState() != EBossState::EBS_Dead)
 	{
 		BossGideon->SetState(EBossState::EBS_Attacking);
 		BossGideon->SetMotionWarpRotationToTarget();
@@ -45,7 +45,7 @@ void UBossAbilityComponent::Attack()
 
 void UBossAbilityComponent::BackStep()
 {
-	if (BossGideon && BossGideon->GetCombatTarget())
+	if (BossGideon && BossGideon->GetCombatTarget() && BossGideon->GetState() != EBossState::EBS_Dead)
 	{
 		// 모션워핑 업데이트
 		BossGideon->SetMotionWarpRotationToTarget();
@@ -78,7 +78,7 @@ void UBossAbilityComponent::BackStep()
 
 void UBossAbilityComponent::HandleSkillOne()
 {
-	if (BossGideon)
+	if (BossGideon && BossGideon->GetState() != EBossState::EBS_Dead)
 	{
 		BossGideon->SetState(EBossState::EBS_Attacking);
 		BossGideon->SetMotionWarpRotationToTarget();
@@ -93,7 +93,7 @@ void UBossAbilityComponent::HandleSkillOne()
 
 void UBossAbilityComponent::HandleSkillTwo()
 {
-	if (BossGideon)
+	if (BossGideon && BossGideon->GetState() != EBossState::EBS_Dead)
 	{
 		BossGideon->SetState(EBossState::EBS_Attacking);
 		BossGideon->SetMotionWarpRotationToTarget();
@@ -168,9 +168,4 @@ void UBossAbilityComponent::SpawnDarkSword()
 			}
 		}
 	}
-}
-
-void UBossAbilityComponent::ClearTimerHandle()
-{
-	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 }

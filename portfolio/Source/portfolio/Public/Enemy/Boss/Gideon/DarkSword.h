@@ -87,7 +87,7 @@ protected:
 
 	// 검이 날라가는 속도
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
-	float MoveSpeed = 2000.f;
+	float MoveSpeed = 5000.f;
 
 	// 룬이 생성된 후 날라가기까지의 딜레이
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")

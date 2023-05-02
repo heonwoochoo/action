@@ -19,6 +19,8 @@ class UChatBox;
 class UInGameMenuToggleButton;
 class UGuideMessage;
 class AHeadUpText;
+class UBossHPBar;
+class ABossBase;
 
 UCLASS()
 class PORTFOLIO_API AHUDBase : public AHUD
@@ -63,7 +65,8 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Overlay", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UGuideMessage> GuideMessageClass;
 
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Overlay", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UBossHPBar> BossHPBarClass;
 
 	UInfoContainer* InfoContainer;
 
@@ -80,6 +83,8 @@ private:
 	UInGameMenuToggleButton* InGameMenuToggleWidget;
 
 	UGuideMessage* GuideMessageWidget;
+
+	UBossHPBar* BossHpBar;
 
 	TArray<TSubclassOf<UUserWidget>> InGameMenuChildWidgetClasses;
 
@@ -121,4 +126,7 @@ public:
 	// 가이드 메세지 토글
 	void ShowGuideMessage(const FText& Message);
 	void HideGuideMessage();
+
+	// 보스전 HP Bar 생성
+	void CreateBossHPBar(ABossBase* BossActor);
 };
