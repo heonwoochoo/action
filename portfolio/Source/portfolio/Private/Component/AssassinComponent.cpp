@@ -15,6 +15,7 @@
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Particles/ParticleSystem.h"
+#include "SkillActor/Assassin/ThrowingSlash.h"
 
 UAssassinComponent::UAssassinComponent()
 {
@@ -110,11 +111,36 @@ void UAssassinComponent::RotateToTarget(AActor* Target)
 
 void UAssassinComponent::SkillTwoFirstEffect()
 {
-	if (SkillTwo.ParticleEffects.IsValidIndex(0))
+	if (SkillTwo.NiagaraEffects.IsValidIndex(0))
 	{
-		UParticleSystem* Effect = SkillTwo.ParticleEffects[0];
-		UGameplayStatics::SpawnEmitterAtLocation(this, Effect, Character->GetActorLocation());
-		Character->CheckEnemyInRange(Character->GetActorLocation(), 300.f, SkillTwo.Damage, EHitType::EHT_Slash);
+		UNiagaraSystem* SlashEmitter = SkillTwo.NiagaraEffects[0];
+
+		const FVector& Location = Character->GetActorLocation();
+		const FVector& NewLocation = FVector(Location.X, Location.Y, Location.Z - 100.f);
+
+		const FRotator& Rotation = Character->GetActorRotation();
+		//const FRotator& NewRotation = FRotator(Rotation.Roll, Rotation.Yaw - 90.f, Rotation.Pitch + 180.f);
+
+		// Emitter 생성
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, SlashEmitter, NewLocation, Rotation);
+
+		// 충돌체 생성
+		if (SkillTwo.SkillActorClasses.IsValidIndex(0))
+		{
+			const TSubclassOf<AActor>& SkillClass = SkillTwo.SkillActorClasses[0];
+
+			AThrowingSlash* ThrowingSlash = GetWorld()->SpawnActor<AThrowingSlash>(SkillClass, NewLocation, Rotation);
+			if (ThrowingSlash)
+			{
+				ThrowingSlash->SetOwner(Character);
+				ThrowingSlash->SetDamage(SkillTwo.Damage);
+
+				if (SkillTwo.HitImpacts.IsValidIndex(0))
+				{
+					ThrowingSlash->SetHitImpactEmitter(SkillTwo.HitImpacts[0]);
+				}
+			}
+		}
 	}
 }
 

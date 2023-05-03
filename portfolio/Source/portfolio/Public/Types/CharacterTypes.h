@@ -215,6 +215,12 @@ struct FCharacterSkill : public FTableRowBase
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<UNiagaraSystem*> NiagaraEffects;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<UParticleSystem*> HitImpacts;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<TSubclassOf<AActor>> SkillActorClasses;
 };
 
 USTRUCT(BlueprintType)
