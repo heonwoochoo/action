@@ -34,8 +34,6 @@ void UAssassinComponent::BeginPlay()
 	Super::BeginPlay();
 	PrimaryComponentTick.SetTickFunctionEnable(true);
 	PrimaryComponentTick.RegisterTickFunction(GetComponentLevel());
-
-	InitSkillThreeEffectRotationValues();
 }
 
 void UAssassinComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -198,23 +196,50 @@ void UAssassinComponent::HandleSkillThree()
 	}
 }
 
-void UAssassinComponent::SpawnSkillThreeEffect()
+void UAssassinComponent::SpawnSkillThreeFirstEffect()
 {
-	if (Character && SkillThree.ParticleEffects.IsValidIndex(0))
-	{	
-		// 1. 로테이션 조정
-		AdjustCompRotationByCombo(SkillThreeCombo);
+	if (SkillThree.NiagaraEffects.IsValidIndex(0))
+	{
+		UNiagaraSystem* SlashEmitter = SkillThree.NiagaraEffects[0];
 
-		// 2. 파티클 생성
-		UParticleSystem* Effect = SkillThree.ParticleEffects[0];
-		SpawnParticleEffect(Effect);
+		const FVector& Location = Character->GetActorLocation();
+		const FRotator& Rotation = Character->GetActorRotation();
 
-		// 3. 범위 내 적 타격
-		const FVector Location = Character->GetEmitterComponent()->GetComponentLocation();
-		Character->CheckEnemyInRange(Location, 200.f, SkillThree.Damage, EHitType::EHT_Slash);
+		// Emitter 생성
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, SlashEmitter, Location, Rotation);
+	}
+}
 
-		// 4. 콤보 증가
-		SkillThreeCombo++;
+void UAssassinComponent::SpawnSkillThreeFinalEffect()
+{
+	if (SkillThree.NiagaraEffects.IsValidIndex(1))
+	{
+		UNiagaraSystem* SlashEmitter = SkillThree.NiagaraEffects[1];
+
+		const FVector& Location = Character->GetActorLocation();
+		const FRotator& Rotation = Character->GetActorRotation();
+		const FRotator& NewRotation = FRotator(Rotation.Roll, Rotation.Yaw - 90.f, Rotation.Pitch);
+
+		// Emitter 생성
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, SlashEmitter, Location, NewRotation);
+	}
+}
+
+void UAssassinComponent::AttackAroundCharacter()
+{
+	if (Character)
+	{
+		const FVector Location = Character->GetActorLocation();
+		Character->CheckEnemyInRange(Location, AttackAroundRadius, SkillThree.Damage, EHitType::EHT_Slash);
+	}
+}
+
+void UAssassinComponent::AttackForwardCharacter()
+{
+	if (Character)
+	{
+		const FVector Location = Character->GetActorLocation() +  Character->GetActorForwardVector() * AttackForwardOffset;
+		Character->CheckEnemyInRange(Location, AttackForwardRadius, SkillThree.Damage, EHitType::EHT_Slash);
 	}
 }
 
@@ -277,33 +302,6 @@ void UAssassinComponent::ThrowKnife()
 void UAssassinComponent::SetDashTarget(AActor* Target)
 {
 	DashTarget = Target;
-}
-
-void UAssassinComponent::InitSkillThreeEffectRotationValues()
-{
-	SkillThreeEffectRotationValues.Add(90.f);
-	SkillThreeEffectRotationValues.Add(-75.f);
-	SkillThreeEffectRotationValues.Add(75.f);
-	SkillThreeEffectRotationValues.Add(-90.f);
-	SkillThreeEffectRotationValues.Add(120.f);
-	SkillThreeEffectRotationValues.Add(-90.f);
-	SkillThreeEffectRotationValues.Add(90.f);
-	SkillThreeEffectRotationValues.Add(-90.f);
-}
-
-void UAssassinComponent::InitSkillThreeComboCount()
-{
-	SkillThreeCombo = 0;
-}
-
-void UAssassinComponent::AdjustCompRotationByCombo(uint8 ComboCount)
-{
-	USceneComponent* EmitterComponent = Character->GetEmitterComponent();
-	if (EmitterComponent && SkillThreeEffectRotationValues.IsValidIndex(ComboCount))
-	{
-		float RollValue = SkillThreeEffectRotationValues[ComboCount];
-		EmitterComponent->SetRelativeRotation(FRotator(0.f,0.f, RollValue));
-	}
 }
 
 void UAssassinComponent::LaunchEnemy(float ZScale)

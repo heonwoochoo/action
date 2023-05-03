@@ -88,18 +88,15 @@ private:
 	//==============================
 	//			3번 스킬
 	//==============================
-	// 파티클이 부착될 컴포넌트의 로테이션을 조절하기 위한 값을 담은 배열
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties|SkillThree", meta = (AllowPrivateAccess = "true"))
-	TArray<float> SkillThreeEffectRotationValues;
+	// 캐릭터 주변 공격 범위
+	float AttackAroundRadius = 400.f;
 
-	// 게임 시작 시 호출
-	void InitSkillThreeEffectRotationValues();
+	// 캐릭터 전방 공격 거리
+	float AttackForwardOffset = 300.f;
 
-	// 콤보 카운트
-	uint8 SkillThreeCombo = 0;
+	// 캐릭터 전방 공격 범위
+	float AttackForwardRadius = 300.f;
 
-	// 콤보 카운트에 따른 컴포넌트 로테이션 조정
-	void AdjustCompRotationByCombo(uint8 ComboCount);
 
 	//==============================
 	//			4번 스킬
@@ -140,13 +137,17 @@ public:
 	//==============================
 	virtual void HandleSkillThree() override;
 
-	// Anim notify를 통해 호출되는 함수
 	UFUNCTION(BlueprintCallable)
-	void SpawnSkillThreeEffect();
+	void SpawnSkillThreeFirstEffect();
+	
+	UFUNCTION(BlueprintCallable)
+	void SpawnSkillThreeFinalEffect();
 
-	// 콤보 초기화, 스킬 첫 동작시 호출
 	UFUNCTION(BlueprintCallable)
-	void InitSkillThreeComboCount();
+	void AttackAroundCharacter();
+
+	UFUNCTION(BlueprintCallable)
+	void AttackForwardCharacter();
 
 	//==============================
 	//			4번 스킬
