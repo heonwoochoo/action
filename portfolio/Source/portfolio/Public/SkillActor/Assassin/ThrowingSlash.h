@@ -9,6 +9,15 @@
 class UBoxComponent;
 class UProjectileMovementComponent;
 class UParticleSystem;
+class AEnemyBase;
+
+UENUM()
+enum class ESlashType : uint8
+{
+	EST_Single UMETA(DisplayName = "Single"),
+	EST_Multi UMETA(DisplayName = "Multi"),
+	EST_None UMETA(DisplayName = "None"),
+};
 
 UCLASS()
 class PORTFOLIO_API AThrowingSlash : public AActor
@@ -43,10 +52,14 @@ private:
 	// 타격시 생성될 이펙트
 	UParticleSystem* HitImpactEmitter;
 
-	// 한 타겟당 1회만 공격
+	// Single -> 한 타겟당 1회만 공격
+	// Multi -> 3회 공격
 	// 데미지의 중복을 검사하기 위한 컨테이너
-	TSet<AActor*> DamagedActors;
+	TMap<AEnemyBase*, uint8> DamagedActors;
 	
+	// 슬래시 타입
+	ESlashType SlashType = ESlashType::EST_None;
+
 public:	
 	FORCEINLINE AActor* GetOwner() const { return Owner; }
 	FORCEINLINE void SetOwner(AActor* NewOwner) { Owner = NewOwner; }
@@ -59,4 +72,6 @@ public:
 
 	FORCEINLINE void SetHitImpactEmitter(UParticleSystem* NewHitImpactEmitter) { HitImpactEmitter = NewHitImpactEmitter; }
 
+	FORCEINLINE ESlashType GetSlashType() const { return SlashType; }
+	void SetSlashType(const ESlashType& NewType);
 };

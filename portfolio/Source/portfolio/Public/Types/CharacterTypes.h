@@ -290,3 +290,4 @@ enum class EHitType : uint8
 	EHT_Default UMETA(DisplayName = "Default"),
 	EHT_Slash UMETA(DisplayName = "Slash"),
 };
+

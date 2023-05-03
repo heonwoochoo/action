@@ -119,7 +119,6 @@ void UAssassinComponent::SkillTwoFirstEffect()
 		const FVector& NewLocation = FVector(Location.X, Location.Y, Location.Z - 100.f);
 
 		const FRotator& Rotation = Character->GetActorRotation();
-		//const FRotator& NewRotation = FRotator(Rotation.Roll, Rotation.Yaw - 90.f, Rotation.Pitch + 180.f);
 
 		// Emitter 생성
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, SlashEmitter, NewLocation, Rotation);
@@ -129,11 +128,12 @@ void UAssassinComponent::SkillTwoFirstEffect()
 		{
 			const TSubclassOf<AActor>& SkillClass = SkillTwo.SkillActorClasses[0];
 
-			AThrowingSlash* ThrowingSlash = GetWorld()->SpawnActor<AThrowingSlash>(SkillClass, NewLocation, Rotation);
+			AThrowingSlash* ThrowingSlash = GetWorld()->SpawnActor<AThrowingSlash>(SkillClass, Location, Rotation);
 			if (ThrowingSlash)
 			{
 				ThrowingSlash->SetOwner(Character);
 				ThrowingSlash->SetDamage(SkillTwo.Damage);
+				ThrowingSlash->SetSlashType(ESlashType::EST_Single);
 
 				if (SkillTwo.HitImpacts.IsValidIndex(0))
 				{
@@ -146,34 +146,32 @@ void UAssassinComponent::SkillTwoFirstEffect()
 
 void UAssassinComponent::SkillTwoEndEffect()
 {
-	if (Character)
+	if (SkillTwo.NiagaraEffects.IsValidIndex(1))
 	{
-		Character->PlayCameraShake(CameraShakeExplosion);
-	}
+		UNiagaraSystem* SlashEmitter = SkillTwo.NiagaraEffects[1];
 
-	if (SkillTwo.NiagaraEffects.IsValidIndex(0))
-	{
-		UNiagaraSystem* Effect = SkillTwo.NiagaraEffects[0];
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, Effect, Character->GetActorLocation(), Character->GetActorRotation());
-	}
+		const FVector& Location = Character->GetActorLocation();
+		const FRotator& Rotation = Character->GetActorRotation();
 
-	const TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes{ UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn) };
-	const TArray<AActor*> ActorsToIgnore{ Character };
-	TArray<AActor*> OutActors;
-	UKismetSystemLibrary::SphereOverlapActors(this, Character->GetActorLocation(), 400.f, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
-	DrawDebugSphere(GetWorld(), Character->GetActorLocation(), 400.f, 16, FColor::Blue, false, 1.f);
-	for (auto Actor : OutActors)
-	{
-		if (Actor->ActorHasTag(FName("Enemy")))
+		// Emitter 생성
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, SlashEmitter, Location, Rotation);
+
+		// 충돌체 생성
+		if (SkillTwo.SkillActorClasses.IsValidIndex(0))
 		{
-			AEnemyBase* Enemy = Cast<AEnemyBase>(Actor);
-			if (Enemy)
+			const TSubclassOf<AActor>& SkillClass = SkillTwo.SkillActorClasses[0];
+
+			AThrowingSlash* ThrowingSlash = GetWorld()->SpawnActor<AThrowingSlash>(SkillClass, Location, Rotation);
+			if (ThrowingSlash)
 			{
-				// 적중 시 에어본
-				Enemy->LaunchCharacter(FVector(0.f, 0.f, 500.f), false, true);
-				Character->DamageToEnemy(Enemy, SkillTwo.Damage);
-				SpawnHitParticle(EHitType::EHT_Default, Enemy->GetActorLocation(), Enemy->GetActorRotation());
-				PlayHitSound(EHitType::EHT_Default, Enemy->GetActorLocation());
+				ThrowingSlash->SetOwner(Character);
+				ThrowingSlash->SetDamage(SkillTwo.Damage);
+				ThrowingSlash->SetSlashType(ESlashType::EST_Multi);
+
+				if (SkillTwo.HitImpacts.IsValidIndex(1))
+				{
+					ThrowingSlash->SetHitImpactEmitter(SkillTwo.HitImpacts[1]);
+				}
 			}
 		}
 	}
