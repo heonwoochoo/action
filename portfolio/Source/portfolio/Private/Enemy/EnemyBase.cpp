@@ -7,7 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "DefaultCharacter.h"
 #include "Camera/CameraComponent.h"
-#include "Items/KnifeProjectile.h"
+#include "SkillActor/Assassin/KnifeProjectile.h"
 #include "HUD/Combat/EnemyHPBarWidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Animation/EnemyAnimInstance.h"
@@ -52,8 +52,6 @@ void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	GetMesh()->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBase::OnBeginOverlapped);
-
 	if (PawnSensing) PawnSensing->OnSeePawn.AddDynamic(this, &AEnemyBase::PawnSeen);
 
 	EnemyController = Cast<AAIController>(GetController());
@@ -442,25 +440,6 @@ void AEnemyBase::SetTargetImgVisibie(bool NewState)
 	if (TargetWidgetComponent)
 	{
 		NewState ? TargetWidgetComponent->SetVisibility(true) : TargetWidgetComponent->SetVisibility(false);
-	}
-}
-
-void AEnemyBase::OnBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Attacked Knife"));
-	if (OtherActor->ActorHasTag(FName("KnifeProjectile")))
-	{
-		AKnifeProjectile* KnifeProjectile = Cast<AKnifeProjectile>(OtherActor);
-		if (KnifeProjectile)
-		{
-			KnifeProjectile->OnKnifeEffect(this);
-			ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-			if (CharacterController)
-			{
-				AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
-				if (HUDBase) HUDBase->ShowTargetMark(this, KnifeProjectile->Caster);
-			}
-		}
 	}
 }
 

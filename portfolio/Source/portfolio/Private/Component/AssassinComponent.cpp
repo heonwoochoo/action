@@ -7,7 +7,7 @@
 #include "DefaultCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Component/CharacterMotionWarpingComponent.h"
-#include "Items/KnifeProjectile.h"
+#include "SkillActor/Assassin/KnifeProjectile.h"
 #include "Kismet/GameplayStatics.h"
 #include "Camera/CameraComponent.h"
 #include "Controller/CharacterController.h"
@@ -16,6 +16,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Particles/ParticleSystem.h"
 #include "SkillActor/Assassin/ThrowingSlash.h"
+#include "Kismet/KismetMathLibrary.h"
 
 UAssassinComponent::UAssassinComponent()
 {
@@ -65,11 +66,6 @@ AActor* UAssassinComponent::FindEnemy()
 
 void UAssassinComponent::SkillOne_First()
 {
-	/**
-	* 수리검을 던질 때 타겟이 있는지 확인합니다.
-	* 타겟이 있다면, 캐릭터의 로테이션(Z Axis)을 해당 타겟으로 워핑합니다.
-	* 수리검 방향은 타겟을, 없으면 캐릭터의 Forward를 향합니다.
-	*/
 	TargetEnemy = FindEnemy();
 	if (TargetEnemy)
 	{
@@ -87,10 +83,12 @@ void UAssassinComponent::SkillOne_Second()
 	//MotionWarping
 	if (Character && DashTarget->ActorHasTag(FName("Enemy")))
 	{
-		const FName WarpName = "Assassin_SkillOne_Second";
-		const FVector Location = DashTarget->GetActorLocation();
-		const FRotator Rotation = (DashTarget->GetActorLocation() - Character->GetActorLocation()).ToOrientationQuat().Rotator();
-		Character->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocationAndRotation(WarpName, Location, Rotation);
+		const FName& WarpName = "Assassin_SkillOne_Second";
+		const FVector& TargetLocation = DashTarget->GetActorLocation();
+		const FRotator& TargetRotation = UKismetMathLibrary::FindLookAtRotation(Character->GetActorLocation(), TargetLocation);
+
+		//const FRotator Rotation = (DashTarget->GetActorLocation() - Character->GetActorLocation()).ToOrientationQuat().Rotator();
+		Character->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocationAndRotation(WarpName, TargetLocation, TargetRotation);
 	}
 }
 
@@ -284,8 +282,14 @@ void UAssassinComponent::ThrowKnife()
 	if (KnifeClass && Character)
 	{
 		const FTransform Transform = Character->GetActorTransform();
-		Knife = GetWorld()->SpawnActor<AKnifeProjectile>(KnifeClass, Transform);
-		Knife->Caster = Character;
+		AKnifeProjectile* Knife = GetWorld()->SpawnActor<AKnifeProjectile>(KnifeClass, Transform);
+		
+		if (Knife)
+		{
+			Knife->SetOwner(Character);
+			Knife->SetDamage(SkillTwo.Damage);
+		}
+		// 타겟이 있으면 타겟쪽으로, 없으면 캐릭터의 전방
 		if (TargetEnemy)
 		{
 			const FVector Direction = TargetEnemy->GetActorLocation() - Character->GetActorLocation();

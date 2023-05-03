@@ -35,10 +35,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillOne|Projectile", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AKnifeProjectile> KnifeClass;
 
-	// 투사체에서 생성된 인스턴스
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties|SkillOne|Projectile", meta = (AllowPrivateAccess = "true"))
-	AKnifeProjectile* Knife;
-
 	// 투사체의 유도를 감지하는 거리
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillOne", meta = (AllowPrivateAccess = "true"))
 	float TraceDistance = 2000.f;
@@ -57,10 +53,16 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties|SkillOne", meta = (AllowPrivateAccess = "true"))
 	AActor* DashTarget;
 
-	// 1번 스킬의 첫 번째 동작 실행
+	/** 1번 스킬의 첫 번째 동작 실행
+	* 수리검을 던질 때 타겟이 있는지 확인합니다. ( Anim Notify에서 FindEnemy() 호출)
+	* 타겟이 있다면, 캐릭터의 로테이션(Z Axis)을 해당 타겟으로 워핑합니다.
+	* 수리검 방향은 타겟을, 없으면 캐릭터의 Forward를 향합니다.
+	*/
 	void SkillOne_First();
 
-	// 1번 스킬의 두 번째 동작 실행
+	/** 1번 스킬의 두 번째 동작 실행
+	* 대쉬 타켓으로 지정된 대상으로 워핑합니다. (돌진 후 연타 공격)
+	*/
 	void SkillOne_Second();
 
 	// 타겟 방향으로 Motion Warping
