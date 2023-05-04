@@ -96,7 +96,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UCameraShakeBase> CameraShakeExplosion;
 
-
 	//==============================
 	//			3번 스킬
 	//==============================

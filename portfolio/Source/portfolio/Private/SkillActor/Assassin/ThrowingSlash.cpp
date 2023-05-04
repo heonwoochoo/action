@@ -8,6 +8,7 @@
 #include "Particles/ParticleSystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "Enemy/EnemyBase.h"
+#include "Sound/SoundCue.h"
 
 AThrowingSlash::AThrowingSlash()
 {
@@ -42,6 +43,19 @@ void AThrowingSlash::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (SlashType == ESlashType::EST_Multi && !bIsMultiSlashSoundOn)
+	{
+		bIsMultiSlashSoundOn = true;
+		GetWorld()->GetTimerManager().SetTimer(SlashSoundTimerHandle, this, &AThrowingSlash::PlaySlashSound, 0.15f, true);
+	}
+}
+
+void AThrowingSlash::PlaySlashSound()
+{
+	if (SlashSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, SlashSound, GetActorLocation());
+	}
 }
 
 void AThrowingSlash::OnOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -87,6 +101,11 @@ void AThrowingSlash::OnOverlapped(UPrimitiveComponent* OverlappedComponent, AAct
 
 			// 데미지 적용
 			DefaultCharacter->DamageToEnemy(Enemy, Damage);
+			
+			if (HitSound)
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, HitSound, Enemy->GetActorLocation());
+			}
 
 			DamagedActors[Enemy] += 1;
 

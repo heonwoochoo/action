@@ -10,6 +10,7 @@ class UBoxComponent;
 class UProjectileMovementComponent;
 class UParticleSystem;
 class AEnemyBase;
+class USoundCue;
 
 UENUM()
 enum class ESlashType : uint8
@@ -38,10 +39,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
+	USoundCue* SlashSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly);
+	USoundCue* HitSound;
+
 	// 날라가는 속도
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties");
 	float SlashSpeed = 3000.f;
-	
+
 
 private:
 	// 스킬 시전자
@@ -59,6 +66,12 @@ private:
 	
 	// 슬래시 타입
 	ESlashType SlashType = ESlashType::EST_None;
+
+	bool bIsMultiSlashSoundOn = false;
+
+	FTimerHandle SlashSoundTimerHandle;
+
+	void PlaySlashSound();
 
 public:	
 	FORCEINLINE AActor* GetOwner() const { return Owner; }
