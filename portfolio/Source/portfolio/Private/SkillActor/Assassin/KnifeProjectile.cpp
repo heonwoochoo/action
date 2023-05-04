@@ -48,6 +48,21 @@ void AKnifeProjectile::BeginPlay()
 	}
 }
 
+void AKnifeProjectile::Destroyed()
+{
+	// 히트되지 않았다면 쿨타임 적용
+	UAssassinComponent* AssassinComponent =  Cast<UAssassinComponent>(Caster->GetAbilityComponent());
+	if (AssassinComponent)
+	{
+		AActor* Target = AssassinComponent->GetDashTarget();
+		if (Target == nullptr)
+		{
+			AssassinComponent->SetCanSkillOne(false);
+			AssassinComponent->SetSkillOneTimer();
+		}
+	}
+}
+
 void AKnifeProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

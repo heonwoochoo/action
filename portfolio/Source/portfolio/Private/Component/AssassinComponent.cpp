@@ -309,6 +309,25 @@ void UAssassinComponent::SetDashTarget(AActor* Target)
 
 	ArrowSpline = GetWorld()->SpawnActor<AArrowSpline>(ArrowSplineClass);
 	ArrowSpline->Init(Character, DashTarget);
+
+	// 대쉬 활성화는 3초간 지속됩니다.
+	GetWorld()->GetTimerManager().SetTimer(DashTimerHandle, this, &UAssassinComponent::OnEndDashTimer, 3.f, false);
+}
+
+void UAssassinComponent::OnEndDashTimer()
+{
+	// 쿨타임 적용, 대쉬 타겟 설정 해제, 스플라인 제거
+
+	bCanSkillOne = false;
+
+	SetSkillOneTimer();
+
+	DashTarget = nullptr;
+
+	if (ArrowSpline)
+	{
+		ArrowSpline->Destroy();
+	}
 }
 
 void UAssassinComponent::LaunchEnemy(float ZScale)
@@ -331,11 +350,13 @@ void UAssassinComponent::LaunchEnemy(float ZScale)
 
 void UAssassinComponent::HandleSkillOne()
 {
+	Super::HandleSkillOne();
+
+	if (!bCanSkillOne) return;
 	const float StaminaCost = SkillOne.Stamina;
 	const float PlayerStamina = Character->GetCharacterStats().Stamina;
 	if (StaminaCost <= PlayerStamina)
-	{
-		Super::HandleSkillOne();
+	{	
 		Character->UpdateStatManager(EStatTarget::EST_Stamina, EStatUpdateType::ESUT_Minus, SkillOne.Stamina);
 		
 		if (AnimInstance && SkillOne.Animation)
@@ -348,14 +369,12 @@ void UAssassinComponent::HandleSkillOne()
 				SectionName = SectionName_Second;
 				DashTarget = nullptr;
 				ArrowSpline->Destroy();
+				bCanSkillOne = false;
 				SetSkillOneTimer();
 			}
 			else
 			{
-				if (!bCanSkillOne) return;
-				bCanSkillOne = false;
 				SkillOne_First();
-
 				SectionName = SectionName_First;
 			}
 			AnimInstance->Montage_Play(SkillOne.Animation);

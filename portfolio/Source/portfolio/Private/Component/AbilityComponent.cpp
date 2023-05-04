@@ -89,7 +89,7 @@ void UAbilityComponent::SetSkillFourTimer()
 
 void UAbilityComponent::HandleSkillOne()
 {
-	SetSkillOneTimer();
+	
 }
 
 void UAbilityComponent::HandleSkillTwo()

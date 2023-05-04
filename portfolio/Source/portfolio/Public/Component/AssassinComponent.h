@@ -60,6 +60,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties|SkillOne", meta = (AllowPrivateAccess = "true"))
 	AActor* DashTarget;
 
+	// 대쉬상태 비활성화를 위한 타이머
+	FTimerHandle DashTimerHandle;
+
 	/** 1번 스킬의 첫 번째 동작 실행
 	* 수리검을 던질 때 타겟이 있는지 확인합니다. ( Anim Notify에서 FindEnemy() 호출)
 	* 타겟이 있다면, 캐릭터의 로테이션(Z Axis)을 해당 타겟으로 워핑합니다.
@@ -127,8 +130,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ThrowKnife();
 
+	FORCEINLINE AActor* GetDashTarget() const { return DashTarget; }
 	void SetDashTarget(AActor* Target);
 		
+	// 대쉬 타이머 경과시 호출
+	void OnEndDashTimer();
+
 	//==============================
 	//			2번 스킬
 	//==============================

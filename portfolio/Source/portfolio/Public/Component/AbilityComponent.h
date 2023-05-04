@@ -47,32 +47,24 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	FCharacterSkill SkillOne;
 	FTimerHandle SkillOneHandle;
-	void EndSkillOneTimer();
-	void SetSkillOneTimer();
 	bool bCanSkillOne = true;
 
 	/** Two */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	FCharacterSkill SkillTwo;
 	FTimerHandle SkillTwoHandle;
-	void EndSkillTwoTimer();
-	void SetSkillTwoTimer();
 	bool bCanSkillTwo = true;
 
 	/** Three */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	FCharacterSkill SkillThree;
 	FTimerHandle SkillThreeHandle;
-	void EndSkillThreeTimer();
-	void SetSkillThreeTimer();
 	bool bCanSkillThree = true;
 
 	/** Four */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	FCharacterSkill SkillFour;
 	FTimerHandle SkillFourHandle;
-	void EndSkillFourTimer();
-	void SetSkillFourTimer();
 	bool bCanSkillFour = true;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|Data")
@@ -85,29 +77,41 @@ public:
 	/** One */
 	UFUNCTION(BlueprintCallable)
 	virtual void HandleSkillOne();
+	void EndSkillOneTimer();
+	void SetSkillOneTimer();
 	FORCEINLINE FCharacterSkill& GetSkillOne() { return SkillOne; }
 	FORCEINLINE bool GetCanSkillOne() const { return bCanSkillOne; }
+	FORCEINLINE void SetCanSkillOne(const bool& IsActive) { bCanSkillOne = IsActive; }
 	FORCEINLINE FTimerHandle* GetSkillOneHandle() { return &SkillOneHandle; }
 
 	/** Two */
 	UFUNCTION(BlueprintCallable)
 	virtual void HandleSkillTwo();
+	void EndSkillTwoTimer();
+	void SetSkillTwoTimer();
 	FORCEINLINE FCharacterSkill& GetSkillTwo() { return SkillTwo; }
 	FORCEINLINE bool GetCanSkillTwo() const { return bCanSkillTwo; }
+	FORCEINLINE void SetCanSkillTwo(const bool& IsActive) { bCanSkillTwo = IsActive; }
 	FORCEINLINE FTimerHandle* GetSkillTwoHandle() { return &SkillTwoHandle; }
 
 	/** Three */
 	UFUNCTION(BlueprintCallable)
 	virtual void HandleSkillThree();
+	void EndSkillThreeTimer();
+	void SetSkillThreeTimer();
 	FORCEINLINE FCharacterSkill& GetSkillThree() { return SkillThree; }
 	FORCEINLINE bool GetCanSkillThree() const { return bCanSkillThree; }
+	FORCEINLINE void SetCanSkillThree(const bool& IsActive) { bCanSkillThree = IsActive; }
 	FORCEINLINE FTimerHandle* GetSkillThreeHandle() { return &SkillThreeHandle; }
 
 	/** Four */
 	UFUNCTION(BlueprintCallable)
 	virtual void HandleSkillFour();
+	void EndSkillFourTimer();
+	void SetSkillFourTimer();
 	FORCEINLINE FCharacterSkill& GetSkillFour() { return SkillFour; }
 	FORCEINLINE bool GetCanSkillFour() const { return bCanSkillFour; }
+	FORCEINLINE void SetCanSkillFour(const bool& IsActive) { bCanSkillFour = IsActive; }
 	FORCEINLINE FTimerHandle* GetSkillFourHandle() { return &SkillFourHandle; }
 
 	// 기본 파티클 생성

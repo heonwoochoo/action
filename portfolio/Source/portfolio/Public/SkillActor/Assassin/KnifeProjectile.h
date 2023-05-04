@@ -23,6 +23,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void Destroyed() override;
+
 protected:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
