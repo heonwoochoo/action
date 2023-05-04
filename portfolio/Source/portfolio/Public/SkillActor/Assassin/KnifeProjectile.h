@@ -37,13 +37,14 @@ protected:
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
 private:
-	ADefaultCharacter* Owner;
+	// 스킬을 시전한 캐릭터
+	ADefaultCharacter* Caster;
 
 	float Damage = 0.f;
 
 public:
-	FORCEINLINE void SetOwner(ADefaultCharacter* NewOwner) { Owner = NewOwner; }
-	FORCEINLINE ADefaultCharacter* GetOwner() const { return Owner; }
+	FORCEINLINE void SetCaster(ADefaultCharacter* NewCaster) { Caster = NewCaster; }
+	FORCEINLINE ADefaultCharacter* GetCaster() const { return Caster; }
 
 	FORCEINLINE void SetDamage(const float& NewDamage) { Damage = NewDamage; }
 

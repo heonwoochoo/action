@@ -66,13 +66,13 @@ void AKnifeProjectile::OnBeginOverlapped(UPrimitiveComponent* OverlappedComponen
 	if (OtherActor->ActorHasTag(FName(TEXT("Enemy"))))
 	{
 		// 대쉬 타겟으로 설정
-		UAssassinComponent* AssassinComponent = Cast<UAssassinComponent>(Owner->GetAbilityComponent());
+		UAssassinComponent* AssassinComponent = Cast<UAssassinComponent>(Caster->GetAbilityComponent());
 		if (AssassinComponent)
 		{
 			AssassinComponent->SetDashTarget(OtherActor);
 		}
 
-		Owner->CheckEnemyInRange(GetActorLocation(), 50.f, Damage, EHitType::EHT_Slash);
+		Caster->CheckEnemyInRange(GetActorLocation(), 50.f, Damage, EHitType::EHT_Slash);
 
 		Destroy();
 	}	

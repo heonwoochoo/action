@@ -8,7 +8,6 @@
 
 class ADamageText;
 class ACharacter;
-class ATargetMark;
 class UUserWidget;
 class UInfoContainer;
 class UComboCountWidget;
@@ -35,10 +34,6 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Combat", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<ATargetMark> TargetMarkClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Combat", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UComboCountWidget> ComboCountClass;
@@ -97,9 +92,6 @@ private:
 	void CloseAllInGameChildWidget();
 
 public:
-
-	void ShowTargetMark(ACharacter* Enemy, ACharacter* Caster);
-
 	void ShowItemTooltip(const FName& ItemCode, const FVector2D& Location);
 	void HideItemTooltip();
 

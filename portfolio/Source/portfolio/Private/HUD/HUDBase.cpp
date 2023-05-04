@@ -4,7 +4,6 @@
 #include "HUD/HUDBase.h"
 #include "GameFramework/Character.h"
 #include "HUD/Combat/DamageText.h"
-#include "HUD/Combat/TargetMark.h"
 #include "Components/CapsuleComponent.h"
 #include "HUD/Overlay/InfoContainer.h"
 #include "HUD/Combat/ComboCountWidget.h"
@@ -135,19 +134,6 @@ void AHUDBase::CloseAllInGameChildWidget()
 				Widget->RemoveFromParent();
 			}
 		}
-	}
-}
-
-void AHUDBase::ShowTargetMark(ACharacter* Enemy, ACharacter* Caster)
-{
-	if (TargetMarkClass)
-	{
-		const FVector Location = Enemy->GetActorLocation() + Enemy->GetActorUpVector() * Enemy->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-		const FRotator Rotation = Enemy->GetActorRotation();
-		FActorSpawnParameters SpawnInfo;
-		SpawnInfo.Owner = Enemy;
-		SpawnInfo.Instigator = Caster;
-		ATargetMark* TargetMark = GetWorld()->SpawnActor<ATargetMark>(TargetMarkClass, Location, Rotation, SpawnInfo);
 	}
 }
 

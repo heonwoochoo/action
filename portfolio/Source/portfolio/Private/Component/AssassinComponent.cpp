@@ -17,6 +17,7 @@
 #include "Particles/ParticleSystem.h"
 #include "SkillActor/Assassin/ThrowingSlash.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "SkillActor/Assassin/ArrowSpline.h"
 
 UAssassinComponent::UAssassinComponent()
 {
@@ -87,7 +88,6 @@ void UAssassinComponent::SkillOne_Second()
 		const FVector& TargetLocation = DashTarget->GetActorLocation();
 		const FRotator& TargetRotation = UKismetMathLibrary::FindLookAtRotation(Character->GetActorLocation(), TargetLocation);
 
-		//const FRotator Rotation = (DashTarget->GetActorLocation() - Character->GetActorLocation()).ToOrientationQuat().Rotator();
 		Character->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocationAndRotation(WarpName, TargetLocation, TargetRotation);
 	}
 }
@@ -286,8 +286,8 @@ void UAssassinComponent::ThrowKnife()
 		
 		if (Knife)
 		{
-			Knife->SetOwner(Character);
-			Knife->SetDamage(SkillTwo.Damage);
+			Knife->SetCaster(Character);
+			Knife->SetDamage(SkillOne.Damage);
 		}
 		// 타겟이 있으면 타겟쪽으로, 없으면 캐릭터의 전방
 		if (TargetEnemy)
@@ -306,6 +306,9 @@ void UAssassinComponent::ThrowKnife()
 void UAssassinComponent::SetDashTarget(AActor* Target)
 {
 	DashTarget = Target;
+
+	ArrowSpline = GetWorld()->SpawnActor<AArrowSpline>(ArrowSplineClass);
+	ArrowSpline->Init(Character, DashTarget);
 }
 
 void UAssassinComponent::LaunchEnemy(float ZScale)
@@ -341,14 +344,10 @@ void UAssassinComponent::HandleSkillOne()
 
 			if (DashTarget)
 			{
-				AEnemyBase* Enemy = Cast<AEnemyBase>(DashTarget);
-				if (Enemy)
-				{
-					Enemy->RemoveMark();
-				}
 				SkillOne_Second();
 				SectionName = SectionName_Second;
 				DashTarget = nullptr;
+				ArrowSpline->Destroy();
 				SetSkillOneTimer();
 			}
 			else

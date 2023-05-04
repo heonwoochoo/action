@@ -2,7 +2,6 @@
 
 
 #include "Enemy/EnemyBase.h"
-#include "HUD/Combat/TargetWidgetComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "DefaultCharacter.h"
@@ -15,7 +14,6 @@
 #include "HUD/HUDBase.h"
 #include "Controller/CharacterController.h"
 #include "HUD/Combat/DamageText.h"
-#include "HUD/Combat/TargetMark.h"
 #include "Types/EnemyTypes.h"
 #include "Perception/PawnSensingComponent.h"
 #include "AIController.h"
@@ -25,7 +23,6 @@ AEnemyBase::AEnemyBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	SetRootComponent(GetCapsuleComponent());
-	TargetWidgetComponent = CreateDefaultSubobject<UTargetWidgetComponent>(TEXT("TargetImgComponent"));
 
 	HPBarWidgetComponent = CreateDefaultSubobject<UEnemyHPBarWidgetComponent>(TEXT("HPBarComponent"));
 	if (HPBarWidgetComponent)
@@ -435,27 +432,9 @@ void AEnemyBase::SetState(EEnemyState NewState)
 	State = NewState;
 }
 
-void AEnemyBase::SetTargetImgVisibie(bool NewState)
-{
-	if (TargetWidgetComponent)
-	{
-		NewState ? TargetWidgetComponent->SetVisibility(true) : TargetWidgetComponent->SetVisibility(false);
-	}
-}
-
 void AEnemyBase::HitRotationEnd()
 {
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("HitReactLocation"), GetActorLocation() - GetActorForwardVector() * KnockBackDistance);
-}
-
-void AEnemyBase::SetHeadUpMark(AActor* NewMark)
-{
-	HeadUpMark = NewMark;
-}
-
-void AEnemyBase::RemoveMark()
-{
-	if (HeadUpMark) HeadUpMark->Destroy();
 }
 
 void AEnemyBase::ApplyHitOverlayMaterial()

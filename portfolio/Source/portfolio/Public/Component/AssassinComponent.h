@@ -11,6 +11,7 @@ class AEnemyBase;
 class UNiagaraSystem;
 class UParticleSystem;
 class AKnifeProjectile;
+class AArrowSpline;
 
 UCLASS()
 class PORTFOLIO_API UAssassinComponent : public UAbilityComponent
@@ -34,6 +35,12 @@ private:
 	// 날아가는 투사체의 클래스
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillOne|Projectile", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AKnifeProjectile> KnifeClass;
+
+	// 투사체가 적중하면 적을 따라 생기는 화살표 스플라인
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillOne|Projectile", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<AArrowSpline> ArrowSplineClass;
+
+	AArrowSpline* ArrowSpline;
 
 	// 투사체의 유도를 감지하는 거리
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties|SkillOne", meta = (AllowPrivateAccess = "true"))

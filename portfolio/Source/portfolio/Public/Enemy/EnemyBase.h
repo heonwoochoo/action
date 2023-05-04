@@ -8,7 +8,6 @@
 #include "EnemyBase.generated.h"
 
 class UEnemyDataAsset;
-class UTargetWidgetComponent;
 class UEnemyHPBarWidgetComponent;
 class UMotionWarpingComponent;
 class ADamageText;
@@ -175,9 +174,6 @@ protected:
 	AActor* ChoosePatrolTarget();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTargetWidgetComponent* TargetWidgetComponent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UEnemyHPBarWidgetComponent* HPBarWidgetComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -202,8 +198,6 @@ protected:
 
 private:
 
-	AActor* HeadUpMark;
-
 	void Die();
 
 	FTimerHandle TakeDamageHandle;
@@ -226,15 +220,10 @@ public:
 	EEnemyState GetState() const;
 	void SetState(EEnemyState NewState);
 
-	void SetTargetImgVisibie(bool NewState);
-
 	FORCEINLINE EEnemyName GetName() const { return Name; }
 
 	UFUNCTION(BlueprintCallable)
 	void HitRotationEnd();
-
-	void SetHeadUpMark(AActor* NewMark);
-	void RemoveMark();
 
 	// 피격시 머리티얼 적용
 	void ApplyHitOverlayMaterial();
