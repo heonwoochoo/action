@@ -18,6 +18,7 @@
 #include "SkillActor/Assassin/ThrowingSlash.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "SkillActor/Assassin/ArrowSpline.h"
+#include "Sound/SoundCue.h"
 
 UAssassinComponent::UAssassinComponent()
 {
@@ -229,6 +230,12 @@ void UAssassinComponent::AttackAroundCharacter()
 	{
 		const FVector Location = Character->GetActorLocation();
 		Character->CheckEnemyInRange(Location, AttackAroundRadius, SkillThree.Damage, EHitType::EHT_Slash);
+	
+		// Whoosh sound
+		if (SkillThree.SkillSounds.IsValidIndex(0))
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, SkillThree.SkillSounds[0], Character->GetActorLocation());
+		}
 	}
 }
 
@@ -238,6 +245,12 @@ void UAssassinComponent::AttackForwardCharacter()
 	{
 		const FVector Location = Character->GetActorLocation() +  Character->GetActorForwardVector() * AttackForwardOffset;
 		Character->CheckEnemyInRange(Location, AttackForwardRadius, SkillThree.Damage, EHitType::EHT_Slash);
+
+		// Whoosh sound
+		if (SkillThree.SkillSounds.IsValidIndex(1))
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, SkillThree.SkillSounds[1], Character->GetActorLocation());
+		}
 	}
 }
 
@@ -275,6 +288,17 @@ void UAssassinComponent::SkillFourEndEffect()
 	LaunchEnemy(-5000.f);
 
 	Character->PlayCameraShake(CameraShakeExplosion);
+}
+
+void UAssassinComponent::OnEndMontage(UAnimMontage* AnimMontage, bool bInterrupted)
+{
+	if (AnimMontage == SkillFour.Animation)
+	{
+		if (Character->GetIsIncreaseCameraArmLength())
+		{
+			Character->SetIsIncreaseCameraArmLength(false);
+		}
+	}
 }
 
 void UAssassinComponent::ThrowKnife()

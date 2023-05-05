@@ -244,6 +244,11 @@ private:
 	
 	AHUDBase* HUDBase;
 
+	float CameraBoomArmLength = 400.f;
+
+	// true시 카메라 Arm의 길이가 늘어남
+	bool bIsIncreaseCameraArmLength = false;
+
 	// 마우스가 화면에 보이는 상태인지?
 	// true -> UI 선택모드 / false -> 캐릭터 컨트롤
 	bool bIsMouseShowing = false;
@@ -415,5 +420,17 @@ public:
 	// 아이템을 획득할 수 있는 상태인지 체크
 	bool CanPickupItem(AItemBase* Item);
 
+	// 카메라 Arm의 길이를 늘림 (스킬 액션)
+	void IncreaseCameraArmLength(float DeltaTime);
+
+	UFUNCTION(BlueprintCallable)
+	bool GetIsIncreaseCameraArmLength() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SetIsIncreaseCameraArmLength(const bool& IsIncrease);
+
+	// 원래의 길이로 복귀
+	void ReturnCameraArmLength(float DeltaTime);
+	
 };
 

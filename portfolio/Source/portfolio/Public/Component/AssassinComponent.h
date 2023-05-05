@@ -175,4 +175,7 @@ public:
 	// 마무리 공격시 호출
 	UFUNCTION(BlueprintCallable)
 	void SkillFourEndEffect();
+
+	UFUNCTION()
+	void OnEndMontage(UAnimMontage* AnimMontage, bool bInterrupted);
 };

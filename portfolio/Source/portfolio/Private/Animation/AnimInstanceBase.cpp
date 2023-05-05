@@ -7,6 +7,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Component/AbilityComponent.h"
 #include "Types/CharacterTypes.h"
+#include "Component/AssassinComponent.h"
 
 void UAnimInstanceBase::NativeInitializeAnimation()
 {
@@ -21,6 +22,12 @@ void UAnimInstanceBase::NativeInitializeAnimation()
 		if (CharacterClass == ECharacterClass::ECC_Assassin)
 		{
 			DefaultAnimations = *DefaultAnimationDataTable->FindRow<FCharacterDefaultAnimation>(FName("Assassin"), "");
+		}
+
+		UAssassinComponent* AssassinComponent = Cast<UAssassinComponent>(Character->GetAbilityComponent());
+		if (AssassinComponent)
+		{
+			OnMontageEnded.AddDynamic(AssassinComponent, &UAssassinComponent::OnEndMontage);
 		}
 	}
 

@@ -62,7 +62,7 @@ ADefaultCharacter::ADefaultCharacter()
 	// 카메라 붐 생성
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 500.0f; // The camera follows at this distance behind the character	
+	CameraBoom->TargetArmLength = CameraBoomArmLength; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 	CameraBoom->bEnableCameraLag = true;
 	CameraBoom->CameraLagSpeed = 5.f;
@@ -107,6 +107,15 @@ void ADefaultCharacter::Tick(float DeltaTime)
 	{
 		RegenerateHealth();
 		RegenerateStamina();
+	}
+
+	if (bIsIncreaseCameraArmLength)
+	{
+		IncreaseCameraArmLength(DeltaTime);
+	}
+	else
+	{
+		ReturnCameraArmLength(DeltaTime);
 	}
 }
 
@@ -1109,6 +1118,36 @@ bool ADefaultCharacter::CanPickupItem(AItemBase* Item)
 		}
 	}
 	return false;
+}
+
+void ADefaultCharacter::IncreaseCameraArmLength(float DeltaTime)
+{
+	const float& CurrentArmLength = CameraBoom->TargetArmLength;
+	const float& TargetArmLength = CameraBoomArmLength + 300.f;
+
+	const float& NewLength = FMath::FInterpTo(CurrentArmLength, TargetArmLength, DeltaTime, 10.f);
+	
+	CameraBoom->TargetArmLength = NewLength;
+}
+
+bool ADefaultCharacter::GetIsIncreaseCameraArmLength() const
+{
+	return bIsIncreaseCameraArmLength;
+}
+
+void ADefaultCharacter::SetIsIncreaseCameraArmLength(const bool& IsIncrease)
+{
+	bIsIncreaseCameraArmLength = IsIncrease;
+}
+
+void ADefaultCharacter::ReturnCameraArmLength(float DeltaTime)
+{
+	const float& CurrentArmLength = CameraBoom->TargetArmLength;
+	const float& TargetArmLength = CameraBoomArmLength;
+
+	const float& NewLength = FMath::FInterpTo(CurrentArmLength, TargetArmLength, DeltaTime, 10.f);
+
+	CameraBoom->TargetArmLength = NewLength;
 }
 
 ECharacterClass ADefaultCharacter::GetCharacterClass()

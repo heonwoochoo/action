@@ -36,7 +36,7 @@ void AThrowingSlash::BeginPlay()
 		BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &AThrowingSlash::OnOverlapped);
 	}
 
-	SetLifeSpan(1.5f);
+	SetLifeSpan(1.3f);
 }
 
 void AThrowingSlash::Tick(float DeltaTime)

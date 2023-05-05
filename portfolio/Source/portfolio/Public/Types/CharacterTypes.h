@@ -221,6 +221,9 @@ struct FCharacterSkill : public FTableRowBase
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<TSubclassOf<AActor>> SkillActorClasses;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<USoundCue*> SkillSounds;
 };
 
 USTRUCT(BlueprintType)
