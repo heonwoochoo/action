@@ -65,7 +65,17 @@ void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (State == EEnemyState::EES_Dead) return;
+	//if (State == EEnemyState::EES_Dead) return;
+
+	if (State == EEnemyState::EES_Dead)
+	{
+		UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
+		if (!MovementComponent->IsFalling())
+		{
+			MovementComponent->SetMovementMode(EMovementMode::MOVE_None);
+		}
+	}
+
 	if (State > EEnemyState::EES_Patrolling)
 	{
 		CheckCombatTarget();
@@ -359,6 +369,8 @@ void AEnemyBase::Die()
 {
 	State = EEnemyState::EES_Dead;
 	Tags.Add(FName("Dead"));
+	
+
 
 	if (CombatTarget)
 	{

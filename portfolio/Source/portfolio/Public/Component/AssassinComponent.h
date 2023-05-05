@@ -100,7 +100,7 @@ private:
 	//			3번 스킬
 	//==============================
 	// 캐릭터 주변 공격 범위
-	float AttackAroundRadius = 400.f;
+	float AttackAroundRadius = 300.f;
 
 	// 캐릭터 전방 공격 거리
 	float AttackForwardOffset = 300.f;
