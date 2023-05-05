@@ -6,6 +6,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Animation/AnimInstanceBase.h"
 #include "DefaultCharacter.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 AMan::AMan()
 {
@@ -61,6 +63,13 @@ void AMan::AttackCharacter()
 		if (Character)
 		{
 			DamageToPlayer(Character);
+
+			// 타격 소리 재생
+			if (Stats.EffectSounds.IsValidIndex(0))
+			{
+				USoundCue* Sound = Stats.EffectSounds[0];
+				UGameplayStatics::PlaySoundAtLocation(this, Sound, GetActorLocation());
+			}
 		}
 	}
 }

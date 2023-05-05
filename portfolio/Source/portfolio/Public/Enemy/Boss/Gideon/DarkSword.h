@@ -73,9 +73,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UCurveFloat* RuneOpacityCurveFloat;
 
-	// 타격 소리
+	// 바닥과의 충돌 소리
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	USoundCue* HitSound;
+	USoundCue* SpawnSound;
+
+	// 바닥과의 충돌 소리
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USoundCue* GroundHitSound;
+
+	// 캐릭터 타격 소리
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USoundCue* CharacterHitSound;
 
 	// 날라갈 때 소리
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

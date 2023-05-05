@@ -6,9 +6,9 @@
 #include "Components/StaticMeshComponent.h"
 #include "DefaultCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "Enemy/EnemyBase.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/Character.h"
 
 AArrowSpline::AArrowSpline()
 {
@@ -36,10 +36,13 @@ void AArrowSpline::Tick(float DeltaTime)
 	{
 		SplineComponent->SetWorldLocationAtSplinePoint(0, Caster->GetMesh()->GetComponentLocation());
 		
-		AEnemyBase* Enemy = Cast<AEnemyBase>(Target);
-		if (Enemy)
+		if (Target->ActorHasTag(FName(TEXT("Enemy"))))
 		{
-			SplineComponent->SetWorldLocationAtSplinePoint(1, Enemy->GetMesh()->GetComponentLocation());
+			ACharacter* Enemy = Cast<ACharacter>(Target);
+			if (Enemy)
+			{
+				SplineComponent->SetWorldLocationAtSplinePoint(1, Enemy->GetMesh()->GetComponentLocation());
+			}
 		}		
 
 		UpdateArrows();

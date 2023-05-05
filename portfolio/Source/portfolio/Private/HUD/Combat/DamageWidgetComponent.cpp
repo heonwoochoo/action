@@ -30,7 +30,7 @@ void UDamageWidgetComponent::SetDamageText(const float& InDamage, const bool& Is
 			DamageTextWidget->DamageText->SetFont(FontInfo);
 
 			// 색상 변경
-			DamageTextWidget->DamageText->ColorAndOpacity = FLinearColor(FColor::Purple);
+			DamageTextWidget->DamageText->SetColorAndOpacity(FColor::Purple);
 		}
 	}
 }

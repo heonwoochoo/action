@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Component/DamagedComponent.h"
@@ -10,26 +10,12 @@
 
 UDamagedComponent::UDamagedComponent()
 {
-
-	PrimaryComponentTick.bCanEverTick = true;
-
-
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
 void UDamagedComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-
-	
-}
-
-
-void UDamagedComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-
 }
 
 void UDamagedComponent::ApplyHitOverlayMaterial()
@@ -61,8 +47,8 @@ void UDamagedComponent::OnEndHitOveralyTimer()
 
 void UDamagedComponent::ChangeMeshOutline()
 {
-	// ¿ùµå¿¡ ¹èÄ¡µÈ Æ÷½ºÆ® ÇÁ·Î¼¼½Ì¿¡ ¿µÇâÀ» ¹ŞÀ½
-	// ¿ÜÇü¼±À» »¡°­À¸·Î ³ªÅ¸³¿
+	// ì›”ë“œì— ë°°ì¹˜ëœ í¬ìŠ¤íŠ¸ í”„ë¡œì„¸ì‹±ì— ì˜í–¥ì„ ë°›ìŒ
+	// ì™¸í˜•ì„ ì„ ë¹¨ê°•ìœ¼ë¡œ ë‚˜íƒ€ëƒ„
 	ACharacter* Owner = Cast<ACharacter>(GetOwner());
 	if (Owner)
 	{
@@ -114,7 +100,8 @@ bool UDamagedComponent::IsDamagedCritical(AActor* DamageCauser)
 	{
 		const FCharacterStats& Stats = Causer->GetCharacterStats();
 
-		const int32& Rand = FMath::FRandRange(1, 100);
+		
+		const float& Rand = FMath::FRandRange(1.f, 100.f);
 		if (Stats.Critical > Rand)
 		{
 			return true;

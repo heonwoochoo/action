@@ -10,6 +10,7 @@ class UAnimMontage;
 class UBlendSpace1D;
 class USkeletalMesh;
 class UAnimInstance;
+class USoundCue;
 
 UENUM(BlueprintType)
 enum class EEnemyState : uint8
@@ -55,6 +56,9 @@ struct FEnemyStats : public FTableRowBase
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<UAnimInstance> AnimationClass;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<USoundCue*> EffectSounds;
 };
 
 USTRUCT(BlueprintType)

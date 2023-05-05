@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -21,45 +21,43 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	// ÇÇ°İ½Ã Àû¿ëµÉ ¿À¹ö·¹ÀÌ ¸ÓÆ¼¸®¾ó
+	// í”¼ê²©ì‹œ ì ìš©ë  ì˜¤ë²„ë ˆì´ ë¨¸í‹°ë¦¬ì–¼
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	UMaterialInstance* HitMaterialInstance;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Combat", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<ADamageText> DamageTextClass;
 
-	// È÷Æ® ¿À¹ö·¹ÀÌ ÇØÁ¦ Å¸ÀÌ¸Ó
+	// íˆíŠ¸ ì˜¤ë²„ë ˆì´ í•´ì œ íƒ€ì´ë¨¸
 	FTimerHandle HitOverlayTimerHandle;
 
-	// ÇÇ°İ½Ã »ı±â´Â ¿ÜÇü¼±ÀÌ Áö¼ÓµÇ´Â ½Ã°£
+	// í”¼ê²©ì‹œ ìƒê¸°ëŠ” ì™¸í˜•ì„ ì´ ì§€ì†ë˜ëŠ” ì‹œê°„
 	float HitOutlineDurationTime = 5.f;
 
 public:	
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-	// ÇÇ°İ½Ã ¿À¹ö·¹ÀÌ ¸Ó¸®Æ¼¾ó Àû¿ë
+	// í”¼ê²©ì‹œ ì˜¤ë²„ë ˆì´ ë¨¸ë¦¬í‹°ì–¼ ì ìš©
 	void ApplyHitOverlayMaterial();
 
-	// È÷Æ® ¿À¹ö·¹ÀÌ Å¸ÀÌ¸Ó °æ°ú -> ¸Ş½¬¿¡ Àû¿ëµÈ °ÍÀ» ÇØÁ¦
+	// íˆíŠ¸ ì˜¤ë²„ë ˆì´ íƒ€ì´ë¨¸ ê²½ê³¼ -> ë©”ì‰¬ì— ì ìš©ëœ ê²ƒì„ í•´ì œ
 	void OnEndHitOveralyTimer();
 
-	// ÇÇ°İ½Ã ¸Ş½¬ÀÇ ¾Æ¿ô¶óÀÎÀ» »¡°£»öÀ¸·Î Ç¥½Ã
+	// í”¼ê²©ì‹œ ë©”ì‰¬ì˜ ì•„ì›ƒë¼ì¸ì„ ë¹¨ê°„ìƒ‰ìœ¼ë¡œ í‘œì‹œ
 	void ChangeMeshOutline();
 
-	// ¾Æ¿ô¶óÀÎ Á¦°Å
-	// ÀÏÁ¤ ½Ã°£µ¿¾È ÇÇ°İ ¾øÀ» °æ¿ì ¶Ç´Â »ç¸Á½Ã È£Ãâ
+	// ì•„ì›ƒë¼ì¸ ì œê±°
+	// ì¼ì • ì‹œê°„ë™ì•ˆ í”¼ê²© ì—†ì„ ê²½ìš° ë˜ëŠ” ì‚¬ë§ì‹œ í˜¸ì¶œ
 	void RemoveMeshOutline();
 
 	FTimerHandle MeshOutlineTimerHandle;
 
 	/** 
-	* Ä³¸¯ÅÍ ¸Ó¸® À§¿¡ ¹ŞÀº µ¥¹ÌÁö ÅØ½ºÆ®¸¦ Ãâ·ÂÇÕ´Ï´Ù.
-	* @param DamageAmount - µ¥¹ÌÁö
-	* @param IsCritical - Å©¸®Æ¼ÄÃÀ» ¹Ş¾Ò´ÂÁö?
+	* ìºë¦­í„° ë¨¸ë¦¬ ìœ„ì— ë°›ì€ ë°ë¯¸ì§€ í…ìŠ¤íŠ¸ë¥¼ ì¶œë ¥í•©ë‹ˆë‹¤.
+	* @param DamageAmount - ë°ë¯¸ì§€
+	* @param IsCritical - í¬ë¦¬í‹°ì»¬ì„ ë°›ì•˜ëŠ”ì§€?
 	*/
 	void ShowDamageText(const float& DamageAmount, const bool& IsCritical);
 
-	// °¡ÇØÀÚ¿¡°Ô Å©¸®Æ¼ÄÃ µ¥¹ÌÁö¸¦ ¹Ş¾Ò´ÂÁö?
+	// ê°€í•´ìì—ê²Œ í¬ë¦¬í‹°ì»¬ ë°ë¯¸ì§€ë¥¼ ë°›ì•˜ëŠ”ì§€?
 	bool IsDamagedCritical(AActor* DamageCauser);
 
 };

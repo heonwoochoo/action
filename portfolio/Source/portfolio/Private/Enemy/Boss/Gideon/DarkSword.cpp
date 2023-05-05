@@ -49,6 +49,11 @@ void ADarkSword::BeginPlay()
 
 		DamageBox->SetGenerateOverlapEvents(false);
 	}
+
+	if (SpawnSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, SpawnSound, GetActorLocation());
+	}
 }
 
 void ADarkSword::Tick(float DeltaTime)
@@ -96,6 +101,12 @@ void ADarkSword::OnHitCollision(UPrimitiveComponent* HitComponent, AActor* Other
 
 		// 데미지 오버랩 해제
 		DamageBox->SetGenerateOverlapEvents(false);
+
+		// 바닥과의 충돌 사운드 재생
+		if (GroundHitSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, GroundHitSound, GetActorLocation());
+		}
 	}
 }
 
@@ -108,9 +119,16 @@ void ADarkSword::OnOverlappedDamageBox(UPrimitiveComponent* OverlappedComponent,
 	{
 		UGameplayStatics::ApplyDamage(OtherActor, Damage, nullptr, Owner, TSubclassOf<UDamageType>());	
 		
+		// 히트 파티클
 		if (HitImpactParticle)
 		{
 			UGameplayStatics::SpawnEmitterAtLocation(this, HitImpactParticle, OtherActor->GetActorLocation());
+		}
+
+		// 히트 사운드
+		if (CharacterHitSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, CharacterHitSound, GetActorLocation());
 		}
 
 		// 데미지 오버랩 해제
@@ -122,6 +140,11 @@ void ADarkSword::ActivateProjectile()
 {
 	DamageBox->SetGenerateOverlapEvents(true);
 	ProjectileMovementComponent->Velocity = ProjectileDirection * MoveSpeed;
+
+	if (ThrowSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, ThrowSound, GetActorLocation());
+	}
 }
 
 void ADarkSword::OnEndThresHoldChange()

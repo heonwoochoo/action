@@ -57,10 +57,9 @@ AActor* UAssassinComponent::FindEnemy()
 
 	if (OutHit.bBlockingHit)
 	{
-		AEnemyBase* Enemy = Cast<AEnemyBase>(OutHit.GetActor());
-		if (Enemy)
+		if (OutHit.GetActor()->ActorHasTag(FName("Enemy")))
 		{
-			if (Enemy->ActorHasTag(FName("Enemy"))) return OutHit.GetActor();
+			return OutHit.GetActor();
 		}
 	}
 	return nullptr;
@@ -72,7 +71,6 @@ void UAssassinComponent::SkillOne_First()
 	if (TargetEnemy)
 	{
 		RotateToTarget(TargetEnemy);
-		DrawDebugSphere(GetWorld(), TargetEnemy->GetActorLocation(), 30.f, 16, FColor::Magenta, false, 5.f, 0U, 2.f);
 	}
 	else
 	{
