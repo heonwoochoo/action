@@ -12,8 +12,7 @@ AGold::AGold()
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	SetRootComponent(StaticMeshComponent);
-	StaticMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &AGold::OnBeginOverlapped);
-
+	
 	ParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ParticleComponent"));
 	ParticleComponent->SetupAttachment(StaticMeshComponent);
 
@@ -28,10 +27,10 @@ void AGold::BeginPlay()
 	
 }
 
-void AGold::OnBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AGold::Destroyed()
 {
-	if (OtherActor->ActorHasTag(FName(TEXT("Player"))))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Player overlapped!"));
-	}
+	Super::Destroyed();
+
+	ParticleComponent->DestroyComponent();
 }
+

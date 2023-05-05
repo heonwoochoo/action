@@ -16,10 +16,21 @@ void UDamageWidgetComponent::BeginPlay()
 	
 }
 
-void UDamageWidgetComponent::SetDamageText(float Damage)
+void UDamageWidgetComponent::SetDamageText(const float& InDamage, const bool& IsCritical)
 {
 	if (DamageTextWidget)
 	{
-		DamageTextWidget->DamageText->SetText(FText::FromString(FString::FromInt((int)Damage)));
+		DamageTextWidget->DamageText->SetText(FText::FromString(FString::FromInt((int)InDamage)));
+	
+		if (IsCritical)
+		{
+			// 폰트 사이즈 업
+			FSlateFontInfo FontInfo = DamageTextWidget->DamageText->GetFont();
+			FontInfo.Size = 48;
+			DamageTextWidget->DamageText->SetFont(FontInfo);
+
+			// 색상 변경
+			DamageTextWidget->DamageText->ColorAndOpacity = FLinearColor(FColor::Purple);
+		}
 	}
 }

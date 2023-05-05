@@ -17,7 +17,8 @@
 #include "Types/EnemyTypes.h"
 #include "Perception/PawnSensingComponent.h"
 #include "AIController.h"
-
+#include "Component/DamagedComponent.h"
+#include "HelperFunction.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -31,6 +32,8 @@ AEnemyBase::AEnemyBase()
 		HPBarWidgetComponent->SetVisibility(true);
 	}
 	
+	DamagedComponent = CreateDefaultSubobject<UDamagedComponent>(TEXT("DamagedComponent"));
+
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -290,28 +293,26 @@ AActor* AEnemyBase::ChoosePatrolTarget()
 float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	
+	DamageAmount = UHelperFunction::GetRandomDamage(DamageAmount);
 
-	ApplyHitOverlayMaterial();
+	if (!DamagedComponent) return DamageAmount;
+	
+	DamagedComponent->ApplyHitOverlayMaterial();
+	DamagedComponent->ChangeMeshOutline();
 
-	ChangeMeshOutline();
+	//크리티컬 적용
+	const bool& IsCritical = DamagedComponent->IsDamagedCritical(DamageCauser);
+	if (IsCritical)
+	{
+		DamageAmount *= 1.5f;
+	}
 
-	HandleDamage(DamageCauser, DamageAmount);
+	HandleDamage(DamageCauser, DamageAmount, IsCritical);
 
 	HandleAttackTarget(EventInstigator);
 
 	return DamageAmount;
-}
-
-void AEnemyBase::ShowDamageText(const float& DamageAmount)
-{
-	if (DamageTextClass)
-	{
-		const FVector Location = GetActorLocation() + GetActorUpVector() * GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-		const FRotator Rotation = GetActorRotation();
-		FActorSpawnParameters SpawnInfo;
-		ADamageText* DamageText = GetWorld()->SpawnActor<ADamageText>(DamageTextClass, Location, Rotation, SpawnInfo);
-		DamageText->Initialize(DamageAmount);
-	}
 }
 
 void AEnemyBase::HandleAttackTarget(AController* EventInstigator)
@@ -328,14 +329,17 @@ void AEnemyBase::HandleAttackTarget(AController* EventInstigator)
 	}
 }
 
-void AEnemyBase::HandleDamage(AActor* DamageCauser, float DamageAmount)
+void AEnemyBase::HandleDamage(AActor* DamageCauser, const float& DamageAmount, const bool& IsCritical)
 {
 	DamageCauserActor = DamageCauser;
 	Stats.Hp = FMath::Clamp(Stats.Hp - DamageAmount, 0.f, Stats.MaxHp);
 
 	OnChangedHp.Broadcast(Stats.Hp, Stats.MaxHp);
 
-	ShowDamageText(DamageAmount);
+	if (DamagedComponent)
+	{
+		DamagedComponent->ShowDamageText(DamageAmount, IsCritical);
+	}
 
 	if (Stats.Hp <= 0.f)
 	{
@@ -369,8 +373,6 @@ void AEnemyBase::Die()
 {
 	State = EEnemyState::EES_Dead;
 	Tags.Add(FName("Dead"));
-	
-
 
 	if (CombatTarget)
 	{
@@ -382,7 +384,10 @@ void AEnemyBase::Die()
 		}
 	}
 
-	RemoveMeshOutline();
+	if (DamagedComponent)
+	{
+		DamagedComponent->RemoveMeshOutline();
+	}
 
 	HPBarWidgetComponent->SetVisibility(false);
 
@@ -429,11 +434,6 @@ void AEnemyBase::PlayDeadAnim()
 	}
 }
 
-void AEnemyBase::OnEndHitOveralyTimer()
-{
-	GetMesh()->SetOverlayMaterial(nullptr);
-}
-
 EEnemyState AEnemyBase::GetState() const
 {
 	return State;
@@ -447,29 +447,4 @@ void AEnemyBase::SetState(EEnemyState NewState)
 void AEnemyBase::HitRotationEnd()
 {
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("HitReactLocation"), GetActorLocation() - GetActorForwardVector() * KnockBackDistance);
-}
-
-void AEnemyBase::ApplyHitOverlayMaterial()
-{
-	if (GetMesh() && HitMaterialInstance)
-	{
-		GetMesh()->SetOverlayMaterial(HitMaterialInstance);
-		GetWorld()->GetTimerManager().SetTimer(HitOverlayTimerHandle, this, &AEnemyBase::OnEndHitOveralyTimer,0.1f, false);
-	}
-}
-
-void AEnemyBase::ChangeMeshOutline()
-{
-	// 월드에 배치된 포스트 프로세싱에 영향을 받음
-	// 외형선을 빨강으로 나타냄
-	GetMesh()->SetRenderCustomDepth(true);
-	GetMesh()->SetCustomDepthStencilValue(1);
-
-	GetWorld()->GetTimerManager().ClearTimer(MeshOutlineTimerHandle);
-	GetWorld()->GetTimerManager().SetTimer(MeshOutlineTimerHandle, this, &AEnemyBase::RemoveMeshOutline, HitOutlineDurationTime, false);
-}
-
-void AEnemyBase::RemoveMeshOutline()
-{
-	GetMesh()->SetRenderCustomDepth(false);
 }

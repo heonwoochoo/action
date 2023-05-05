@@ -15,11 +15,11 @@ ADamageText::ADamageText()
 	}
 }
 
-void ADamageText::Initialize(const float Damage)
+void ADamageText::Initialize(const float& Damage, const bool& IsCritical)
 {
 	if (DamageWidgetComponent)
 	{
-		DamageWidgetComponent->SetDamageText(Damage);
+		DamageWidgetComponent->SetDamageText(Damage, IsCritical);
 	}
 }
 

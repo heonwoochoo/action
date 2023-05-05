@@ -292,7 +292,9 @@ void UAssassinComponent::SkillFourEndEffect()
 
 void UAssassinComponent::OnEndMontage(UAnimMontage* AnimMontage, bool bInterrupted)
 {
-	if (AnimMontage == SkillFour.Animation)
+	if (AnimMontage == SkillFour.Animation ||
+		AnimMontage == SkillThree.Animation ||
+		AnimMontage == SkillTwo.Animation)
 	{
 		if (Character->GetIsIncreaseCameraArmLength())
 		{

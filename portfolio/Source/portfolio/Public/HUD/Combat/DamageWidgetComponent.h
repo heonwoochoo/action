@@ -21,5 +21,5 @@ public:
 
 
 public:
-	void SetDamageText(float Damage);
+	void SetDamageText(const float& InDamage, const bool& IsCritical);
 };

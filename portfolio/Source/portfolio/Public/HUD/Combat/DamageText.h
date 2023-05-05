@@ -17,7 +17,7 @@ public:
 	ADamageText();
 
 	UFUNCTION()
-	void Initialize(const float Damage);
+	void Initialize(const float& Damage, const bool& IsCritical);
 
 protected:
 	virtual void BeginPlay() override;

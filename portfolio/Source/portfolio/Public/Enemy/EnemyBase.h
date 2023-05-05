@@ -15,6 +15,7 @@ class UPawnSensingComponent;
 class AAIController;
 class ADefaultCharacter;
 class UMaterialInstance;
+class UDamagedComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangedEnemyHealthSignature, const float&, CurrentHp, const float&, MaxHp);
 
@@ -34,12 +35,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	UDataTable* EnemyStatsDataTable;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
-	UMaterialInstance* HitMaterialInstance;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Combat", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<ADamageText> DamageTextClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
 	FEnemyStats Stats;
@@ -57,6 +52,10 @@ protected:
 	// 일정 범위 내로 들어온 타겟의 위치를 감지하기 위한 컴포넌트
 	UPROPERTY(VisibleAnywhere)
 	UPawnSensingComponent* PawnSensing;
+
+	// 데미지를 입으면 캐릭터에 변화를 주는 컴포넌트
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UDamagedComponent* DamagedComponent;
 
 	// AI 설정을 위한 컨트롤러
 	UPROPERTY()
@@ -181,12 +180,9 @@ protected:
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
-	// 액터 머리 위에 받은 데미지 텍스트를 출력
-	void ShowDamageText(const float& DamageAmount);
-
 	void HandleAttackTarget(AController* EventInstigator);
 
-	void HandleDamage(AActor* DamageCauser, float DamageAmount);
+	void HandleDamage(AActor* DamageCauser, const float& DamageAmount, const bool& IsCritical);
 
 	// Hit react
 	UPROPERTY(EditAnywhere, BlueprintReadWrite);
@@ -210,9 +206,6 @@ private:
 	void PlayHitAnim();
 	void PlayDeadAnim();
 
-	// 히트 오버레이 타이머 경과 -> 메쉬에 적용된 것을 해제
-	void OnEndHitOveralyTimer();
-
 public:
 	FORCEINLINE FEnemyStats GetEnemyStats() const { return Stats; }
 	FORCEINLINE UEnemyHPBarWidgetComponent* GetHPBarWidgetComponent() const { return HPBarWidgetComponent;}
@@ -224,17 +217,5 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HitRotationEnd();
-
-	// 피격시 머리티얼 적용
-	void ApplyHitOverlayMaterial();
-
-	// 피격시 메쉬의 아웃라인을 빨간색으로 표시
-	void ChangeMeshOutline();
-	
-	// 아웃라인 제거
-	// 일정 시간동안 피격 없을 경우 또는 사망시 호출
-	void RemoveMeshOutline();
-
-	FTimerHandle MeshOutlineTimerHandle;
 
 };

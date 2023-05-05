@@ -877,8 +877,9 @@ UCharacterMotionWarpingComponent* ADefaultCharacter::GetMotionWarpingComponent()
 void ADefaultCharacter::DamageToEnemy(AActor* Enemy, float Damage)
 {
 	TSubclassOf<UDamageType> DamageType;
+	
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-	UGameplayStatics::ApplyDamage(Enemy, UHelperFunction::GetRandomDamage(Damage, DefaultStats.Critical), CharacterController, this, DamageType);
+	UGameplayStatics::ApplyDamage(Enemy, Damage, CharacterController, this, DamageType);
 
 	HandleComboCount();
 }

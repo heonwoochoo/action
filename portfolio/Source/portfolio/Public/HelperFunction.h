@@ -16,5 +16,5 @@ class PORTFOLIO_API UHelperFunction : public UBlueprintFunctionLibrary
 	
 public:
 	UFUNCTION()
-	static float GetRandomDamage(float Damge, float Critical);
+	static float GetRandomDamage(float Damge);
 };

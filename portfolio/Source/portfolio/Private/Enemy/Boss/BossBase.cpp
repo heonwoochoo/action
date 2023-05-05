@@ -13,11 +13,13 @@
 #include "HUD/Combat/BossHPBar.h"
 #include "Controller/CharacterController.h"
 #include "HUD/HUDBase.h"
+#include "Component/DamagedComponent.h"
+#include "HelperFunction.h"
 
 // Sets default values
 ABossBase::ABossBase()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	SetRootComponent(GetCapsuleComponent());
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -25,6 +27,8 @@ ABossBase::ABossBase()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 	
+	DamagedComponent = CreateDefaultSubobject<UDamagedComponent>(TEXT("DamagedComponent"));
+
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarp"));
 	MotionWarpingComponent->SetActive(true);
 
@@ -58,35 +62,44 @@ void ABossBase::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEve
 void ABossBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
-
 
 float ABossBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	// State가 Rest일 때만 hitreact 애니메이션 적용
+	DamageAmount = UHelperFunction::GetRandomDamage(DamageAmount);
 
-	if (DamageCauser->ActorHasTag(FName(TEXT("Player"))))
+	if (DamageCauser->ActorHasTag(FName(TEXT("Player"))) && DamagedComponent)
 	{
-		ApplyHitOverlayMaterial();
+		DamagedComponent->ApplyHitOverlayMaterial();
 
-		ChangeMeshOutline();
+		DamagedComponent->ChangeMeshOutline();
 
-		if (State == EBossState::EBS_Resting || State == EBossState::EBS_NoState)
+		//크리티컬 적용
+		const bool& IsCritical = DamagedComponent->IsDamagedCritical(DamageCauser);
+		if (IsCritical)
 		{
-			UBossAnimInstance* AnimInstance = Cast<UBossAnimInstance>(GetMesh()->GetAnimInstance());
-			if (AnimInstance)
-			{
-				Stats.Hp = FMath::Clamp(Stats.Hp - DamageAmount, 0, Stats.MaxHp);
-				OnChanged.Broadcast(Stats.Hp, Stats.MaxHp);
+			DamageAmount *= 1.5f;
+		}
 
-				if (Stats.Hp == 0)
-				{
-					Die();
-				}
-				else
+		DamagedComponent->ShowDamageText(DamageAmount, IsCritical);
+
+		Stats.Hp = FMath::Clamp(Stats.Hp - DamageAmount, 0, Stats.MaxHp);
+
+		OnChanged.Broadcast(Stats.Hp, Stats.MaxHp);
+
+		if (Stats.Hp == 0)
+		{
+			Die();
+		}
+		else
+		{
+			// State가 Resting, NoState일 때만 hitreact 애니메이션 적용
+			if (State == EBossState::EBS_Resting || State == EBossState::EBS_NoState)
+			{
+				UBossAnimInstance* AnimInstance = Cast<UBossAnimInstance>(GetMesh()->GetAnimInstance());
+				if (AnimInstance)
 				{
 					SetMotionWarpRotationToTarget();
 					AnimInstance->PlayHitReactAnimation();
@@ -94,7 +107,7 @@ float ABossBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 			}
 		}
 	}
-	return 0.0f;
+	return DamageAmount;
 }
 
 void ABossBase::FindTarget()
@@ -232,37 +245,11 @@ void ABossBase::OnCombatTargetDead()
 void ABossBase::Die()
 {
 	CombatTarget = nullptr;
-	RemoveMeshOutline();
-}
 
-void ABossBase::ApplyHitOverlayMaterial()
-{
-	if (GetMesh() && HitMaterialInstance)
+	if (DamagedComponent)
 	{
-		GetMesh()->SetOverlayMaterial(HitMaterialInstance);
-		GetWorld()->GetTimerManager().SetTimer(HitOverlayTimerHandle, this, &ABossBase::OnEndHitOveralyTimer, 0.1f, false);
+		DamagedComponent->RemoveMeshOutline();
 	}
-}
-
-void ABossBase::OnEndHitOveralyTimer()
-{
-	GetMesh()->SetOverlayMaterial(nullptr);
-}
-
-void ABossBase::ChangeMeshOutline()
-{
-	// 월드에 배치된 포스트 프로세싱에 영향을 받음
-	// 외형선을 빨강으로 나타냄
-	GetMesh()->SetRenderCustomDepth(true);
-	GetMesh()->SetCustomDepthStencilValue(1);
-
-	GetWorld()->GetTimerManager().ClearTimer(MeshOutlineTimerHandle);
-	GetWorld()->GetTimerManager().SetTimer(MeshOutlineTimerHandle, this, &ABossBase::RemoveMeshOutline, HitOutlineDurationTime, false);
-}
-
-void ABossBase::RemoveMeshOutline()
-{
-	GetMesh()->SetRenderCustomDepth(false);
 }
 
 void ABossBase::LoadStats()
@@ -280,4 +267,3 @@ void ABossBase::LoadStats()
 		}
 	}
 }
-
