@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Enemy/Man.h"
@@ -64,7 +64,7 @@ void AMan::AttackCharacter()
 		{
 			DamageToPlayer(Character);
 
-			// Å¸°İ ¼Ò¸® Àç»ı
+			// íƒ€ê²© ì†Œë¦¬ ì¬ìƒ
 			if (Stats.EffectSounds.IsValidIndex(0))
 			{
 				USoundCue* Sound = Stats.EffectSounds[0];
