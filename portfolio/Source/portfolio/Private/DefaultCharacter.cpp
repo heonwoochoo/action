@@ -34,6 +34,7 @@
 #include "HUD/Combat/HeadUpWidgetComponent.h"
 #include "HUD/Combat/HeadUpWidget.h"
 #include "Items/Gold.h"
+#include "Component/QuestClientComponent.h"
 
 ADefaultCharacter::ADefaultCharacter()
 {
@@ -93,6 +94,9 @@ ADefaultCharacter::ADefaultCharacter()
 	// 헤드업 텍스트 컴포넌트 생성
 	HeadUpWidgetComonent = CreateDefaultSubobject<UHeadUpWidgetComponent>(TEXT("HeadUpWidgetComponent"));
 	HeadUpWidgetComonent->SetupAttachment(GetRootComponent());
+
+	// 퀘스트 컴포넌트 생성
+	QuestClientComponent = CreateDefaultSubobject<UQuestClientComponent>(TEXT("QuestClientComponent"));
 
 	InitialRelativeLocationZ = 0.f;
 

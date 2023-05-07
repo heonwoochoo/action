@@ -3,11 +3,13 @@
 
 #include "NPC/NPCGreyStone.h"
 #include "NPC/Text3DMark.h"
+#include "Component/QuestServerComponent.h"
 
 ANPCGreyStone::ANPCGreyStone()
 {
-	// 퀘스트 소유
-	QuestList.Add(EQuestCode::EQC_0001);
+	// 퀘스트 등록
+	QuestServerComponent = CreateDefaultSubobject<UQuestServerComponent>(TEXT("QuestServerComponent"));
+	QuestServerComponent->AddQuest(EQuestCode::EQC_0001);
 }
 
 void ANPCGreyStone::BeginPlay()
@@ -23,7 +25,8 @@ void ANPCGreyStone::BeginPlay()
 		if (Text3DMark)
 		{
 			// 테스트용
-			Text3DMark->SetText(FText::FromString(TEXT("?")));
+			Text3DMark->SetText(FText::FromString(TEXT("!")));
+			Text3DMark->SetTextColor(ETextMaterialColor::ETMC_Yellow);
 			Text3DMark->SetLocationOwnerHeadup();
 		}
 	}

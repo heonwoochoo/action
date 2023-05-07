@@ -19,6 +19,7 @@ enum class EQuestCode : uint8
 UENUM(BlueprintType)
 enum class EQuestState : uint8
 {
+	EQS_Unserved UMETA(DisplayName = "Unserved"),
 	EQS_Progress UMETA(DisplayName = "Progress"),
 	EQS_Complete UMETA(DisplayName = "Complete"),
 	EQS_None UMETA(DisplayName = "None"),
@@ -105,4 +106,20 @@ struct FQuest : public FTableRowBase
 	// 보상
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FQuestReward QuestReward;
+};
+
+// 플레이어(클라이언트)가 소유할 퀘스트 데이터
+USTRUCT(BlueprintType)
+struct FQuestClientData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	EQuestCode QuestCode;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	EQuestState QuestState;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FQuest Quest;
 };

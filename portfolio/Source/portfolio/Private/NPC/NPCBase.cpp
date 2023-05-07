@@ -65,21 +65,3 @@ void ANPCBase::RemoveMeshOutline()
 		MeshComponent->SetRenderCustomDepth(false);
 	}
 }
-
-FQuest* ANPCBase::GetQuestData(const EQuestCode& InQuestCode)
-{
-	const UEnum* QuestCodeType = FindObject<UEnum>(nullptr, TEXT("/Script/portfolio.EQuestCode"));
-	if (QuestCodeType)
-	{		
-		const FString& QuestCode = QuestCodeType->GetDisplayNameTextByValue((int64)InQuestCode).ToString();
-		if (QuestData)
-		{
-			FQuest* Quest = QuestData->FindRow<FQuest>(FName(QuestCode), "");
-			if (Quest)
-			{
-				return Quest;
-			}
-		}
-	}
-	return nullptr;
-}
