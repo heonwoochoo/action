@@ -2,6 +2,7 @@
 
 
 #include "NPC/NPCGreyStone.h"
+#include "NPC/Text3DMark.h"
 
 ANPCGreyStone::ANPCGreyStone()
 {
@@ -12,4 +13,18 @@ ANPCGreyStone::ANPCGreyStone()
 void ANPCGreyStone::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (Text3DMarkClass)
+	{
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.Owner = this;
+
+		Text3DMark = GetWorld()->SpawnActor<AText3DMark>(Text3DMarkClass, SpawnParameters);
+		if (Text3DMark)
+		{
+			// 테스트용
+			Text3DMark->SetText(FText::FromString(TEXT("?")));
+			Text3DMark->SetLocationOwnerHeadup();
+		}
+	}
 }

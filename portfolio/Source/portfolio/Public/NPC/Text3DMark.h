@@ -36,6 +36,12 @@ protected:
 
 
 public:
-	// 텍스트를 선택된 컬러의 머리티얼로 변경합니다.
+	// 텍스트를 선택된 컬러의 머리티얼로 변경
 	void SetTextColor(const ETextMaterialColor& MaterialColor);
+
+	// 오너 액터의 머리 위에 위치 시킴
+	void SetLocationOwnerHeadup();
+
+	// 텍스트 컴포넌트의 텍스트를 변경
+	void SetText(const FText& InText);
 };

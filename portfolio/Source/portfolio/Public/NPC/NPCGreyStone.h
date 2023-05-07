@@ -6,9 +6,8 @@
 #include "NPC/NPCBase.h"
 #include "NPCGreyStone.generated.h"
 
-/**
- * 
- */
+class AText3DMark;
+
 UCLASS()
 class PORTFOLIO_API ANPCGreyStone : public ANPCBase
 {
@@ -20,5 +19,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	// 머리 위에 생성할 수 있는 3D 텍스트 (? , ! 아이콘으로 사용됨)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<AText3DMark> Text3DMarkClass;
 
+	// 생성된 3D 텍스트의 인스턴스
+	AText3DMark* Text3DMark;
 };
