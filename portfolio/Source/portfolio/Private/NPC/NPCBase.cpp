@@ -3,7 +3,11 @@
 
 #include "NPC/NPCBase.h"
 #include "Components/SphereComponent.h"
+#include "Components/TextRenderComponent.h"
 #include "Engine/DataTable.h"
+#include "DefaultCharacter.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Camera/CameraComponent.h"
 
 ANPCBase::ANPCBase()
 {
@@ -12,6 +16,10 @@ ANPCBase::ANPCBase()
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	SphereComponent->SetupAttachment(GetRootComponent());
 	SphereComponent->SetGenerateOverlapEvents(true);
+
+	NameTextComponent = CreateDefaultSubobject<UTextRenderComponent>(TEXT("NameTextComponent"));
+	NameTextComponent->SetupAttachment(GetRootComponent());
+	NameTextComponent->SetVisibility(false);
 }
 
 void ANPCBase::BeginPlay()
@@ -28,6 +36,18 @@ void ANPCBase::BeginOverlappedSphere(UPrimitiveComponent* OverlappedComponent, A
 	{
 		bIsNearPlayer = true;
 		ChangeMeshOutline();
+
+		if (NameTextComponent)
+		{
+			NameTextComponent->SetVisibility(true);
+			SetName();
+
+			ADefaultCharacter* PlayerCharacter = Cast<ADefaultCharacter>(OtherActor);
+			if (PlayerCharacter)
+			{
+				NearPlayer = PlayerCharacter;
+			}
+		}
 	}
 }
 
@@ -37,6 +57,12 @@ void ANPCBase::EndOverlappedSphere(UPrimitiveComponent* OverlappedComponent, AAc
 	{
 		bIsNearPlayer = false;
 		RemoveMeshOutline();
+
+		if (NameTextComponent)
+		{
+			NameTextComponent->SetVisibility(false);
+			NearPlayer = nullptr;
+		}
 	}
 }
 
@@ -44,6 +70,10 @@ void ANPCBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (NearPlayer)
+	{
+		RotateNameToPlayer(NearPlayer);
+	}
 }
 
 void ANPCBase::ChangeMeshOutline()
@@ -63,5 +93,31 @@ void ANPCBase::RemoveMeshOutline()
 	if (MeshComponent)
 	{
 		MeshComponent->SetRenderCustomDepth(false);
+	}
+}
+
+void ANPCBase::SetName()
+{
+	if (NameTextComponent && !Name.IsEmpty())
+	{
+		NameTextComponent->SetText(Name);
+	}
+}
+
+void ANPCBase::RotateNameToPlayer(ADefaultCharacter* InPlayer)
+{
+	if (NameTextComponent && InPlayer)
+	{
+		// 위치는 에디터 내에서 조정
+
+		// 방향 설정
+		const FVector& Start = NameTextComponent->GetComponentLocation();
+
+		UCameraComponent* PlayerCamera = InPlayer->GetFollowCamera();
+		check(PlayerCamera);
+		const FVector& Target = PlayerCamera->GetComponentLocation();
+
+		const FRotator& LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Start, Target);
+		NameTextComponent->SetWorldRotation(LookAtRotation);
 	}
 }
