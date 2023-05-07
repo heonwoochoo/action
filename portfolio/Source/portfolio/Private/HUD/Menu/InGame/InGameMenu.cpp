@@ -16,6 +16,7 @@
 #include "HUD/Menu/InGame/CharacterInfo.h"
 #include "HUD/HUDBase.h"
 #include "Controller/CharacterController.h"
+#include "HUD/Menu/InGame/QuestInfo.h"
 
 void UInGameMenu::NativeConstruct()
 {
@@ -35,7 +36,7 @@ void UInGameMenu::NativeConstruct()
 		BindToAnimationFinished(HideMenu, EndAnimationEvent);
 	}
 
-	AllChildWidgetClasses = { ExitBoxClass, SavedNotifyBoxClass, InventoryClass, OptionsMenuClass, CharacterInfoClass };
+	AllChildWidgetClasses = { ExitBoxClass, SavedNotifyBoxClass, InventoryClass, OptionsMenuClass, CharacterInfoClass, QuestInfoClass };
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 	if (CharacterController)
 	{
@@ -154,7 +155,20 @@ void UInGameMenu::OnUnhoveredQuestButton()
 
 void UInGameMenu::OnClickedQuestButton()
 {
-	HideGuideMessage();
+	PlayButtonSound();
+	if (QuestInfoClass)
+	{
+		UQuestInfo* QuestInfo = Cast<UQuestInfo>(CreateWidget(this, QuestInfoClass));
+		if (QuestInfo)
+		{
+			QuestInfo->AddToViewport();
+
+			HideGuideMessage();
+
+			//인게임 메뉴 닫기
+			PlayHideAnimation();
+		}
+	}
 }
 
 void UInGameMenu::OnHoveredSettingsButton()

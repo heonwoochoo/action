@@ -5,4 +5,6 @@
 
 void UQuestHeadline::NativeConstruct()
 {
+	Super::NativeConstruct();
+
 }

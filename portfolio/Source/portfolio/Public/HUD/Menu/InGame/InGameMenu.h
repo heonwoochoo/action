@@ -14,6 +14,7 @@ class USavedNotifyBox;
 class UInventory;
 class UOptionsMenu;
 class UCharacterInfo;
+class UQuestInfo;
 
 UCLASS()
 class PORTFOLIO_API UInGameMenu : public UUserWidget
@@ -94,6 +95,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Menu")
 	TSubclassOf<UCharacterInfo> CharacterInfoClass;	
 
+	// 퀘스트 창 위젯 클래스
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Menu")
+	TSubclassOf<UQuestInfo> QuestInfoClass;
+	
 	TArray<TSubclassOf<UUserWidget>> AllChildWidgetClasses;
 
 	//====================
