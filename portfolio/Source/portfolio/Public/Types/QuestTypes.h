@@ -86,6 +86,10 @@ struct FQuest : public FTableRowBase
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<FText> Dialogue;
 
+	// 요약
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FText Summary;
+
 	// 수락 가능 레벨
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 Level;
