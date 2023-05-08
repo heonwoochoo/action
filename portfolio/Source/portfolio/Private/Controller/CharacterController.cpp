@@ -11,6 +11,9 @@ ACharacterController::ACharacterController()
 	CharacterInfoInitialLocation = ViewportSize;
 	InventoryInitialLocation = ViewportSize;
 	QuestInitialLocation = ViewportSize;
+
+	bEnableClickEvents = true;
+	bEnableMouseOverEvents = true;
 }
 
 void ACharacterController::SetInputModeToGame()
