@@ -20,6 +20,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaTime) override;
+
 	// 퀘스트 제공자
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UQuestServerComponent* QuestServerComponent;
@@ -30,4 +32,7 @@ protected:
 
 	// 생성된 3D 텍스트의 인스턴스
 	AText3DMark* Text3DMark;
+
+public:
+	FORCEINLINE UQuestServerComponent* GetQuestServerComponent() const { return QuestServerComponent; }
 };

@@ -6,6 +6,8 @@
 #include "Text3DComponent.h"
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
+#include "Component/QuestServerComponent.h"
+#include "NPC/NPCGreyStone.h"
 
 AText3DMark::AText3DMark()
 {
@@ -70,5 +72,48 @@ void AText3DMark::SetText(const FText& InText)
 	if (Text3DComponenet)
 	{
 		Text3DComponenet->SetText(InText);
+	}
+}
+
+void AText3DMark::Update()
+{
+	ANPCGreyStone* NPC = Cast<ANPCGreyStone>(GetOwner());
+	if (NPC)
+	{
+		UQuestServerComponent* QuestServerComponent = NPC->GetQuestServerComponent();
+		if (QuestServerComponent)
+		{
+			const TMap<EQuestCode, EQuestState>& QuestList = QuestServerComponent->GetQuestList();
+
+			TArray<EQuestState> QuestStates;
+			QuestList.GenerateValueArray(QuestStates);
+
+			if (QuestStates.Contains(EQuestState::EQS_Complete))
+			{
+				SetActorHiddenInGame(false);
+				SetText(FText::FromString(TEXT("!")));
+				SetTextColor(ETextMaterialColor::ETMC_Yellow);
+				return;
+			}
+			else if (QuestStates.Contains(EQuestState::EQS_Unserved))
+			{
+				SetActorHiddenInGame(false);
+				SetText(FText::FromString(TEXT("?")));
+				SetTextColor(ETextMaterialColor::ETMC_Blue);
+				return;
+			}
+			else if (QuestStates.Contains(EQuestState::EQS_Progress))
+			{
+				SetActorHiddenInGame(false);
+				SetText(FText::FromString(TEXT("?")));
+				SetTextColor(ETextMaterialColor::ETMC_Grey);
+				return;
+			}
+			else
+			{
+				// 아무런 퀘스트 상태가 없을 경우 숨김처리
+				SetActorHiddenInGame(true);
+			}
+		}
 	}
 }
