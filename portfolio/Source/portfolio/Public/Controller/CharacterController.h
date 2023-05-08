@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Types/SettingTypes.h"
 #include "CharacterController.generated.h"
 
-/**
- * 
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangedInputModeSignature, const EInputMode&, Mode);
+
 UCLASS()
 class PORTFOLIO_API ACharacterController : public APlayerController
 {
@@ -16,6 +16,8 @@ class PORTFOLIO_API ACharacterController : public APlayerController
 	
 public:
 	ACharacterController();
+
+	FOnChangedInputModeSignature OnChangedInputMode;
 
 private:
 	// 메뉴 창이 열리는 뷰포트 상의 위치

@@ -27,3 +27,11 @@ struct FSoundSettings
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float MusicVolume = 1.f;
 };
+
+UENUM(BlueprintType)
+enum class EInputMode : uint8
+{
+	EIM_Game UMETA(DisplayName = "Game"),
+	EIM_UI UMETA(DisplayName = "UI"),
+	EIM_None UMETA(DisplayName = "None"),
+};

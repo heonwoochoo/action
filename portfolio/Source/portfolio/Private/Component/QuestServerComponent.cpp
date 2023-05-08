@@ -38,7 +38,8 @@ FQuest* UQuestServerComponent::GetQuestData(const EQuestCode& InQuestCode)
 	const UEnum* QuestCodeType = FindObject<UEnum>(nullptr, TEXT("/Script/portfolio.EQuestCode"));
 	if (QuestCodeType)
 	{
-		const FString& QuestCode = QuestCodeType->GetDisplayNameTextByValue((int64)InQuestCode).ToString();
+		const FText& Text = QuestCodeType->GetDisplayNameTextByValue((int64)InQuestCode);
+		const FString& QuestCode = Text.ToString();
 		if (QuestData)
 		{
 			FQuest* Quest = QuestData->FindRow<FQuest>(FName(QuestCode), "");

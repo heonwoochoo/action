@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "NPC/NPCBase.h"
+#include "Types/SettingTypes.h"
 #include "NPCGreyStone.generated.h"
 
 class AText3DMark;
@@ -55,4 +56,6 @@ public:
 	UFUNCTION()
 	void OnClickedMesh(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
 
+	UFUNCTION()
+	void OnChangedInputMode(const EInputMode& InMode);
 };

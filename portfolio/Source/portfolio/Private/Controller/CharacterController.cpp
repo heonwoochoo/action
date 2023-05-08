@@ -29,6 +29,8 @@ void ACharacterController::SetInputModeToGame()
 	{
 		HUDBase->HideGuideMessage();
 	}
+
+	OnChangedInputMode.Broadcast(EInputMode::EIM_Game);
 }
 
 void ACharacterController::SetInputModeToUI()
@@ -44,4 +46,6 @@ void ACharacterController::SetInputModeToUI()
 	{
 		HUDBase->CreateInGameMenuToggleButton();
 	}
+
+	OnChangedInputMode.Broadcast(EInputMode::EIM_UI);
 }

@@ -35,6 +35,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangedLevelSignature, const int3
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangedGoldSignature, const int32&, Value);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeadSignature);
 
+
 UCLASS(config=Game)
 class ADefaultCharacter : public ACharacter
 {

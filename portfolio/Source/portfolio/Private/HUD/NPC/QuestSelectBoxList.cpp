@@ -5,6 +5,8 @@
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameMode/DefaultGameMode.h"
 
 void UQuestSelectBoxList::NativeConstruct()
 {
@@ -13,6 +15,7 @@ void UQuestSelectBoxList::NativeConstruct()
 	if (ArrowImage)
 	{
 		ArrowImage->SetBrushFromTexture(nullptr);
+		ArrowImage->SetOpacity(0.f);
 	}
 }
 
@@ -21,6 +24,7 @@ void UQuestSelectBoxList::OnHoveredListButton()
 	if (ArrowImage && DeactivatedArrowRight && !bIsSelected)
 	{
 		ArrowImage->SetBrushFromTexture(DeactivatedArrowRight);
+		ArrowImage->SetOpacity(1.f);
 	}
 }
 
@@ -29,6 +33,7 @@ void UQuestSelectBoxList::OnUnhoveredListButton()
 	if (ArrowImage && !bIsSelected)
 	{
 		ArrowImage->SetBrushFromTexture(nullptr);
+		ArrowImage->SetOpacity(0.f);
 	}
 }
 
@@ -41,6 +46,7 @@ void UQuestSelectBoxList::OnClickedListButton()
 		if (ArrowImage && ActivatedArrowRight)
 		{
 			ArrowImage->SetBrushFromTexture(ActivatedArrowRight);
+			ArrowImage->SetOpacity(1.f);
 		}
 	}
 	else
@@ -50,7 +56,15 @@ void UQuestSelectBoxList::OnClickedListButton()
 		if (ArrowImage && DeactivatedArrowRight)
 		{
 			ArrowImage->SetBrushFromTexture(DeactivatedArrowRight);
+			ArrowImage->SetOpacity(0.f);
 		}
+	}
+
+	// 버튼 효과음
+	ADefaultGameMode* DefaultGameMode = Cast<ADefaultGameMode>(UGameplayStatics::GetGameMode(this));
+	if (DefaultGameMode)
+	{
+		DefaultGameMode->PlayChangeButtonClickSound();
 	}
 }
 
