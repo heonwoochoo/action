@@ -121,22 +121,6 @@ void AHUDBase::CreateInGameMenuToggleButton()
 	}
 }
 
-void AHUDBase::CloseAllInGameChildWidget()
-{
-	for (const auto& WidgetClass : InGameMenuChildWidgetClasses)
-	{
-		TArray<UUserWidget*> FoundWidget;
-		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundWidget, WidgetClass);
-		if (FoundWidget.Num() >= 1)
-		{
-			for (auto Widget : FoundWidget)
-			{
-				Widget->RemoveFromParent();
-			}
-		}
-	}
-}
-
 void AHUDBase::ShowItemTooltip(const FName& ItemCode, const FVector2D& Location)
 {
 	if (ItemTooltipWidgetClass)
@@ -190,7 +174,6 @@ void AHUDBase::CloseInGameMenu()
 {
 	if (InGameMenuWidget)
 	{
-		InGameMenuWidget->RemoveOpenedWidget();
 		InGameMenuWidget->PlayHideAnimation();
 	}
 
@@ -202,14 +185,8 @@ void AHUDBase::CloseInGameMenu()
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 	if (CharacterController)
 	{
-		CloseAllInGameChildWidget();
 		CharacterController->SetInputModeToGame();
 	}
-}
-
-void AHUDBase::SetInGameMenuChildWidgetClasses(const TArray<TSubclassOf<UUserWidget>>& Classes)
-{
-	InGameMenuChildWidgetClasses = Classes;
 }
 
 void AHUDBase::NotifyMessageToUser(const FText& Message)

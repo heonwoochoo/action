@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "HUD/Menu/InGame/MovableWidget.h"
+#include "Types/SettingTypes.h"
 #include "CharacterInfo.generated.h"
 
 class UCanvasPanel;
@@ -132,4 +133,7 @@ public:
 
 	void OnHoveredSlot(const FName& ItemCode);
 	void OnUnhoveredSlot();
+
+	UFUNCTION()
+	void ChangedInputMode(const EInputMode& Mode);
 };

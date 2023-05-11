@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "HUD/Menu/InGame/MovableWidget.h"
+#include "Types/SettingTypes.h"
 #include "QuestInfo.generated.h"
 
 class UTextBlock;
@@ -68,6 +69,7 @@ private:
 
 
 public:
-
+	UFUNCTION()
+	void OnChangedInputMode(const EInputMode& Mode);
 
 };

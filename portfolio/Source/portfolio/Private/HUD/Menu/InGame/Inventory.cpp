@@ -38,6 +38,12 @@ void UInventory::NativeConstruct()
 
 	// 골드 동기화
 	UpdateGold();
+
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		CharacterController->OnChangedInputMode.AddDynamic(this, &UInventory::OnChangedInputMode);
+	}
 }
 
 void UInventory::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -309,6 +315,14 @@ void UInventory::UpdateGold()
 		const FCharacterStats& Stats = DefaultCharacter->GetCharacterStats();
 		const int32 CurrentGold = Stats.Gold;
 		GoldText->SetText(FText::FromString(FString::FromInt(CurrentGold)));
+	}
+}
+
+void UInventory::OnChangedInputMode(const EInputMode& Mode)
+{
+	if (Mode == EInputMode::EIM_Game)
+	{
+		RemoveFromParent();
 	}
 }
 

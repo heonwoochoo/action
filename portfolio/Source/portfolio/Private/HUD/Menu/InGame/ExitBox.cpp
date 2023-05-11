@@ -17,6 +17,12 @@ void UExitBox::NativeConstruct()
 	InitReturnSMenuButton();
 	InitExitGameButton();
 	InitCancelButton();
+
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		CharacterController->OnChangedInputMode.AddDynamic(this, &UExitBox::OnChangedInputMode);
+	}
 }
 
 void UExitBox::NativeDestruct()
@@ -190,5 +196,13 @@ void UExitBox::Activate()
 	if (ExitBoxOverlay)
 	{
 		ExitBoxOverlay->SetRenderOpacity(1.f);
+	}
+}
+
+void UExitBox::OnChangedInputMode(const EInputMode& Mode)
+{
+	if (Mode == EInputMode::EIM_Game)
+	{
+		RemoveFromParent();
 	}
 }

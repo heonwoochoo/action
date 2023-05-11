@@ -98,8 +98,6 @@ protected:
 	// 퀘스트 창 위젯 클래스
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Menu")
 	TSubclassOf<UQuestInfo> QuestInfoClass;
-	
-	TArray<TSubclassOf<UUserWidget>> AllChildWidgetClasses;
 
 	//====================
 	// 이벤트 발생시 호출
@@ -184,7 +182,4 @@ public:
 	void PlayButtonSound();
 
 	FWidgetAnimationDynamicEvent EndAnimationEvent;
-
-	// 열려있는 창 제거 (인벤토리, 캐릭터, ...)
-	void RemoveOpenedWidget();
 };

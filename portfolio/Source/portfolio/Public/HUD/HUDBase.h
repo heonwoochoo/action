@@ -88,9 +88,6 @@ private:
 	void InitChatBox();
 	void InitGuideMessage();
 
-	// 열려있는 인게임 자식 메뉴창이 있으면 닫기 
-	void CloseAllInGameChildWidget();
-
 public:
 	void ShowItemTooltip(const FName& ItemCode, const FVector2D& Location);
 	void HideItemTooltip();
@@ -108,8 +105,6 @@ public:
 	void OpenInGameMenu();
 	void CloseInGameMenu();
 
-	void SetInGameMenuChildWidgetClasses(const TArray<TSubclassOf<UUserWidget>>& Classes);
-
 	//화면 중앙 상단에 유저 알림 메세지 출력
 	void NotifyMessageToUser(const FText& Message);
 
@@ -119,4 +114,5 @@ public:
 
 	// 보스전 HP Bar 생성
 	void CreateBossHPBar(ABossBase* BossActor);
+
 };

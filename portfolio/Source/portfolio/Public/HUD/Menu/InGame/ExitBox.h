@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Types/SettingTypes.h"
 #include "ExitBox.generated.h"
 
 class UImage;
@@ -104,4 +105,6 @@ public:
 
 	// 자식 메뉴 창 닫을 때 활성화 상태로 복구
 	void Activate();
+
+	void OnChangedInputMode(const EInputMode& Mode);
 };

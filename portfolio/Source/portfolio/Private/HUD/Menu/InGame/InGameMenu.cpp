@@ -36,17 +36,6 @@ void UInGameMenu::NativeConstruct()
 		BindToAnimationFinished(HideMenu, EndAnimationEvent);
 	}
 
-	AllChildWidgetClasses = { ExitBoxClass, SavedNotifyBoxClass, InventoryClass, OptionsMenuClass, CharacterInfoClass, QuestInfoClass };
-	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-	if (CharacterController)
-	{
-		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
-		if (HUDBase)
-		{
-			HUDBase->SetInGameMenuChildWidgetClasses(AllChildWidgetClasses);
-		}
-	}
-
 	PlayShowAnimation();
 }
 
@@ -82,8 +71,16 @@ void UInGameMenu::OnUnhoveredCharacterButton()
 void UInGameMenu::OnClickedCharacterButton()
 {
 	PlayButtonSound();
-	if (InventoryClass)
+	if (CharacterInfoClass)
 	{
+		// 열려있는 위젯 닫기
+		TArray<UUserWidget*> FoundWidget;
+		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundWidget, CharacterInfoClass);
+		if (FoundWidget.Num() >= 1)
+		{
+			FoundWidget[0]->RemoveFromParent();
+		}
+
 		UCharacterInfo* CharacterInfo = Cast<UCharacterInfo>(CreateWidget(this, CharacterInfoClass));
 		if (CharacterInfo)
 		{
@@ -121,6 +118,14 @@ void UInGameMenu::OnClickedInventoryButton()
 	PlayButtonSound();
 	if (InventoryClass)
 	{
+		// 열려있는 위젯 닫기
+		TArray<UUserWidget*> FoundWidget;
+		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundWidget, InventoryClass);
+		if (FoundWidget.Num() >= 1)
+		{
+			FoundWidget[0]->RemoveFromParent();
+		}
+
 		UInventory* Inventory = Cast<UInventory>(CreateWidget(this, InventoryClass));
 		if (Inventory)
 		{
@@ -158,6 +163,14 @@ void UInGameMenu::OnClickedQuestButton()
 	PlayButtonSound();
 	if (QuestInfoClass)
 	{
+		// 열려있는 위젯 닫기
+		TArray<UUserWidget*> FoundWidget;
+		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundWidget, QuestInfoClass);
+		if (FoundWidget.Num() >= 1)
+		{
+			FoundWidget[0]->RemoveFromParent();
+		}
+
 		UQuestInfo* QuestInfo = Cast<UQuestInfo>(CreateWidget(this, QuestInfoClass));
 		if (QuestInfo)
 		{
@@ -196,6 +209,14 @@ void UInGameMenu::OnClickedSettingsButton()
 
 	if (OptionsMenuClass)
 	{
+		// 열려있는 위젯 닫기
+		TArray<UUserWidget*> FoundWidget;
+		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundWidget, OptionsMenuClass);
+		if (FoundWidget.Num() >= 1)
+		{
+			FoundWidget[0]->RemoveFromParent();
+		}
+
 		UOptionsMenu* OptionsMenu = Cast<UOptionsMenu>(CreateWidget(this, OptionsMenuClass));
 		if (OptionsMenu)
 		{
@@ -234,6 +255,14 @@ void UInGameMenu::OnClickedSaveButton()
 	UDefaultGameInstance* DefaultGameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
 	if (DefaultGameInstance && SavedNotifyBoxClass)
 	{
+		// 열려있는 위젯 닫기
+		TArray<UUserWidget*> FoundWidget;
+		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundWidget, SavedNotifyBoxClass);
+		if (FoundWidget.Num() >= 1)
+		{
+			FoundWidget[0]->RemoveFromParent();
+		}
+
 		// 데이터 업데이트
 		DefaultGameInstance->UpdateSaveGame();
 
@@ -423,21 +452,5 @@ void UInGameMenu::PlayButtonSound()
 	if (DefaultGameMode)
 	{
 		DefaultGameMode->PlayCheckButtonClickSound();
-	}
-}
-
-void UInGameMenu::RemoveOpenedWidget()
-{
-	for (const auto& WidgetClass : AllChildWidgetClasses)
-	{
-		TArray<UUserWidget*> FoundWidget;
-		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundWidget, WidgetClass);
-		if (FoundWidget.Num() >= 1)
-		{
-			for (auto Widget : FoundWidget)
-			{
-				Widget->RemoveFromParent();
-			}
-		}
 	}
 }

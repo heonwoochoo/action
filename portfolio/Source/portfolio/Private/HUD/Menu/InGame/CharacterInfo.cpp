@@ -25,14 +25,18 @@ void UCharacterInfo::NativeConstruct()
 	InitEquipmentSlot();
 	InitCanvasLocation();
 	UpdateStats();
+
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		CharacterController->OnChangedInputMode.AddDynamic(this, &UCharacterInfo::ChangedInputMode);
+	}
 }
 
 void UCharacterInfo::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	
 }
 
 void UCharacterInfo::NativeDestruct()
@@ -280,6 +284,14 @@ void UCharacterInfo::OnUnhoveredSlot()
 		{
 			HUDBase->HideItemTooltip();
 		}
+	}
+}
+
+void UCharacterInfo::ChangedInputMode(const EInputMode& Mode)
+{
+	if (Mode == EInputMode::EIM_Game)
+	{
+		RemoveFromParent();
 	}
 }
 

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Types/SettingTypes.h"
 #include "SavedNotifyBox.generated.h"
 
 class UButton;
@@ -42,4 +43,8 @@ protected:
 
 private:
 	void InitOKButton();
+
+public:
+	UFUNCTION()
+	void OnChangedInputMode(const EInputMode& Mode);
 };

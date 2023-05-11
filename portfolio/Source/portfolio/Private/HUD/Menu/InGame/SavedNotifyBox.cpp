@@ -5,12 +5,19 @@
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Kismet/GameplayStatics.h"
+#include "Controller/CharacterController.h"
 #include "GameMode/DefaultGameMode.h"
 
 void USavedNotifyBox::NativeConstruct()
 {
 	Super::NativeConstruct();
 	InitOKButton();
+
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		CharacterController->OnChangedInputMode.AddDynamic(this, &USavedNotifyBox::OnChangedInputMode);
+	}
 }
 
 void USavedNotifyBox::OnHoveredOKButton()
@@ -47,5 +54,13 @@ void USavedNotifyBox::InitOKButton()
 		OKButton->OnHovered.AddDynamic(this, &USavedNotifyBox::OnHoveredOKButton);
 		OKButton->OnUnhovered.AddDynamic(this, &USavedNotifyBox::OnUnhoveredOKButton);
 		OKButton->OnClicked.AddDynamic(this, &USavedNotifyBox::OnClickedOKButton);
+	}
+}
+
+void USavedNotifyBox::OnChangedInputMode(const EInputMode& Mode)
+{
+	if (Mode == EInputMode::EIM_Game)
+	{
+		RemoveFromParent();
 	}
 }

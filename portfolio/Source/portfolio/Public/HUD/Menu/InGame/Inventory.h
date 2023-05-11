@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "HUD/Menu/InGame/MovableWidget.h"
 #include "Types/ItemTypes.h"
+#include "Types/SettingTypes.h"
 #include "Inventory.generated.h"
 
 class UButton;
@@ -140,4 +141,7 @@ private:
 
 	// 가지고 있는 골드를 보여줌
 	void UpdateGold();
+
+	UFUNCTION()
+	void OnChangedInputMode(const EInputMode& Mode);
 };
