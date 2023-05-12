@@ -11,12 +11,17 @@
 #include "HUD/HUDBase.h"
 #include "HUD/NPC/QuestSelectBox.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "Component/NPCDialogueComponent.h"
 
 ANPCGreyStone::ANPCGreyStone()
 {
 	// 퀘스트 등록
 	QuestServerComponent = CreateDefaultSubobject<UQuestServerComponent>(TEXT("QuestServerComponent"));
 	QuestServerComponent->AddQuest(EQuestCode::EQC_0001);
+
+	// 다이얼로그 컴포넌트 추가
+	DialogueComponent = CreateDefaultSubobject<UNPCDialogueComponent>(TEXT("DialogueComponent"));
+
 }
 
 void ANPCGreyStone::BeginPlay()
@@ -148,5 +153,13 @@ void ANPCGreyStone::OnChangedInputMode(const EInputMode& InMode)
 
 void ANPCGreyStone::OnSelectedQuest(const EQuestCode& SelectedCode)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Selected Quest"));
+	if (DialogueComponent && QuestServerComponent)
+	{
+		const FQuest* QuestData = QuestServerComponent->GetQuestData(SelectedCode);
+		if (QuestData)
+		{
+			const TArray<FText>& DialogueText = QuestData->Dialogue;
+			DialogueComponent->OpenDialogueBox(DialogueText);
+		}
+	}
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Types/SettingTypes.h"
 #include "DialogueBox.generated.h"
 
 class UButton;
@@ -91,6 +92,7 @@ private:
 	void InitNextButton();
 
 public:
+	UFUNCTION()
+	void OnChangedInputMode(const EInputMode& NewMode);
 	
-
 };

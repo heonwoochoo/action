@@ -135,3 +135,11 @@ void UDialogueBox::InitNextButton()
 		NextButtonImage->SetBrushFromTexture(DeactivatedButtonImage);
 	}
 }
+
+void UDialogueBox::OnChangedInputMode(const EInputMode& NewMode)
+{
+	if (NewMode == EInputMode::EIM_Game)
+	{
+		RemoveFromParent();
+	}
+}

@@ -52,6 +52,7 @@ void UQuestSelectBoxList::OnClickedListButton()
 			if (QuestCode != EQuestCode::EQC_None)
 			{
 				OnSelected.Broadcast(QuestCode);
+				
 			}
 		}
 	}

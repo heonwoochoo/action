@@ -61,4 +61,7 @@ public:
 
 	// 이름을 플레이어의 카메라 방향으로 보여줍니다.
 	void RotateNameToPlayer(ADefaultCharacter* InPlayer);
+
+	FORCEINLINE ADefaultCharacter* GetNearPlayer() const { return NearPlayer; }
+	FORCEINLINE void SetNearPlayer(ADefaultCharacter* InNearPlayer) { NearPlayer = InNearPlayer; }
 };
