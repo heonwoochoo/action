@@ -58,4 +58,7 @@ public:
 
 	UFUNCTION()
 	void OnChangedInputMode(const EInputMode& InMode);
+
+	UFUNCTION()
+	void OnSelectedQuest(const EQuestCode& SelectedCode);
 };

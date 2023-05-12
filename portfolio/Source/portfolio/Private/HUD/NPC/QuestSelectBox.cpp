@@ -8,6 +8,7 @@
 #include "HUD/NPC/QuestSelectBoxList.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "NPC/NPCGreyStone.h"
 
 void UQuestSelectBox::NativeConstruct()
 {
@@ -34,6 +35,19 @@ void UQuestSelectBox::Init(UQuestServerComponent* QuestServerComponent)
 				// 상태 텍스트 설정
 				const EQuestState& QuestState = QuestElement.Value;
 				QuestBoxListWidget->SetStateText(QuestState);
+
+				// 고유 코드 설정
+				QuestBoxListWidget->SetQuestCode(QuestCode);
+
+				// 리스트 선택시 NPC에게 알림이 가게 구독
+				if (Owner != nullptr)
+				{
+					ANPCGreyStone* GreyStone = Cast<ANPCGreyStone>(Owner);
+					if (GreyStone)
+					{
+						QuestBoxListWidget->OnSelected.AddDynamic(GreyStone, &ANPCGreyStone::OnSelectedQuest);
+					}
+				}
 
 				// 리스트 박스에 추가
 				QuestListBox->AddChild(QuestBoxListWidget);

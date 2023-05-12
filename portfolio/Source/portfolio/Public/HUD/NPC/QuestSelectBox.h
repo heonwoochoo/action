@@ -28,10 +28,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UQuestSelectBoxList> QuestSelectBoxListClass;
 
+	// 해당 위젯을 생성한 오너 객체
+	AActor* Owner;
+
 public:
 	// 컴포넌트 정보를 참조하여 리스트를 초기화시킵니다.
 	void Init(UQuestServerComponent* QuestServerComponent);
 
 	// 화면 상에 보일 위치를 조정합니다
 	void SetLocation(const FVector2D& InVector2D);
+
+	FORCEINLINE AActor* GetOwner() const { return Owner; }
+	FORCEINLINE void SetOwner(AActor* InOwner) { Owner = InOwner; }
 };

@@ -112,6 +112,9 @@ void ANPCGreyStone::OnClickedMesh(UPrimitiveComponent* TouchedComponent, FKey Bu
 			QuestBox = Cast<UQuestSelectBox>(CreateWidget(CharacterController, QuestBoxClass));
 			if (QuestBox)
 			{
+				// 오너 설정
+				QuestBox->SetOwner(this);
+
 				// 뷰포트에 추가
 				QuestBox->AddToViewport();
 
@@ -141,4 +144,9 @@ void ANPCGreyStone::OnChangedInputMode(const EInputMode& InMode)
 			QuestBox->RemoveFromParent();
 		}
 	}
+}
+
+void ANPCGreyStone::OnSelectedQuest(const EQuestCode& SelectedCode)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Selected Quest"));
 }

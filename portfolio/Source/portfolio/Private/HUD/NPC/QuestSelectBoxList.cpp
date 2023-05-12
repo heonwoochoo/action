@@ -47,6 +47,12 @@ void UQuestSelectBoxList::OnClickedListButton()
 		{
 			ArrowImage->SetBrushFromTexture(ActivatedArrowRight);
 			ArrowImage->SetOpacity(1.f);
+
+			// 퀘스트가 선택되었음을 알림
+			if (QuestCode != EQuestCode::EQC_None)
+			{
+				OnSelected.Broadcast(QuestCode);
+			}
 		}
 	}
 	else

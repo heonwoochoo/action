@@ -12,11 +12,16 @@ class UImage;
 class UTextBlock;
 class UTexture2D;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSelectedQuestSignature, const EQuestCode&, SelectedCode);
+
 UCLASS()
 class PORTFOLIO_API UQuestSelectBoxList : public UUserWidget
 {
 	GENERATED_BODY()
 	
+	
+public:
+	FOnSelectedQuestSignature OnSelected;
 	
 protected:
 	virtual void NativeConstruct() override;
@@ -39,6 +44,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Textrue")
 	UTexture2D* DeactivatedArrowRight;
 
+	// 해당 리스트의 고유한 퀘스트 코드
+	EQuestCode QuestCode = EQuestCode::EQC_None;
+
 public:
 	UFUNCTION()
 	void OnHoveredListButton();
@@ -54,6 +62,10 @@ public:
 
 	// 상태 텍스트 설정
 	void SetStateText(const EQuestState& InState);
+
+	FORCEINLINE EQuestCode GetQuestCode() const { return QuestCode; }
+	FORCEINLINE void SetQuestCode(const EQuestCode& InCode) { QuestCode = InCode; }
+
 
 private:
 	// 해당 리스트가 선택되었는지 여부 (클릭으로 토글)
