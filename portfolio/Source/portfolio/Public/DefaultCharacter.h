@@ -356,7 +356,7 @@ public:
 
 	UInventoryComponent* GetInventoryComponent() const;
 
-	
+	UQuestClientComponent* GetQuestClientComponent() const;
 
 	FORCEINLINE USceneComponent* GetEmitterComponent() const { return EmitterComponent; }
 	FORCEINLINE UHeadUpWidgetComponent* GetHeadUpWidgetComponent() const { return HeadUpWidgetComonent; }

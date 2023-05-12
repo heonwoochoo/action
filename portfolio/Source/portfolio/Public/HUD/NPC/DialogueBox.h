@@ -11,6 +11,7 @@ class UButton;
 class UImage;
 class UTextBlock;
 class UTexture2D;
+class UNPCDialogueComponent;
 
 UCLASS()
 class PORTFOLIO_API UDialogueBox : public UUserWidget
@@ -19,6 +20,10 @@ class PORTFOLIO_API UDialogueBox : public UUserWidget
 	
 protected:
 	virtual void NativeConstruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
+
+	// 다이얼로그를 관리하는 컴포넌트
+	UNPCDialogueComponent* DialogueComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* DialogueText;
@@ -94,5 +99,21 @@ private:
 public:
 	UFUNCTION()
 	void OnChangedInputMode(const EInputMode& NewMode);
-	
+
+	FORCEINLINE UNPCDialogueComponent* GetNPCDialogueComponent() const { return DialogueComponent; }
+	FORCEINLINE void SetNPCDialogueComponent(UNPCDialogueComponent* InDialogueComponent) { DialogueComponent = InDialogueComponent; }
+
+	// 텍스트 내용 변경
+	void SetDialogueText(const FText& InText);
+
+	// Prev 버튼 비활성화
+	void DeactivatePrevButton();
+	// Prev 버튼 활성화
+	void ActivatePrevButton();
+
+	// 다음 페이지 버튼의 텍스트를 수락 버튼으로 변경
+	void ChangeNextButtonToAccept();
+
+	//  수락 버튼의 텍스트를 다음 페이지 버튼으로 변경
+	void ChangeAcceptButtonToNext();
 };

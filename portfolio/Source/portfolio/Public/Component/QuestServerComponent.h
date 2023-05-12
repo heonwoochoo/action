@@ -46,4 +46,6 @@ public:
 	// 리스트에 있는 퀘스트의 상태를 변경
 	void SetQuestStateInList(const EQuestCode& TargetQuest, const EQuestState& InState);
 
+	// 퀘스트를 플레이어에게 제공합니다.
+	void ServeQuestToPlayer(const EQuestCode& QuestCode);
 };

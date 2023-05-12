@@ -115,4 +115,5 @@ public:
 	// 보스전 HP Bar 생성
 	void CreateBossHPBar(ABossBase* BossActor);
 
+	FORCEINLINE UChatBox* GetChatBox() const { return ChatBoxWidget;}
 };

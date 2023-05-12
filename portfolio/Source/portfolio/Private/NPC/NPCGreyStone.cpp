@@ -155,11 +155,19 @@ void ANPCGreyStone::OnSelectedQuest(const EQuestCode& SelectedCode)
 {
 	if (DialogueComponent && QuestServerComponent)
 	{
-		const FQuest* QuestData = QuestServerComponent->GetQuestData(SelectedCode);
-		if (QuestData)
+		const TMap<EQuestCode, EQuestState>& QuestList = QuestServerComponent->GetQuestList();
+		if (QuestList.Contains(SelectedCode))
 		{
-			const TArray<FText>& DialogueText = QuestData->Dialogue;
-			DialogueComponent->OpenDialogueBox(DialogueText);
+			if (QuestList[SelectedCode] == EQuestState::EQS_Unserved)
+			{
+				const FQuest* QuestData = QuestServerComponent->GetQuestData(SelectedCode);
+				if (QuestData)
+				{
+					const TArray<FText>& DialogueText = QuestData->Dialogue;
+					DialogueComponent->OpenDialogueBox(DialogueText);
+					DialogueComponent->SetQuestCode(SelectedCode);
+				}
+			}
 		}
 	}
 }

@@ -743,6 +743,11 @@ UInventoryComponent* ADefaultCharacter::GetInventoryComponent() const
 	return InventoryComponent;
 }
 
+UQuestClientComponent* ADefaultCharacter::GetQuestClientComponent() const
+{
+	return QuestClientComponent;
+}
+
 void ADefaultCharacter::BeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor->ActorHasTag(FName("Item")))

@@ -2,6 +2,9 @@
 
 
 #include "Component/QuestServerComponent.h"
+#include "NPC/NPCGreyStone.h"
+#include "DefaultCharacter.h"
+#include "Component/QuestClientComponent.h"
 
 UQuestServerComponent::UQuestServerComponent()
 {
@@ -58,5 +61,27 @@ void UQuestServerComponent::SetQuestStateInList(const EQuestCode& TargetQuest, c
 	if (QuestList.Contains(TargetQuest))
 	{
 		QuestList[TargetQuest] = InState;
+	}
+}
+
+void UQuestServerComponent::ServeQuestToPlayer(const EQuestCode& QuestCode)
+{
+	ANPCGreyStone* NPC = Cast<ANPCGreyStone>(GetOwner());
+	if (NPC)
+	{
+		ADefaultCharacter* PlayerCharacter = NPC->GetNearPlayer();
+		if (PlayerCharacter)
+		{
+			// 플레이어에게 퀘스트를 제공
+			UQuestClientComponent* QuestClientComponent = PlayerCharacter->GetQuestClientComponent();
+			if (QuestClientComponent)
+			{
+				const FQuest& Quest = *GetQuestData(QuestCode);
+				QuestClientComponent->AddQuest(QuestCode, Quest);
+			}
+
+			// NPC의 퀘스트 상태 변경
+			SetQuestStateInList(QuestCode, EQuestState::EQS_Progress);
+		}
 	}
 }
