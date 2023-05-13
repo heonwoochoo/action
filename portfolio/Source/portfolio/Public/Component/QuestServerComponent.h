@@ -48,4 +48,7 @@ public:
 
 	// 퀘스트를 플레이어에게 제공합니다.
 	void ServeQuestToPlayer(const EQuestCode& QuestCode);
+
+	UFUNCTION()
+	void OnChangedClientQuestState(const EQuestCode& InQuestCode, const EQuestState& NewState);
 };

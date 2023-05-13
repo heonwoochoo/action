@@ -10,10 +10,11 @@
 
 class USoundCue;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangedQuestStateSignature, const EQuestCode&, InQuestCode, const EQuestState&, NewState);
+
 /**
 * 클라이언트가 NPC로부터 수락한 퀘스트 정보를 나타냅니다.
 */
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PORTFOLIO_API UQuestClientComponent : public UActorComponent
 {
@@ -21,6 +22,8 @@ class PORTFOLIO_API UQuestClientComponent : public UActorComponent
 
 public:	
 	UQuestClientComponent();
+
+	FOnChangedQuestStateSignature OnChangedState;
 
 protected:
 	virtual void BeginPlay() override;

@@ -74,26 +74,42 @@ void UQuestClientComponent::AddEnemyKillCount(const FName& InEnemyCode, const in
 {
 	for (auto& QuestData : QuestList)
 	{
-		TArray<FEnemyCondition>& EnemyCondition = QuestData.Quest.EnemyConditions;
-		for (auto& Condition : EnemyCondition)
+		if (QuestData.QuestState == EQuestState::EQS_Progress)
 		{
-			if (Condition.EnemyCode == InEnemyCode)
+			TArray<FEnemyCondition>& EnemyCondition = QuestData.Quest.EnemyConditions;
+			int32 ConditionNum = EnemyCondition.Num();
+			int32 CheckNum = 0;
+			for (auto& Condition : EnemyCondition)
 			{
-				Condition.CurrentKillCount = FMath::Clamp(Condition.CurrentKillCount + InCount, 0, Condition.MaxKillCount);
-
-				// 화면 중앙 상단에 메세지 출력
-				ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-				if (CharacterController)
+				if (Condition.EnemyCode == InEnemyCode)
 				{
-					AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
-					if (HUDBase)
-					{
-						const FString& FormatString =
-							UHelperFunction::GetNameFromEnemyCode(InEnemyCode).ToString() + FString(TEXT(" ")) +
-							FString::FromInt(Condition.CurrentKillCount) + FString(TEXT("/")) + 
-							FString::FromInt(Condition.MaxKillCount);
+					Condition.CurrentKillCount = FMath::Clamp(Condition.CurrentKillCount + InCount, 0, Condition.MaxKillCount);
 
-						HUDBase->NotifyMessageToUser(FText::FromString(FormatString));
+					if (Condition.CurrentKillCount == Condition.MaxKillCount)
+					{
+						CheckNum++;
+						// 킬 카운트 조건이 모두 최대치에 도달하면 퀘스트 상태를 완료로 바꿉니다.
+						if (CheckNum == ConditionNum)
+						{
+							QuestData.QuestState = EQuestState::EQS_Complete;
+
+							OnChangedState.Broadcast(QuestData.QuestCode, EQuestState::EQS_Complete);
+						}
+					}
+					// 화면 중앙 상단에 메세지 출력
+					ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+					if (CharacterController)
+					{
+						AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+						if (HUDBase)
+						{
+							const FString& FormatString =
+								UHelperFunction::GetNameFromEnemyCode(InEnemyCode).ToString() + FString(TEXT(" ")) +
+								FString::FromInt(Condition.CurrentKillCount) + FString(TEXT("/")) +
+								FString::FromInt(Condition.MaxKillCount);
+
+							HUDBase->NotifyMessageToUser(FText::FromString(FormatString));
+						}
 					}
 				}
 			}

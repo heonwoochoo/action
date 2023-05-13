@@ -78,10 +78,27 @@ void UQuestServerComponent::ServeQuestToPlayer(const EQuestCode& QuestCode)
 			{
 				const FQuest& Quest = *GetQuestData(QuestCode);
 				QuestClientComponent->AddQuest(QuestCode, Quest);
+
+				// 클라이언트의 퀘스트 상태변경에 관한 알림을 구독
+				QuestClientComponent->OnChangedState.AddDynamic(this, &UQuestServerComponent::OnChangedClientQuestState);
 			}
 
 			// NPC의 퀘스트 상태 변경
 			SetQuestStateInList(QuestCode, EQuestState::EQS_Progress);
+		}
+	}
+}
+
+void UQuestServerComponent::OnChangedClientQuestState(const EQuestCode& InQuestCode, const EQuestState& NewState)
+{
+	if (QuestList.Contains(InQuestCode))
+	{
+		const EQuestState& ServerQuestState = QuestList[InQuestCode];
+	
+		// 퀘스트가 완료되었음을 통보받으면 서버의 퀘스트 상태도 변경
+		if (ServerQuestState == EQuestState::EQS_Progress && NewState == EQuestState::EQS_Complete)
+		{
+			QuestList[InQuestCode] = EQuestState::EQS_Complete;
 		}
 	}
 }
