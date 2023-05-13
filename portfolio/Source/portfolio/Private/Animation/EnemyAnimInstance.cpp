@@ -10,31 +10,16 @@ void UEnemyAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	AEnemyBase* Enemy = Cast<AEnemyBase>(GetOwningActor());
-	
-	FName RowName = "";
 	if (Enemy)
 	{
-		EEnemyName EnemyName = Enemy->GetName();
-		switch (EnemyName)
+		const FName& EnemyCode = Enemy->GetEnemyCode();
+		if (Enemy && EnemyDefaultAnimationsDataTable && EnemyCode.IsValid())
 		{
-		case EEnemyName::EEN_Man:
-			RowName = "Man";
-			break;
-		case EEnemyName::EEN_MinionLane:
-			RowName = "MinionLane";
-			break;
-		case EEnemyName::EEN_None:
-			RowName = "";
-			break;
-		}
-
-		if (Enemy && EnemyDefaultAnimationsDataTable && EnemyName != EEnemyName::EEN_None)
-		{
-			HitReactOnGround = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(RowName, "")->HitReactOnGround;
-			HitReactOnAir = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(RowName, "")->HitReactOnAir;
-			IdleWalkRun = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(RowName, "")->IdleWalkRun;
-			Dead = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(RowName, "")->Dead;
-			Attack = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(RowName, "")->Attack;
+			HitReactOnGround = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(EnemyCode, "")->HitReactOnGround;
+			HitReactOnAir = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(EnemyCode, "")->HitReactOnAir;
+			IdleWalkRun = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(EnemyCode, "")->IdleWalkRun;
+			Dead = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(EnemyCode, "")->Dead;
+			Attack = EnemyDefaultAnimationsDataTable->FindRow<FEnemyDefaultAnimation>(EnemyCode, "")->Attack;
 		}
 	}
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Types/QuestTypes.h"
 #include "QuestDetail.generated.h"
 
 class UImage;
@@ -50,4 +51,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* ItemText;
+
+public:
+	UFUNCTION()
+	void OnClickedQuest(const EQuestCode& InCode);
 };

@@ -33,6 +33,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	UDataTable* EnemyStatsDataTable;
 
@@ -41,9 +43,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EEnemyState State = EEnemyState::EES_NoState;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	EEnemyName Name;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+	FName EnemyCode;
 
 	// =================
 	// Pawnsensing, AI
@@ -213,7 +215,7 @@ public:
 	EEnemyState GetState() const;
 	void SetState(EEnemyState NewState);
 
-	FORCEINLINE EEnemyName GetName() const { return Name; }
+	FORCEINLINE FName GetEnemyCode() const { return EnemyCode; }
 
 	UFUNCTION(BlueprintCallable)
 	void HitRotationEnd();

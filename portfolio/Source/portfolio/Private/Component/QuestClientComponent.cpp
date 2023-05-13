@@ -7,6 +7,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "HUD/Overlay/ChatBox.h"
 #include "Sound/SoundCue.h"
+#include "Controller/CharacterController.h"
+#include "HUD/HUDBase.h"
+#include "HelperFunction.h"
 
 UQuestClientComponent::UQuestClientComponent()
 {
@@ -18,8 +21,6 @@ UQuestClientComponent::UQuestClientComponent()
 void UQuestClientComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	
 }
 
 
@@ -67,4 +68,54 @@ void UQuestClientComponent::AddQuest(const EQuestCode& InQuestCode, const FQuest
 	{
 		UGameplayStatics::PlaySound2D(this, QuestAcceptSound);
 	}
+}
+
+void UQuestClientComponent::AddEnemyKillCount(const FName& InEnemyCode, const int32& InCount)
+{
+	for (auto& QuestData : QuestList)
+	{
+		TArray<FEnemyCondition>& EnemyCondition = QuestData.Quest.EnemyConditions;
+		for (auto& Condition : EnemyCondition)
+		{
+			if (Condition.EnemyCode == InEnemyCode)
+			{
+				Condition.CurrentKillCount = FMath::Clamp(Condition.CurrentKillCount + InCount, 0, Condition.MaxKillCount);
+
+				// 화면 중앙 상단에 메세지 출력
+				ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+				if (CharacterController)
+				{
+					AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+					if (HUDBase)
+					{
+						const FString& FormatString =
+							UHelperFunction::GetNameFromEnemyCode(InEnemyCode).ToString() + FString(TEXT(" ")) +
+							FString::FromInt(Condition.CurrentKillCount) + FString(TEXT("/")) + 
+							FString::FromInt(Condition.MaxKillCount);
+
+						HUDBase->NotifyMessageToUser(FText::FromString(FormatString));
+					}
+				}
+			}
+		}
+	}
+}
+
+bool UQuestClientComponent::IsExistEnemyInQuestList(const FName& InEnemyCode)
+{
+	for (auto& QuestData : QuestList)
+	{
+		if (QuestData.QuestState == EQuestState::EQS_Progress)
+		{
+			const TArray<FEnemyCondition>& Conditions = QuestData.Quest.EnemyConditions;
+			for (auto& Condition : Conditions)
+			{
+				if (Condition.EnemyCode == InEnemyCode)
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }

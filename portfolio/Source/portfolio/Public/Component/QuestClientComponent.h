@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Types/QuestTypes.h"
+#include "Types/EnemyTypes.h"
 #include "QuestClientComponent.generated.h"
 
 class USoundCue;
@@ -40,4 +41,12 @@ public:
 
 	// 퀘스트를 클라이언트의 리스트에 추가
 	void AddQuest(const EQuestCode& InQuestCode, const FQuest& InQuest);
+
+	FORCEINLINE TArray<FQuestClientData> GetQuestList() const { return QuestList; }
+	FORCEINLINE void SetQuestList(const TArray<FQuestClientData>& InQuestList) { QuestList = InQuestList; }
+
+	UFUNCTION()
+	void AddEnemyKillCount(const FName& InEnemyCode, const int32& InCount);
+
+	bool IsExistEnemyInQuestList(const FName& InEnemyCode);
 };

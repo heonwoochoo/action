@@ -23,19 +23,14 @@ enum class EEnemyState : uint8
 	EES_Engaged UMETA(DisplayName = "Engaged")
 };
 
-UENUM(BlueprintType)
-enum class EEnemyName : uint8
-{
-	EEN_None UMETA(DisplayName = "None"),
-	EEN_Man UMETA(DisplayName = "Man"),
-	EEN_MinionLane UMETA(DisplayName = "MinionLane"),
-};
-
 USTRUCT(BlueprintType)
 struct FEnemyStats : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName Name;
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float Damage;
 

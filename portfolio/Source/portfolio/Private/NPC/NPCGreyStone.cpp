@@ -144,7 +144,7 @@ void ANPCGreyStone::OnChangedInputMode(const EInputMode& InMode)
 {
 	if (InMode == EInputMode::EIM_Game)
 	{
-		if (QuestBox)
+		if (QuestBox && bIsNearPlayer)
 		{
 			QuestBox->RemoveFromParent();
 		}

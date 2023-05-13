@@ -17,7 +17,7 @@ class PORTFOLIO_API AMan : public AEnemyBase
 public:
 	AMan();
 
-	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+	
 
 protected:
 	virtual void BeginPlay() override;

@@ -14,33 +14,9 @@ AMan::AMan()
 
 }
 
-void AMan::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
-{
-	Super::PostEditChangeProperty(PropertyChangedEvent);
-
-	if (EnemyStatsDataTable)
-	{
-		if (Name == EEnemyName::EEN_Man)
-		{
-			Stats = *EnemyStatsDataTable->FindRow<FEnemyStats>(FName("Man"), "");
-		}
-
-		GetMesh()->SetAnimClass(Stats.AnimationClass);
-		GetMesh()->SetSkeletalMeshAsset(Stats.SkeletalMesh);
-	}
-}
-
 void AMan::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (EnemyStatsDataTable)
-	{
-		if (Name == EEnemyName::EEN_Man)
-		{
-			Stats = *EnemyStatsDataTable->FindRow<FEnemyStats>(FName("Man"), "");
-		}
-	}
 }
 
 void AMan::AttackCharacter()

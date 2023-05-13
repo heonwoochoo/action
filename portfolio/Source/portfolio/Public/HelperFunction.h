@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -17,4 +17,7 @@ class PORTFOLIO_API UHelperFunction : public UBlueprintFunctionLibrary
 public:
 	UFUNCTION()
 	static float GetRandomDamage(float Damge);
+
+	UFUNCTION()
+	static FName GetNameFromEnemyCode(const FName& InEnemyCode);
 };

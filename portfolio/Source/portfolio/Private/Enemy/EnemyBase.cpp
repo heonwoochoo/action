@@ -19,6 +19,7 @@
 #include "AIController.h"
 #include "Component/DamagedComponent.h"
 #include "HelperFunction.h"
+#include "Component/QuestClientComponent.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -62,6 +63,22 @@ void AEnemyBase::BeginPlay()
 	InitPatrolTarget();
 
 	MoveToTarget(PatrolTarget);
+}
+
+void AEnemyBase::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	if (EnemyStatsDataTable)
+	{
+		if (EnemyCode.IsValid())
+		{
+			Stats = *EnemyStatsDataTable->FindRow<FEnemyStats>(EnemyCode, "");
+		}
+
+		GetMesh()->SetAnimClass(Stats.AnimationClass);
+		GetMesh()->SetSkeletalMeshAsset(Stats.SkeletalMesh);
+	}
 }
 
 void AEnemyBase::Tick(float DeltaTime)
@@ -381,6 +398,18 @@ void AEnemyBase::Die()
 		{
 			// 유저가 경험치를 획득
 			DefaultCharacter->UpdateStatManager(EStatTarget::EST_Exp, EStatUpdateType::ESUT_Plus, Stats.Exp);
+			
+			// 유저의 퀘스트 목록에 존재하면 업데이트
+			UQuestClientComponent* QuestClientComponent = DefaultCharacter->GetQuestClientComponent();
+			if (QuestClientComponent)
+			{
+				bool IsExist = QuestClientComponent->IsExistEnemyInQuestList(EnemyCode);
+				if (IsExist)
+				{
+					// 유저의 상태를 업데이트
+					QuestClientComponent->AddEnemyKillCount(FName(EnemyCode), 1);
+				}
+			}
 		}
 	}
 

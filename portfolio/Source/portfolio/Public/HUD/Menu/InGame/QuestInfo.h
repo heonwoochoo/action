@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "HUD/Menu/InGame/MovableWidget.h"
 #include "Types/SettingTypes.h"
+#include "Types/QuestTypes.h"
 #include "QuestInfo.generated.h"
 
 class UTextBlock;
@@ -12,10 +13,15 @@ class UVerticalBox;
 class UQuestHeadline;
 class UQuestDetail;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnClickedQuestSignature, const EQuestCode&, InQuestCode);
+
 UCLASS()
 class PORTFOLIO_API UQuestInfo : public UMovableWidget
 {
 	GENERATED_BODY()
+	
+public:
+	FOnClickedQuestSignature OnClicked;
 	
 protected:
 
@@ -66,10 +72,17 @@ protected:
 	TSubclassOf<UQuestHeadline> QuestHeadlineClass;
 
 private:
+	// 클라이언트가 가지고 있는 퀘스트 정보
+	TArray<FQuestClientData> QuestList;
 
+	// 클릭으로 현재 선택된 퀘스트
+	EQuestCode SelectedQuest = EQuestCode::EQC_None;
 
 public:
 	UFUNCTION()
 	void OnChangedInputMode(const EInputMode& Mode);
+
+	FORCEINLINE EQuestCode GetSelectedQuest() const { return SelectedQuest; }
+	FORCEINLINE void SetSelectedQuest(const EQuestCode& InQuest) { SelectedQuest = InQuest; }
 
 };

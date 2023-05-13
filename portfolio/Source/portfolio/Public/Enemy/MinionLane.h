@@ -17,8 +17,6 @@ class PORTFOLIO_API AMinionLane : public AEnemyBase
 public:
 	AMinionLane();
 
-	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
-
 protected:
 	virtual void BeginPlay() override;
 
