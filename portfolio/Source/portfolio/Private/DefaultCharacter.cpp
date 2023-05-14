@@ -35,6 +35,7 @@
 #include "HUD/Combat/HeadUpWidget.h"
 #include "Items/Gold.h"
 #include "Component/QuestClientComponent.h"
+#include "NPC/NPCGreyStone.h"
 
 ADefaultCharacter::ADefaultCharacter()
 {
@@ -207,7 +208,9 @@ void ADefaultCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 		EnhancedInputComponent->BindAction(ItemSlotFourAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_4);
 		EnhancedInputComponent->BindAction(ItemSlotFiveAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_5);
 		EnhancedInputComponent->BindAction(ItemSlotSixAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_6);
-		EnhancedInputComponent->BindAction(PickupAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::PickupItem);
+
+		// Z - Handler (수집, 대화)
+		EnhancedInputComponent->BindAction(PickupAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::OnPressedZKey);
 		
 		// Open widget
 		EnhancedInputComponent->BindAction(InGameMenuAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::HandleShowMouse);
@@ -486,9 +489,16 @@ void ADefaultCharacter::QuickSlotManager_6()
 	}
 }
 
+void ADefaultCharacter::OnPressedZKey()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Pressed Z Key"));
+	if (IsBlockedMove()) return;
+	PickupItem();
+	TalkWithNPC();
+}
+
 void ADefaultCharacter::PickupItem()
 {
-	if (IsBlockedMove()) return;
 	if (OverlappedItem)
 	{
 		AItemBase* Item = Cast<AItemBase>(OverlappedItem);
@@ -504,6 +514,22 @@ void ADefaultCharacter::PickupItem()
 				const FText Message = FText::FromString(TEXT("아이템을 획득할 수 없습니다."));
 				HUDBase->NotifyMessageToUser(Message);
 			}
+		}
+	}
+}
+
+void ADefaultCharacter::TalkWithNPC()
+{
+	if (NPC)
+	{
+		ANPCGreyStone* GreyStone = Cast<ANPCGreyStone>(NPC);
+		if (GreyStone)
+		{
+			// 가이드 메시지 숨김
+			HUDBase->HideGuideMessage();
+
+			// 퀘스트 창 열기
+			GreyStone->TalkWithPlayer(this);
 		}
 	}
 }

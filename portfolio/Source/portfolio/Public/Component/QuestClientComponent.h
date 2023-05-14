@@ -28,8 +28,13 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	// 퀘스트 데이터
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TArray<FQuestClientData> QuestList;
+
+	// 클리어한 퀘스트 목록
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TArray<EQuestCode> ClearedQuests;
 
 	// 퀘스트 수락시 효과음
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
@@ -45,6 +50,9 @@ public:
 	// 퀘스트를 클라이언트의 리스트에 추가
 	void AddQuest(const EQuestCode& InQuestCode, const FQuest& InQuest);
 
+	// 클라이언트의 퀘스트를 클리어
+	void ClearQuest(const EQuestCode& InQuestCode);
+
 	FORCEINLINE TArray<FQuestClientData> GetQuestList() const { return QuestList; }
 	FORCEINLINE void SetQuestList(const TArray<FQuestClientData>& InQuestList) { QuestList = InQuestList; }
 
@@ -52,4 +60,6 @@ public:
 	void AddEnemyKillCount(const FName& InEnemyCode, const int32& InCount);
 
 	bool IsExistEnemyInQuestList(const FName& InEnemyCode);
+
+	
 };

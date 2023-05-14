@@ -27,6 +27,7 @@ class AItemBase;
 class UParticleSystemComponent;
 class UHeadUpWidgetComponent;
 class UQuestClientComponent;
+class ANPCBase;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangedHealthSignature, const float&, CurrentHp, const float&, MaxHp);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangedStaminaSignature, const float&, CurrentSp, const float&, MaxSp);
@@ -113,10 +114,12 @@ protected:
 	void QuickSlotManager_4();
 	void QuickSlotManager_5();
 	void QuickSlotManager_6();
-	void PickupItem();
 
-	/** 마우스 토글 */
-	void HandleShowMouse();
+	/** E 키 (수집, 대화) */
+	void OnPressedZKey();
+	void PickupItem();
+	void TalkWithNPC();
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackForwardDistance = 50.f;
@@ -135,8 +138,6 @@ protected:
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
-
-
 
 public:
 	/** Returns CameraBoom subobject **/
@@ -311,8 +312,13 @@ private:
 	ECharacterActionState CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
 
 	// 캐릭터에 오버랩 된 아이템
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item", meta = (AllowPrivateAccess = "true"))
 	AItemBase* OverlappedItem;
 	AItemBase* PrevOverlappedItem;
+
+	// 대화를 할 수 있는 NPC
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "NPC", meta = (AllowPrivateAccess = "true"))
+	ANPCBase* NPC;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Properties")
 	FCharacterStats DefaultStats;
@@ -349,6 +355,9 @@ private:
 	void LevelUp();
 
 public:
+	/** 마우스 토글 */
+	void HandleShowMouse();
+
 	void HandleComboCount();
 
 	UFUNCTION(BlueprintCallable)
@@ -438,6 +447,8 @@ public:
 
 	// 원래의 길이로 복귀
 	void ReturnCameraArmLength(float DeltaTime);
+
+	FORCEINLINE ANPCBase* GetNPC() const { return NPC; }
+	FORCEINLINE void SetNPC(ANPCBase* InNPC) { NPC = InNPC; }
 	
 };
-

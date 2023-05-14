@@ -12,6 +12,7 @@
 #include "HUD/NPC/QuestSelectBox.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Component/NPCDialogueComponent.h"
+#include "DefaultCharacter.h"
 
 ANPCGreyStone::ANPCGreyStone()
 {
@@ -34,14 +35,6 @@ void ANPCGreyStone::BeginPlay()
 		SpawnParameters.Owner = this;
 		Text3DMark = GetWorld()->SpawnActor<AText3DMark>(Text3DMarkClass, SpawnParameters);
 	}
-
-	USkeletalMeshComponent* MeshComponent = GetMesh();
-	if (MeshComponent)
-	{
-		MeshComponent->OnBeginCursorOver.AddDynamic(this, &ANPCGreyStone::OnBeginCursorOverMesh);
-		MeshComponent->OnEndCursorOver.AddDynamic(this, &ANPCGreyStone::OnEndCursorOverMesh);
-		MeshComponent->OnClicked.AddDynamic(this, &ANPCGreyStone::OnClickedMesh);
-	}
 }
 
 void ANPCGreyStone::Tick(float DeltaTime)
@@ -55,16 +48,12 @@ void ANPCGreyStone::Tick(float DeltaTime)
 	}
 }
 
-void ANPCGreyStone::OnBeginCursorOverMesh(UPrimitiveComponent* TouchedComponent)
+void ANPCGreyStone::BeginOverlappedSphere(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OverlayMaterial && bIsNearPlayer)
-	{
-		USkeletalMeshComponent* MeshComponent = GetMesh();
-		if (MeshComponent)
-		{
-			MeshComponent->SetOverlayMaterial(OverlayMaterial);
-		}
+	Super::BeginOverlappedSphere(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 
+	if (OtherActor->ActorHasTag(FName(TEXT("Player"))))
+	{
 		// 가이드 메세지 표시
 		ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 		if (CharacterController)
@@ -72,70 +61,25 @@ void ANPCGreyStone::OnBeginCursorOverMesh(UPrimitiveComponent* TouchedComponent)
 			AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
 			if (HUDBase)
 			{
-				const FText& Message = FText::FromString(TEXT("클릭하여 퀘스트를 확인할 수 있습니다."));
+				const FText& Message = FText::FromString(TEXT("'Z'키를 눌러 대화를 할 수 있습니다."));
 				HUDBase->ShowGuideMessage(Message);
 			}
 		}
 	}
 }
 
-void ANPCGreyStone::OnEndCursorOverMesh(UPrimitiveComponent* TouchedComponent)
+void ANPCGreyStone::EndOverlappedSphere(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OverlayMaterial && bIsNearPlayer)
+	Super::EndOverlappedSphere(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
+
+	// 가이드 메세지 숨김
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if (CharacterController)
 	{
-		USkeletalMeshComponent* MeshComponent = GetMesh();
-		if (MeshComponent)
+		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+		if (HUDBase)
 		{
-			MeshComponent->SetOverlayMaterial(nullptr);
-		}
-
-		// 가이드 메세지 숨김
-		ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-		if (CharacterController)
-		{
-			AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
-			if (HUDBase)
-			{
-				HUDBase->HideGuideMessage();
-			}
-		}
-	}
-}
-
-void ANPCGreyStone::OnClickedMesh(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
-{
-	if (QuestBoxClass)
-	{
-		ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-		if (CharacterController)
-		{
-			if (QuestBox)
-			{
-				QuestBox->RemoveFromParent();
-			}
-
-			QuestBox = Cast<UQuestSelectBox>(CreateWidget(CharacterController, QuestBoxClass));
-			if (QuestBox)
-			{
-				// 오너 설정
-				QuestBox->SetOwner(this);
-
-				// 뷰포트에 추가
-				QuestBox->AddToViewport();
-
-				// 위치 설정
-				const FVector2D& ScreenPosition = UWidgetLayoutLibrary::GetMousePositionOnViewport(this);
-				QuestBox->SetLocation(ScreenPosition);
-
-				// 리스트 설정
-				if (QuestServerComponent)
-				{
-					QuestBox->Init(QuestServerComponent);
-				}
-
-				// 인풋모드의 변경을 구독
-				CharacterController->OnChangedInputMode.AddDynamic(this, &ANPCGreyStone::OnChangedInputMode);
-			}
+			HUDBase->HideGuideMessage();
 		}
 	}
 }
@@ -167,6 +111,59 @@ void ANPCGreyStone::OnSelectedQuest(const EQuestCode& SelectedCode)
 					DialogueComponent->OpenDialogueBox(DialogueText);
 					DialogueComponent->SetQuestCode(SelectedCode);
 				}
+			}
+			else if (QuestList[SelectedCode] == EQuestState::EQS_Complete && NearPlayer)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("퀘스트 완료"));
+				QuestServerComponent->ClearQuest(SelectedCode, NearPlayer);
+
+				// 클리어시 UI모드를 게임모드로 변경
+				if (NearPlayer)
+				{
+					NearPlayer->HandleShowMouse();
+				}
+			}
+		}
+	}
+}
+
+void ANPCGreyStone::TalkWithPlayer(ADefaultCharacter* PlayerCharacter)
+{
+	if (QuestBoxClass && PlayerCharacter)
+	{
+		PlayerCharacter->HandleShowMouse();
+
+		ACharacterController* CharacterController = Cast<ACharacterController>(PlayerCharacter->GetController());
+		if (CharacterController)
+		{
+			if (QuestBox)
+			{
+				QuestBox->RemoveFromParent();
+				QuestBox = nullptr;
+			}
+
+			QuestBox = Cast<UQuestSelectBox>(CreateWidget(CharacterController, QuestBoxClass));
+			if (QuestBox)
+			{
+				// 오너 설정
+				QuestBox->SetOwner(this);
+
+				// 뷰포트에 추가
+				QuestBox->AddToViewport();
+
+				// 위치 설정
+				FVector2D ScreenPosition;
+				UGameplayStatics::ProjectWorldToScreen(CharacterController, GetActorLocation(), ScreenPosition);
+				QuestBox->SetLocation(ScreenPosition);
+
+				// 리스트 설정
+				if (QuestServerComponent)
+				{
+					QuestBox->Init(QuestServerComponent);
+				}
+
+				// 인풋모드의 변경을 구독
+				CharacterController->OnChangedInputMode.AddDynamic(this, &ANPCGreyStone::OnChangedInputMode);
 			}
 		}
 	}

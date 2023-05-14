@@ -46,6 +46,7 @@ void ANPCBase::BeginOverlappedSphere(UPrimitiveComponent* OverlappedComponent, A
 			if (PlayerCharacter)
 			{
 				NearPlayer = PlayerCharacter;
+				PlayerCharacter->SetNPC(this);
 			}
 		}
 	}
@@ -62,6 +63,12 @@ void ANPCBase::EndOverlappedSphere(UPrimitiveComponent* OverlappedComponent, AAc
 		{
 			NameTextComponent->SetVisibility(false);
 			NearPlayer = nullptr;
+			
+			ADefaultCharacter* PlayerCharacter = Cast<ADefaultCharacter>(OtherActor);
+			if (PlayerCharacter)
+			{
+				PlayerCharacter->SetNPC(nullptr);
+			}
 		}
 	}
 }

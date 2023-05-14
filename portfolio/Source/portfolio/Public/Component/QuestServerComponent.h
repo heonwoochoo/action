@@ -8,11 +8,11 @@
 #include "QuestServerComponent.generated.h"
 
 class UDataTable;
+class ADefaultCharacter;
 
 /**
 * NPC 캐릭터에 부착되어 퀘스트를 제공해주는 기능을 합니다.
 */
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PORTFOLIO_API UQuestServerComponent : public UActorComponent
 {
@@ -28,7 +28,7 @@ protected:
 
 	// 모든 퀘스트 정보가 들어있는 데이터 파일
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UDataTable* QuestData;
+	UDataTable* QuestDataTable;
 
 	// NPC가 소유하고 있는 퀘스트 목록과 상태
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -37,6 +37,9 @@ protected:
 public:
 	// 퀘스트 등록
 	void AddQuest(const EQuestCode& InQuestCode);
+
+	// 퀘스트 클리어
+	void ClearQuest(const EQuestCode& InQuestCode, ADefaultCharacter* PlayerCharacter);
 
 	// 퀘스트 코드를 참조하여 데이터를 반환
 	FQuest* GetQuestData(const EQuestCode& InQuestCode);
@@ -51,4 +54,6 @@ public:
 
 	UFUNCTION()
 	void OnChangedClientQuestState(const EQuestCode& InQuestCode, const EQuestState& NewState);
+
+	
 };

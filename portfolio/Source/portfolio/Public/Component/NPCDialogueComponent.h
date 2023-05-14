@@ -14,10 +14,8 @@ class PORTFOLIO_API UNPCDialogueComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	UNPCDialogueComponent();
-
-	
 
 protected:
 	virtual void BeginPlay() override;

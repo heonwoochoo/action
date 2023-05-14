@@ -12,6 +12,7 @@ class UQuestServerComponent;
 class UMaterialInstance;
 class UQuestSelectBox;
 class UNPCDialogueComponent;
+class ADefaultCharacter;
 
 UCLASS()
 class PORTFOLIO_API ANPCGreyStone : public ANPCBase
@@ -26,6 +27,9 @@ protected:
 
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void BeginOverlappedSphere(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+	virtual void EndOverlappedSphere(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
+	
 	// 퀘스트 제공자
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UQuestServerComponent* QuestServerComponent;
@@ -43,9 +47,6 @@ protected:
 
 	UQuestSelectBox* QuestBox;
 
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	UMaterialInstance* OverlayMaterial;
-
 	// 생성된 3D 텍스트의 인스턴스
 	AText3DMark* Text3DMark;
 
@@ -54,17 +55,10 @@ public:
 	FORCEINLINE UQuestSelectBox* GetQuestBox() const { return QuestBox; }
 
 	UFUNCTION()
-	void OnBeginCursorOverMesh(UPrimitiveComponent* TouchedComponent);
-
-	UFUNCTION()
-	void OnEndCursorOverMesh(UPrimitiveComponent* TouchedComponent);
-
-	UFUNCTION()
-	void OnClickedMesh(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
-
-	UFUNCTION()
 	void OnChangedInputMode(const EInputMode& InMode);
 
 	UFUNCTION()
 	void OnSelectedQuest(const EQuestCode& SelectedCode);
+
+	void TalkWithPlayer(ADefaultCharacter* PlayerCharacter);
 };

@@ -70,6 +70,33 @@ void UQuestClientComponent::AddQuest(const EQuestCode& InQuestCode, const FQuest
 	}
 }
 
+void UQuestClientComponent::ClearQuest(const EQuestCode& InQuestCode)
+{
+	// 퀘스트 데이터 상의 퀘스트 목록 제거
+	int32 TargetIndex;
+	for (int32 i = 0; i < QuestList.Num(); ++i)
+	{
+		if (QuestList[i].QuestCode == InQuestCode)
+		{
+			TargetIndex = i;
+			break;
+		}
+	}
+	if (QuestList.IsValidIndex(TargetIndex))
+	{
+		QuestList.RemoveAt(TargetIndex);
+	}
+
+	// 완료 목록에 추가
+	ClearedQuests.Add(InQuestCode);
+
+	// 효과음 재생
+	if (QuestClearSound)
+	{
+		UGameplayStatics::PlaySound2D(this, QuestClearSound);
+	}
+}
+
 void UQuestClientComponent::AddEnemyKillCount(const FName& InEnemyCode, const int32& InCount)
 {
 	for (auto& QuestData : QuestList)

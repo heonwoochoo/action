@@ -5,6 +5,8 @@
 #include "NPC/NPCGreyStone.h"
 #include "DefaultCharacter.h"
 #include "Component/QuestClientComponent.h"
+#include "Component/InventoryComponent.h"
+#include "Types/CharacterTypes.h"
 
 UQuestServerComponent::UQuestServerComponent()
 {
@@ -36,6 +38,50 @@ void UQuestServerComponent::AddQuest(const EQuestCode& InQuestCode)
 	}
 }
 
+void UQuestServerComponent::ClearQuest(const EQuestCode& InQuestCode, ADefaultCharacter* PlayerCharacter)
+{
+	QuestList.Remove(InQuestCode);
+
+	if (PlayerCharacter)
+	{
+		// 플레이어에게 보상 제공
+		const FQuest* QuestData = GetQuestData(InQuestCode);
+		check(QuestData);
+		const FQuestReward& QuestReward = QuestData->QuestReward;
+
+		// 골드 획득
+		PlayerCharacter->UpdateGold(EStatUpdateType::ESUT_Plus, QuestReward.Gold);
+		
+		// 경험치 획득
+		PlayerCharacter->UpdateExp(EStatUpdateType::ESUT_Plus, QuestReward.Exp);
+
+		// 아이템 획득
+		UInventoryComponent* InventoryComponent = PlayerCharacter->GetInventoryComponent();
+		if (InventoryComponent)
+		{
+			const TMap<FName, int32>& ItemMap = QuestReward.ItemMap;
+			for (auto& Item : ItemMap)
+			{
+				const FName& ItemCode = Item.Key;
+				InventoryComponent->AddItem(ItemCode);
+			}
+		}
+
+		// 클라이언트의 퀘스트도 클리어처리
+		UQuestClientComponent* QuestClientComponent = PlayerCharacter->GetQuestClientComponent();
+		if (QuestClientComponent)
+		{
+			QuestClientComponent->ClearQuest(InQuestCode);
+		}
+
+		// 다음 퀘스트 추가
+		if (InQuestCode == EQuestCode::EQC_0001)
+		{
+			AddQuest(EQuestCode::EQC_0002);
+		}
+	}
+}
+
 FQuest* UQuestServerComponent::GetQuestData(const EQuestCode& InQuestCode)
 {
 	const UEnum* QuestCodeType = FindObject<UEnum>(nullptr, TEXT("/Script/portfolio.EQuestCode"));
@@ -43,9 +89,9 @@ FQuest* UQuestServerComponent::GetQuestData(const EQuestCode& InQuestCode)
 	{
 		const FText& Text = QuestCodeType->GetDisplayNameTextByValue((int64)InQuestCode);
 		const FString& QuestCode = Text.ToString();
-		if (QuestData)
+		if (QuestDataTable)
 		{
-			FQuest* Quest = QuestData->FindRow<FQuest>(FName(QuestCode), "");
+			FQuest* Quest = QuestDataTable->FindRow<FQuest>(FName(QuestCode), "");
 			if (Quest)
 			{
 				return Quest;
