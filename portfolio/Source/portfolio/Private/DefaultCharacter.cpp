@@ -547,6 +547,7 @@ void ADefaultCharacter::HandleShowMouse()
 			if (CharacterController)
 			{
 				CharacterController->SetInputModeToUI();
+				CharacterController->OpenMenuToggle();
 			}
 		}
 		else

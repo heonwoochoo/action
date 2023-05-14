@@ -15,6 +15,7 @@
 #include "HUD/HUDBase.h"
 #include "Component/DamagedComponent.h"
 #include "HelperFunction.h"
+#include "Component/QuestClientComponent.h"
 
 // Sets default values
 ABossBase::ABossBase()
@@ -249,6 +250,25 @@ void ABossBase::Die()
 	if (DamagedComponent)
 	{
 		DamagedComponent->RemoveMeshOutline();
+	}
+
+	if (CombatTarget)
+	{
+		ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(CombatTarget);
+		if (DefaultCharacter)
+		{
+			// 유저의 퀘스트 목록에 존재하면 업데이트
+			UQuestClientComponent* QuestClientComponent = DefaultCharacter->GetQuestClientComponent();
+			if (QuestClientComponent)
+			{
+				bool IsExist = QuestClientComponent->IsExistEnemyInQuestList(BossCode);
+				if (IsExist)
+				{
+					// 유저의 상태를 업데이트
+					QuestClientComponent->AddEnemyKillCount(BossCode, 1);
+				}
+			}
+		}
 	}
 }
 

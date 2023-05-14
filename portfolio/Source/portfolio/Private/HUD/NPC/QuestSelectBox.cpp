@@ -14,6 +14,28 @@ void UQuestSelectBox::NativeConstruct()
 {
 }
 
+void UQuestSelectBox::NativeDestruct()
+{
+	if (QuestListBox)
+	{
+		TArray<UWidget*> AllChildWidget = QuestListBox->GetAllChildren();
+		for (auto& Widget : AllChildWidget)
+		{
+			UQuestSelectBoxList* List = Cast<UQuestSelectBoxList>(Widget);
+
+			if (Owner != nullptr)
+			{
+				ANPCGreyStone* GreyStone = Cast<ANPCGreyStone>(Owner);
+				if (GreyStone)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Remove delegate at QuestSelectBox widget"));
+					List->OnSelected.RemoveDynamic(GreyStone, &ANPCGreyStone::OnSelectedQuest);
+				}
+			}
+		}
+	}
+}
+
 void UQuestSelectBox::Init(UQuestServerComponent* QuestServerComponent)
 {
 	if (QuestServerComponent)

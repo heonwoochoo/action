@@ -58,4 +58,7 @@ public:
 	// 인풋모드 상태 전환
 	void SetInputModeToGame();
 	void SetInputModeToUI();
+
+	// 인게임 메뉴 토글버튼 생성
+	void OpenMenuToggle();
 };

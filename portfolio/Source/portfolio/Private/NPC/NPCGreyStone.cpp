@@ -114,13 +114,17 @@ void ANPCGreyStone::OnSelectedQuest(const EQuestCode& SelectedCode)
 			}
 			else if (QuestList[SelectedCode] == EQuestState::EQS_Complete && NearPlayer)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("퀘스트 완료"));
 				QuestServerComponent->ClearQuest(SelectedCode, NearPlayer);
 
 				// 클리어시 UI모드를 게임모드로 변경
 				if (NearPlayer)
 				{
-					NearPlayer->HandleShowMouse();
+					ACharacterController* CharacterController = Cast<ACharacterController>(NearPlayer->GetController());
+					if (CharacterController)
+					{
+						CharacterController->SetInputModeToGame();
+						NearPlayer->SetIsMouseShowing(false);
+					}
 				}
 			}
 		}
@@ -131,11 +135,13 @@ void ANPCGreyStone::TalkWithPlayer(ADefaultCharacter* PlayerCharacter)
 {
 	if (QuestBoxClass && PlayerCharacter)
 	{
-		PlayerCharacter->HandleShowMouse();
-
 		ACharacterController* CharacterController = Cast<ACharacterController>(PlayerCharacter->GetController());
 		if (CharacterController)
 		{
+			// 마우스 보이기, UI모드로 변경
+			CharacterController->SetInputModeToUI();
+			PlayerCharacter->SetIsMouseShowing(true);
+
 			if (QuestBox)
 			{
 				QuestBox->RemoveFromParent();
@@ -163,7 +169,11 @@ void ANPCGreyStone::TalkWithPlayer(ADefaultCharacter* PlayerCharacter)
 				}
 
 				// 인풋모드의 변경을 구독
-				CharacterController->OnChangedInputMode.AddDynamic(this, &ANPCGreyStone::OnChangedInputMode);
+				if (!bIsDelegateOnChangedInput)
+				{
+					CharacterController->OnChangedInputMode.AddDynamic(this, &ANPCGreyStone::OnChangedInputMode);
+					bIsDelegateOnChangedInput = true;
+				}
 			}
 		}
 	}

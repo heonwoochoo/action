@@ -46,7 +46,7 @@ void UQuestClientComponent::AddQuest(const EQuestCode& InQuestCode, const FQuest
 	// 퀘스트 추가
 	QuestList.Add(NewData);
 
-	// 채팅창에 메세지 출력
+	// 채팅창에 수락 메세지 출력
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 	if (PlayerController)
 	{
@@ -57,7 +57,7 @@ void UQuestClientComponent::AddQuest(const EQuestCode& InQuestCode, const FQuest
 			if (ChatBox)
 			{
 				const FText& Message = InQuest.Title;
-				const FString& FormatString = FString(TEXT("\"")) + Message.ToString() + FString(TEXT("\" 퀘스트를 수락하였습니다."));
+				const FString& FormatString = FString(TEXT("\'")) + Message.ToString() + FString(TEXT("\' 퀘스트를 수락하였습니다."));
 				ChatBox->PrintMessageOnChat(FText::FromString(FormatString), FColor::Cyan);
 			}
 		}
@@ -84,9 +84,26 @@ void UQuestClientComponent::ClearQuest(const EQuestCode& InQuestCode)
 	}
 	if (QuestList.IsValidIndex(TargetIndex))
 	{
+		const FText& Title = QuestList[TargetIndex].Quest.Title;
+		// 채팅창에 완료 메세지 출력
+		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+		if (PlayerController)
+		{
+			AHUDBase* HUDBase = Cast<AHUDBase>(PlayerController->GetHUD());
+			if (HUDBase)
+			{
+				UChatBox* ChatBox = HUDBase->GetChatBox();
+				if (ChatBox)
+				{
+					const FString& FormatString = FString(TEXT("\'")) + Title.ToString() + FString(TEXT("\' 퀘스트를 완료하였습니다."));
+					ChatBox->PrintMessageOnChat(FText::FromString(FormatString), FColor::Cyan);
+				}
+			}
+		}
+
+		// 목록에서 제거
 		QuestList.RemoveAt(TargetIndex);
 	}
-
 	// 완료 목록에 추가
 	ClearedQuests.Add(InQuestCode);
 

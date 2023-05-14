@@ -174,7 +174,8 @@ void AHUDBase::CloseInGameMenu()
 {
 	if (InGameMenuWidget)
 	{
-		InGameMenuWidget->PlayHideAnimation();
+		InGameMenuWidget->RemoveFromParent();
+		//InGameMenuWidget->PlayHideAnimation();
 	}
 
 	if (InGameMenuToggleWidget)

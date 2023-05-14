@@ -45,10 +45,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget")
 	TSubclassOf<UQuestSelectBox> QuestBoxClass;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widget")
 	UQuestSelectBox* QuestBox;
 
 	// 생성된 3D 텍스트의 인스턴스
 	AText3DMark* Text3DMark;
+
+	// 인풋모드 변경에 관한 구독 여부
+	bool bIsDelegateOnChangedInput = false;
 
 public:
 	FORCEINLINE UQuestServerComponent* GetQuestServerComponent() const { return QuestServerComponent; }

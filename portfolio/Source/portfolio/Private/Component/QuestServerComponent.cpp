@@ -125,8 +125,12 @@ void UQuestServerComponent::ServeQuestToPlayer(const EQuestCode& QuestCode)
 				const FQuest& Quest = *GetQuestData(QuestCode);
 				QuestClientComponent->AddQuest(QuestCode, Quest);
 
-				// 클라이언트의 퀘스트 상태변경에 관한 알림을 구독
-				QuestClientComponent->OnChangedState.AddDynamic(this, &UQuestServerComponent::OnChangedClientQuestState);
+				if (!bDelegateClientOnChanged)
+				{
+					// 클라이언트의 퀘스트 상태변경에 관한 알림을 구독
+					QuestClientComponent->OnChangedState.AddDynamic(this, &UQuestServerComponent::OnChangedClientQuestState);
+					bDelegateClientOnChanged = true;
+				}
 			}
 
 			// NPC의 퀘스트 상태 변경

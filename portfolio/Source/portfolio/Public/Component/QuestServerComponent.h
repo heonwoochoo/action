@@ -31,7 +31,7 @@ protected:
 	UDataTable* QuestDataTable;
 
 	// NPC가 소유하고 있는 퀘스트 목록과 상태
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TMap<EQuestCode, EQuestState> QuestList;
 
 public:
@@ -55,5 +55,6 @@ public:
 	UFUNCTION()
 	void OnChangedClientQuestState(const EQuestCode& InQuestCode, const EQuestState& NewState);
 
-	
+	// 클라이언트의 퀘스트 상태변경 구독 상태
+	bool bDelegateClientOnChanged = false;
 };

@@ -40,12 +40,15 @@ void ACharacterController::SetInputModeToUI()
 	SetIgnoreLookInput(true);
 	SetIgnoreMoveInput(true);
 
+	OnChangedInputMode.Broadcast(EInputMode::EIM_UI);
+}
+
+void ACharacterController::OpenMenuToggle()
+{
 	// 인게임 메뉴 토글버튼 생성
 	AHUDBase* HUDBase = Cast<AHUDBase>(GetHUD());
 	if (HUDBase)
 	{
 		HUDBase->CreateInGameMenuToggleButton();
 	}
-
-	OnChangedInputMode.Broadcast(EInputMode::EIM_UI);
 }
