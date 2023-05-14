@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Enemy/Boss/BossBase.h"
@@ -73,11 +73,20 @@ float ABossBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 
 	if (DamageCauser->ActorHasTag(FName(TEXT("Player"))) && DamagedComponent)
 	{
+		if (!CombatTarget)
+		{
+			ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(DamageCauser);
+			if (DefaultCharacter)
+			{
+				CombatTarget = DefaultCharacter;
+			}
+		}
+
 		DamagedComponent->ApplyHitOverlayMaterial();
 
 		DamagedComponent->ChangeMeshOutline();
 
-		//Å©¸®Æ¼ÄÃ Àû¿ë
+		//í¬ë¦¬í‹°ì»¬ ì ìš©
 		const bool& IsCritical = DamagedComponent->IsDamagedCritical(DamageCauser);
 		if (IsCritical)
 		{
@@ -96,7 +105,7 @@ float ABossBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 		}
 		else
 		{
-			// State°¡ Resting, NoStateÀÏ ¶§¸¸ hitreact ¾Ö´Ï¸ŞÀÌ¼Ç Àû¿ë
+			// Stateê°€ Resting, NoStateì¼ ë•Œë§Œ hitreact ì• ë‹ˆë©”ì´ì…˜ ì ìš©
 			if (State == EBossState::EBS_Resting || State == EBossState::EBS_NoState)
 			{
 				UBossAnimInstance* AnimInstance = Cast<UBossAnimInstance>(GetMesh()->GetAnimInstance());
@@ -124,17 +133,17 @@ void ABossBase::FindTarget()
 		{
 			if (Actor->ActorHasTag(FName("Player")))
 			{
-				// Å¸°Ù ¼³Á¤
+				// íƒ€ê²Ÿ ì„¤ì •
 				CombatTarget = Actor;
 
 				
 				ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(CombatTarget);
 				if (DefaultCharacter)
 				{
-					// Å¸°ÙÀÌ Á×¾úÀ» ¶§¸¦ ±¸µ¶
+					// íƒ€ê²Ÿì´ ì£½ì—ˆì„ ë•Œë¥¼ êµ¬ë…
 					DefaultCharacter->OnDead.AddDynamic(this, &ABossBase::OnCombatTargetDead);
 
-					// À¯Àú È­¸é¿¡ HP Bar »ı¼º
+					// ìœ ì € í™”ë©´ì— HP Bar ìƒì„±
 					ACharacterController* TargetController = Cast<ACharacterController>(DefaultCharacter->GetController());
 					if (TargetController)
 					{
@@ -208,7 +217,7 @@ void ABossBase::SetMotionWarpRotationToTarget()
 {
 	if (CombatTarget)
 	{
-		// ¸ğ¼Ç¿öÇÎ ¾÷µ¥ÀÌÆ®
+		// ëª¨ì…˜ì›Œí•‘ ì—…ë°ì´íŠ¸
 		const FVector& TargetLocation = CombatTarget->GetActorLocation();
 		MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("RotateToTarget"), TargetLocation);
 	}
@@ -235,7 +244,7 @@ void ABossBase::OnCombatTargetDead()
 
 	State = EBossState::EBS_NoState;
 
-	// ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı
+	// ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ
 	UBossAnimInstance* AnimInstance = Cast<UBossAnimInstance>(GetMesh()->GetAnimInstance());
 	if (AnimInstance)
 	{
@@ -245,8 +254,6 @@ void ABossBase::OnCombatTargetDead()
 
 void ABossBase::Die()
 {
-	CombatTarget = nullptr;
-
 	if (DamagedComponent)
 	{
 		DamagedComponent->RemoveMeshOutline();
@@ -257,19 +264,21 @@ void ABossBase::Die()
 		ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(CombatTarget);
 		if (DefaultCharacter)
 		{
-			// À¯ÀúÀÇ Äù½ºÆ® ¸ñ·Ï¿¡ Á¸ÀçÇÏ¸é ¾÷µ¥ÀÌÆ®
+			// ìœ ì €ì˜ í€˜ìŠ¤íŠ¸ ëª©ë¡ì— ì¡´ì¬í•˜ë©´ ì—…ë°ì´íŠ¸
 			UQuestClientComponent* QuestClientComponent = DefaultCharacter->GetQuestClientComponent();
 			if (QuestClientComponent)
 			{
 				bool IsExist = QuestClientComponent->IsExistEnemyInQuestList(BossCode);
 				if (IsExist)
 				{
-					// À¯ÀúÀÇ »óÅÂ¸¦ ¾÷µ¥ÀÌÆ®
+					// ìœ ì €ì˜ ìƒíƒœë¥¼ ì—…ë°ì´íŠ¸
 					QuestClientComponent->AddEnemyKillCount(BossCode, 1);
 				}
 			}
 		}
 	}
+
+	CombatTarget = nullptr;
 }
 
 void ABossBase::LoadStats()

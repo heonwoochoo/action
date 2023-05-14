@@ -22,7 +22,7 @@ FName UHelperFunction::GetNameFromEnemyCode(const FName& InEnemyCode)
 	}
 	else if (InEnemyCode == FName(TEXT("5000")))
 	{
-		return FName(TEXT("조폭두목"));
+		return FName(TEXT("조폭대장"));
 	}
 
 	return FName();

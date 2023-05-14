@@ -172,21 +172,19 @@ void AHUDBase::OpenInGameMenu()
 
 void AHUDBase::CloseInGameMenu()
 {
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		CharacterController->SetInputModeToGame();
+	}
 	if (InGameMenuWidget)
 	{
 		InGameMenuWidget->RemoveFromParent();
 		//InGameMenuWidget->PlayHideAnimation();
 	}
-
 	if (InGameMenuToggleWidget)
 	{
 		InGameMenuToggleWidget->RemoveFromParent();
-	}
-
-	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-	if (CharacterController)
-	{
-		CharacterController->SetInputModeToGame();
 	}
 }
 

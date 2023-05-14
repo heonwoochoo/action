@@ -32,5 +32,6 @@ void UBossHPBar::OnChangedHP(const float& CurrentHp, const float& MaxHp)
 	else
 	{
 		HealthProgressBar->SetPercent(0.f);
+		RemoveFromParent();
 	}
 }
