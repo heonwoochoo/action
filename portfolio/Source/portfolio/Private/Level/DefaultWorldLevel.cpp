@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "HUD/HUDBase.h"
 #include "Enemy/EnemyBase.h"
+#include "Controller/CharacterController.h"
 
 ADefaultWorldLevel::ADefaultWorldLevel()
 {
@@ -15,15 +16,19 @@ void ADefaultWorldLevel::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// 스크린에 UI 표시
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	
+    ACharacterController* PlayerController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 	if (PlayerController)
 	{
+		// 스크린에 기본 UI 표시
 		AHUDBase* HUDBase = Cast<AHUDBase>(PlayerController->GetHUD());
 		if (HUDBase)
 		{
 			HUDBase->InitScreenOverlay();
 		}
+
+		// 배경음 재생
+		PlayerController->PlayBackgroundMusic(EBackgroundMusic::EBM_OutsideCastle);
 	}
 
 	// 리스폰 지점 배열에 담기

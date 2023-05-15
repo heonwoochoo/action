@@ -35,3 +35,12 @@ enum class EInputMode : uint8
 	EIM_UI UMETA(DisplayName = "UI"),
 	EIM_None UMETA(DisplayName = "None"),
 };
+
+UENUM(BlueprintType)
+enum class EBackgroundMusic : uint8
+{
+	EBM_OutsideCastle UMETA(DisplayName = "OutsideCastle"),
+	EBM_InsideCastle UMETA(DisplayName = "InsideCastle"),
+	EBM_CombatBoss UMETA(DisplayName = "CombatBoss"),
+	EBM_None UMETA(DisplayName = "None"),
+};

@@ -8,6 +8,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/GameState.h"
 #include "DefaultCharacter.h"
+#include "Controller/CharacterController.h"
 
 void UDefaultGameInstance::Init()
 {
@@ -130,11 +131,12 @@ void UDefaultGameInstance::OpenDefaultWorldLevel()
 	PlayingUserName = UserSaveGame->SlotName;
 
 	// 오픈월드 열기
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	ACharacterController* PlayerController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 	if (PlayerController)
 	{
 		PlayerController->SetInputMode(FInputModeGameOnly());
 		PlayerController->SetShowMouseCursor(false);
+		
 
 		UGameplayStatics::OpenLevelBySoftObjectPtr(this, DefaultWorldLevel);
 	}

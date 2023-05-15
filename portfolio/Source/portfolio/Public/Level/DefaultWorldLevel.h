@@ -7,6 +7,8 @@
 #include "DefaultWorldLevel.generated.h"
 
 class AEnemyBase;
+class USoundCue;
+class UAudioComponent;
 
 UCLASS()
 class PORTFOLIO_API ADefaultWorldLevel : public ALevelScriptActor
@@ -39,5 +41,4 @@ private:
 	int32 CheckEnemyNumber();
 
 	void RespawnEnemy();
-	
 };

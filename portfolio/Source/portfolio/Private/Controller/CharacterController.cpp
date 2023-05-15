@@ -4,6 +4,9 @@
 #include "Controller/CharacterController.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "HUD/HUDBase.h"
+#include "Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ACharacterController::ACharacterController()
 {
@@ -50,5 +53,38 @@ void ACharacterController::OpenMenuToggle()
 	if (HUDBase)
 	{
 		HUDBase->CreateInGameMenuToggleButton();
+	}
+}
+
+void ACharacterController::PlayBackgroundMusic(const EBackgroundMusic& Type)
+{
+	USoundCue* SelectedMusic = nullptr;
+
+	switch (Type)
+	{
+	case EBackgroundMusic::EBM_OutsideCastle:
+		SelectedMusic = OutsideCastleMusic;
+		break;
+	case EBackgroundMusic::EBM_InsideCastle:
+		SelectedMusic = InsideCastleMusic;
+		break;
+	case EBackgroundMusic::EBM_CombatBoss:
+		SelectedMusic = CombatBossMusic;
+		break;
+	default:
+		SelectedMusic = OutsideCastleMusic;
+	}
+
+	if (SelectedMusic)
+	{
+		if (AudioComponent)
+		{
+			if (AudioComponent->IsPlaying())
+			{
+				AudioComponent->Stop();
+			}
+		}
+		AudioComponent = UGameplayStatics::SpawnSound2D(this, SelectedMusic);
+		NowPlayingMusic = Type;
 	}
 }

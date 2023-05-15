@@ -9,6 +9,9 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangedInputModeSignature, const EInputMode&, Mode);
 
+class USoundCue;
+class UAudioComponent;
+
 UCLASS()
 class PORTFOLIO_API ACharacterController : public APlayerController
 {
@@ -25,6 +28,27 @@ private:
 	FVector2D CharacterInfoInitialLocation;
 	FVector2D InventoryInitialLocation;
 	FVector2D QuestInitialLocation;
+
+protected:
+	// 성 밖에 있을 때 배경음악
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+	USoundCue* OutsideCastleMusic;
+
+	// 성 안에 있을 때 배경음악
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+	USoundCue* InsideCastleMusic;
+
+	// 보스전에서 재생되는 배경음악
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+	USoundCue* CombatBossMusic;
+
+	// 현재 재생되고 있는 오디오를 가리키는 컴포넌트
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
+	UAudioComponent* AudioComponent;
+
+	// 현재 재생되고 있는 배경음악 타입
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
+	EBackgroundMusic NowPlayingMusic = EBackgroundMusic::EBM_None;
 
 public:
 
@@ -61,4 +85,9 @@ public:
 
 	// 인게임 메뉴 토글버튼 생성
 	void OpenMenuToggle();
+
+	// 선택된 타입의 배경음악 재생
+	void PlayBackgroundMusic(const EBackgroundMusic& Type);
+
+	FORCEINLINE EBackgroundMusic GetNowPlayingMusic() const { return NowPlayingMusic; }
 };
