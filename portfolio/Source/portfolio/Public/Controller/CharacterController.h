@@ -83,9 +83,6 @@ public:
 	void SetInputModeToGame();
 	void SetInputModeToUI();
 
-	// 인게임 메뉴 토글버튼 생성
-	void OpenMenuToggle();
-
 	// 선택된 타입의 배경음악 재생
 	void PlayBackgroundMusic(const EBackgroundMusic& Type);
 

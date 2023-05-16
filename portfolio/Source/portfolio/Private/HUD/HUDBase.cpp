@@ -112,12 +112,18 @@ void AHUDBase::InitGuideMessage()
 	}
 }
 
-void AHUDBase::CreateInGameMenuToggleButton()
+void AHUDBase::ShowInGameMenuToggleButton()
 {
 	if (InGameMenuToggleButtonClass)
 	{
-		InGameMenuToggleWidget = Cast<UInGameMenuToggleButton>(CreateWidget(GetOwningPlayerController(), InGameMenuToggleButtonClass));
-		InGameMenuToggleWidget->AddToViewport();
+		if (!InGameMenuToggleWidget)
+		{
+			// 최초 생성
+			InGameMenuToggleWidget = Cast<UInGameMenuToggleButton>(CreateWidget(GetOwningPlayerController(), InGameMenuToggleButtonClass));
+			InGameMenuToggleWidget->AddToViewport();
+		}
+		InGameMenuToggleWidget->SetVisibility(ESlateVisibility::Visible);
+		InGameMenuToggleWidget->PlayShowAnimation();
 	}
 }
 
@@ -158,33 +164,31 @@ void AHUDBase::InitScreenOverlay()
 	InitGuideMessage();
 }
 
-void AHUDBase::OpenInGameMenu()
+void AHUDBase::ShowInGameMenu()
 {
 	if (InGameMenuClass)
 	{
-		InGameMenuWidget = Cast<UInGameMenu>(CreateWidget(GetWorld(), InGameMenuClass));
-		if (InGameMenuWidget)
+		if (!InGameMenuWidget)
 		{
-			InGameMenuWidget->AddToViewport();
+			//최초 생성
+			InGameMenuWidget = Cast<UInGameMenu>(CreateWidget(GetWorld(), InGameMenuClass));
+			InGameMenuWidget->AddToViewport(1);
 		}
+
+		InGameMenuWidget->SetVisibility(ESlateVisibility::Visible);
+		InGameMenuWidget->PlayShowAnimation();
 	}
 }
 
-void AHUDBase::CloseInGameMenu()
+void AHUDBase::HideInGameMenu()
 {
-	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
-	if (CharacterController)
-	{
-		CharacterController->SetInputModeToGame();
-	}
 	if (InGameMenuWidget)
 	{
-		InGameMenuWidget->RemoveFromParent();
-		//InGameMenuWidget->PlayHideAnimation();
+		InGameMenuWidget->PlayHideAnimation();
 	}
 	if (InGameMenuToggleWidget)
 	{
-		InGameMenuToggleWidget->RemoveFromParent();
+		InGameMenuToggleWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 

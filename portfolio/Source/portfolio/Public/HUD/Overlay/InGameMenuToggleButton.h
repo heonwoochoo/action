@@ -48,4 +48,7 @@ protected:
 private:
 	void InitToggleButton();
 	
+public:
+	// 나타나는 애니메이션
+	void PlayShowAnimation();
 };

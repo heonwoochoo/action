@@ -536,25 +536,27 @@ void ADefaultCharacter::TalkWithNPC()
 
 void ADefaultCharacter::HandleShowMouse()
 {
-	if (HUDBase)
+	ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
+	if (HUDBase && CharacterController)
 	{
 		if (!bIsMouseShowing)
 		{
-			// UI 선택 모드로 전환
+			// UI 모드로 전환
 			bIsMouseShowing = true;
+			
+			CharacterController->SetInputModeToUI();
 
-			ACharacterController* CharacterController = Cast<ACharacterController>(GetController());
-			if (CharacterController)
-			{
-				CharacterController->SetInputModeToUI();
-				CharacterController->OpenMenuToggle();
-			}
+			HUDBase->ShowInGameMenuToggleButton();
+			
 		}
 		else
 		{
-			// 캐릭터 컨트롤 모드로 전환
+			// 게임 모드로 전환
 			bIsMouseShowing = false;
-			HUDBase->CloseInGameMenu();
+			
+			CharacterController->SetInputModeToGame();
+
+			HUDBase->HideInGameMenu();
 		}
 	}
 }

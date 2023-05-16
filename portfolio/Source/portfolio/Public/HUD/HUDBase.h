@@ -92,8 +92,8 @@ public:
 	void ShowItemTooltip(const FName& ItemCode, const FVector2D& Location);
 	void HideItemTooltip();
 
-	// 캐릭터 컨트롤 모드 -> UI모드 전환시에 항상 호출되어야함
-	void CreateInGameMenuToggleButton();
+	// 메뉴 토글버튼을 나타냅니다
+	void ShowInGameMenuToggleButton();
 
 	FORCEINLINE UInfoContainer* GetInfoContainer() { return InfoContainer; }
 	FORCEINLINE UComboCountWidget* GetComboCountWidget() { return ComboCountWidget; }
@@ -102,8 +102,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void InitScreenOverlay();
 
-	void OpenInGameMenu();
-	void CloseInGameMenu();
+	void ShowInGameMenu();
+	void HideInGameMenu();
 
 	//화면 중앙 상단에 유저 알림 메세지 출력
 	void NotifyMessageToUser(const FText& Message);

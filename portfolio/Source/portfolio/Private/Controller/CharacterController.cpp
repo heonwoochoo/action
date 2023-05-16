@@ -46,16 +46,6 @@ void ACharacterController::SetInputModeToUI()
 	OnChangedInputMode.Broadcast(EInputMode::EIM_UI);
 }
 
-void ACharacterController::OpenMenuToggle()
-{
-	// 인게임 메뉴 토글버튼 생성
-	AHUDBase* HUDBase = Cast<AHUDBase>(GetHUD());
-	if (HUDBase)
-	{
-		HUDBase->CreateInGameMenuToggleButton();
-	}
-}
-
 void ACharacterController::PlayBackgroundMusic(const EBackgroundMusic& Type)
 {
 	USoundCue* SelectedMusic = nullptr;

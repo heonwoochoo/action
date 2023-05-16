@@ -14,10 +14,6 @@ void UInGameMenuToggleButton::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	if (ShowOverlay)
-	{
-		PlayAnimationForward(ShowOverlay);
-	}
 	InitToggleButton();
 }
 
@@ -62,6 +58,7 @@ void UInGameMenuToggleButton::OnUnhoveredToggleButton()
 
 void UInGameMenuToggleButton::OnClickedToggleButton()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Toggle clicked!"));
 	//인게임 메뉴창 오픈
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 	if (CharacterController)
@@ -69,7 +66,7 @@ void UInGameMenuToggleButton::OnClickedToggleButton()
 		AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
 		if (HUDBase)
 		{
-			HUDBase->OpenInGameMenu();
+			HUDBase->ShowInGameMenu();
 		}
 	}
 
@@ -80,8 +77,8 @@ void UInGameMenuToggleButton::OnClickedToggleButton()
 	DefaultGameMode->PlayCheckButtonClickSound();
 	}
 
-	//토글 버튼 제거
-	RemoveFromParent();
+	//토글 버튼 숨김
+	SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UInGameMenuToggleButton::InitToggleButton()
@@ -91,5 +88,13 @@ void UInGameMenuToggleButton::InitToggleButton()
 		ToggleButton->OnHovered.AddDynamic(this, &UInGameMenuToggleButton::OnHoveredToggleButton);
 		ToggleButton->OnUnhovered.AddDynamic(this, &UInGameMenuToggleButton::OnUnhoveredToggleButton);
 		ToggleButton->OnClicked.AddDynamic(this, &UInGameMenuToggleButton::OnClickedToggleButton);
+	}
+}
+
+void UInGameMenuToggleButton::PlayShowAnimation()
+{
+	if (ShowOverlay)
+	{
+		PlayAnimationForward(ShowOverlay);
 	}
 }

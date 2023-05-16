@@ -35,8 +35,6 @@ void UInGameMenu::NativeConstruct()
 	{
 		BindToAnimationFinished(HideMenu, EndAnimationEvent);
 	}
-
-	PlayShowAnimation();
 }
 
 void UInGameMenu::NativeDestruct()
@@ -443,7 +441,8 @@ void UInGameMenu::PlayHideAnimation()
 
 void UInGameMenu::OnEndHideAnimation()
 {
-	RemoveFromParent();
+	SetVisibility(ESlateVisibility::Hidden);
+	//RemoveFromParent();
 }
 
 void UInGameMenu::PlayButtonSound()
