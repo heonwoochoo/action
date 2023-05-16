@@ -20,11 +20,16 @@ void ADefaultWorldLevel::BeginPlay()
     ACharacterController* PlayerController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 	if (PlayerController)
 	{
-		// 스크린에 기본 UI 표시
+		
 		AHUDBase* HUDBase = Cast<AHUDBase>(PlayerController->GetHUD());
 		if (HUDBase)
 		{
+			// 스크린에 기본 UI 표시
 			HUDBase->InitScreenOverlay();
+
+			// 최초 지점 이름 표시
+			const FText& StartSpotName = FText::FromString(TEXT("태초마을"));
+			HUDBase->ShowSpotName(StartSpotName);			
 		}
 
 		// 배경음 재생

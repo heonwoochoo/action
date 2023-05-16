@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "DefaultCharacter.h"
 #include "Controller/CharacterController.h"
+#include "HUD/HUDBase.h"
 
 ACastleMusicSwitch::ACastleMusicSwitch()
 {
@@ -41,6 +42,21 @@ void ACastleMusicSwitch::OnBeginOverlapped(UPrimitiveComponent* OverlappedCompon
 					if (NowPlaying != MusicType)
 					{
 						CharacterController->PlayBackgroundMusic(MusicType);
+
+						AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+						if (HUDBase)
+						{
+							FText SpotName{};
+							if (MusicType == EBackgroundMusic::EBM_InsideCastle)
+							{
+								SpotName = FText::FromString(TEXT("조폭의 요새"));
+							}
+							else if (MusicType == EBackgroundMusic::EBM_OutsideCastle)
+							{
+								SpotName = FText::FromString(TEXT("태초마을"));
+							}
+							HUDBase->ShowSpotName(SpotName);
+						}
 					}
 				}
 			}

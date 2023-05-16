@@ -20,6 +20,7 @@ class UGuideMessage;
 class AHeadUpText;
 class UBossHPBar;
 class ABossBase;
+class USpotNameNotify;
 
 UCLASS()
 class PORTFOLIO_API AHUDBase : public AHUD
@@ -62,6 +63,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Overlay", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UBossHPBar> BossHPBarClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI|Overlay", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<USpotNameNotify> SpotNameNotifyClass;
+
 	UInfoContainer* InfoContainer;
 
 	UComboCountWidget* ComboCountWidget;
@@ -79,6 +83,8 @@ private:
 	UGuideMessage* GuideMessageWidget;
 
 	UBossHPBar* BossHpBar;
+
+	USpotNameNotify* SpotNameNotifyWidget;
 
 	TArray<TSubclassOf<UUserWidget>> InGameMenuChildWidgetClasses;
 
@@ -116,4 +122,8 @@ public:
 	void CreateBossHPBar(ABossBase* BossActor);
 
 	FORCEINLINE UChatBox* GetChatBox() const { return ChatBoxWidget;}
+
+	// 현재 스팟의 이름이 화면 중앙에 나타났다가 사라짐
+	void ShowSpotName(const FText& InName);
+
 };

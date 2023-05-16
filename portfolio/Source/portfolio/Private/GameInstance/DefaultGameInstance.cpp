@@ -9,6 +9,7 @@
 #include "GameFramework/GameState.h"
 #include "DefaultCharacter.h"
 #include "Controller/CharacterController.h"
+#include "HUD/HUDBase.h"
 
 void UDefaultGameInstance::Init()
 {
@@ -136,7 +137,6 @@ void UDefaultGameInstance::OpenDefaultWorldLevel()
 	{
 		PlayerController->SetInputMode(FInputModeGameOnly());
 		PlayerController->SetShowMouseCursor(false);
-		
 
 		UGameplayStatics::OpenLevelBySoftObjectPtr(this, DefaultWorldLevel);
 	}

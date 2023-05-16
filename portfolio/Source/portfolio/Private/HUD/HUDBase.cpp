@@ -21,6 +21,7 @@
 #include "Component/InventoryComponent.h"
 #include "HUD/Combat/BossHPBar.h"
 #include "Enemy/Boss/BossBase.h"
+#include "HUD/Overlay/SpotNameNotify.h"
 
 AHUDBase::AHUDBase()
 {
@@ -231,6 +232,20 @@ void AHUDBase::CreateBossHPBar(ABossBase* BossActor)
 			BossActor->OnChanged.AddDynamic(BossHpBar, &UBossHPBar::OnChangedHP);
 
 			BossHpBar->AddToViewport();
+		}
+	}
+}
+
+void AHUDBase::ShowSpotName(const FText& InName)
+{
+	if (SpotNameNotifyClass)
+	{
+		SpotNameNotifyWidget = Cast<USpotNameNotify>(CreateWidget(GetOwningPlayerController(), SpotNameNotifyClass));
+		if (SpotNameNotifyWidget)
+		{
+			SpotNameNotifyWidget->AddToViewport();
+			SpotNameNotifyWidget->SetSpotText(InName);
+			SpotNameNotifyWidget->PlayShowAndHideAnimation();
 		}
 	}
 }
