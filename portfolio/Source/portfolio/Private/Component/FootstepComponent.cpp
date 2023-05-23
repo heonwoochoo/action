@@ -51,20 +51,20 @@ void UFootstepComponent::HandleFootstep(const EFoot& Foot)
 				UPhysicalMaterialBase* PhysicalMaterial = Cast<UPhysicalMaterialBase>(HitResult.PhysMaterial.Get());
 				if (PhysicalMaterial)
 				{
-					// 소리 재생
-					USoundBase* Sound = PhysicalMaterial->FootstepSound;
-					if (Sound)
-					{
-						UGameplayStatics::PlaySoundAtLocation(this, Sound, Location);
-					}
+					//// 소리 재생
+					//USoundBase* Sound = PhysicalMaterial->FootstepSound;
+					//if (Sound)
+					//{
+					//	UGameplayStatics::PlaySoundAtLocation(this, Sound, Location);
+					//}
 
-					// 파티클 생성
-					UNiagaraSystem* Particle = PhysicalMaterial->FootstepParticle;
-					if (Particle)
-					{
-						const FVector& HitLocation = HitResult.ImpactPoint;
-						UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, Particle, HitLocation);
-					}
+					//// 파티클 생성
+					//UNiagaraSystem* Particle = PhysicalMaterial->FootstepParticle;
+					//if (Particle)
+					//{
+					//	const FVector& HitLocation = HitResult.ImpactPoint;
+					//	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, Particle, HitLocation);
+					//}
 				}
 			}
 		}

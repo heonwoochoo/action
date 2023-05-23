@@ -300,3 +300,72 @@ enum class EFoot : uint8
 	EF_Left UMETA(DisplayName = "Left"),
 	EF_Right UMETA(DisplayName = "Right"),
 };
+
+UENUM(BlueprintType)
+enum class EMovementType : uint8
+{
+	EMT_Walk UMETA(DisplayName = "Walk"),
+	EMT_Run UMETA(DisplayName = "Run"),
+	EMT_Sprint UMETA(DisplayName = "Sprint"),
+	EMT_Roll UMETA(DisplayName = "Roll"),
+	EMT_Rush UMETA(DisplayName = "Rush"),
+	EMT_Jump UMETA(DisplayName = "Jump"),
+	EMT_Land UMETA(DisplayName = "Land"),
+
+	EMT_None UMETA(DisplayName = "None"),
+};
+
+USTRUCT(BlueprintType)
+struct FMovementEmitter : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UNiagaraSystem* Walk;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UNiagaraSystem* Run;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UNiagaraSystem* Sprint;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UNiagaraSystem* Roll;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UNiagaraSystem* Rush;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UNiagaraSystem* Jump;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UNiagaraSystem* Land;
+};
+
+USTRUCT(BlueprintType)
+struct FMovementSound : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USoundCue* Walk;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USoundCue* Run;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USoundCue* Sprint;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USoundCue* Roll;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USoundCue* Rush;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USoundCue* Jump;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USoundCue* Land;
+};
+

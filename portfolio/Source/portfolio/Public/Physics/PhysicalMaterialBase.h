@@ -6,8 +6,7 @@
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "PhysicalMaterialBase.generated.h"
 
-class USoundBase;
-class UNiagaraSystem;
+class UDataTable;
 
 UCLASS()
 class PORTFOLIO_API UPhysicalMaterialBase : public UPhysicalMaterial
@@ -17,9 +16,9 @@ class PORTFOLIO_API UPhysicalMaterialBase : public UPhysicalMaterial
 public:
 	UPhysicalMaterialBase();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound");
-	USoundBase* FootstepSound;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data");
+	UDataTable* MovementEmitterDataTable;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound");
-	UNiagaraSystem* FootstepParticle;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data");
+	UDataTable* MovementSoundDataTable;
 };

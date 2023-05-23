@@ -44,3 +44,12 @@ enum class EBackgroundMusic : uint8
 	EBM_CombatBoss UMETA(DisplayName = "CombatBoss"),
 	EBM_None UMETA(DisplayName = "None"),
 };
+
+UENUM(BlueprintType)
+enum class ESurfaceType : uint8
+{
+	ESF_Grass UMETA(DisplayName = "Grass"),
+	ESF_Concrete UMETA(DisplayName = "Concrete"),
+
+	ESF_None UMETA(DisplayName = "None"),
+};
