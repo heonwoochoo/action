@@ -55,6 +55,9 @@ FReply UItemBox::NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, con
 						else
 						{
 							InventoryComponent->SetEquippedItemCode(ItemCode);
+
+							DefaultCharacter->SetEquipState(ECharacterEquipState::ECES_Equipped);
+
 							PlayEquipAnimation();
 						}
 						break;

@@ -25,10 +25,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	FName RightFootSocketName = TEXT("foot_r");
 
+	UPROPERTY(EditDefaultsOnly)
+	FName RootSocketName = TEXT("root");
+
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	// 표면 재질에 따른 이펙트 핸들러 (소리, 파티클,...)
-	void HandleFootstep(const EFoot& Foot);
-		
+	void HandleFootstep(const EFoot& Foot, const EMovementType& MovementType);
+
 };

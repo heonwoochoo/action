@@ -313,7 +313,11 @@ private:
 
 	// 캐릭터의 동작 상태
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
-	ECharacterActionState CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
+	ECharacterActionState ActionState = ECharacterActionState::ECAS_Unoccupied;
+
+	// 캐릭터 무기 착용 상태
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
+	ECharacterEquipState EquipState = ECharacterEquipState::ECES_Unquipped;
 
 	// 캐릭터에 오버랩 된 아이템
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item", meta = (AllowPrivateAccess = "true"))
@@ -398,10 +402,14 @@ public:
 	void DisableDoubleJump();
 
 	UFUNCTION(BlueprintCallable)
-	ECharacterActionState GetCharacterActionState() const;
+	ECharacterActionState GetActionState() const;
+	UFUNCTION(BlueprintCallable)
+	void SetActionState(ECharacterActionState NewActionState);
 
 	UFUNCTION(BlueprintCallable)
-	void SetCharacterActionState(ECharacterActionState ActionState);
+	ECharacterEquipState GetEquipState() const;
+	UFUNCTION(BlueprintCallable)
+	void SetEquipState(const ECharacterEquipState& NewState);
 
 	UFUNCTION()
 	void OnAnimationEnded(UAnimMontage* AnimClass, bool bInterrupted);

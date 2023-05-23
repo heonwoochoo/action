@@ -5,9 +5,9 @@
 #include "DefaultCharacter.h"
 #include "Physics/PhysicalMaterialBase.h"
 #include "Kismet/GameplayStatics.h"
-#include "Sound/SoundBase.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraSystem.h"
+#include "Sound/SoundCue.h"
 
 UFootstepComponent::UFootstepComponent()
 {
@@ -29,7 +29,7 @@ void UFootstepComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 
 }
 
-void UFootstepComponent::HandleFootstep(const EFoot& Foot)
+void UFootstepComponent::HandleFootstep(const EFoot& Foot, const EMovementType& MovementType)
 {
 	ADefaultCharacter* Character = Cast<ADefaultCharacter>(GetOwner());
 	if (Character)
@@ -51,20 +51,20 @@ void UFootstepComponent::HandleFootstep(const EFoot& Foot)
 				UPhysicalMaterialBase* PhysicalMaterial = Cast<UPhysicalMaterialBase>(HitResult.PhysMaterial.Get());
 				if (PhysicalMaterial)
 				{
-					//// 소리 재생
-					//USoundBase* Sound = PhysicalMaterial->FootstepSound;
-					//if (Sound)
-					//{
-					//	UGameplayStatics::PlaySoundAtLocation(this, Sound, Location);
-					//}
+					// 소리 재생
+					USoundCue* Sound = PhysicalMaterial->GetMovementSound(MovementType);
+					if (Sound)
+					{
+						UGameplayStatics::PlaySoundAtLocation(this, Sound, Location);
+					}
 
-					//// 파티클 생성
-					//UNiagaraSystem* Particle = PhysicalMaterial->FootstepParticle;
-					//if (Particle)
-					//{
-					//	const FVector& HitLocation = HitResult.ImpactPoint;
-					//	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, Particle, HitLocation);
-					//}
+					// 파티클 생성
+					UNiagaraSystem* Particle = PhysicalMaterial->GetMovementEmitter(MovementType);
+					if (Particle)
+					{
+						const FVector& HitLocation = HitResult.ImpactPoint;
+						UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, Particle, HitLocation);
+					}
 				}
 			}
 		}

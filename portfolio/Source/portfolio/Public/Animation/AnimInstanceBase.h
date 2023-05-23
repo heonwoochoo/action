@@ -37,6 +37,12 @@ private:
 	ADefaultCharacter* Character = nullptr;
 
 	UPROPERTY(VisibleAnywhere, category = "Character")
+	ECharacterActionState ActionState;
+
+	UPROPERTY(VisibleAnywhere, category = "Character")
+	ECharacterEquipState EquipState;
+
+	UPROPERTY(VisibleAnywhere, category = "Character")
 	FCharacterDefaultAnimation DefaultAnimations;
 
 	FName ChangedWeaponItemCode;
@@ -59,6 +65,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
 	ADefaultCharacter* GetCharacter() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
+	ECharacterActionState GetCharacterActionState() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
+	ECharacterEquipState GetCharacterEquipState() const;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
 	ECharacterClass GetCharacterClass() const;

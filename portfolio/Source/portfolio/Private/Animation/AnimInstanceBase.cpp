@@ -46,8 +46,10 @@ void UAnimInstanceBase::NativeUpdateAnimation(float DeltaSeconds)
 			Velocity = CharacterMovementComponent->Velocity;
 			ForwardSpeed = UKismetMathLibrary::Quat_UnrotateVector(Character->GetActorQuat(), Velocity).X;
 			SideSpeed = UKismetMathLibrary::Quat_UnrotateVector(Character->GetActorQuat(), Velocity).Y;
-
 		}
+
+		ActionState = Character->GetActionState();
+		EquipState = Character->GetEquipState();
 	}
 }
 
@@ -58,10 +60,10 @@ void UAnimInstanceBase::OnEndMontage(UAnimMontage* AnimMontage, bool bInterrupte
 	{
 		if (Character)
 		{
-			const ECharacterActionState CurrentState = Character->GetCharacterActionState();
+			const ECharacterActionState CurrentState = Character->GetActionState();
 			if (CurrentState != ECharacterActionState::ECAS_Dead)
 			{
-				Character->SetCharacterActionState(ECharacterActionState::ECAS_Unoccupied);
+				Character->SetActionState(ECharacterActionState::ECAS_Unoccupied);
 			}
 		}
 	}
@@ -90,6 +92,16 @@ FVector UAnimInstanceBase::GetVelocity() const
 ADefaultCharacter* UAnimInstanceBase::GetCharacter() const
 {
 	return Character;
+}
+
+ECharacterActionState UAnimInstanceBase::GetCharacterActionState() const
+{
+	return ActionState;
+}
+
+ECharacterEquipState UAnimInstanceBase::GetCharacterEquipState() const
+{
+	return EquipState;
 }
 
 ECharacterClass UAnimInstanceBase::GetCharacterClass() const

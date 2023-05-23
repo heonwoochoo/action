@@ -244,19 +244,19 @@ void ADefaultCharacter::Move(const FInputActionValue& Value)
 		AddMovementInput(RightDirection, MovementVector.X);
 
 		if (GetVelocity().Size() > 0.f
-			&& CharacterActionState != ECharacterActionState::ECAS_Evade
-			&& CharacterActionState != ECharacterActionState::ECAS_Jump
-			&& CharacterActionState != ECharacterActionState::ECAS_Attack
-			&& CharacterActionState != ECharacterActionState::ECAS_AttackCombo
-			&& CharacterActionState != ECharacterActionState::ECAS_Sprint)
+			&& ActionState != ECharacterActionState::ECAS_Evade
+			&& ActionState != ECharacterActionState::ECAS_Jump
+			&& ActionState != ECharacterActionState::ECAS_Attack
+			&& ActionState != ECharacterActionState::ECAS_AttackCombo
+			&& ActionState != ECharacterActionState::ECAS_Sprint)
 		{
 			if (MovementVector.Y)
 			{
-				CharacterActionState = MovementVector.Y > 0 ? ECharacterActionState::ECAS_MoveForward : ECharacterActionState::ECAS_MoveBack;
+				ActionState = MovementVector.Y > 0 ? ECharacterActionState::ECAS_MoveForward : ECharacterActionState::ECAS_MoveBack;
 			}
 			else
 			{
-				CharacterActionState = MovementVector.X > 0 ? ECharacterActionState::ECAS_MoveRight : ECharacterActionState::ECAS_MoveLeft;
+				ActionState = MovementVector.X > 0 ? ECharacterActionState::ECAS_MoveRight : ECharacterActionState::ECAS_MoveLeft;
 			}
 		}
 	}
@@ -265,7 +265,7 @@ void ADefaultCharacter::Move(const FInputActionValue& Value)
 void ADefaultCharacter::MoveEnd()
 {
 	if (IsBlockedMove()) return;
-	CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
+	ActionState = ECharacterActionState::ECAS_Unoccupied;
 }
 
 void ADefaultCharacter::Look(const FInputActionValue& Value)
@@ -284,7 +284,7 @@ void ADefaultCharacter::Look(const FInputActionValue& Value)
 void ADefaultCharacter::Jump()
 {
 	if (IsBlockedMove()) return;
-	CharacterActionState = ECharacterActionState::ECAS_Jump;
+	ActionState = ECharacterActionState::ECAS_Jump;
 	if (!bCanDoubleJump)
 	{
 		Super::Jump();
@@ -298,14 +298,14 @@ void ADefaultCharacter::Jump()
 void ADefaultCharacter::DefaultAttack(const FInputActionValue& Value)
 {
 	if (IsBlockedMove()) return;
-	if (CharacterActionState == ECharacterActionState::ECAS_Unoccupied
-		|| CharacterActionState == ECharacterActionState::ECAS_AttackCombo
-		|| CharacterActionState == ECharacterActionState::ECAS_MoveForward
-		|| CharacterActionState == ECharacterActionState::ECAS_MoveBack
-		|| CharacterActionState == ECharacterActionState::ECAS_MoveLeft
-		|| CharacterActionState == ECharacterActionState::ECAS_MoveRight)
+	if (ActionState == ECharacterActionState::ECAS_Unoccupied
+		|| ActionState == ECharacterActionState::ECAS_AttackCombo
+		|| ActionState == ECharacterActionState::ECAS_MoveForward
+		|| ActionState == ECharacterActionState::ECAS_MoveBack
+		|| ActionState == ECharacterActionState::ECAS_MoveLeft
+		|| ActionState == ECharacterActionState::ECAS_MoveRight)
 	{
-		CharacterActionState = ECharacterActionState::ECAS_Attack;
+		ActionState = ECharacterActionState::ECAS_Attack;
 		
 		if (AnimInstance)
 		{
@@ -343,9 +343,9 @@ void ADefaultCharacter::OnSprint()
 	if (IsBlockedMove()) return;
 	if (GetVelocity().Size() > 0.f)
 	{
-		if (CharacterActionState != ECharacterActionState::ECAS_Jump)
+		if (ActionState != ECharacterActionState::ECAS_Jump)
 		{
-			CharacterActionState = ECharacterActionState::ECAS_Sprint;
+			ActionState = ECharacterActionState::ECAS_Sprint;
 		}
 		float CurrentSpeed = GetCharacterMovement()->MaxWalkSpeed;
 		GetCharacterMovement()->MaxWalkSpeed = UKismetMathLibrary::FInterpTo(CurrentSpeed, SprintMaxSpeed, GetWorld()->GetDeltaSeconds(), 30.f);
@@ -357,9 +357,9 @@ void ADefaultCharacter::OnSprint()
 void ADefaultCharacter::OffSprint()
 {
 	if (IsBlockedMove()) return;
-	if (CharacterActionState != ECharacterActionState::ECAS_Jump)
+	if (ActionState != ECharacterActionState::ECAS_Jump)
 	{
-		CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
+		ActionState = ECharacterActionState::ECAS_Unoccupied;
 	}
 	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkSpeed;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -371,8 +371,8 @@ void ADefaultCharacter::OnEvade()
 	if (IsBlockedMove()) return;
 	if (AnimInstance && GetVelocity().Size() 
 		&& !GetCharacterMovement()->IsFalling()
-		&& CharacterActionState != ECharacterActionState::ECAS_Evade
-		&& CharacterActionState != ECharacterActionState::ECAS_Sprint)
+		&& ActionState != ECharacterActionState::ECAS_Evade
+		&& ActionState != ECharacterActionState::ECAS_Sprint)
 	{
 		
 		UAnimMontage* DefaultEvadeMontage = AnimInstance->GetDefaultEvadeMontage();
@@ -381,7 +381,7 @@ void ADefaultCharacter::OnEvade()
 			AnimInstance->Montage_Play(DefaultEvadeMontage);
 
 			FName SectionName;
-			switch (CharacterActionState)
+			switch (ActionState)
 			{
 				case ECharacterActionState::ECAS_MoveForward:
 					SectionName = "Forward";
@@ -397,7 +397,7 @@ void ADefaultCharacter::OnEvade()
 					break;
 			}
 			AnimInstance->Montage_JumpToSection(SectionName);
-			CharacterActionState = ECharacterActionState::ECAS_Evade;
+			ActionState = ECharacterActionState::ECAS_Evade;
 		}
 	}
 }
@@ -405,7 +405,7 @@ void ADefaultCharacter::OnEvade()
 void ADefaultCharacter::SkillManagerOne()
 {
 	if (IsBlockedMove()) return;
-	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
+	if (AbilityComponent && ActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		
 		AbilityComponent->HandleSkillOne();
@@ -415,7 +415,7 @@ void ADefaultCharacter::SkillManagerOne()
 void ADefaultCharacter::SkillManagerTwo()
 {
 	if (IsBlockedMove()) return;
-	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
+	if (AbilityComponent && ActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillTwo();
 	}
@@ -424,7 +424,7 @@ void ADefaultCharacter::SkillManagerTwo()
 void ADefaultCharacter::SkillManagerThree()
 {
 	if (IsBlockedMove()) return;
-	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
+	if (AbilityComponent && ActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillThree();
 	}
@@ -433,7 +433,7 @@ void ADefaultCharacter::SkillManagerThree()
 void ADefaultCharacter::SkillManagerFour()
 {
 	if (IsBlockedMove()) return;
-	if (AbilityComponent && CharacterActionState != ECharacterActionState::ECAS_SkillCasting)
+	if (AbilityComponent && ActionState != ECharacterActionState::ECAS_SkillCasting)
 	{
 		AbilityComponent->HandleSkillFour();
 	}
@@ -662,12 +662,12 @@ void ADefaultCharacter::DoubleJump()
 
 void ADefaultCharacter::FinishEvade()
 {
-	CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
+	ActionState = ECharacterActionState::ECAS_Unoccupied;
 }
 
 bool ADefaultCharacter::IsPlayerDead()
 {
-	return CharacterActionState == ECharacterActionState::ECAS_Dead;
+	return ActionState == ECharacterActionState::ECAS_Dead;
 }
 
 void ADefaultCharacter::RegenerateHealth()
@@ -850,13 +850,13 @@ void ADefaultCharacter::EndOverlapped(UPrimitiveComponent* OverlappedComponent, 
 
 void ADefaultCharacter::AttackChainStart()
 {
-	CharacterActionState = ECharacterActionState::ECAS_AttackCombo;
+	ActionState = ECharacterActionState::ECAS_AttackCombo;
 	AttackCount++;
 }
 
 void ADefaultCharacter::AttackChainEnd()
 {
-	CharacterActionState = ECharacterActionState::ECAS_Unoccupied;
+	ActionState = ECharacterActionState::ECAS_Unoccupied;
 	AttackCount = 0;
 }
 
@@ -896,14 +896,24 @@ void ADefaultCharacter::DisableDoubleJump()
 	bCanDoubleJump = false;
 }
 
-ECharacterActionState ADefaultCharacter::GetCharacterActionState() const
+ECharacterActionState ADefaultCharacter::GetActionState() const
 {
-	return CharacterActionState;
+	return ActionState;
 }
 
-void ADefaultCharacter::SetCharacterActionState(ECharacterActionState ActionState)
+ECharacterEquipState ADefaultCharacter::GetEquipState() const
 {
-	CharacterActionState = ActionState;
+	return EquipState;
+}
+
+void ADefaultCharacter::SetEquipState(const ECharacterEquipState& NewState)
+{
+	EquipState = NewState;
+}
+
+void ADefaultCharacter::SetActionState(ECharacterActionState NewActionState)
+{
+	ActionState = NewActionState;
 }
 
 void ADefaultCharacter::OnAnimationEnded(UAnimMontage* AnimClass, bool bInterrupted)
@@ -934,7 +944,7 @@ void ADefaultCharacter::DamageToEnemy(AActor* Enemy, float Damage)
 void ADefaultCharacter::Die()
 {
 	DefaultStats.HP = 0;
-	CharacterActionState = ECharacterActionState::ECAS_Dead;
+	ActionState = ECharacterActionState::ECAS_Dead;
 	Tags.Add(FName("Dead"));
 	OnDead.Broadcast();
 }

@@ -73,7 +73,7 @@ void UQuestClientComponent::AddQuest(const EQuestCode& InQuestCode, const FQuest
 void UQuestClientComponent::ClearQuest(const EQuestCode& InQuestCode)
 {
 	// 퀘스트 데이터 상의 퀘스트 목록 제거
-	int32 TargetIndex;
+	int32 TargetIndex{};
 	for (int32 i = 0; i < QuestList.Num(); ++i)
 	{
 		if (QuestList[i].QuestCode == InQuestCode)

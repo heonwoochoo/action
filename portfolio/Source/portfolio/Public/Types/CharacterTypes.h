@@ -25,22 +25,9 @@ enum class ECharacterEquipState : uint8
 UENUM(BlueprintType)
 enum class ECharacterClass : uint8
 {
-	ECC_Assassin UMETA(DisplayName = "Assasin"),
+	ECC_Assassin UMETA(DisplayName = "Assassin"),
 
 	ECC_None UMETA(DisplayName = "None")
-};
-
-USTRUCT(BlueprintType)
-struct FCharacterData
-{
-	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	ECharacterEquipState EquipState;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	ECharacterClass Class;
-
 };
 
 USTRUCT(BlueprintType)

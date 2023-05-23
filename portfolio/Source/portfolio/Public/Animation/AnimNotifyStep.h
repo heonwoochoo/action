@@ -21,4 +21,8 @@ public:
 	// 발의 방향
 	UPROPERTY(EditAnywhere)
 	EFoot Foot;
+
+	// 움직임의 종류
+	UPROPERTY(EditAnywhere)
+	EMovementType MovementType;
 };
