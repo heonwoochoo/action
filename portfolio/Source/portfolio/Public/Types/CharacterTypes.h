@@ -294,3 +294,9 @@ enum class EHitType : uint8
 	EHT_Slash UMETA(DisplayName = "Slash"),
 };
 
+UENUM(BlueprintType)
+enum class EFoot : uint8
+{
+	EF_Left UMETA(DisplayName = "Left"),
+	EF_Right UMETA(DisplayName = "Right"),
+};

@@ -28,6 +28,7 @@ class UParticleSystemComponent;
 class UHeadUpWidgetComponent;
 class UQuestClientComponent;
 class ANPCBase;
+class UFootstepComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangedHealthSignature, const float&, CurrentHp, const float&, MaxHp);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangedStaminaSignature, const float&, CurrentSp, const float&, MaxSp);
@@ -246,6 +247,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability, meta = (AllowPrivateAccess = "true"))
 	UCharacterMotionWarpingComponent* CharacterMWComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability, meta = (AllowPrivateAccess = "true"))
+	UFootstepComponent* FootStepComponent;
+
 	UAnimInstanceBase* AnimInstance;
 	
 	AHUDBase* HUDBase;
@@ -366,6 +370,8 @@ public:
 	UInventoryComponent* GetInventoryComponent() const;
 
 	UQuestClientComponent* GetQuestClientComponent() const;
+
+	UFootstepComponent* GetFootstepComponent() const;
 
 	FORCEINLINE USceneComponent* GetEmitterComponent() const { return EmitterComponent; }
 	FORCEINLINE UHeadUpWidgetComponent* GetHeadUpWidgetComponent() const { return HeadUpWidgetComonent; }

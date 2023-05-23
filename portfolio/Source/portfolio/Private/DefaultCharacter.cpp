@@ -36,6 +36,7 @@
 #include "Items/Gold.h"
 #include "Component/QuestClientComponent.h"
 #include "NPC/NPCGreyStone.h"
+#include "Component/FootstepComponent.h"
 
 ADefaultCharacter::ADefaultCharacter()
 {
@@ -98,6 +99,9 @@ ADefaultCharacter::ADefaultCharacter()
 
 	// 퀘스트 컴포넌트 생성
 	QuestClientComponent = CreateDefaultSubobject<UQuestClientComponent>(TEXT("QuestClientComponent"));
+
+	// 발자국 효과 컴포넌트 생성
+	FootStepComponent = CreateDefaultSubobject<UFootstepComponent>(TEXT("FootstepComponent"));
 
 	InitialRelativeLocationZ = 0.f;
 
@@ -775,6 +779,11 @@ UInventoryComponent* ADefaultCharacter::GetInventoryComponent() const
 UQuestClientComponent* ADefaultCharacter::GetQuestClientComponent() const
 {
 	return QuestClientComponent;
+}
+
+UFootstepComponent* ADefaultCharacter::GetFootstepComponent() const
+{
+	return FootStepComponent;
 }
 
 void ADefaultCharacter::BeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
