@@ -9,6 +9,7 @@
 
 class ADefaultCharacter;
 class UDataTable;
+class UBlendSpace1D;
 
 UCLASS()
 class PORTFOLIO_API UAnimInstanceBase : public UAnimInstance

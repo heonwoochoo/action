@@ -158,6 +158,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera|Shake", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UCameraShakeBase> AttackCameraShakeClass;
+
 	/**  
 	* 캐릭터의 발밑에 부착된 컴포넌트
 	* ex) 레벨업 시 생기는 파티클, 버프 등
@@ -465,4 +468,10 @@ public:
 	FORCEINLINE ANPCBase* GetNPC() const { return NPC; }
 	FORCEINLINE void SetNPC(ANPCBase* InNPC) { NPC = InNPC; }
 	
+
+	// Time Dilation
+	FTimerHandle TimeDilationHandle;
+
+	UFUNCTION()
+	void ResetTimeDilation();
 };

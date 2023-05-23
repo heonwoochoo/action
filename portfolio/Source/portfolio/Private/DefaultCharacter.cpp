@@ -938,6 +938,16 @@ void ADefaultCharacter::DamageToEnemy(AActor* Enemy, float Damage)
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 	UGameplayStatics::ApplyDamage(Enemy, Damage, CharacterController, this, DamageType);
 
+	// 히트시 경직효과
+	CustomTimeDilation = 0.0f;
+
+	GetWorld()->GetTimerManager().SetTimer(TimeDilationHandle, this, &ADefaultCharacter::ResetTimeDilation, 0.1f);
+
+	if (AttackCameraShakeClass)
+	{
+		PlayCameraShake(AttackCameraShakeClass);
+	}
+
 	HandleComboCount();
 }
 
@@ -1206,6 +1216,11 @@ void ADefaultCharacter::ReturnCameraArmLength(float DeltaTime)
 	const float& NewLength = FMath::FInterpTo(CurrentArmLength, TargetArmLength, DeltaTime, 10.f);
 
 	CameraBoom->TargetArmLength = NewLength;
+}
+
+void ADefaultCharacter::ResetTimeDilation()
+{
+	CustomTimeDilation = 1.f;
 }
 
 ECharacterClass ADefaultCharacter::GetCharacterClass()

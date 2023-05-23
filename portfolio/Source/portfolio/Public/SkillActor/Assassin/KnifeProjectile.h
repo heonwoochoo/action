@@ -55,8 +55,6 @@ public:
 
 	void SetMovementDirection(const FVector& Direction);
 
-	void OnKnifeEffect(AActor* HitActor);
-
 	UPROPERTY(EditDefaultsOnly)
 	USoundCue* KnifeHitSound;
 };

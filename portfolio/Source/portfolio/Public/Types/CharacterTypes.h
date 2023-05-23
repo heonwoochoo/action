@@ -8,6 +8,7 @@
 
 class UAnimMontage;
 class UBlendSpace;
+class UBlendSpace1D;
 class UTexture2D;
 class UParticleSystem;
 class UNiagaraSystem;
@@ -99,7 +100,10 @@ struct FCharacterDefaultAnimation : public FTableRowBase
 	UAnimSequence* DefaultJump;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UBlendSpace* WalkRunBlendSpace;
+	UBlendSpace1D* EquippedWalkRun;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UBlendSpace1D* UnequippedWalkRun;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UAnimSequence* EquippedIdle;

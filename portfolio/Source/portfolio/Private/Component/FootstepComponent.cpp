@@ -38,7 +38,15 @@ void UFootstepComponent::HandleFootstep(const EFoot& Foot, const EMovementType& 
 		if (Mesh)
 		{
 			FHitResult HitResult;
-			const FVector& SocketLocation = Mesh->GetSocketLocation(Foot == EFoot::EF_Left ? LeftFootSocketName : RightFootSocketName);
+			FVector SocketLocation{};
+			if (MovementType == EMovementType::EMT_Roll)
+			{
+				SocketLocation = Mesh->GetSocketLocation(RootSocketName);
+			}
+			else 
+			{
+				SocketLocation = Mesh->GetSocketLocation(Foot == EFoot::EF_Left ? LeftFootSocketName : RightFootSocketName);
+			}
 			const FVector& Location = SocketLocation + FVector::UpVector * 20.f;
 
 			FCollisionQueryParams QueryParams;
@@ -56,6 +64,7 @@ void UFootstepComponent::HandleFootstep(const EFoot& Foot, const EMovementType& 
 					if (Sound)
 					{
 						UGameplayStatics::PlaySoundAtLocation(this, Sound, Location);
+						UE_LOG(LogTemp, Warning, TEXT("Play Sound"));
 					}
 
 					// 파티클 생성
@@ -64,6 +73,7 @@ void UFootstepComponent::HandleFootstep(const EFoot& Foot, const EMovementType& 
 					{
 						const FVector& HitLocation = HitResult.ImpactPoint;
 						UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, Particle, HitLocation);
+						UE_LOG(LogTemp, Warning, TEXT("Spawn Effect"));
 					}
 				}
 			}
