@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "Types/CharacterTypes.h"
+#include "Types/ItemTypes.h"
+#include "Types/QuestTypes.h"
 #include "UserSaveGame.generated.h"
 
 
@@ -30,8 +33,47 @@ struct FUserInGameInfo
 {
 	GENERATED_USTRUCT_BODY()
 
+	// 위치
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FTransform Transform;
+
+	// 스탯
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FCharacterStats Stats;
+
+	// 직업
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	ECharacterClass Class;
+
+	// 무기 장착 상태
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	ECharacterEquipState EquipState;
+
+	/**
+	* 인벤토리 컴포넌트
+	*/
+	// 장착한 아이템 상태
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TMap<EEquipmentType, FEquippedItem> EquippedItemList;
+
+	// 장착중인 무기
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FName EquippedWeaponCode;
+
+	// 저장되어 있는 아이템
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TMap<FName, uint8> ItemList;
+
+	/**
+	* 퀘스트 클라이언트 컴포넌트
+	*/
+	// 퀘스트
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<FQuestClientData> QuestList;
+
+	// 클리어한 퀘스트 목록
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<EQuestCode> ClearedQuests;
 };
 
 UCLASS()

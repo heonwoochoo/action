@@ -9,6 +9,8 @@
 #include "GameFramework/GameState.h"
 #include "DefaultCharacter.h"
 #include "Controller/CharacterController.h"
+#include "Component/InventoryComponent.h"
+#include "Component/QuestClientComponent.h"
 #include "HUD/HUDBase.h"
 
 void UDefaultGameInstance::Init()
@@ -217,12 +219,42 @@ void UDefaultGameInstance::UpdateSaveGameSystemInfo()
 
 void UDefaultGameInstance::UpdateSaveGameInGameInfo()
 {
-	// 위치 업데이트
 	ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	if (DefaultCharacter)
 	{
+		// 위치
 		const FTransform Transform = DefaultCharacter->GetActorTransform();
 		UserSaveGame->InGameInfo.Transform = Transform;
+
+		// 스탯
+		UserSaveGame->InGameInfo.Stats = DefaultCharacter->GetCharacterStats();
+
+		// 직업
+		UserSaveGame->InGameInfo.Class = DefaultCharacter->GetCharacterClass();
+
+		// 무기 장착 상태
+		UserSaveGame->InGameInfo.EquipState = DefaultCharacter->GetEquipState();
+
+		UInventoryComponent* InventoryComponent = DefaultCharacter->GetInventoryComponent();
+		check(InventoryComponent);
+
+		// 장착 아이템
+		UserSaveGame->InGameInfo.EquippedItemList = InventoryComponent->GetEquippedItemList();
+
+		// 장착중인 무기
+		UserSaveGame->InGameInfo.EquippedWeaponCode = InventoryComponent->GetEquippedItemCode();
+
+		// 아이템 목록
+		UserSaveGame->InGameInfo.ItemList = InventoryComponent->GetItemList();
+
+		UQuestClientComponent* ClientComponent = DefaultCharacter->GetQuestClientComponent();
+		check(ClientComponent);
+
+		// 퀘스트 상태
+		UserSaveGame->InGameInfo.QuestList = ClientComponent->GetQuestList();
+
+		// 클리어한 퀘스트 목록
+		UserSaveGame->InGameInfo.ClearedQuests = ClientComponent->GetClearedQuests();
 	}
 }
 

@@ -148,12 +148,13 @@ bool AEnemyBase::CanAttack()
 
 void AEnemyBase::InitPatrolTarget()
 {
-	UGameplayStatics::GetAllActorsWithTag(this, FName("Patrol"), PatrolTargets);
+	UGameplayStatics::GetAllActorsWithTag(this, FName(TEXT("Patrol")), PatrolTargets);
 
 	if (PatrolTargets.Num() > 1)
 	{
 		const int32 RandIdx = FMath::RandRange(0, PatrolTargets.Num() - 1);
 		PatrolTarget = PatrolTargets[RandIdx];
+		MoveToTarget(PatrolTarget);
 	}
 }
 
@@ -328,6 +329,15 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 	HandleDamage(DamageCauser, DamageAmount, IsCritical);
 
 	HandleAttackTarget(EventInstigator);
+
+	// 경직 효과
+	ADefaultCharacter* PlayerCharacter = Cast<ADefaultCharacter>(DamageCauser);
+	if (PlayerCharacter && DamagedComponent)
+	{
+		const float& HitTimeDilation = PlayerCharacter->GetHitTimeDilation();
+		const float& HitTimeDilationDelay = PlayerCharacter->GetHitTimeDilationDelay();
+		DamagedComponent->SetTimeDilation(HitTimeDilation, HitTimeDilationDelay);
+	}
 
 	return DamageAmount;
 }

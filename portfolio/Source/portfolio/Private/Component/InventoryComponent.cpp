@@ -10,6 +10,8 @@
 #include "Sound/SoundCue.h"
 #include "Items/Weapon.h"
 #include "Controller/CharacterController.h"
+#include "GameInstance/DefaultGameInstance.h"
+#include "SaveGame/UserSaveGame.h"
 
 UInventoryComponent::UInventoryComponent()
 {
@@ -32,6 +34,7 @@ void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	LoadDataFromSaveGame();
 }
 
 
@@ -165,6 +168,42 @@ void UInventoryComponent::HandleItemSlotCoolDown()
 	if (!bEnableItemSlotSix)
 	{
 		NotifyCoolDown(ItemSlotSixTimerHandle, OnProgressCoolDownSlotSix);
+	}
+}
+
+void UInventoryComponent::LoadDataFromSaveGame()
+{
+	UDefaultGameInstance* DefaultGameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (DefaultGameInstance)
+	{
+		const FString UserName = DefaultGameInstance->GetUserName();
+		bool IsExist = UGameplayStatics::DoesSaveGameExist(UserName, 0);
+		if (IsExist)
+		{
+			UUserSaveGame* UserSaveGame = Cast<UUserSaveGame>(UGameplayStatics::LoadGameFromSlot(UserName, 0));
+			if (UserSaveGame)
+			{
+				EquippedItemList = UserSaveGame->InGameInfo.EquippedItemList;
+
+				// 무기를 스폰하여 장착
+				
+					EquippedItemCode = UserSaveGame->InGameInfo.EquippedWeaponCode;
+
+					FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(EquippedItemCode, "");
+					if (Spec)
+					{
+						EquippedWeapon = Cast<AWeapon>(GetWorld()->SpawnActor(Spec->ItemClass));
+						if (EquippedWeapon)
+						{
+							ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(GetOwner());
+							check(DefaultCharacter);
+							USkeletalMeshComponent* Mesh = DefaultCharacter->GetMesh();
+							EquippedWeapon->AttachMeshToSocket(Mesh, TEXT("RightHandSocket"));
+						}
+					}
+				ItemList = UserSaveGame->InGameInfo.ItemList;
+			}
+		}
 	}
 }
 

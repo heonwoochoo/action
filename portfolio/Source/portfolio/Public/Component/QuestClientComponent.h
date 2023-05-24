@@ -47,6 +47,9 @@ protected:
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	// 저장된 퀘스트 데이터를 불러옵니다
+	void LoadDataFromSaveGame();
+
 	// 퀘스트를 클라이언트의 리스트에 추가
 	void AddQuest(const EQuestCode& InQuestCode, const FQuest& InQuest);
 
@@ -55,6 +58,9 @@ public:
 
 	FORCEINLINE TArray<FQuestClientData> GetQuestList() const { return QuestList; }
 	FORCEINLINE void SetQuestList(const TArray<FQuestClientData>& InQuestList) { QuestList = InQuestList; }
+
+	FORCEINLINE TArray<EQuestCode> GetClearedQuests() const { return ClearedQuests; }
+	FORCEINLINE void SetClearedQuests(const TArray<EQuestCode>& InClearedQuests) { ClearedQuests = InClearedQuests; }
 
 	UFUNCTION()
 	void AddEnemyKillCount(const FName& InEnemyCode, const int32& InCount);

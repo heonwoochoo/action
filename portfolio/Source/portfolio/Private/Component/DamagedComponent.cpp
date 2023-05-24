@@ -110,3 +110,13 @@ bool UDamagedComponent::IsDamagedCritical(AActor* DamageCauser)
 	return false;
 }
 
+void UDamagedComponent::SetTimeDilation(const float& DilationRate, const float& Delay)
+{
+	GetOwner()->CustomTimeDilation = DilationRate;
+	GetWorld()->GetTimerManager().SetTimer(TimeDilationHandle, this, &UDamagedComponent::ResetTimeDilation, Delay);
+}
+
+void UDamagedComponent::ResetTimeDilation()
+{
+	GetOwner()->CustomTimeDilation = 1.0f;
+}

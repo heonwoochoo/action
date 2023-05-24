@@ -132,6 +132,8 @@ private:
 	void HandleItemSlotCoolDown();
 
 public:
+	// 저장된 인벤토리 데이터를 불러옵니다.
+	void LoadDataFromSaveGame();
 
 	TMap<EEquipmentType, FEquippedItem> GetEquippedItemList() const;
 

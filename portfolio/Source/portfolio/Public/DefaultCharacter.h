@@ -299,6 +299,14 @@ private:
 
 	FTimerHandle ComboTimerHandle;
 
+	// 히트시 경직도
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	float HitTimeDilation = 0.f;
+
+	// 경직 딜레이
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	float HitTimeDilationDelay = 0.05f;
+
 	// 초당 재생량
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties", meta = (AllowPrivateAccess = "true"))
 	float RegenerateHealthRate = 1.f;
@@ -467,11 +475,13 @@ public:
 
 	FORCEINLINE ANPCBase* GetNPC() const { return NPC; }
 	FORCEINLINE void SetNPC(ANPCBase* InNPC) { NPC = InNPC; }
-	
 
-	// Time Dilation
+	// 경직효과 Time Dilation
 	FTimerHandle TimeDilationHandle;
 
 	UFUNCTION()
 	void ResetTimeDilation();
+
+	FORCEINLINE float GetHitTimeDilation() const { return HitTimeDilation; }
+	FORCEINLINE float GetHitTimeDilationDelay() const { return HitTimeDilationDelay; }
 };

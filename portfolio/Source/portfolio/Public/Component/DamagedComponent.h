@@ -60,4 +60,10 @@ public:
 	// 가해자에게 크리티컬 데미지를 받았는지?
 	bool IsDamagedCritical(AActor* DamageCauser);
 
+	// 경직 효과 설정
+	void SetTimeDilation(const float& DilationRate, const float& Delay);
+
+	// 경직 해제를 위한 타이머 핸들
+	FTimerHandle TimeDilationHandle;
+	void ResetTimeDilation();
 };

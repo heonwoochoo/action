@@ -67,7 +67,7 @@ protected:
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation");
 	AActor* PatrolTarget;
 
-	// 랜덤으로 정해지는 Patrol Target을 담는 배열
+	// Patrol Target을 담는 배열
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
 	TArray<AActor*> PatrolTargets;
 
@@ -195,7 +195,6 @@ protected:
 	void DropItem();
 
 private:
-
 	void Die();
 
 	FTimerHandle TakeDamageHandle;
@@ -209,6 +208,7 @@ private:
 	void PlayDeadAnim();
 
 public:
+
 	FORCEINLINE FEnemyStats GetEnemyStats() const { return Stats; }
 	FORCEINLINE UEnemyHPBarWidgetComponent* GetHPBarWidgetComponent() const { return HPBarWidgetComponent;}
 
@@ -219,5 +219,4 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HitRotationEnd();
-
 };

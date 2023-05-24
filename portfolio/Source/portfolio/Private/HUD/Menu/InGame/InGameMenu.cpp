@@ -272,7 +272,7 @@ void UInGameMenu::OnClickedSaveButton()
 			SavedNotifyBox = Cast<USavedNotifyBox>(CreateWidget(this, SavedNotifyBoxClass));
 			if (SavedNotifyBox)
 			{
-				SavedNotifyBox->AddToViewport();
+				SavedNotifyBox->AddToViewport(2);
 			}
 		}
 	}

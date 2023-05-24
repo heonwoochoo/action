@@ -709,16 +709,26 @@ void ADefaultCharacter::LoadDataFromSaveGame()
 			{
 				const FUserInGameInfo& InGameInfo = UserSaveGame->InGameInfo;
 
-				// 위치 설정
+				// 위치
 				const FTransform& SavedTransform = InGameInfo.Transform;
 				if (SavedTransform.IsValid())
 				{
-					if (HUDBase)
-					{
-						const FText Message = FText::FromString(TEXT("저장된 데이터를 불러왔습니다."));
-						HUDBase->NotifyMessageToUser(Message);
-					}
 					SetActorTransform(SavedTransform);
+				}
+
+				// 스탯
+				DefaultStats = InGameInfo.Stats;
+
+				// 직업
+				DefaultClass = InGameInfo.Class;
+
+				// 무기 장착 상태
+				EquipState = InGameInfo.EquipState;
+
+				if (HUDBase)
+				{
+					const FText Message = FText::FromString(TEXT("저장된 데이터를 불러왔습니다."));
+					HUDBase->NotifyMessageToUser(Message);
 				}
 			}
 		}
@@ -938,11 +948,10 @@ void ADefaultCharacter::DamageToEnemy(AActor* Enemy, float Damage)
 	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
 	UGameplayStatics::ApplyDamage(Enemy, Damage, CharacterController, this, DamageType);
 
-	// 히트시 경직효과
-	CustomTimeDilation = 0.0f;
+	CustomTimeDilation = HitTimeDilation;
+	GetWorld()->GetTimerManager().SetTimer(TimeDilationHandle, this, &ADefaultCharacter::ResetTimeDilation, HitTimeDilationDelay);
 
-	GetWorld()->GetTimerManager().SetTimer(TimeDilationHandle, this, &ADefaultCharacter::ResetTimeDilation, 0.1f);
-
+	// 카메라 쉐이크 효과
 	if (AttackCameraShakeClass)
 	{
 		PlayCameraShake(AttackCameraShakeClass);

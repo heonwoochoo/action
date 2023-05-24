@@ -10,6 +10,8 @@
 #include "Controller/CharacterController.h"
 #include "HUD/HUDBase.h"
 #include "HelperFunction.h"
+#include "GameInstance/DefaultGameInstance.h"
+#include "SaveGame/UserSaveGame.h"
 
 UQuestClientComponent::UQuestClientComponent()
 {
@@ -21,6 +23,8 @@ UQuestClientComponent::UQuestClientComponent()
 void UQuestClientComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	LoadDataFromSaveGame();
 }
 
 
@@ -28,6 +32,25 @@ void UQuestClientComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+}
+
+void UQuestClientComponent::LoadDataFromSaveGame()
+{
+	UDefaultGameInstance* DefaultGameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (DefaultGameInstance)
+	{
+		const FString UserName = DefaultGameInstance->GetUserName();
+		bool IsExist = UGameplayStatics::DoesSaveGameExist(UserName, 0);
+		if (IsExist)
+		{
+			UUserSaveGame* UserSaveGame = Cast<UUserSaveGame>(UGameplayStatics::LoadGameFromSlot(UserName, 0));
+			if (UserSaveGame)
+			{
+				QuestList = UserSaveGame->InGameInfo.QuestList;
+				ClearedQuests = UserSaveGame->InGameInfo.ClearedQuests;
+			}
+		}
+	}
 }
 
 void UQuestClientComponent::AddQuest(const EQuestCode& InQuestCode, const FQuest& InQuest)
