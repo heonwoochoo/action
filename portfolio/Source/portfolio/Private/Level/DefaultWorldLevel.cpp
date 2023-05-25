@@ -6,6 +6,8 @@
 #include "HUD/HUDBase.h"
 #include "Enemy/EnemyBase.h"
 #include "Controller/CharacterController.h"
+#include "Enemy/Boss/BossBase.h"
+
 
 ADefaultWorldLevel::ADefaultWorldLevel()
 {
@@ -39,6 +41,14 @@ void ADefaultWorldLevel::BeginPlay()
 	// 리스폰 지점 배열에 담기
 	UGameplayStatics::GetAllActorsWithTag(this, FName("Respawn"), RespawnPoints);
 	RespawnEnemy();
+
+	// 보스의 스폰 지점 저장
+	TArray<AActor*> OutActors;
+	UGameplayStatics::GetAllActorsWithTag(this, FName(TEXT("BossSpawnPoint")), OutActors);
+	if (OutActors.IsValidIndex(0))
+	{
+		BossSpawnPoint = OutActors[0];
+	}
 }
 
 void ADefaultWorldLevel::Tick(float DeltaSeconds)
@@ -46,7 +56,7 @@ void ADefaultWorldLevel::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	// 일정 마리 수 이하가 되면 적 리스폰
-	if (CheckEnemyNumber() < EnemyMaxNumber && bRespawnFlag)
+	if (CheckEnemyNumber() < EnemyMaxNumber && bRespawnFlag && !bIsBossSpawn)
 	{
 		bRespawnFlag = false;
 		GetWorld()->GetTimerManager().SetTimer(EnemyRespawnTimerHandle, this, &ADefaultWorldLevel::RespawnEnemy, 3.f, false);
@@ -74,4 +84,34 @@ void ADefaultWorldLevel::RespawnEnemy()
 		GetWorld()->SpawnActor<AEnemyBase>(Enemies[RandEnemyNum], Location, Rotation);
 	}
 	bRespawnFlag = true;
+}
+
+void ADefaultWorldLevel::SpawnBoss()
+{
+	if (BossSpawnPoint && BossClass)
+	{
+		const FVector& Location = BossSpawnPoint->GetActorLocation();
+		const FRotator& Rotation = BossSpawnPoint->GetActorRotation();
+
+		SpawnedBoss = GetWorld()->SpawnActor<ABossBase>(BossClass, Location, Rotation);
+	}
+}
+
+void ADefaultWorldLevel::RemoveAllEnemies()
+{
+	TArray<AActor*> OutActors;
+	UGameplayStatics::GetAllActorsWithTag(this, FName(TEXT("Enemy")), OutActors);
+
+	for (int32 i = 0; i < OutActors.Num(); ++i)
+	{
+		OutActors[i]->Destroy();
+		UE_LOG(LogTemp, Warning, TEXT("잔몹이 제거되었습니다."));
+	}
+
+	if (EnemyRespawnTimerHandle.IsValid())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(EnemyRespawnTimerHandle);
+	}
+
+	bRespawnFlag = false;
 }

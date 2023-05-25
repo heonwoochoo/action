@@ -26,10 +26,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Where")
 	EBackgroundMusic MusicType = EBackgroundMusic::EBM_None;
 
-
+	bool bIsCombatBossMode = false;
 
 public:	
-
 	UFUNCTION()
 	void OnBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

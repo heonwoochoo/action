@@ -433,16 +433,20 @@ void UInGameMenu::PlayShowAnimation()
 
 void UInGameMenu::PlayHideAnimation()
 {
-	if (HideMenu)
+	if (Visibility == ESlateVisibility::Visible)
 	{
-		PlayAnimationForward(HideMenu);
+		UE_LOG(LogTemp, Warning, TEXT("PlayHideAnimation"));
+		if (HideMenu)
+		{
+			PlayAnimationForward(HideMenu);
+		}
 	}
 }
 
 void UInGameMenu::OnEndHideAnimation()
 {
+	UE_LOG(LogTemp, Warning, TEXT("OnEndHideAnimation"));
 	SetVisibility(ESlateVisibility::Hidden);
-	//RemoveFromParent();
 }
 
 void UInGameMenu::PlayButtonSound()

@@ -6,6 +6,8 @@
 #include "DefaultCharacter.h"
 #include "Controller/CharacterController.h"
 #include "HUD/HUDBase.h"
+#include "Component/QuestClientComponent.h"
+#include "Level/DefaultWorldLevel.h"
 
 ACastleMusicSwitch::ACastleMusicSwitch()
 {
@@ -23,11 +25,13 @@ void ACastleMusicSwitch::BeginPlay()
 	{
 		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ACastleMusicSwitch::OnBeginOverlapped);
 	}
+
+
 }
 
 void ACastleMusicSwitch::OnBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(FName("Player")))
+	if (OtherActor->ActorHasTag(FName("Player")) && !bIsCombatBossMode)
 	{
 		ADefaultCharacter* PlayerCharacter = Cast<ADefaultCharacter>(OtherActor);
 		if (PlayerCharacter)
@@ -50,6 +54,36 @@ void ACastleMusicSwitch::OnBeginOverlapped(UPrimitiveComponent* OverlappedCompon
 							if (MusicType == EBackgroundMusic::EBM_InsideCastle)
 							{
 								SpotName = FText::FromString(TEXT("조폭의 요새"));
+
+								UQuestClientComponent* QuestClientComponent = PlayerCharacter->GetQuestClientComponent();
+								if (QuestClientComponent)
+								{
+									const TArray<FQuestClientData>& QuestList = QuestClientComponent->GetQuestList();
+									for (const auto& QuestData : QuestList)
+									{
+										if (QuestData.QuestCode == EQuestCode::EQC_0002)
+										{
+											
+											ALevelScriptActor* CurrentWorldLevel = GetWorld()->GetLevelScriptActor();
+											if (CurrentWorldLevel)
+											{
+												ADefaultWorldLevel* DefaultWorldLevel = Cast<ADefaultWorldLevel>(CurrentWorldLevel);
+												if (DefaultWorldLevel)
+												{
+													DefaultWorldLevel->RemoveAllEnemies();
+
+													DefaultWorldLevel->SpawnBoss();
+																							
+													// 보스 음악 재생
+													CharacterController->PlayBackgroundMusic(EBackgroundMusic::EBM_CombatBoss);
+
+													bIsCombatBossMode = true;
+												}
+											}
+											// 캐릭터 탈출못하게 투명벽
+										}
+									}
+								}
 							}
 							else if (MusicType == EBackgroundMusic::EBM_OutsideCastle)
 							{

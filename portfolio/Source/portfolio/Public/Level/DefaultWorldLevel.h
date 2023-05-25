@@ -9,6 +9,7 @@
 class AEnemyBase;
 class USoundCue;
 class UAudioComponent;
+class ABossBase;
 
 UCLASS()
 class PORTFOLIO_API ADefaultWorldLevel : public ALevelScriptActor
@@ -26,9 +27,21 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy")
 	TArray<TSubclassOf<AEnemyBase>> Enemies;
 
-	// 적의 최대 개체 수
+	// 맵에 존재하는 몹의 최대 개체 수
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy")
 	int32 EnemyMaxNumber = 2;
+
+	// 보스의 액터클래스
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Boss")
+	TSubclassOf<ABossBase> BossClass;
+
+	// 보스가 스폰될 위치
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Boss")
+	AActor* BossSpawnPoint;
+
+	// 소환된 보스의 포인터
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Boss")
+	ABossBase* SpawnedBoss;
 
 private:
 	// 리스폰 지점
@@ -38,7 +51,16 @@ private:
 
 	bool bRespawnFlag = true;
 
+	bool bIsBossSpawn = false;
+
 	int32 CheckEnemyNumber();
 
 	void RespawnEnemy();
+
+public:
+	// 보스 생성
+	void SpawnBoss();
+
+	// 잔몹 제거
+	void RemoveAllEnemies();
 };

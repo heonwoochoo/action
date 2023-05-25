@@ -175,7 +175,6 @@ void AHUDBase::ShowInGameMenu()
 			InGameMenuWidget = Cast<UInGameMenu>(CreateWidget(GetWorld(), InGameMenuClass));
 			InGameMenuWidget->AddToViewport(1);
 		}
-
 		InGameMenuWidget->SetVisibility(ESlateVisibility::Visible);
 		InGameMenuWidget->PlayShowAnimation();
 	}
