@@ -72,6 +72,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Camera")
 	TSubclassOf<AEmitterCameraLensEffectBase> HitReactCameraLens;
 
+	/** 대쉬 카메라 렌즈효과*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect|Camera")
+	TSubclassOf<AEmitterCameraLensEffectBase> DashCameraLens;
+
 	/** 레벨업시 재생되는 이펙트 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
 	UParticleSystem* LevelUpParticle;
@@ -101,6 +105,9 @@ protected:
 
 	/** Called Evade Action */
 	void OnEvade();
+
+	/** 마우스 휠 핸들러*/
+	void OnZoom(const FInputActionValue& Value);
 
 	/** Skill Event Handler */
 	void SkillManagerOne();
@@ -238,6 +245,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* InGameMenuAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ZoomAction;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability, meta = (AllowPrivateAccess = "true"))
 	UAbilityComponent* AbilityComponent;
 
@@ -258,6 +268,8 @@ private:
 	AHUDBase* HUDBase;
 
 	float CameraBoomArmLength = 400.f;
+	float CameraBoomArmLengthMax = 400.f;
+
 
 	// true시 카메라 Arm의 길이가 늘어남
 	bool bIsIncreaseCameraArmLength = false;
@@ -440,6 +452,7 @@ public:
 
 	void PlayCameraShake(TSubclassOf<UCameraShakeBase> CameraShakeClass);
 
+	UFUNCTION(BlueprintCallable)
 	void PlayCameraLensEffect(TSubclassOf<AEmitterCameraLensEffectBase> CameraLensEffectClass);
 
 	// 캐릭터의 스탯을 업데이트 (체력, 기력, 공격력, ...)

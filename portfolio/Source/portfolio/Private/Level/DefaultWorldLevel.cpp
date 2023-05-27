@@ -94,6 +94,20 @@ void ADefaultWorldLevel::SpawnBoss()
 		const FRotator& Rotation = BossSpawnPoint->GetActorRotation();
 
 		SpawnedBoss = GetWorld()->SpawnActor<ABossGideon>(BossClass, Location, Rotation);
+
+		if (SpawnedBoss)
+		{
+			ACharacterController* PlayerController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+			if (PlayerController)
+			{
+				AHUDBase* HUDBase = Cast<AHUDBase>(PlayerController->GetHUD());
+				if (HUDBase)
+				{
+					const FText& Message = FText::FromString(TEXT("보스가 등장하였습니다."));
+					HUDBase->NotifyMessageToUser(Message);
+				}
+			}
+		}
 	}
 }
 
@@ -105,7 +119,6 @@ void ADefaultWorldLevel::RemoveAllEnemies()
 	for (int32 i = 0; i < OutActors.Num(); ++i)
 	{
 		OutActors[i]->Destroy();
-		UE_LOG(LogTemp, Warning, TEXT("잔몹이 제거되었습니다."));
 	}
 
 	if (EnemyRespawnTimerHandle.IsValid())

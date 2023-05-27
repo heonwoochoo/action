@@ -6,6 +6,8 @@
 #include "Component/BossAbilityComponent.h"
 #include "DefaultCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "Controller/CharacterController.h"
+#include "HUD/HUDBase.h"
 
 ABossGideon::ABossGideon()
 {
@@ -80,6 +82,17 @@ void ABossGideon::Die()
 		{
 			// 유저가 경험치를 획득
 			DefaultCharacter->UpdateStatManager(EStatTarget::EST_Exp, EStatUpdateType::ESUT_Plus, Stats.Exp);
+
+			ACharacterController* CharacterController = Cast<ACharacterController>(DefaultCharacter->GetController());
+			if (CharacterController)
+			{
+				AHUDBase* HUDBase = Cast<AHUDBase>(CharacterController->GetHUD());
+				if (HUDBase)
+				{
+					const FText& Message = FText::FromString(TEXT("보스를 처치하였습니다."));
+					HUDBase->NotifyMessageToUser(Message);
+				}
+			}
 		}
 	}
 

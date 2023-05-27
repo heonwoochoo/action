@@ -31,7 +31,7 @@ protected:
 	float AttackTimerRate = 2.f;
 
 	FTimerHandle EndHitReactTimer;
-	float HitReactTimerRate = 1.f;
+	float HitReactTimerRate = 0.2f;
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))

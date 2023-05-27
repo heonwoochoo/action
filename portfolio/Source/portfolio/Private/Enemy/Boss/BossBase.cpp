@@ -72,18 +72,12 @@ float ABossBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 
 	if (DamageCauser->ActorHasTag(FName(TEXT("Player"))) && DamagedComponent)
 	{
+		ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(DamageCauser);
+		check(DefaultCharacter);
+
 		if (!CombatTarget)
 		{
-			ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(DamageCauser);
-			if (DefaultCharacter)
-			{
-				CombatTarget = DefaultCharacter;
-
-				// 경직 효과
-				const float& HitTimeDilation = DefaultCharacter->GetHitTimeDilation();
-				const float& HitTimeDilationDelay = DefaultCharacter->GetHitTimeDilationDelay();
-				DamagedComponent->SetTimeDilation(HitTimeDilation, HitTimeDilationDelay);
-			}
+			CombatTarget = DefaultCharacter;
 		}
 
 		DamagedComponent->ApplyHitOverlayMaterial();
@@ -118,6 +112,11 @@ float ABossBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 					SetMotionWarpRotationToTarget();
 					AnimInstance->PlayHitReactAnimation();
 				}
+
+				// 경직 효과
+				const float& HitTimeDilation = DefaultCharacter->GetHitTimeDilation();
+				const float& HitTimeDilationDelay = DefaultCharacter->GetHitTimeDilationDelay();
+				DamagedComponent->SetTimeDilation(HitTimeDilation, HitTimeDilationDelay);
 			}
 		}
 	}

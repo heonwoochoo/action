@@ -51,14 +51,21 @@ void AKnifeProjectile::BeginPlay()
 void AKnifeProjectile::Destroyed()
 {
 	// 히트되지 않았다면 쿨타임 적용
-	UAssassinComponent* AssassinComponent =  Cast<UAssassinComponent>(Caster->GetAbilityComponent());
-	if (AssassinComponent)
+	if (Caster)
 	{
-		AActor* Target = AssassinComponent->GetDashTarget();
-		if (Target == nullptr)
+		UAbilityComponent* AbilityComponent = Caster->GetAbilityComponent();
+		if (AbilityComponent)
 		{
-			AssassinComponent->SetCanSkillOne(false);
-			AssassinComponent->SetSkillOneTimer();
+			UAssassinComponent* AssassinComponent = Cast<UAssassinComponent>(AbilityComponent);
+			if (AssassinComponent)
+			{
+				AActor* Target = AssassinComponent->GetDashTarget();
+				if (Target == nullptr)
+				{
+					AssassinComponent->SetCanSkillOne(false);
+					AssassinComponent->SetSkillOneTimer();
+				}
+			}
 		}
 	}
 }

@@ -213,6 +213,9 @@ void ADefaultCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 		EnhancedInputComponent->BindAction(ItemSlotFiveAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_5);
 		EnhancedInputComponent->BindAction(ItemSlotSixAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::QuickSlotManager_6);
 
+		// Zoom
+		EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::OnZoom);
+
 		// Z - Handler (수집, 대화)
 		EnhancedInputComponent->BindAction(PickupAction, ETriggerEvent::Triggered, this, &ADefaultCharacter::OnPressedZKey);
 		
@@ -399,6 +402,16 @@ void ADefaultCharacter::OnEvade()
 			AnimInstance->Montage_JumpToSection(SectionName);
 			ActionState = ECharacterActionState::ECAS_Evade;
 		}
+	}
+}
+
+void ADefaultCharacter::OnZoom(const FInputActionValue& Value)
+{
+	if (CameraBoom)
+	{
+		const float& Delta = Value.Get<FInputActionValue::Axis1D>() * 10.f;
+		CameraBoomArmLength = FMath::Clamp(CameraBoomArmLength + Delta, 100.f,CameraBoomArmLengthMax);
+		CameraBoom->TargetArmLength = CameraBoomArmLength;
 	}
 }
 

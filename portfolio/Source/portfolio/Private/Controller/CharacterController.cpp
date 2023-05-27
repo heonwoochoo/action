@@ -11,9 +11,11 @@
 ACharacterController::ACharacterController()
 {
 	const FVector2D& ViewportSize = UWidgetLayoutLibrary::GetViewportSize(this);
-	CharacterInfoInitialLocation = ViewportSize;
-	InventoryInitialLocation = ViewportSize;
-	QuestInitialLocation = ViewportSize;
+	const FVector2D& ViewportCenter = FVector2D(ViewportSize.X * 0.5 / ViewportSize.Y * 0.5);
+
+	CharacterInfoInitialLocation = ViewportCenter;
+	InventoryInitialLocation = ViewportCenter;
+	QuestInitialLocation = ViewportCenter;
 
 	bEnableClickEvents = true;
 	bEnableMouseOverEvents = true;
