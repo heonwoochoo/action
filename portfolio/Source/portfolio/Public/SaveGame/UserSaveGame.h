@@ -47,7 +47,7 @@ struct FUserInGameInfo
 
 	// 무기 장착 상태
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	ECharacterEquipState EquipState;
+	ECharacterEquipState EquipState = ECharacterEquipState::ECES_Unquipped;
 
 	/**
 	* 인벤토리 컴포넌트

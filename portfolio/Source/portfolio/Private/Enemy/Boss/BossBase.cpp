@@ -33,7 +33,6 @@ ABossBase::ABossBase()
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarp"));
 	MotionWarpingComponent->SetActive(true);
 
-	LoadStats();
 }
 
 void ABossBase::BeginPlay()
@@ -293,7 +292,7 @@ void ABossBase::LoadStats()
 		Stats = *BossStatsDataTable->FindRow<FBossStats>(BossCode, "");
 		
 		USkeletalMeshComponent* SkeletalMesh = GetMesh();
-		if (SkeletalMesh && BossStatsDataTable && BossCode.IsValid())
+		if (SkeletalMesh)
 		{
 			SkeletalMesh->SetSkeletalMesh(Stats.SkeletalMesh);
 			GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);

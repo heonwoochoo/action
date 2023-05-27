@@ -31,7 +31,6 @@ void AMan::AttackCharacter()
 	TArray<AActor*> OutActors;
 
 	UKismetSystemLibrary::SphereOverlapActors(this, SocketLocation, 50.f, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
-	DrawDebugSphere(GetWorld(), SocketLocation, 50.f, 16, FColor::Red, false, 1.f);
 
 	for (AActor* Actor : OutActors)
 	{

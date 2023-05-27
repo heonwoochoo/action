@@ -53,7 +53,7 @@ AActor* UAssassinComponent::FindEnemy()
 	const TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes{ UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn) };
 	const TArray<AActor*> ActorsToIgnore{ Character };
 	FHitResult OutHit;
-	UKismetSystemLibrary::SphereTraceSingleForObjects(this, StartLocation, EndLocation, AutoDirectionRange, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true);
+	UKismetSystemLibrary::SphereTraceSingleForObjects(this, StartLocation, EndLocation, AutoDirectionRange, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::None, OutHit, true);
 
 	if (OutHit.bBlockingHit)
 	{

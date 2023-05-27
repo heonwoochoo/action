@@ -165,7 +165,7 @@ void ADarkSword::MoveToTarget()
 	const TArray<AActor*>& ActorsToIgnore = {Target, Owner};
 
 	TArray<FHitResult> OutHits;
-	UKismetSystemLibrary::LineTraceMultiForObjects(this, Start, End, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::Persistent, OutHits, true);
+	UKismetSystemLibrary::LineTraceMultiForObjects(this, Start, End, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::None, OutHits, true);
 
 	// 바닥에 룬 파티클 생성
 	for (const FHitResult& OutHit : OutHits)

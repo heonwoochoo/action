@@ -9,7 +9,7 @@
 class AEnemyBase;
 class USoundCue;
 class UAudioComponent;
-class ABossBase;
+class ABossGideon;
 
 UCLASS()
 class PORTFOLIO_API ADefaultWorldLevel : public ALevelScriptActor
@@ -33,7 +33,7 @@ protected:
 
 	// 보스의 액터클래스
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Boss")
-	TSubclassOf<ABossBase> BossClass;
+	TSubclassOf<ABossGideon> BossClass;
 
 	// 보스가 스폰될 위치
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Boss")
@@ -41,7 +41,7 @@ protected:
 
 	// 소환된 보스의 포인터
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Boss")
-	ABossBase* SpawnedBoss;
+	ABossGideon* SpawnedBoss;
 
 private:
 	// 리스폰 지점

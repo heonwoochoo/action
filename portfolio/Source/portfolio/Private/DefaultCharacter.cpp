@@ -717,10 +717,10 @@ void ADefaultCharacter::LoadDataFromSaveGame()
 				}
 
 				// 스탯
-				DefaultStats = InGameInfo.Stats;
+				//DefaultStats = InGameInfo.Stats;
 
 				// 직업
-				DefaultClass = InGameInfo.Class;
+				//DefaultClass = InGameInfo.Class;
 
 				// 무기 장착 상태
 				EquipState = InGameInfo.EquipState;
@@ -877,7 +877,6 @@ void ADefaultCharacter::CheckEnemyInRange(const FVector Location, const float Ra
 	TArray<AActor*> OutActors;
 
 	UKismetSystemLibrary::SphereOverlapActors(this, Location, Radius, ObjectTypes, nullptr, ActorsToIgnore, OutActors);
-	DrawDebugSphere(GetWorld(), Location, Radius, 16, FColor::Red, false, 1.f);
 
 	for (AActor* Actor : OutActors)
 	{

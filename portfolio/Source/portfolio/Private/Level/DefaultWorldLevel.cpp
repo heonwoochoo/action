@@ -6,7 +6,7 @@
 #include "HUD/HUDBase.h"
 #include "Enemy/EnemyBase.h"
 #include "Controller/CharacterController.h"
-#include "Enemy/Boss/BossBase.h"
+#include "Enemy/Boss/Gideon/BossGideon.h"
 
 
 ADefaultWorldLevel::ADefaultWorldLevel()
@@ -93,7 +93,7 @@ void ADefaultWorldLevel::SpawnBoss()
 		const FVector& Location = BossSpawnPoint->GetActorLocation();
 		const FRotator& Rotation = BossSpawnPoint->GetActorRotation();
 
-		SpawnedBoss = GetWorld()->SpawnActor<ABossBase>(BossClass, Location, Rotation);
+		SpawnedBoss = GetWorld()->SpawnActor<ABossGideon>(BossClass, Location, Rotation);
 	}
 }
 

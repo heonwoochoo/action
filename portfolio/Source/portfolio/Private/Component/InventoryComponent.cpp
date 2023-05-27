@@ -18,7 +18,6 @@ UInventoryComponent::UInventoryComponent()
 
 	PrimaryComponentTick.bCanEverTick = true;
 
-	InitEquippedItemList();
 }
 
 void UInventoryComponent::NotifyCoolDown(const FTimerHandle& TimerHandle, const FOnProgressCoolDownSignature& Delegate)
@@ -35,6 +34,7 @@ void UInventoryComponent::BeginPlay()
 	Super::BeginPlay();
 
 	LoadDataFromSaveGame();
+	InitEquippedItemList();
 }
 
 
@@ -219,32 +219,33 @@ void UInventoryComponent::EquipItem(const FName& ItemCode)
 	if (Exist)
 	{
 		FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(ItemCode, "");
-		
-		ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(GetOwner());
-		if (DefaultCharacter)
+		if (Spec)
 		{
-			// 장착
-			EEquipmentType EquipmentType = Spec->EquipmentType;
-			EquippedItemList[EquipmentType] = FEquippedItem(EEquippedState::EES_Equipped, ItemCode);
-			DefaultCharacter->UpdateEquipmentStat();
-
-			// 무기일 경우 오브젝트 스폰
-			if (EquipmentType == EEquipmentType::EET_Weapon && Spec->ItemClass)
+			ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(GetOwner());
+			if (DefaultCharacter)
 			{
-				if (EquippedWeapon)
-				{
-					EquippedWeapon->Destroy();
-				}
+				// 장착
+				EEquipmentType EquipmentType = Spec->EquipmentType;
+				EquippedItemList[EquipmentType] = FEquippedItem(EEquippedState::EES_Equipped, ItemCode);
+				DefaultCharacter->UpdateEquipmentStat();
 
-				EquippedWeapon = Cast<AWeapon>(GetWorld()->SpawnActor(Spec->ItemClass));
-				if (EquippedWeapon)
+				// 무기일 경우 오브젝트 스폰
+				if (EquipmentType == EEquipmentType::EET_Weapon && Spec->ItemClass)
 				{
-					USkeletalMeshComponent* Mesh = DefaultCharacter->GetMesh();
-					EquippedWeapon->AttachMeshToSocket(Mesh, TEXT("RightHandSocket"));
+					if (EquippedWeapon)
+					{
+						EquippedWeapon->Destroy();
+					}
+
+					EquippedWeapon = Cast<AWeapon>(GetWorld()->SpawnActor(Spec->ItemClass));
+					if (EquippedWeapon)
+					{
+						USkeletalMeshComponent* Mesh = DefaultCharacter->GetMesh();
+						EquippedWeapon->AttachMeshToSocket(Mesh, TEXT("RightHandSocket"));
+					}
 				}
+				OnEquipped.Broadcast(ItemCode, *Spec);
 			}
-
-			OnEquipped.Broadcast(ItemCode, *Spec);
 		}
 	}
 }

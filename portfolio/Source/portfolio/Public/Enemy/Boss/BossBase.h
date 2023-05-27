@@ -51,7 +51,7 @@ protected:
 	
 	// 고유 넘버
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
-	FName BossCode;
+	FName BossCode = FName(TEXT("5000"));
 
 	// 데이터 테이블에서 보스코드를 참조하여 데이터가 복사되어 저장됨
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
