@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+Ôªø// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -19,7 +19,7 @@ class PORTFOLIO_API USavedNotifyBox : public UUserWidget
 protected:
 	virtual void NativeConstruct() override;
 
-	// ≈ÿΩ∫√ƒ
+	// ÌÖçÏä§Ï≥ê
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Texture")
 	UTexture2D* ActivatedBox;
 
