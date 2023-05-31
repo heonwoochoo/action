@@ -56,6 +56,8 @@ public:
 	FOnDeadSignature OnDead;
 
 protected:
+	virtual void BeginPlay() override;
+
 	/** 캐릭터의 기본 스탯 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UDataTable* StatsDataTable;
@@ -80,36 +82,33 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
 	UParticleSystem* LevelUpParticle;
 
-	// APawn interface
+	/** 인풋 컴포넌트 초기화 */
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
-	// To add mapping context
-	virtual void BeginPlay();
-
-	/** Called for movement input */
+	/** 무브 핸들러 */
 	void Move(const FInputActionValue& Value);
 	void MoveEnd();
 
-	/** Called for looking input */
+	/** 카메라 시선 */
 	void Look(const FInputActionValue& Value);
 
-	/** Handle double jump */
+	/** 점프 핸들러 */
 	virtual void Jump() override;
 
-	/** Left mouse click */
+	/** 기본 공격 핸들러 */
 	void DefaultAttack(const FInputActionValue& Value);
 
-	/** Called Sprint Action */
+	/** 스프린트 핸들러 */
 	void OnSprint();
 	void OffSprint();
 
-	/** Called Evade Action */
+	/** 구르기 핸들러 */
 	void OnEvade();
 
-	/** 마우스 휠 핸들러*/
+	/** 카메라 줌 핸들러*/
 	void OnZoom(const FInputActionValue& Value);
 
-	/** Skill Event Handler */
+	/** 스킬 핸들러 */
 	void SkillManagerOne();
 	void SkillManagerTwo();
 	void SkillManagerThree();
@@ -148,20 +147,18 @@ protected:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 public:
-	/** Returns CameraBoom subobject **/
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	/** Returns FollowCamera subobject **/
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Particle, meta = (AllowPrivateAccess = "true"))
 	USceneComponent* EmitterComponent;
 
-	/** Camera boom positioning the camera behind the character */
+	/** 카메라 스프링 암 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
 
-	/** Follow camera */
+	/** 기본 카메라 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 
