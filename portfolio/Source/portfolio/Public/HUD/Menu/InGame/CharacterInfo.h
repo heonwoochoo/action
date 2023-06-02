@@ -28,6 +28,10 @@ protected:
 
 	virtual void NativeDestruct() override;
 
+	virtual void OnReleasedTitleDragButton() override;
+
+	virtual void InitCanvasLocation() override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UEquipmentSlot* HelmetSlot;
 
@@ -108,10 +112,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock* MovementSpeedText;
-
-	virtual void OnReleasedTitleDragButton() override;
-
-	virtual void InitCanvasLocation() override;
 
 	UFUNCTION()
 	void UpdateHealth(const float& CurrentHp, const float& MaxHp);

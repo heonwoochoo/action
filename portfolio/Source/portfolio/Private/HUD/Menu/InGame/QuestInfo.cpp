@@ -9,6 +9,9 @@
 #include "DefaultCharacter.h"
 #include "Component/QuestClientComponent.h"
 #include "HUD/Menu/InGame/QuestHeadline.h"
+#include "Components/CanvasPanel.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "Components/CanvasPanelSlot.h"
 
 void UQuestInfo::NativeConstruct()
 {
@@ -67,6 +70,39 @@ void UQuestInfo::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 void UQuestInfo::NativeDestruct()
 {
 	Super::NativeDestruct();
+}
+
+void UQuestInfo::OnReleasedTitleDragButton()
+{
+	Super::OnReleasedTitleDragButton();
+
+	// 위치저장
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController)
+	{
+		UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(InnerCanvas);
+		if (CanvasPanelSlot)
+		{
+			const FVector2D& CurrentLocation = CanvasPanelSlot->GetPosition();
+			CharacterController->SetQuestInitialLocation(CurrentLocation);
+		}
+	}
+}
+
+void UQuestInfo::InitCanvasLocation()
+{
+	Super::InitCanvasLocation();
+
+	ACharacterController* CharacterController = Cast<ACharacterController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (CharacterController && InnerCanvas)
+	{
+		UCanvasPanelSlot* CanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(InnerCanvas);
+		if (CanvasPanelSlot)
+		{
+			const FVector2D& Location = CharacterController->GetQuestInitialLocation();
+			CanvasPanelSlot->SetPosition(Location);
+		}
+	}
 }
 
 void UQuestInfo::OnChangedInputMode(const EInputMode& Mode)

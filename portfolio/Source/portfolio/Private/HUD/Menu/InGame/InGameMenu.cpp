@@ -72,12 +72,7 @@ void UInGameMenu::OnClickedCharacterButton()
 	if (CharacterInfoClass)
 	{
 		// 열려있는 위젯 닫기
-		TArray<UUserWidget*> FoundWidget;
-		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundWidget, CharacterInfoClass);
-		if (FoundWidget.Num() >= 1)
-		{
-			FoundWidget[0]->RemoveFromParent();
-		}
+		RemoveWidgetFromViewport(CharacterInfoClass);
 
 		UCharacterInfo* CharacterInfo = Cast<UCharacterInfo>(CreateWidget(this, CharacterInfoClass));
 		if (CharacterInfo)
@@ -117,12 +112,7 @@ void UInGameMenu::OnClickedInventoryButton()
 	if (InventoryClass)
 	{
 		// 열려있는 위젯 닫기
-		TArray<UUserWidget*> FoundWidget;
-		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundWidget, InventoryClass);
-		if (FoundWidget.Num() >= 1)
-		{
-			FoundWidget[0]->RemoveFromParent();
-		}
+		RemoveWidgetFromViewport(InventoryClass);
 
 		UInventory* Inventory = Cast<UInventory>(CreateWidget(this, InventoryClass));
 		if (Inventory)
@@ -162,12 +152,7 @@ void UInGameMenu::OnClickedQuestButton()
 	if (QuestInfoClass)
 	{
 		// 열려있는 위젯 닫기
-		TArray<UUserWidget*> FoundWidget;
-		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundWidget, QuestInfoClass);
-		if (FoundWidget.Num() >= 1)
-		{
-			FoundWidget[0]->RemoveFromParent();
-		}
+		RemoveWidgetFromViewport(QuestInfoClass);
 
 		UQuestInfo* QuestInfo = Cast<UQuestInfo>(CreateWidget(this, QuestInfoClass));
 		if (QuestInfo)
@@ -208,12 +193,7 @@ void UInGameMenu::OnClickedSettingsButton()
 	if (OptionsMenuClass)
 	{
 		// 열려있는 위젯 닫기
-		TArray<UUserWidget*> FoundWidget;
-		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundWidget, OptionsMenuClass);
-		if (FoundWidget.Num() >= 1)
-		{
-			FoundWidget[0]->RemoveFromParent();
-		}
+		RemoveWidgetFromViewport(OptionsMenuClass);
 
 		UOptionsMenu* OptionsMenu = Cast<UOptionsMenu>(CreateWidget(this, OptionsMenuClass));
 		if (OptionsMenu)
@@ -254,12 +234,7 @@ void UInGameMenu::OnClickedSaveButton()
 	if (DefaultGameInstance && SavedNotifyBoxClass)
 	{
 		// 열려있는 위젯 닫기
-		TArray<UUserWidget*> FoundWidget;
-		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundWidget, SavedNotifyBoxClass);
-		if (FoundWidget.Num() >= 1)
-		{
-			FoundWidget[0]->RemoveFromParent();
-		}
+		RemoveWidgetFromViewport(SavedNotifyBoxClass);
 
 		// 데이터 업데이트
 		DefaultGameInstance->UpdateSaveGame();
@@ -303,7 +278,9 @@ void UInGameMenu::OnClickedExitButton()
 {
 	if (ExitBoxClass)
 	{
-		ExitBox =  Cast<UExitBox>(CreateWidget(this, ExitBoxClass));
+		RemoveWidgetFromViewport(ExitBoxClass);
+
+		ExitBox = Cast<UExitBox>(CreateWidget(this, ExitBoxClass));
 		if (ExitBox)
 		{
 			ExitBox->AddToViewport();
@@ -420,6 +397,17 @@ void UInGameMenu::HideGuideMessage()
 		{
 			HUDBase->HideGuideMessage();
 		}
+	}
+}
+
+void UInGameMenu::RemoveWidgetFromViewport(const TSubclassOf<UUserWidget>& InWidgetClass)
+{
+	// 열려있는 위젯 닫기
+	TArray<UUserWidget*> FoundWidget;
+	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(this, FoundWidget, InWidgetClass);
+	if (FoundWidget.Num() >= 1)
+	{
+		FoundWidget[0]->RemoveFromParent();
 	}
 }
 

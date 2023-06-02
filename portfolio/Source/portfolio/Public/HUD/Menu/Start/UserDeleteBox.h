@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+Ôªø// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -23,7 +23,7 @@ protected:
 	virtual void OnClickedOKButton() override;
 
 private:
-	// StartMenu ¿ŒΩ∫≈œΩ∫
+	// StartMenu Ïù∏Ïä§ÌÑ¥Ïä§
 	UStartMenu* StartMenu;
 
 public:

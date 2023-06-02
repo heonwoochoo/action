@@ -170,6 +170,9 @@ private:
 	void HideGuideMessage();
 
 public:
+	// 해당 클래스의 위젯을 뷰포트에서 제거
+	void RemoveWidgetFromViewport(const TSubclassOf<UUserWidget>& InWidgetClass);
+
 	void PlayShowAnimation();
 	void PlayHideAnimation();
 

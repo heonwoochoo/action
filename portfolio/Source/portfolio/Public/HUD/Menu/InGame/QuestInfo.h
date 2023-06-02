@@ -31,6 +31,10 @@ protected:
 
 	virtual void NativeDestruct() override;
 
+	virtual void OnReleasedTitleDragButton() override;
+
+	virtual void InitCanvasLocation() override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	UOverlay* ProgressTabOverlay;
 
