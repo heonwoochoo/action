@@ -184,7 +184,16 @@ void UInventoryComponent::LoadDataFromSaveGame()
 			if (UserSaveGame)
 			{
 				// 아이템 리스트 동기화
-				ItemList = UserSaveGame->InGameInfo.ItemList;
+				const TMap<FName, uint8>& ItemLists = UserSaveGame->InGameInfo.ItemList;
+				for (const auto& ItemMap : ItemLists)
+				{
+					for (uint8 i = 0; i < ItemMap.Value; ++i)
+					{
+						AddItem(ItemMap.Key);
+					}
+				}
+
+				//ItemList = UserSaveGame->InGameInfo.ItemList;
 
 				// 장비 상태 동기화
 				EquippedItemList = UserSaveGame->InGameInfo.EquippedItemList;

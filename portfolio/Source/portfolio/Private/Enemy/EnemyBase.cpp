@@ -400,7 +400,7 @@ void AEnemyBase::Die()
 {
 	State = EEnemyState::EES_Dead;
 	Tags.Add(FName("Dead"));
-
+	
 	if (CombatTarget)
 	{
 		ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(CombatTarget);

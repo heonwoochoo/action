@@ -85,17 +85,19 @@ void AKnifeProjectile::SetMovementDirection(const FVector& Direction)
 
 void AKnifeProjectile::OnBeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag(FName(TEXT("Enemy"))))
+	if (Caster && OtherActor->ActorHasTag(FName(TEXT("Enemy"))))
 	{
 		// 대쉬 타겟으로 설정
-		UAssassinComponent* AssassinComponent = Cast<UAssassinComponent>(Caster->GetAbilityComponent());
-		if (AssassinComponent)
+		UAbilityComponent* AbilityComponent = Caster->GetAbilityComponent();
+		if (AbilityComponent)
 		{
-			AssassinComponent->SetDashTarget(OtherActor);
+			UAssassinComponent* AssassinComponent = Cast<UAssassinComponent>(AbilityComponent);
+			if (AssassinComponent)
+			{
+				AssassinComponent->SetDashTarget(OtherActor);
+			}
+			Caster->CheckEnemyInRange(GetActorLocation(), 50.f, Damage, EHitType::EHT_Slash);
+			Destroy();
 		}
-
-		Caster->CheckEnemyInRange(GetActorLocation(), 50.f, Damage, EHitType::EHT_Slash);
-
-		Destroy();
 	}	
 }
