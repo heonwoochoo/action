@@ -421,9 +421,8 @@ void UInGameMenu::PlayShowAnimation()
 
 void UInGameMenu::PlayHideAnimation()
 {
-	if (Visibility == ESlateVisibility::Visible)
+	if (GetVisibility() == ESlateVisibility::Visible)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("PlayHideAnimation"));
 		if (HideMenu)
 		{
 			PlayAnimationForward(HideMenu);
@@ -433,7 +432,6 @@ void UInGameMenu::PlayHideAnimation()
 
 void UInGameMenu::OnEndHideAnimation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnEndHideAnimation"));
 	SetVisibility(ESlateVisibility::Hidden);
 }
 

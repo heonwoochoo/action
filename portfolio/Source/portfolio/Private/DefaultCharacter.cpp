@@ -729,11 +729,11 @@ void ADefaultCharacter::LoadDataFromSaveGame()
 					SetActorTransform(SavedTransform);
 				}
 
-				// 스탯
-				//DefaultStats = InGameInfo.Stats;
-
 				// 직업
-				//DefaultClass = InGameInfo.Class;
+				DefaultClass = InGameInfo.Class;
+
+				// 스탯
+				DefaultStats = InGameInfo.Stats;
 
 				// 무기 장착 상태
 				EquipState = InGameInfo.EquipState;

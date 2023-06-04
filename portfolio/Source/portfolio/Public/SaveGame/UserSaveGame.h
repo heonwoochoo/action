@@ -43,7 +43,7 @@ struct FUserInGameInfo
 
 	// 직업
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	ECharacterClass Class;
+	ECharacterClass Class = ECharacterClass::ECC_Assassin;
 
 	// 무기 장착 상태
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

@@ -10,6 +10,7 @@
 class USaveGame;
 class UDefaultSaveGame;
 class UUserSaveGame;
+class UDataTable;
 
 UCLASS()
 class PORTFOLIO_API UDefaultGameInstance : public UGameInstance
@@ -33,6 +34,10 @@ private:
 	TSoftObjectPtr<UWorld> GameStartLevel;
 
 protected:
+	/** 캐릭터의 기본 스탯 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UDataTable* StatsDataTable;
+
 	// 생성된 유저의 고유한 슬롯 이름을 저장하고 있는 클래스
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SaveGame");
 	TSubclassOf<USaveGame> DefaultSaveGameClass;

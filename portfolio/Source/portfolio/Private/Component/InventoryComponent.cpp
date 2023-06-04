@@ -34,7 +34,7 @@ void UInventoryComponent::BeginPlay()
 	Super::BeginPlay();
 
 	LoadDataFromSaveGame();
-	InitEquippedItemList();
+	//InitEquippedItemList();
 }
 
 
@@ -183,25 +183,18 @@ void UInventoryComponent::LoadDataFromSaveGame()
 			UUserSaveGame* UserSaveGame = Cast<UUserSaveGame>(UGameplayStatics::LoadGameFromSlot(UserName, 0));
 			if (UserSaveGame)
 			{
+				// 아이템 리스트 동기화
+				ItemList = UserSaveGame->InGameInfo.ItemList;
+
+				// 장비 상태 동기화
 				EquippedItemList = UserSaveGame->InGameInfo.EquippedItemList;
 
-				// 무기를 스폰하여 장착
-				
-					EquippedItemCode = UserSaveGame->InGameInfo.EquippedWeaponCode;
-
-					FItemSpec* Spec = ItemSpecData->FindRow<FItemSpec>(EquippedItemCode, "");
-					if (Spec)
-					{
-						EquippedWeapon = Cast<AWeapon>(GetWorld()->SpawnActor(Spec->ItemClass));
-						if (EquippedWeapon)
-						{
-							ADefaultCharacter* DefaultCharacter = Cast<ADefaultCharacter>(GetOwner());
-							check(DefaultCharacter);
-							USkeletalMeshComponent* Mesh = DefaultCharacter->GetMesh();
-							EquippedWeapon->AttachMeshToSocket(Mesh, TEXT("RightHandSocket"));
-						}
-					}
-				ItemList = UserSaveGame->InGameInfo.ItemList;
+				// 장착 중인 무기 인스턴스 스폰
+				const FEquippedItem* EquippedItem = EquippedItemList.Find(EEquipmentType::EET_Weapon);
+				if (EquippedItem->State == EEquippedState::EES_Equipped)
+				{
+					EquipItem(EquippedItem->ItemCode);
+				}
 			}
 		}
 	}

@@ -12,6 +12,7 @@
 #include "Component/InventoryComponent.h"
 #include "Component/QuestClientComponent.h"
 #include "HUD/HUDBase.h"
+#include "Engine/DataTable.h"
 
 void UDefaultGameInstance::Init()
 {
@@ -87,11 +88,42 @@ void UDefaultGameInstance::CreateUserSaveGame(FString UserName)
 	const bool IsExist = UGameplayStatics::DoesSaveGameExist(UserName, 0);
 	if (!IsExist)
 	{
+		// 초기값을 설정하는 부분
 		UUserSaveGame* NewUserSaveGame = Cast<UUserSaveGame>(UGameplayStatics::CreateSaveGameObject(UserSaveGameClass));
 		if (NewUserSaveGame)
 		{
+			// 이름 설정
 			NewUserSaveGame->SlotName = UserName;
+			// 현재 시각
 			NewUserSaveGame->SystemInfo.CreatedDate = UKismetMathLibrary::Now();
+			// 직업 (기본값: 어쎄신)
+			NewUserSaveGame->InGameInfo.Class = ECharacterClass::ECC_Assassin;
+			// 장착중인 장비 목록
+			TMap<EEquipmentType, FEquippedItem> EquippedItemList;
+			EquippedItemList.Add({ EEquipmentType::EET_Weapon, FEquippedItem() });
+			EquippedItemList.Add({ EEquipmentType::EET_SubWeapon, FEquippedItem() });
+			EquippedItemList.Add({ EEquipmentType::EET_Shoes,FEquippedItem() });
+			EquippedItemList.Add({ EEquipmentType::EET_Shield, FEquippedItem() });
+			EquippedItemList.Add({ EEquipmentType::EET_Helmet, FEquippedItem() });
+			EquippedItemList.Add({ EEquipmentType::EET_Armour, FEquippedItem() });
+			EquippedItemList.Add({ EEquipmentType::EET_Accessory, FEquippedItem() });
+			NewUserSaveGame->InGameInfo.EquippedItemList = EquippedItemList;
+			// 장착중인 무기
+			NewUserSaveGame->InGameInfo.EquippedWeaponCode = FName();
+			// 무기 장착 상태
+			NewUserSaveGame->InGameInfo.EquipState = ECharacterEquipState::ECES_Unquipped;
+			// 아이템 리스트
+			NewUserSaveGame->InGameInfo.ItemList = TMap<FName, uint8>();
+			// 퀘스트 목록
+			NewUserSaveGame->InGameInfo.QuestList = TArray<FQuestClientData>();
+			// 클리어된 퀘스트 목록			
+			NewUserSaveGame->InGameInfo.ClearedQuests = TArray<EQuestCode>();
+			// 스탯
+			if (StatsDataTable)
+			{
+				NewUserSaveGame->InGameInfo.Stats = *StatsDataTable->FindRow<FCharacterStats>(FName("Default"), "");
+			}
+
 			const bool IsSuccess = UGameplayStatics::SaveGameToSlot(NewUserSaveGame, UserName, 0);
 			if (IsSuccess)
 			{
